@@ -40,6 +40,7 @@ export class PhotoEffect{
         .ofType(PhotoActions.TRY_DELETE_PHOTO)
         .map((actions: PhotoActions.TryDeletePhoto) => {return actions.payload})
         .switchMap(payload => {
+            this.alertify.message("写真を削除中…");
             return this.httpClient.delete(this.baseUrl + 'photo/' + payload.type + '/' + payload.recordId + '/' + payload.photoId)
                 .mergeMap(() => {
                     return [
@@ -64,10 +65,12 @@ export class PhotoEffect{
         .ofType(PhotoActions.TRY_ADD_PHOTO)
         .map((actions: PhotoActions.TryAddPhoto) => {return actions.payload})
         .switchMap(payload => {
-            console.log(payload);
+            // console.log(payload);
             const formData: FormData = new FormData();
             formData.append('File', payload.fileData, payload.fileData.name);
             formData.append('Description', 'Test');
+
+            this.alertify.message("写真をアップロード中…");
 
             return this.httpClient.post(this.baseUrl + 'photo/' + payload.type + '/' + payload.recordId,
             formData)
