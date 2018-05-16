@@ -1,0 +1,54 @@
+<form #blogEditForm="ngForm" id="blogEditForm" (ngSubmit)="submit()">
+  <div class="form-group">
+    <label for="title" class="control-label required">タイトル</label>
+    <input class="form-control" name="title" type="text" [(ngModel)]="blog.title" [required]>
+  </div>
+  <div class="form-group">
+    <label for="description" class="control-label">ブログ紹介文</label>
+    <input class="form-control" name="description" type="text" [(ngModel)]="blog.description">
+  </div>
+  <div class="form-group">
+      <label for="description" class="control-label">カテゴリー1</label>
+      <select [(ngModel)]="blog.category" name="category1">
+        <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+      </select>
+      <label for="description" class="control-label">カテゴリー2</label>
+      <select [(ngModel)]="blog.category2" name="category2">
+        <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+      </select>
+      <label for="description" class="control-label">カテゴリー3</label>
+      <select [(ngModel)]="blog.category3" name="category3">
+        <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+      </select>
+  </div>
+  <div class="form-group" [ngClass]="{'has-error': url.errors && url.touched}">
+    <label for="url" class="control-label required">URL</label>
+    <input class="form-control" name="url" type="url" [(ngModel)]="blog.url" required  #url="ngModel">
+    <span class="help-block" *ngIf="url?.errors?.required && url.touched">
+      URLは必須項目です
+    </span>
+  </div>
+  <div class="form-group">
+    <label for="rss" class="control-label">RSS</label>
+    <input class="form-control" name="rss" type="text" [(ngModel)]="blog.rss">
+  </div>
+  <div class="form-group">
+    <label for="writerName" class="control-label">ライター名</label>
+    <input class="form-control" name="writerName" type="text" [(ngModel)]="blog.writerName">
+  </div>
+  <div class="form-group">
+    <label for="writerIntroduction" class="control-label">ライター紹介文</label>
+    <input class="form-control" name="writerIntroduction" type="text" [(ngModel)]="blog.writerIntroduction">
+  </div>
+  <div class="form-group">
+    <label for="hideOwner" class="control-label">プロフィールとのリンク</label>
+    <label class="radio-inline">
+      <input type="radio" value="false" name="hideOwner" [(ngModel)]="blog.hideOwner">有
+    </label>
+    <label class="radio-inline">
+      <input type="radio" value="true" name="hideOwner" [(ngModel)]="blog.hideOwner">無
+    </label>
+  </div>
+
+  <button class="btn btn-success" [disabled]="!blogEditForm.valid || blogEditForm.pristine" type="submit">更新</button>
+</form>

@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <h4>写真一覧</h4>
+        <div class="col-sm-2" *ngFor="let photo of (photoState | async).photos">
+            <img src="{{photo.url}}" alt="" class="thumbnail">
+            <div class="text-center">
+                <button type="button" class="btn btn-xs btn-danger" (click)="deletePhoto(photo.id)">削除</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h4>写真の追加 (1MB 以下)</h4>
+        <div class="col-sm-3">
+            <button class="btn btn-block btn-primary" (click)="fileInput.click()">画像選択</button>
+            <button class="btn btn-block btn-primary" (click)="onUpload()">アップロード</button>
+        </div>
+        <div class="col-sm-9">
+            <img *ngIf="selectedFile" class="img-responsive" [src]="previewUrl" />
+            <input type="file" accept="image/*" style="display: none" (change)="onFileChanged($event)" #fileInput>
+        </div>
+    </div>
+</div>

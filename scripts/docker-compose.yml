@@ -1,0 +1,30 @@
+version: "3"
+services:
+    db:
+        image: "microsoft/mssql-server-linux"
+        environment:
+            SA_PASSWORD: "P@ssw0rd!!"
+            ACCEPT_EULA: "Y"
+
+    web:
+        build:
+          context: ../Wacomi.API
+          dockerfile: Dockerfile
+        ports:
+            - "5000:80"
+        depends_on:
+            - db
+        volumes:
+          - "db-volume:/var/opt/mssql/"
+
+    client:
+        build:
+          context: ../Wacomi.SPA
+          dockerfile: Dockerfile
+        environment:
+            NODE_ENV: development
+        ports:
+        - "4200:4200"
+        command: [nginx-debug, -g,'daemon off;']
+volumes:
+  db-volume:

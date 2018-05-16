@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-6">
+    <img src="{{mainPhotoUrl}}" alt="" class="img-responsive">
+  </div>
+  <div class="col-xs-12 col-sm-6">
+    <ul class="list-inline">
+        <li *ngFor="let photo of photos" class="list-inline-item">
+            <img src="{{photo.url}}" (click)="onSelect(photo)" alt="" class="thumbnail" [ngClass]="photo.url == mainPhotoUrl ? 'selected' : ''" >
+        </li>
+    </ul>
+  </div>
+</div>

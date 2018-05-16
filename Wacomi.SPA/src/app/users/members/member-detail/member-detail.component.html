@@ -1,0 +1,42 @@
+<div class="row">
+  <h1>{{member.displayName}} のプロフィール</h1>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <img class="profile-image thumbnail" src="{{member.mainPhotoUrl}}" alt="{{member.displayName}}">
+      <div class="panel-body">
+        <div>
+          <strong>最終ログイン </strong>
+          <p>{{member.lastActive | timeAgo}}</p>
+        </div>
+        <div>
+          <strong>アカウント作成日</strong>
+          <p>{{member.created | date: 'mediumDate'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div>
+      <h4>滞在地</h4>
+      <p>{{member.city}}</p>
+    </div>
+    <div>
+      <h4>出身</h4>
+      <p>{{member.homeTown}}</p>
+    </div>
+    <div *ngIf="member.dateOfBirth">
+      <h4>誕生日</h4>
+      <p>{{member.dateOfBirth | date: 'mediumDate'}}</p>
+    </div>
+    <h4>自己紹介</h4>
+    <p>{{member.introduction}}</p>
+    <h4>趣味</h4>
+    <p>{{member.interests}}</p>
+  </div>
+  <div class="col-sm-2">
+    <h4>広告…</h4>
+  </div>
+</div>

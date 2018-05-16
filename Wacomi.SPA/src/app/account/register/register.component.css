@@ -1,0 +1,17 @@
+.container form{
+    max-width: 600px;
+    margin:auto;
+}
+
+form label.required::after {
+    content: "必須";
+    margin: 0 0.5em;
+    padding: 0 0.5em;
+    -webkit-border-radius: 6px;   /* Safari,Google Chrome */
+    -moz-border-radius: 6px;      /* Firefox12まで */
+    border-radius: 6px;           /* Firefox13以降 */
+    background-color: #ff3957;
+    color: #fff;
+    font-weight: normal;
+    font-size: 90%;
+}

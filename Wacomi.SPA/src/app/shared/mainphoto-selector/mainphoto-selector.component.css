@@ -1,0 +1,9 @@
+img.thumbnail {
+    height: 100px;
+    width:100px;
+    margin-bottom: 2px;
+}
+
+.selected{
+    border: 2px solid red;
+}
