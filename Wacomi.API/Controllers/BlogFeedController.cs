@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
@@ -26,6 +27,7 @@ namespace Wacomi.API.Controllers
             return Ok(blogFeedsForReturn);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBlogFeed(int id){
             var feed = await _repo.GetBlogFeed(id);
