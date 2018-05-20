@@ -36,6 +36,7 @@ namespace Wacomi.API.Data
             AppUser user = new AppUser
             {
                 UserName = "Admin",
+                UserType = "Admin",
                 Email = "kazunori.hayashi.nz@gmail.com",
                 EmailConfirmed = true
             };

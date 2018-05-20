@@ -14,6 +14,8 @@ import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { HomeTownListResolver } from "../_resolvers/hometownlist.resolver";
 import { AppUserEditResolver } from "../_resolvers/appuser-edit.resolver";
 import { CoreModule } from "../core/core.module";
+import { BlogModule } from "../blog/blog.module";
+import { PhotoModule } from "../photo/photo.module";
 
 @NgModule({
     declarations: [
@@ -24,6 +26,8 @@ import { CoreModule } from "../core/core.module";
     ],
     imports:[
         SharedModule,
+        BlogModule,
+        PhotoModule,
         TabsModule,
         ReactiveFormsModule,
         SettingsRoutingModule,

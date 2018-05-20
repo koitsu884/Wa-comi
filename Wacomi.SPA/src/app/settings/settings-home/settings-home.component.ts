@@ -9,10 +9,10 @@ import { Photo } from '../../_models/Photo';
 import { Observable } from 'rxjs/Observable';
 
 import * as fromApp from '../../store/app.reducer';
-import * as fromPhoto from '../../shared/store/photos.reducers';
-import * as fromBlog from '../../shared/store/blogs.reducers';
-import * as PhotoActions from '../../shared/store/photos.action';
-import * as BlogActions from '../../shared/store/blogs.actions';
+import * as fromPhoto from '../../photo/store/photos.reducers';
+import * as fromBlog from '../../blog/store/blogs.reducers';
+import * as PhotoActions from '../../photo/store/photos.action';
+import * as BlogActions from '../../blog/store/blogs.actions';
 import { Store } from '@ngrx/store';
 
 @Component({

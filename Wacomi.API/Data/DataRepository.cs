@@ -132,5 +132,24 @@ namespace Wacomi.API.Data
             }
             return null;
         }
+
+        public async Task<IEnumerable<Blog>> GetBlogs(){
+            return await _context.Blogs.Where(b => b.IsActive == true).ToListAsync();
+        }
+
+        public async Task<BlogFeed> GetLatestBlogFeed(Blog blog){
+            return await _context.BlogFeeds.Where(bf => bf.BlogId == blog.Id).OrderByDescending(bf => bf.Id).FirstOrDefaultAsync();
+        }
+
+        public async Task<BlogFeed> GetBlogFeed(int id){
+            return await _context.BlogFeeds.FirstOrDefaultAsync(bf => bf.Id == id);
+        }
+
+        public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds(){
+            return await _context.BlogFeeds.Include(bf => bf.Blog)
+                                            .Where(bf => bf.Blog.IsActive == true)
+                                            .OrderByDescending(bf => bf.PublishingDate)
+                                            .Take(50).ToListAsync();
+        }
     }
 }

@@ -1,19 +1,25 @@
 <div class="container">
-  <div class="row">
-    <h2>何か情報とか？</h2>
-  </div>
-  <div class="row">
-    <h2>本日のトピック</h2>
-  </div>
-  <div class="row">
-    <div class="col-sm-6">
+  <div class="col-md-9">
+    <div class="row">
       <h2>みんなのブログ</h2>
+      <app-blogfeed-list [blogFeedList]="blogFeedList | async"></app-blogfeed-list>
     </div>
-    <div class="col-sm-6">
-      <h2>みんなのつぶやき</h2>
+    <div class="row">
+      <h2>〇〇募集！！！</h2>
+    </div>
+    <div class="row">
+      <h2>本日のトピック</h2>
+    </div>
+    <div class="row">
+      <h2>何か情報とか？</h2>
     </div>
   </div>
-  <div class="row">
-      <h2>〇〇募集！！！</h2>
+  <div class="col-md-3">
+    <div class="row">
+      <h2>広告</h2>
+    </div>
+    <div class="row">
+      <h2>広告</h2>
+    </div>
   </div>
 </div>

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
 using Wacomi.API.Models;
+using NLog.Web;
 
 namespace Wacomi.API
 {
@@ -18,24 +19,34 @@ namespace Wacomi.API
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
-            using (var scope = host.Services.CreateScope())
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
             {
-                var serviceProvider = scope.ServiceProvider;
-                try
+                logger.Debug("init main");
+                var host = BuildWebHost(args);
+                using (var scope = host.Services.CreateScope())
                 {
+                    var serviceProvider = scope.ServiceProvider;
+
                     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
                     var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
                     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                     Seed.SeedData(userManager, roleManager, context);
+
                 }
-                catch (Exception ex)
-                {
-                    // var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-                    // logger.LogError(ex, "An error occurred seeding the DB.");
-                }
+                host.Run();
             }
-            host.Run();
+            catch (Exception ex)
+            {
+                //NLog: catch setup errors
+                logger.Error(ex, "Stopped program because of exception");
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
 
             // var host = new WebHostBuilder()  
             // .UseUrls("https://*:5000")
@@ -45,7 +56,13 @@ namespace Wacomi.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                // .UseUrls("http://*:80")
+                // .UseUrls("http://*:80") //Docker
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                })
+                .UseNLog()
                 .Build();
     }
 }

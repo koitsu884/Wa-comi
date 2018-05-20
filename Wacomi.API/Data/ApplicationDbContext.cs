@@ -14,6 +14,7 @@ namespace Wacomi.API.Data
 
         public DbSet<BlackList> BlackLists { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogFeed> BlogFeeds { get; set; }
         public DbSet<BlogPreference> BlogPreferences { get; set; }
         public DbSet<BusinessUser> BusinessUsers { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }

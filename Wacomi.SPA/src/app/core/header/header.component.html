@@ -1,15 +1,15 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-inverse">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <button type="button" (click)="isCollapsed = !isCollapsed" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" [routerLink]="['/home']">Bora-Bora- Circle</a>
+      <a [routerLink]="['/home']"><img class="logo" src="../assets/logo.png"></a>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar" class="navbar-collapse collapse" [collapse]="isCollapsed">
       <ul class="nav navbar-nav">
         <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
         <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li>
@@ -23,7 +23,8 @@
            <a (click)="false" class="dropdown-toggle" dropdownToggle>{{(authState | async).appUser.displayName}}  <span class="caret"></span></a> 
            <ul class="dropdown-menu" *dropdownMenu>
              <li role="separator" class="divider"></li>
-             <li><a [routerLink]="['/settings']">登録情報確認</a></li>
+             <li *ngIf="(authState | async).appUser.userType!='Admin'"><a [routerLink]="['/settings']">登録情報確認</a></li>
+             <li *ngIf="(authState | async).appUser.userType=='Admin'" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>
            </ul>
         </li>

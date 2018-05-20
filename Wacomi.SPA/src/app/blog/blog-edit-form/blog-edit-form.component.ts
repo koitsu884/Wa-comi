@@ -4,6 +4,8 @@ import { GlobalService } from '../../_services/global.service';
 import { Store } from '@ngrx/store';
 import * as fromBlog from '../store/blogs.reducers';
 import * as BlogAction from '../store/blogs.actions';
+import { Photo } from '../../_models/Photo';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-blog-edit-form',
@@ -20,6 +22,7 @@ export class BlogEditFormComponent implements OnInit {
   @Input() blog:Blog;
   @Input() recordId: number;
   @Input() type: string;
+  @Input() photos: Photo[];
 
   blogCategories : string[];
   constructor(private store : Store<fromBlog.State>, private global: GlobalService) { }
@@ -30,5 +33,10 @@ export class BlogEditFormComponent implements OnInit {
 
   submit(){
     this.store.dispatch(new BlogAction.UpdateBlog({type: this.type, recordId: this.recordId, blog: this.blog}));
+  }
+
+  mainPhotoSelected(event, ngForm: NgForm){
+    this.blog.blogImageUrl = event;
+    ngForm.form.markAsDirty();
   }
 }

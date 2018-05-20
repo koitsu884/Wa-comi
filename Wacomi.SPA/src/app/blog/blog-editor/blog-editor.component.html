@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-info" *ngFor="let blog of (blogState | async).blogs" (click)="onSelect(blog)">
+            <div class="panel-heading">
+                {{blog.title}} - {{blog.writerName}}
+            </div>
+            <div class="panel-body">
+                <img class="img-responsive" src="{{blog.blogImageUrl}}">
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-danger" (click)="onClickDelete(blog.id)">削除</button>
+            </div>
+         </div>
+        <button class="btn btn-primary" (click)="onClickAdd()">ブログの追加</button>
+    </div>
+    <div class="col-sm-9">
+      <app-blog-edit-form *ngIf="selectedBlog" [blog]="selectedBlog" [type]="type" [recordId]="recordId" [photos]="(photoState | async).photos"></app-blog-edit-form>
+    </div>
+  </div>
+</div>

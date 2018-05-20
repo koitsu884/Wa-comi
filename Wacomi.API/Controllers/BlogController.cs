@@ -1,6 +1,11 @@
+using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using CodeHollow.FeedReader;
+using CodeHollow.FeedReader.Feeds;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wacomi.API.Data;
@@ -36,6 +41,59 @@ namespace Wacomi.API.Controllers
             return Ok(blogsFlomRepo);
         }
 
+        private async Task<BlogFeed> readRss(Blog blog){
+            if(blog.RSS == null || blog.IsActive == false)
+                return null;
+
+            var feed = await FeedReader.ReadAsync(blog.RSS);
+            if(feed == null)
+                return null;
+
+            // string result = "";
+            // result += "Feed Title: " + feed.Title + "\n";
+            // result += "Feed Description: " + feed.Description + "\n";
+            // result += "Feed Image: " + feed.ImageUrl + "\n";
+            if( feed.Items.Count > 0){
+                var latestFeed = await _repo.GetLatestBlogFeed(blog);
+                var firstItem = feed.Items.First();
+
+                if(latestFeed == null || latestFeed.PublishingDate < firstItem.PublishingDate)
+                {
+                    string firstImageUrl = "";
+                    if(firstItem.Content != null){
+                        firstImageUrl = Regex.Match(firstItem.Content, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase).Groups[1].Value;
+                    }
+                    var blogFeed = new BlogFeed(){
+                        BlogId = blog.Id,
+                        Blog = blog,
+                        Title = firstItem.Title,
+                        ImageUrl = string.IsNullOrEmpty(firstImageUrl) ? null : firstImageUrl,
+                        PublishingDate = firstItem.PublishingDate == null ? DateTime.Now : firstItem.PublishingDate,
+                        Url = firstItem.Link 
+                    };
+                    return blogFeed;
+                }
+            }
+            return null;
+        }
+
+        [HttpPost("rss")]
+       // [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddRssFeeds(){
+            var blogs = await _repo.GetBlogs();
+            foreach(var blog in blogs){
+                //TODO: Count blog feed for the blog
+                //TODO: Delete feed if it's more than 20
+                var blogFeed = await readRss(blog);
+                if(blogFeed != null){
+                    this._repo.Add(blogFeed);
+                }
+            }
+            var cnt = await this._repo.SaveAll();
+
+            return Ok(cnt);
+        }
+
         [HttpPost("{type}/{recordId}")]
         [Authorize]
         public async Task<IActionResult> AddBlogInfoToUser(string type, int recordId){ 
@@ -46,10 +104,10 @@ namespace Wacomi.API.Controllers
             if(user.Blogs.Count > 0 && !user.IsPremium){
                 return BadRequest("ブログは1つだけ登録可能です");
             }
-            else if (user.Blogs.Count > 5){
+            else if (user.Blogs.Count >= 5){
                 return BadRequest("ブログは５つまで登録可能です");
             }
-            var blog = new Blog(){Title="新規ブログ", WriterName = user.Identity.DisplayName};
+            var blog = new Blog(){Title="新規ブログ", WriterName = user.Identity.DisplayName, OwnerId = user.IdentityId};
             user.Blogs.Add(blog);
             if(await _repo.SaveAll())
             {

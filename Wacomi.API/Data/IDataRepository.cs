@@ -23,5 +23,9 @@ namespace Wacomi.API.Data
         Task<IEnumerable<Member>> GetMembers(UserParams userParams);
         Task<Blog> GetBlog(int id);
         Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);
+        Task<IEnumerable<Blog>> GetBlogs();
+        Task<BlogFeed> GetLatestBlogFeed(Blog blog);
+        Task<BlogFeed> GetBlogFeed(int id);
+        Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
     }
 }

@@ -15,6 +15,7 @@ import * as AccountActions from '../../account/store/account.actions';
 })
 export class HeaderComponent implements OnInit {
   authState: Observable<fromAccount.State>;
+  public isCollapsed = false;
 
   constructor(private store: Store<fromApp.AppState>,
               private alertify: AlertifyService) { }

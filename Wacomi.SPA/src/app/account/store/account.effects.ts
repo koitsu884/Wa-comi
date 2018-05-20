@@ -91,6 +91,8 @@ export class AccountEffects {
                     return { type: AccountActions.GET_MEMBER, payload: appUser.relatedUserClassId };
                 case "Business":
                     return { type: AccountActions.GET_BISUSER, payload: appUser.relatedUserClassId };
+                case "Admin":
+                    return { type: AccountActions.SUCCESS, payload: "Admin account"};
 
             }
             return { type: AccountActions.FAILED, payload: "ユーザータイプ'" + appUser.userType + "'は存在しません" };

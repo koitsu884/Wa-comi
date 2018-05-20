@@ -33,6 +33,10 @@ namespace Wacomi.API.Helper
             .ForMember(m => m.City, opt => opt.MapFrom(src => src.City.Name));
 
           CreateMap<BlogForUpdateDto, Blog>();
+          CreateMap<BlogFeed, BlogFeedForReturnDto>()
+            .ForMember(bf => bf.OwnerId, opt => opt.MapFrom(src => src.Blog.OwnerId))
+            .ForMember(bf => bf.BlogImageUrl, opt => opt.MapFrom(src => src.Blog.BlogImageUrl))
+            .ForMember(bf => bf.WriterName, opt => opt.MapFrom(src => src.Blog.WriterName));
 
           CreateMap<PhotoForCreationDto, Photo>();
           CreateMap<Photo, PhotoForReturnDto>();

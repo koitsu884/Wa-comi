@@ -8,6 +8,7 @@ namespace Wacomi.API.Models
         public int Id { get; set;}
 
         public bool HideOwner{ get; set;} = false;
+        public string OwnerId { get; set;}
         public string WriterName{ get; set;}
         public string WriterIntroduction {get; set;}
         public string Title { get; set;}
@@ -16,10 +17,11 @@ namespace Wacomi.API.Models
         public string Category2{get; set;}
         public string Category3{get; set;}
         public string Url{get; set;}
+        public string BlogImageUrl{get; set;}
         public string RSS{get; set;}
         public int FollowerCount{get; set;}
         public int HatedCount{ get; set;}
-        public bool IsActive{ get; set;}
+        public bool IsActive{ get; set;} = true;
 
     }
 }

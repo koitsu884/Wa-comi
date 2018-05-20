@@ -215,6 +215,8 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("BlogImageUrl");
+
                     b.Property<int?>("BusinessUserId");
 
                     b.Property<string>("Category");
@@ -234,6 +236,8 @@ namespace Wacomi.API.Migrations
                     b.Property<bool>("IsActive");
 
                     b.Property<int?>("MemberId");
+
+                    b.Property<string>("OwnerId");
 
                     b.Property<string>("RSS");
 
@@ -258,6 +262,28 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeed", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BlogId");
+
+                    b.Property<string>("ImageUrl");
+
+                    b.Property<DateTime?>("PublishingDate");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("BlogFeeds");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogPreference", b =>
@@ -650,6 +676,14 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.Member")
                         .WithMany("Blogs")
                         .HasForeignKey("MemberId");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeed", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.Blog", "Blog")
+                        .WithMany()
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogPreference", b =>

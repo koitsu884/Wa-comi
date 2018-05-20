@@ -29,11 +29,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule} from '@ngrx/router-store';
 import { StoreDevtoolsModule} from '@ngrx/store-devtools';
 import { AccountEffects } from './account/store/account.effects';
-import { PhotoEffect } from './shared/store/photos.effect';
-import { BlogEffects } from './shared/store/blogs.effect';
+import { PhotoEffect } from './photo/store/photos.effect';
+import { BlogEffects } from './blog/store/blogs.effect';
 import { environment } from '../environments/environment';
 import { AuthInterceptorProvider } from './shared/auth.interceptor';
 import { AuthGuard } from './_guards/auth.guard';
+import { BlogModule } from './blog/blog.module';
+import { PhotoModule } from './photo/photo.module';
 
 defineLocale('ja', jaLocale); 
 
@@ -51,10 +53,11 @@ defineLocale('ja', jaLocale);
     HttpClientModule,
     AppRoutingModule,
     CoreModule,
-    SharedModule,
-    SettingsModule,
-    FormsModule,
     ReactiveFormsModule,
+    SharedModule,
+    BlogModule,
+    PhotoModule,
+    //SettingsModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects]),
     StoreRouterConnectingModule,
