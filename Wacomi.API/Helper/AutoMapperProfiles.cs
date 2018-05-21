@@ -40,6 +40,18 @@ namespace Wacomi.API.Helper
 
           CreateMap<PhotoForCreationDto, Photo>();
           CreateMap<Photo, PhotoForReturnDto>();
+
+          CreateMap<ClanSeekForCreationDto, ClanSeek>();
+          CreateMap<ClanSeekUpdateDto, ClanSeek>();
+          CreateMap<ClanSeek, ClanSeekForReturnDto>()
+            .ForMember(cs => cs.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(cs => cs.LocationName, opt => opt.MapFrom(src => src.Location.Name))
+            .ForMember(cs => cs.MemberName, opt => opt.MapFrom(src => src.Member.Identity.DisplayName))
+          ;
+          ;
+
+          CreateMap<PropertySeekForCreationDto, PropertySeek>();
+          CreateMap<PropertySeekUpdateDto, PropertySeek>();
         }
     }
 }

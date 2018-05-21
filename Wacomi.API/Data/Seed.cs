@@ -26,7 +26,56 @@ namespace Wacomi.API.Data
         {
             SeedRoles(roleManager);
             SeedUsers(userManager);
+            SeedClanSeekCategories(context);
+            SeedPropertySeekCategories(context);
             SeedOthers(context);
+        }
+
+        public static void SeedClanSeekCategories(ApplicationDbContext context){
+            string[] clanSeekCategories = {
+                "友達",
+                "サークル",
+                "勉強・自己啓発",
+                "旅行",
+                "その他"};
+
+            foreach (var clanSeekCategory in clanSeekCategories)
+            {
+                if (!context.ClanSeekCategories.Any(h => h.Name == clanSeekCategory))
+                {
+                    var result = context.ClanSeekCategories.AddAsync(new ClanSeekCategory() { Name = clanSeekCategory }).Result;
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create clan seek category " + clanSeekCategory);
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public static void SeedPropertySeekCategories(ApplicationDbContext context){
+            string[] propertySeekCategories = {
+                "フラット（1人部屋）",
+                "フラット（相部屋）",
+                "一軒家",
+                "アパートメント",
+                "ホームステイ",
+                "その他"};
+
+            foreach (var propertySeekCategory in propertySeekCategories)
+            {
+                if (!context.PropertySeekCategories.Any(h => h.Name == propertySeekCategory))
+                {
+                    var result = context.PropertySeekCategories.AddAsync(new PropertySeekCategory() { Name = propertySeekCategory }).Result;
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create property seek category " + propertySeekCategory);
+                    }
+                }
+            }
+
+            context.SaveChanges();
         }
 
         public static void SeedUsers(UserManager<AppUser> userManager)

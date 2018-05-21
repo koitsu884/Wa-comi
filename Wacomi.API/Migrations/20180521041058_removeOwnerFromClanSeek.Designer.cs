@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180521041058_removeOwnerFromClanSeek")]
+    partial class removeOwnerFromClanSeek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,9 +373,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("MainPhotoUrl");
 
-                    b.Property<int>("MemberId");
-
-                    b.Property<string>("Title");
+                    b.Property<int?>("MemberId");
 
                     b.Property<string>("WebsiteUrl");
 
@@ -793,10 +792,9 @@ namespace Wacomi.API.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
+                    b.HasOne("Wacomi.API.Models.Member")
                         .WithMany("ClanSeekPosted")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("MemberId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.Friend", b =>

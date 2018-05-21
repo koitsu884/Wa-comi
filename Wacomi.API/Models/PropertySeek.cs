@@ -4,16 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Wacomi.API.Models
 {
-    public class ClanSeek
+    public class PropertySeek
     {
         public int Id { get; set;}
-        [Required]
-        public string Title{ get; set;}
         public int? CategoryId{ get; set;}
-        public ClanSeekCategory Category{get; set;}
+        public PropertySeekCategory Category{get; set;}
         [Required]
-        public int MemberId{ get; set;}
-        public Member Member{ get; set;}
+        public string OwnerUserId{ get; set;}
+        public AppUser OwnerUser{ get; set;}
         public ICollection<Photo> Photos { get; set; }
         public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}

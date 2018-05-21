@@ -11,6 +11,7 @@ const appRoutes: Routes = [
   { path: 'editphoto/:type/:recordId', component: PhotoEditorComponent, canActivate: [AuthGuard]},
   { path: 'editblog/:type/:recordId', component: BlogEditorComponent, canActivate: [AuthGuard]},
   { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
+  { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},
   { path: 'member', loadChildren: './users/members/members.module#MembersModule'},
   { path: 'business', loadChildren: './users/businesses/businesses.module#BusinessesModule' },

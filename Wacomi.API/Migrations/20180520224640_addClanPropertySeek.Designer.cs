@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180520224640_addClanPropertySeek")]
+    partial class addClanPropertySeek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,13 +369,11 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("LastActive");
 
-                    b.Property<int>("LocationId");
+                    b.Property<string>("Location");
 
                     b.Property<string>("MainPhotoUrl");
 
-                    b.Property<int>("MemberId");
-
-                    b.Property<string>("Title");
+                    b.Property<int>("OwnerId");
 
                     b.Property<string>("WebsiteUrl");
 
@@ -382,9 +381,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("MemberId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("ClanSeeks");
                 });
@@ -604,7 +601,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("LastActive");
 
-                    b.Property<int>("LocationId");
+                    b.Property<string>("Location");
 
                     b.Property<string>("MainPhotoUrl");
 
@@ -616,8 +613,6 @@ namespace Wacomi.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("LocationId");
 
                     b.HasIndex("OwnerUserId");
 
@@ -788,14 +783,9 @@ namespace Wacomi.API.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("Wacomi.API.Models.City", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
+                    b.HasOne("Wacomi.API.Models.Member", "Owner")
                         .WithMany("ClanSeekPosted")
-                        .HasForeignKey("MemberId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -882,11 +872,6 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.PropertySeekCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
-
-                    b.HasOne("Wacomi.API.Models.City", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Wacomi.API.Models.AppUser", "OwnerUser")
                         .WithMany()

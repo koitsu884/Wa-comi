@@ -27,5 +27,13 @@ namespace Wacomi.API.Data
         Task<BlogFeed> GetLatestBlogFeed(Blog blog);
         Task<BlogFeed> GetBlogFeed(int id);
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
+        Task<ClanSeek> GetClanSeek(int id);
+        Task<IEnumerable<ClanSeekCategory>> GetClanSeekCategories();
+        Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId, int? cityId);
+        Task<PropertySeek> GetPropertySeek(int id);
+        Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId);
+        Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
     }
+
+    
 }

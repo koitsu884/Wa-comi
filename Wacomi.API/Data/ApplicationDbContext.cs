@@ -18,6 +18,9 @@ namespace Wacomi.API.Data
         public DbSet<BlogPreference> BlogPreferences { get; set; }
         public DbSet<BusinessUser> BusinessUsers { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }
+        public DbSet<ClanSeekCategory> ClanSeekCategories { get; set;}
+        public DbSet<PropertySeek> PropertySeeks{ get; set;}
+        public DbSet<PropertySeekCategory> PropertySeekCategories { get; set;}
         public DbSet<DailyTopic> DailyTopics { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }

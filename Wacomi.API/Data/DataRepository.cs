@@ -151,5 +151,52 @@ namespace Wacomi.API.Data
                                             .OrderByDescending(bf => bf.PublishingDate)
                                             .Take(50).ToListAsync();
         }
+
+        public async Task<ClanSeek> GetClanSeek(int id)
+        {
+            return await _context.ClanSeeks.Include(cs => cs.Category)
+                                           .Include(cs => cs.Member)
+                                           .Include(cs => cs.Member.Identity)
+                                           .Include(cs => cs.Location)
+                                           .FirstOrDefaultAsync(cs => cs.Id == id);
+        }
+
+        public async Task<IEnumerable<ClanSeekCategory>> GetClanSeekCategories(){
+            return await _context.ClanSeekCategories.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null)
+        {
+            var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
+                                           .Include(cs => cs.Member)
+                                           .Include(cs => cs.Member.Identity)
+                                           .Include(cs => cs.Location)
+                                           .AsQueryable();
+            if(categoryId != null)
+            {
+                clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
+            }
+
+            if(cityId != null)
+            {
+                clanSeeks = clanSeeks.Where(cs => cs.LocationId == cityId);
+            }
+            return await clanSeeks.ToListAsync();
+        }
+
+        public async Task<PropertySeek> GetPropertySeek(int id){
+            return await _context.PropertySeeks.FirstOrDefaultAsync(cs => cs.Id == id);
+        }
+
+        public async Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId = null)
+        {
+            if(categoryId == null)
+                return await _context.PropertySeeks.ToListAsync();
+            return await _context.PropertySeeks.Where(ps => ps.CategoryId == categoryId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories(){
+            return await _context.PropertySeekCategories.ToListAsync();
+        }
     }
 }

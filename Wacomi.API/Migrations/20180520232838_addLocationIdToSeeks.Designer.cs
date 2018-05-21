@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180520232838_addLocationIdToSeeks")]
+    partial class addLocationIdToSeeks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,9 +373,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("MainPhotoUrl");
 
-                    b.Property<int>("MemberId");
-
-                    b.Property<string>("Title");
+                    b.Property<int>("OwnerId");
 
                     b.Property<string>("WebsiteUrl");
 
@@ -384,7 +383,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("ClanSeeks");
                 });
@@ -793,9 +792,9 @@ namespace Wacomi.API.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
+                    b.HasOne("Wacomi.API.Models.Member", "Owner")
                         .WithMany("ClanSeekPosted")
-                        .HasForeignKey("MemberId")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -31,6 +31,10 @@ export class GlobalService {
         return this.httpClient.get<Hometown[]>(this.baseUrl + 'hometown');
     }
 
+    getClanSeekCategories(){
+        return this.httpClient.get<{id: number, name: string}>(this.baseUrl + 'clanseek/categories');
+    }
+
     getBlogCategories(){
         return ["日常", "ニュース", "グルメ", "国際恋愛", "仕事", "オピニオン"];
     }
