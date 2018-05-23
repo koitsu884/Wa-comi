@@ -30,6 +30,11 @@ export function blogReducer(state = initialState, action: BlogActions.AccountAct
                 ...state,
                 blogs: oldBlogs
             };
+        case BlogActions.CLEAR_BLOG:
+            return{
+                ...state,
+                blogs:null
+            }
         default:
             return state;
     }

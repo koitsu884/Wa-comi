@@ -23,13 +23,13 @@ export class GlobalService {
         // });
     }
 
-    getCities(){
-        return this.httpClient.get<City[]>(this.baseUrl + 'city');
-    }
+    // getCities(){
+    //     return this.httpClient.get<City[]>(this.baseUrl + 'city');
+    // }
 
-    getHometowns(){
-        return this.httpClient.get<Hometown[]>(this.baseUrl + 'hometown');
-    }
+    // getHometowns(){
+    //     return this.httpClient.get<Hometown[]>(this.baseUrl + 'hometown');
+    // }
 
     getClanSeekCategories(){
         return this.httpClient.get<{id: number, name: string}>(this.baseUrl + 'clanseek/categories');

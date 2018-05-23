@@ -1,0 +1,15 @@
+<div class="panel panel-default" *ngIf="clanSeek">
+    <div class="panel-body">
+      <img class="profile-image" src="{{clanSeek.mainPhotoUrl}}" alt="{{clanSeek.title}}">
+    </div>
+    <div class="panel-footer">
+        <div>
+            <strong>更新日</strong>
+            <p>{{clanSeek.lastActive | timeAgo}}</p>
+          </div>
+          <div>
+            <strong>投稿日</strong>
+            <p>{{clanSeek.created | date: 'mediumDate'}}</p>
+          </div>
+    </div>
+</div>

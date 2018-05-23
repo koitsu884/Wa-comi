@@ -6,6 +6,7 @@ namespace Wacomi.API.Dto
     {
         public string Title{ get; set;}
         public int? CategoryId{ get; set;}
+        public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}
         public string Description{get; set;}

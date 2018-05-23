@@ -6,12 +6,13 @@ import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { HomeTownListResolver } from "../_resolvers/hometownlist.resolver";
 import { MemberEditResolver } from "../_resolvers/member-edit.resolver";
 import { BusinessEditResolver } from "../_resolvers/business-edit.resolver";
-import { AppUserEditResolver } from "../_resolvers/appuser-edit.resolver";
 import { MemberGuard } from "../_guards/member.guard";
 import { MemberProfileEditComponent } from "./settings-home/member-profile-edit/member-profile-edit.component";
 import { BusinessGuard } from "../_guards/business.guard";
 import { BusinessProfileEditComponent } from "./settings-home/business-profile-edit/business-profile-edit.component";
 import { UserEditComponent } from "./settings-home/user-edit/user-edit.component";
+import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
+import { AppUserResolver } from "../_resolvers/appuser.resolver";
 
 
 const settingRoute: Routes = [
@@ -21,11 +22,12 @@ const settingRoute: Routes = [
         canActivate: [AuthGuard],
         component:SettingsHomeComponent,
         resolve: {
-            appUser:AppUserEditResolver,
+            appUser:AppUserResolver,
             bisUser:BusinessEditResolver,
             member:MemberEditResolver,
             cities:CityListResolver,
-            hometowns:HomeTownListResolver
+            hometowns:HomeTownListResolver,
+            photos:UserPhotoResolver
         },
        
     },

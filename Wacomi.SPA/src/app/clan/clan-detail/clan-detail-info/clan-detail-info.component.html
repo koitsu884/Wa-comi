@@ -1,0 +1,7 @@
+<div *ngIf="clanSeek">
+  <div>
+    <h4>エリア</h4>
+    <p>{{clanSeek.locationName}}</p>
+  </div>
+  <div [innerHTML]="clanSeek.description | nl2br"></div>
+</div>

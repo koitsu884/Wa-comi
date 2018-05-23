@@ -5,11 +5,20 @@ import { MembersModule } from './users/members/members.module';
 import { PhotoEditorComponent } from './photo/photo-editor/photo-editor.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { BlogEditorComponent } from './blog/blog-editor/blog-editor.component';
+import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
+import { UserBlogResolver } from './_resolvers/userblog.resolver';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'editphoto/:type/:recordId', component: PhotoEditorComponent, canActivate: [AuthGuard]},
-  { path: 'editblog/:type/:recordId', component: BlogEditorComponent, canActivate: [AuthGuard]},
+  { 
+    path: 'editblog/:type/:recordId', 
+    component: BlogEditorComponent, 
+    canActivate: [AuthGuard],
+    resolve: {
+      photos: UserPhotoResolver
+    }
+  },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
   { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},

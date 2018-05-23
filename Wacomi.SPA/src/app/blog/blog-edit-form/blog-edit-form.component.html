@@ -1,4 +1,4 @@
-<form #blogEditForm="ngForm" id="blogEditForm" (ngSubmit)="submit()">
+<form #blogEditForm="ngForm" id="blogEditForm" (ngSubmit)="submit(blogEditForm)">
   <div class="form-group">
     <label for="title" class="control-label required">タイトル</label>
     <input class="form-control" name="title" type="text" [(ngModel)]="blog.title" [required]>

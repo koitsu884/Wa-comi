@@ -14,6 +14,7 @@ import * as fromBlog from '../../blog/store/blogs.reducers';
 import * as PhotoActions from '../../photo/store/photos.action';
 import * as BlogActions from '../../blog/store/blogs.actions';
 import { Store } from '@ngrx/store';
+import { KeyValue } from '../../_models/KeyValue';
 
 @Component({
   selector: 'app-settings-home',
@@ -21,24 +22,26 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./settings-home.component.css']
 })
 export class SettingsHomeComponent implements OnInit {
-  photoState: Observable<fromPhoto.State>;
+  // photoState: Observable<fromPhoto.State>;
   blogState: Observable<fromBlog.State>;
   
   appUser: AppUser;
   member: Member;
   bisUser: BusinessUser;
   cities: City[];
-  hometowns: Hometown[];
+  hometowns: KeyValue[];
+  photos: Photo[];
   
   constructor(private store: Store<fromApp.AppState>, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.photoState = this.store.select('photos');
+    // this.photoState = this.store.select('photos');
     this.blogState = this.store.select('blogs');
 
     this.appUser = this.route.snapshot.data['appUser'];
     this.cities = this.route.snapshot.data['cities'];
     this.hometowns = this.route.snapshot.data['hometowns'];
+    this.photos = this.route.snapshot.data['photos'];
     let recordId = 0;
     if(this.appUser.userType == "Member"){
       this.member = this.route.snapshot.data['member'];
@@ -50,7 +53,7 @@ export class SettingsHomeComponent implements OnInit {
       this.member = null;
       recordId = this.bisUser.id;
     }
-    this.store.dispatch(new PhotoActions.GetPhotos({type: this.appUser.userType, recordId: recordId}));
+    // this.store.dispatch(new PhotoActions.GetPhotos({type: this.appUser.userType, recordId: recordId}));
     this.store.dispatch(new BlogActions.GetBlog({type: this.appUser.userType, recordId: recordId}));
     //this.store.dispatch(PhotoActions.SET_PHOTOS)
 

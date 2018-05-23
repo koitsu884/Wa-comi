@@ -5,9 +5,9 @@
         <tabset class="member-tabset">
           <tab heading="プロフィール">
             <h4>プロフィール</h4>
-            <div *ngIf="(photoState | async).photos">
-              <app-member-profile-edit *ngIf="member" [member]="member" [photos]="(photoState | async).photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-member-profile-edit>
-              <app-business-profile-edit *ngIf="bisUser" [bisUser]="bisUser" [photos]="(photoState | async).photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-business-profile-edit>
+            <div *ngIf="photos">
+              <app-member-profile-edit *ngIf="member" [member]="member" [photos]="photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-member-profile-edit>
+              <app-business-profile-edit *ngIf="bisUser" [bisUser]="bisUser" [photos]="photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-business-profile-edit>
             </div>
           </tab>
           <!-- <tab heading="">

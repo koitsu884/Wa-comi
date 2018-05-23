@@ -7,6 +7,7 @@ export const ADD_PHOTO = 'ADD_PHOTO';
 export const DELETE_PHOTO = 'DELETE_PHOTO';
 export const TRY_ADD_PHOTO = 'TRY_ADD_PHOTO';
 export const TRY_DELETE_PHOTO = 'TRY_DELETE_PHOTO';
+export const CLEAR_PHOTO ='CLEAR_PHOTO';
 
 export class GetPhotos implements Action{
     readonly type = GET_PHOTOS;
@@ -44,9 +45,16 @@ export class DeletePhoto implements Action{
     constructor(public payload: number){}
 }
 
+export class ClearPhoto implements Action {
+    readonly type = CLEAR_PHOTO;
+
+    constructor() {}
+}
+
 export type PhotoActions = SetPhotos 
                         | GetPhotos
                         | TryAddPhoto 
                         | TryDeletePhoto 
                         | AddPhoto 
-                        | DeletePhoto;
+                        | DeletePhoto
+                        | ClearPhoto;

@@ -12,10 +12,10 @@ import { BusinessEditResolver } from "../_resolvers/business-edit.resolver";
 import { MemberEditResolver } from "../_resolvers/member-edit.resolver";
 import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { HomeTownListResolver } from "../_resolvers/hometownlist.resolver";
-import { AppUserEditResolver } from "../_resolvers/appuser-edit.resolver";
 import { CoreModule } from "../core/core.module";
 import { BlogModule } from "../blog/blog.module";
 import { PhotoModule } from "../photo/photo.module";
+import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 
 @NgModule({
     declarations: [
@@ -34,11 +34,11 @@ import { PhotoModule } from "../photo/photo.module";
         BsDatepickerModule.forRoot(),
     ],
     providers:[
-        AppUserEditResolver,
         BusinessEditResolver,
         MemberEditResolver,
         CityListResolver,
-        HomeTownListResolver
+        HomeTownListResolver,
+        UserPhotoResolver
     ]
 })
 

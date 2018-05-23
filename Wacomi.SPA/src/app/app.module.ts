@@ -31,6 +31,10 @@ import { environment } from '../environments/environment';
 
 import { AuthInterceptorProvider } from './shared/auth.interceptor';
 import { AuthGuard } from './_guards/auth.guard';
+import { GlobalEffect } from './store/global.effects';
+import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
+import { AppUserResolver } from './_resolvers/appuser.resolver';
+import { UserBlogResolver } from './_resolvers/userblog.resolver';
 
 
 defineLocale('ja', jaLocale); 
@@ -49,7 +53,7 @@ defineLocale('ja', jaLocale);
     BlogModule,
     PhotoModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects]),
+    EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects, GlobalEffect]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
@@ -60,6 +64,9 @@ defineLocale('ja', jaLocale);
     AlertifyService,
     CityListResolver,
     HomeTownListResolver,
+    UserPhotoResolver,
+    UserBlogResolver,
+    AppUserResolver,
     ErrorInterceptorProvider,
     AuthInterceptorProvider,
     AuthGuard,

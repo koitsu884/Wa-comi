@@ -11,7 +11,7 @@ import { Observable } from "rxjs/Observable";
 import { AlertifyService } from "../_services/alertify.service";
 
 @Injectable()
-export class AppUserEditResolver implements Resolve<AppUser> {
+export class AppUserResolver implements Resolve<AppUser> {
     constructor(private store: Store<fromApp.AppState>, 
                 private alertify: AlertifyService, 
                 private router: Router){}

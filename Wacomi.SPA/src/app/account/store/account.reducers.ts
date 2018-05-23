@@ -26,6 +26,7 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
             localStorage.removeItem('token');
             localStorage.removeItem('appUser');
             localStorage.removeItem('profile');
+            localStorage.removeItem('photos');
             return {
                 ...state,
                 authenticated: false,

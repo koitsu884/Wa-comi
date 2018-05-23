@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertifyService } from '../../_services/alertify.service';
-import { Router } from '@angular/router';
-
 import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../../account/store/account.reducers';
 import * as AccountActions from '../../account/store/account.actions';
@@ -14,7 +12,7 @@ import { Store } from '@ngrx/store';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private store:Store<fromApp.AppState>, private alertify: AlertifyService,  private router: Router) { }
+  constructor(private store:Store<fromApp.AppState>, private alertify: AlertifyService) { }
   userName: string;
   password: string;
 

@@ -1,17 +1,35 @@
 <div class="container">
   <div class="clanHeader row">
     <div class="col-sm-6 col-md-4">
-      <Label>カテゴリー</Label>
-      <select [(ngModel)]="selectedCategoryId" name="category" (change)="loadList()">
-        <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
-      </select>
+      <table class="table-responsive">
+        <thead>
+          <tr>
+            <th></th><th>フィルター</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>カテゴリー</th>
+            <td>
+              <select [(ngModel)]="selectedCategoryId" name="category" (change)="loadList()">
+                <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>エリア</th>
+            <td>
+              <select [(ngModel)]="selectedCityId" name="city" (change)="loadList()">
+                <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="col-sm-6 col-md-4">
-      <Label>町</Label>
-      <select [(ngModel)]="selectedCityId" name="city" (change)="loadList()">
-        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
-      </select>
+      <a class="btn btn-success" [routerLink]="['edit', appUser.relatedUserClassId]" >投稿する</a>
     </div>
   </div>
-  <app-clan-list [clanSeeks]="clanSeeks"></app-clan-list>
+  <app-clan-list [clanSeeks]="clanSeeks" [memberId]="appUser.relatedUserClassId"></app-clan-list>
 </div>

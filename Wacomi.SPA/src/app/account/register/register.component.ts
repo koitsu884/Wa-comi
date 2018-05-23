@@ -1,7 +1,6 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertifyService } from '../../_services/alertify.service';
-import { Router } from '@angular/router';
 import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../../account/store/account.reducers';
 import * as AccountActions from '../../account/store/account.actions';
@@ -23,7 +22,6 @@ export class RegisterComponent implements OnInit {
   constructor(
               private store:Store<fromApp.AppState>,
               private alertify: AlertifyService,
-              private router: Router,
               private fb: FormBuilder) { }
   ngOnInit(){
     this.createRegistarForm();

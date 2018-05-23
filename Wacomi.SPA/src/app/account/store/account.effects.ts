@@ -7,6 +7,9 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
 import * as AccountActions from './account.actions';
+import * as PhotoActions from '../../photo/store/photos.action';
+import * as BlogActions from '../../blog/store/blogs.actions';
+import * as GlobalActions from '../../store/global.actions';
 import { Router } from "@angular/router";
 import { AuthUser } from "../../_models/AuthUser";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -20,6 +23,8 @@ import { AppUser } from "../../_models/AppUser";
 import { Member } from "../../_models/Member";
 import { BusinessUser } from "../../_models/BusinessUser";
 import { Blog } from "../../_models/Blog";
+
+
 @Injectable()
 export class AccountEffects {
     baseUrl = environment.apiUrl;
@@ -50,7 +55,7 @@ export class AccountEffects {
                 }
                 )
                 .catch((error: string) => {
-                    return of({ type: AccountActions.FAILED, payload: error })
+                    return of({ type: GlobalActions.FAILED, payload: error })
                 })
         });
 
@@ -63,7 +68,7 @@ export class AccountEffects {
                     this.router.navigate(['/home']);
                     return [
                         {
-                            type: AccountActions.SUCCESS,
+                            type: GlobalActions.SUCCESS,
                             payload: "ログインしました"
                         },
                         {
@@ -73,11 +78,12 @@ export class AccountEffects {
                         {
                             type: AccountActions.SET_APPUSER,
                             payload: authUser.appUser
-                        }
+                        },
+
                     ];
                 })
                 .catch((error: string) => {
-                    return of({ type: AccountActions.FAILED, payload: "ログインに失敗しました: " + error })
+                    return of({ type: GlobalActions.FAILED, payload: "ログインに失敗しました: " + error })
                 });
         });
 
@@ -92,10 +98,10 @@ export class AccountEffects {
                 case "Business":
                     return { type: AccountActions.GET_BISUSER, payload: appUser.relatedUserClassId };
                 case "Admin":
-                    return { type: AccountActions.SUCCESS, payload: "Admin account"};
+                    return { type: GlobalActions.SUCCESS, payload: "Admin account"};
 
             }
-            return { type: AccountActions.FAILED, payload: "ユーザータイプ'" + appUser.userType + "'は存在しません" };
+            return { type: GlobalActions.FAILED, payload: "ユーザータイプ'" + appUser.userType + "'は存在しません" };
         })
 
     @Effect()
@@ -105,14 +111,23 @@ export class AccountEffects {
         .switchMap((id) => {
             return this.httpClient.get<Member>(this.baseUrl + 'member/' + id);
         })
-        .map((member) => {
-            return {
+        .mergeMap((member) => {
+            return [{
                 type: AccountActions.SET_MEMBER,
                 payload: member
-            };
+            },
+            {
+                type: PhotoActions.GET_PHOTOS,
+                payload: { type: 'member', recordId: member.id}
+            },
+            {
+                type: BlogActions.GET_BLOG,
+                payload: { type: 'member', recordId: member.id}
+            }
+        ];
         })
         .catch((error) => {
-            return of({ type: AccountActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
+            return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
         })
 
     @Effect()
@@ -122,14 +137,22 @@ export class AccountEffects {
         .switchMap((id) => {
             return this.httpClient.get<BusinessUser>(this.baseUrl + 'businessuser/' + id);
         })
-        .map((bisUser) => {
-            return {
+        .mergeMap((bisUser) => {
+            return [{
                 type: AccountActions.SET_BISUSER,
                 payload: bisUser
-            };
+            },
+            {
+                type: PhotoActions.GET_PHOTOS,
+                payload: { type: 'business', recordId: bisUser.id}
+            },
+            {
+                type: BlogActions.GET_BLOG,
+                payload: { type: 'business', recordId: bisUser.id}
+            }];
         })
         .catch((error) => {
-            return of({ type: AccountActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
+            return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
         })
     //============== Update user information =================
     @Effect()
@@ -152,7 +175,7 @@ export class AccountEffects {
             });
         })
         .catch((error: string) => {
-            return of({ type: AccountActions.FAILED, payload: error })
+            return of({ type: GlobalActions.FAILED, payload: error })
         });
 
     @Effect()
@@ -174,7 +197,7 @@ export class AccountEffects {
                     };
                 })
                 .catch((error: string) => {
-                    return of({ type: AccountActions.FAILED, payload: error })
+                    return of({ type: GlobalActions.FAILED, payload: error })
                 });
         })
 
@@ -197,30 +220,20 @@ export class AccountEffects {
                     };
                 })
                 .catch((error: string) => {
-                    return of({ type: AccountActions.FAILED, payload: error })
+                    return of({ type: GlobalActions.FAILED, payload: error })
                 });
         })
 
-    @Effect({ dispatch: false })
+    @Effect()
     authLogout = this.actions$
         .ofType(AccountActions.LOGOUT)
-        .do(() => {
+        .mergeMap(() => {
             this.router.navigate(['/home'])
-        })
 
-    @Effect({ dispatch: false })
-    actionFailed = this.actions$
-        .ofType(AccountActions.FAILED)
-        .do((action: AccountActions.Failed) => {
-            this.alertify.error(action.payload);
-        })
-
-    @Effect({ dispatch: false })
-    actionSuccess = this.actions$
-        .ofType(AccountActions.SUCCESS)
-        .do((action: AccountActions.Success) => {
-            if (action.payload) {
-                this.alertify.success(action.payload);
-            }
+            return [
+                { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
+                { type: PhotoActions.CLEAR_PHOTO},
+                { type: BlogActions.CLEAR_BLOG}
+            ]
         })
 }

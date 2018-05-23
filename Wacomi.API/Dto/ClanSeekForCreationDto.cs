@@ -10,6 +10,7 @@ namespace Wacomi.API.Dto
         public int? CategoryId{ get; set;}
         [Required]
         public int MemberId{ get; set;}
+        public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}
         public string Description{get; set;}

@@ -24,7 +24,9 @@ namespace Wacomi.API.Controllers
         [HttpGet("{id}", Name = "GetClanSeek")]
         public async Task<ActionResult> GetClanSeek(int id)
         {
-            return Ok(await _repo.GetClanSeek(id));
+            var clanSeekFromRepo = await _repo.GetClanSeek(id);
+            var clanSeekForReturn = _mapper.Map<ClanSeekForReturnDto>(clanSeekFromRepo);
+            return Ok(clanSeekForReturn);
         }
 
         [HttpGet()]

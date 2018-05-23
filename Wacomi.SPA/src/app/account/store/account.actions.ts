@@ -27,9 +27,6 @@ export const SET_BLOG = 'SET_BLOG';
 export const ADD_BLOG = 'ADD_BLOG';
 export const DELETE_BLOG = 'DELETE_BLOG';
 
-export const FAILED = 'FAILED';
-export const SUCCESS = 'SUCCESS';
-
 export class TrySignup implements Action{
     readonly type = TRY_SIGNUP;
 
@@ -46,18 +43,6 @@ export class TryLogin implements Action{
     readonly type = TRY_LOGIN;
 
     constructor(public payload: {UserName: string, Password: string}){}
-}
-
-export class Failed implements Action {
-    readonly type = FAILED;
-
-    constructor(public payload: string){}
-}
-
-export class Success implements Action {
-    readonly type = SUCCESS;
-
-    constructor(public payload: string){}
 }
 
 export class Logout implements Action {
@@ -156,7 +141,6 @@ export class DeleteBlog implements Action {
 export type AccountActions = TryLogin 
                         | TrySignup 
                         | SignUpSuccess
-                        | Failed 
                         | Logout 
                         | SetToken 
                         | SetAppUser

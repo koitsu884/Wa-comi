@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from '../app-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { MainphotoSelectorComponent } from './mainphoto-selector/mainphoto-selector.component';
+import {Nl2BrPipeModule} from 'nl2br-pipe';
 
 @NgModule({
   declarations: [
@@ -16,12 +17,14 @@ import { MainphotoSelectorComponent } from './mainphoto-selector/mainphoto-selec
   imports:[
     CommonModule,
     FormsModule,
+    Nl2BrPipeModule,
    // AppRoutingModule,
   ],
   exports: [
     TimeAgoPipe,
     CommonModule,
     FormsModule,
+    Nl2BrPipeModule,
     MainphotoSelectorComponent
   ]
 })

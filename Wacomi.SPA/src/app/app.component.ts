@@ -3,6 +3,8 @@ import { Member } from './_models/Member';
 import { Store } from '@ngrx/store';
 import * as fromApp from './store/app.reducer';
 import * as AccountActions from './account/store/account.actions';
+import * as PhotoActions from './photo/store/photos.action';
+import * as GlobalActions from './store/global.actions';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +23,12 @@ export class AppComponent implements OnInit{
     if (token){
       this.store.dispatch(new AccountActions.SetToken({token: token, appUser: appUser}));
       this.store.dispatch(new AccountActions.SetAppUser(appUser));
+      this.store.dispatch(new PhotoActions.GetPhotos({type: appUser.userType, recordId:appUser.relatedUserClassId}));
     }
+
+    this.store.dispatch(new GlobalActions.GetCityList());
+    this.store.dispatch(new GlobalActions.GetHometownList());
+    this.store.dispatch(new GlobalActions.GetClanCategoryList());
 
     // if (token) {
     //   this.authService.userToken = token;

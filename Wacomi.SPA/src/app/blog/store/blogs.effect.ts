@@ -33,7 +33,6 @@ export class BlogEffects {
         .switchMap((payload) => {
             return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/' + payload.type + '/' + payload.recordId)
             .map((result) => {
-                console.log("Blog Result " + result);
                 return {
                     type: BlogActions.SET_BLOG,
                     payload: result

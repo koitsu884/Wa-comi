@@ -17,6 +17,7 @@ const initialState: State = {
 export function photoReducer(state = initialState, action: PhotoActions.PhotoActions ){
     switch(action.type){
         case PhotoActions.SET_PHOTOS:
+            localStorage.setItem('photos', JSON.stringify(action.payload.photos));
             return {
                 ...state,
                 photos: [...action.payload.photos],
@@ -32,10 +33,17 @@ export function photoReducer(state = initialState, action: PhotoActions.PhotoAct
             const oldPhotos = [...state.photos];
             var index = oldPhotos.findIndex(x => x.id == action.payload);
             oldPhotos.splice(index, 1);
+            localStorage.setItem('photos', JSON.stringify(oldPhotos));
             return{
                 ...state,
                 photos: oldPhotos
             };
+        case PhotoActions.CLEAR_PHOTO:
+            localStorage.removeItem('photos');
+            return{
+                ...state,
+                photos: null
+            }
         default:
             return state;
     }

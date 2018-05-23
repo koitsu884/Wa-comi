@@ -31,8 +31,9 @@ export class BlogEditFormComponent implements OnInit {
     this.blogCategories = this.global.getBlogCategories();
   }
 
-  submit(){
+  submit(blogEditForm : NgForm){
     this.store.dispatch(new BlogAction.UpdateBlog({type: this.type, recordId: this.recordId, blog: this.blog}));
+    blogEditForm.form.markAsPristine();
   }
 
   mainPhotoSelected(event, ngForm: NgForm){

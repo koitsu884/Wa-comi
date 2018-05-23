@@ -1,3 +1,54 @@
-<p>
-  clan-edit works!
-</p>
+<div class="container">
+  <form #clanEditForm="ngForm" id="clanEditForm" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="title" class="control-label required">タイトル</label>
+      <input class="form-control" name="title" type="text" [(ngModel)]="editingClan.title" maxlength="50" required #title="ngModel">
+      <span class="help-block" *ngIf="title?.errors?.required && title.touched">
+        タイトルは必須項目です
+      </span>
+    </div>
+    <div class="form-group">
+      <label for="description" class="control-label required">紹介文</label>
+      <textarea class="form-control" name="description" [(ngModel)]="editingClan.description" #description="ngModel" rows="10" required></textarea>
+      <span class="help-block" *ngIf="description?.errors?.required && description.touched">
+        紹介文は必須項目です
+      </span>
+    </div>
+    <label for="category" class="control-label">カテゴリー</label>
+    <select [(ngModel)]="editingClan.categoryId" name="category">
+      <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+    </select>
+    <div class="form-group">
+      <label for="city" class="control-label">エリア</label>
+      <select [(ngModel)]="editingClan.locationId" name="city">
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="photos">
+      <label for="mainPhotoUrl" class="control-label">メイン画像</label>
+      <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="editingClan.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, clanEditForm)"></app-mainphoto-selector>
+    </div>
+    <div class="form-group">
+      <label for="websiteUrl" class="control-label">ウェブサイト</label>
+      <input class="form-control" name="websiteUrl" type="url" [(ngModel)]="editingClan.websiteUrl">
+    </div>
+    <div class="form-group" [ngClass]="{'has-error': email.errors && email.touched}">
+      <label for="email" class="control-label">Eメール</label>
+      <input class="form-control" type="text" name="email" [(ngModel)]="editingClan.email" email #email="ngModel" />
+      <span class="help-block" *ngIf="email?.errors?.email && email.touched">
+        Eメールが正しくありません
+      </span>
+    </div>
+    <div class="form-group" *ngIf="editMode">
+      <label for="isActive" class="control-label">アクティブ (No にすると検索結果に表示されなくなります)</label>
+      <label class="radio-inline">
+        <input type="radio" value="true" name="isActive" [(ngModel)]="editingClan.isActive">Yes
+      </label>
+      <label class="radio-inline">
+        <input type="radio" value="false" name="isActive" [(ngModel)]="editingClan.isActive">No
+      </label>
+    </div>
+
+    <button class="btn btn-success" [disabled]="!clanEditForm.valid || clanEditForm.pristine" type="submit">{{ editMode ? "更新" : "作成" }}</button>
+  </form>
+</div>
