@@ -3,12 +3,15 @@ import { AppUser } from "../../_models/AppUser";
 import { Member } from "../../_models/Member";
 import { BusinessUser } from "../../_models/BusinessUser";
 import { Blog } from "../../_models/Blog";
+import { AuthUser } from "../../_models/AuthUser";
 
 export const TRY_LOGIN = 'TRY_LOGIN';
+export const LOGIN = 'LOGIN';
 export const TRY_SIGNUP = 'TRY_SIGNUP';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const LOGOUT = 'LOGOUT'
 export const SET_TOKEN = 'SET_TOKEN';
+export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
 export const SET_APPUSER = 'SET_APPUSER';
 export const GET_MEMBER = 'GET_MEMBER';
 export const SET_MEMBER = 'SET_MEMBER';
@@ -45,6 +48,11 @@ export class TryLogin implements Action{
     constructor(public payload: {UserName: string, Password: string}){}
 }
 
+export class Login implements Action {
+    readonly type = LOGIN;
+    constructor(public payload: {appUser: AppUser, token: string}){};
+}
+
 export class Logout implements Action {
     readonly type = LOGOUT;
 }
@@ -53,6 +61,12 @@ export class SetToken implements Action {
     readonly type = SET_TOKEN;
 
     constructor(public payload: {token: string, appUser: AppUser}) {}
+}
+
+export class TokenExpired implements Action {
+    readonly type = TOKEN_EXPIRED;
+
+    constructor() {}
 }
 
 export class SetAppUser implements Action {
@@ -139,11 +153,13 @@ export class DeleteBlog implements Action {
 
 
 export type AccountActions = TryLogin 
+                        | Login
                         | TrySignup 
                         | SignUpSuccess
                         | Logout 
                         | SetToken 
                         | SetAppUser
+                        | TokenExpired
                         | GetMember
                         | SetMember
                         | GetBisUser

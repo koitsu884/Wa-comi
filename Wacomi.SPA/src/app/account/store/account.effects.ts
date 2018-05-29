@@ -72,13 +72,17 @@ export class AccountEffects {
                             payload: "ログインしました"
                         },
                         {
-                            type: AccountActions.SET_TOKEN,
-                            payload: { token: authUser.tokenString, appUser: authUser.appUser }
-                        },
-                        {
-                            type: AccountActions.SET_APPUSER,
-                            payload: authUser.appUser
-                        },
+                            type: AccountActions.LOGIN,
+                            payload: {appUser: authUser.appUser, token: authUser.tokenString}
+                        }
+                        // {
+                        //     type: AccountActions.SET_TOKEN,
+                        //     payload: { token: authUser.tokenString, appUser: authUser.appUser }
+                        // },
+                        // {
+                        //     type: AccountActions.SET_APPUSER,
+                        //     payload: authUser.appUser
+                        // },
 
                     ];
                 })
@@ -86,6 +90,25 @@ export class AccountEffects {
                     return of({ type: GlobalActions.FAILED, payload: "ログインに失敗しました: " + error })
                 });
         });
+
+    @Effect()
+    login = this.actions$
+            .ofType(AccountActions.LOGIN)
+            .map((action: AccountActions.Login) => { return action.payload })
+            .mergeMap((authInfo) => {
+                this.router.navigate(['/home']);
+                return [
+                    {
+                        type: AccountActions.SET_TOKEN,
+                        payload: { token: authInfo.token, appUser: authInfo.appUser }
+                    },
+                    {
+                        type: AccountActions.SET_APPUSER,
+                        payload: authInfo.appUser
+                    },
+                ];
+            })
+
 
     @Effect()
     setToken = this.actions$
@@ -232,6 +255,17 @@ export class AccountEffects {
 
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
+                { type: PhotoActions.CLEAR_PHOTO},
+                { type: BlogActions.CLEAR_BLOG}
+            ]
+        })
+
+    @Effect()
+    tokenExpired = this.actions$
+        .ofType(AccountActions.TOKEN_EXPIRED)
+        .mergeMap(() => {
+            this.router.navigate(['/home'])
+            return [
                 { type: PhotoActions.CLEAR_PHOTO},
                 { type: BlogActions.CLEAR_BLOG}
             ]

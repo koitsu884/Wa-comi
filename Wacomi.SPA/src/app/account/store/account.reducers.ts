@@ -23,6 +23,7 @@ const initialState: State = {
 export function accountReducer(state = initialState, action: AccountActions.AccountActions ){
     switch(action.type){
         case AccountActions.LOGOUT:
+        case AccountActions.TOKEN_EXPIRED:
             localStorage.removeItem('token');
             localStorage.removeItem('appUser');
             localStorage.removeItem('profile');
