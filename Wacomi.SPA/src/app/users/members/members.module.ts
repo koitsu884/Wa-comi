@@ -11,13 +11,15 @@ import { MembersRoutingModule } from "./members-routing.module";
 import { MemberGuard } from "../../_guards/member.guard";
 import { MemberEditResolver } from "../../_resolvers/member-edit.resolver";
 import { SharedModule } from "../../shared/shared.module";
-
+import { UserCardComponent } from "../user-card/user-card.component";
+import { MemberDetailResolver } from "../../_resolvers/member-detail.resolver";
 @NgModule({
     declarations: [
         MemberDetailComponent,
         MemberHomeComponent,
-        MemberListComponent
-    ],
+        MemberListComponent,
+        UserCardComponent
+],
     imports: [
         CommonModule,
         FormsModule,
@@ -27,6 +29,7 @@ import { SharedModule } from "../../shared/shared.module";
     ],
     providers: [
         MemberEditResolver,
+        MemberDetailResolver,
         MemberGuard
     ]
 })

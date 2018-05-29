@@ -1,4 +1,4 @@
-<div class="panel panel-default" *ngIf="clanSeek">
+<div class="panel panel-default" *ngIf="clanSeek" [routerLink]="['/member/details/' + clanSeek.memberId]" style="cursor: pointer">
     <div class="panel-body">
       <img class="profile-image" src="{{clanSeek.mainPhotoUrl}}" alt="{{clanSeek.title}}">
     </div>

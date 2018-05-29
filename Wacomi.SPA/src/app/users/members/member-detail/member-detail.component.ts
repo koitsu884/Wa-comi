@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Member } from '../../../_models/Member';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-member-detail',
@@ -9,9 +11,13 @@ import { Member } from '../../../_models/Member';
 export class MemberDetailComponent implements OnInit {
   @Input() member: Member;
   
-  constructor() { }
+  constructor(private route: ActivatedRoute, private location: Location) { }
 
   ngOnInit() {
+    this.member = this.route.snapshot.data['member'];
   }
 
+  backClicked() {
+    this.location.back();
+  }
 }

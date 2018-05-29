@@ -11,9 +11,10 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse" [collapse]="isCollapsed">
       <ul class="nav navbar-nav">
-        <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
-        <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li>
+        <!-- <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
+        <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
         <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
+        <li *ngIf="(authState | async).authenticated" routerLinkActive="active"><a [routerLink]="['/dailytopic/' + (authState | async).appUser.id]" >トピック</a></li>
       </ul>
       <ul *ngIf="!(authState | async).authenticated" class="nav navbar-nav navbar-right">
         <li><a  [routerLink]="['/account/login']" >ログイン</a></li>

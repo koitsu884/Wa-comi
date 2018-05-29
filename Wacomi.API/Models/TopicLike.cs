@@ -4,9 +4,9 @@ namespace Wacomi.API.Models
 {
     public class TopicLike
     {
-        public int SupportMemberId{ get; set;}
-        public int DairyTopicId { get; set;}
-        public Member SupportMember{ get; set;}
-        public DailyTopic DairyTopic { get; set;}
+        public string SupportUserId{ get; set;}
+        public int DailyTopicId { get; set;}
+        public AppUser SupportUser{ get; set;}
+        public DailyTopic DailyTopic { get; set;}
     }
 }

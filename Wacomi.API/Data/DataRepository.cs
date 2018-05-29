@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Wacomi.API.Dto;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
 
@@ -24,6 +25,11 @@ namespace Wacomi.API.Data
         public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
+        }
+
+        public void DeleteAll<T>(T entities) where T : class
+        {
+            _context.RemoveRange(entities);
         }
 
         public async Task<IEnumerable<City>> GetCities()
@@ -165,13 +171,19 @@ namespace Wacomi.API.Data
             return await _context.ClanSeekCategories.ToListAsync();
         }
 
-        public async Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null)
+        public async Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null, bool? latest = null)
         {
             var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
                                            .Include(cs => cs.Member)
                                            .Include(cs => cs.Member.Identity)
                                            .Include(cs => cs.Location)
+                                           .OrderByDescending( cs => cs.LastActive)
                                            .AsQueryable();
+
+            if(latest != null){
+                clanSeeks = clanSeeks.Take(6);
+            }
+
             if(categoryId != null)
             {
                 clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
@@ -198,5 +210,57 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories(){
             return await _context.PropertySeekCategories.ToListAsync();
         }
+
+        public async Task<DailyTopic> GetDailyTopic(int id){
+            return await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.Id == id);
+        }
+
+        public async Task<DailyTopic> GetActiveDailyTopic(){
+            return await _context.DailyTopics.Where(dt => dt.IsActive == true).FirstOrDefaultAsync();
+        }
+
+        public async Task<DailyTopic> GetTopDailyTopic(){
+            var topTopicId = await (
+                                from g in _context.TopicLikes
+                                group g by g.DailyTopicId into g
+                                join dt in _context.DailyTopics 
+                                on g.Key equals dt.Id
+                                orderby g.Count() descending, dt.LastDiscussed descending
+                                select g.Key
+                              ).FirstOrDefaultAsync();
+;
+            return await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.Id == topTopicId);
+        }
+
+        public async Task<DailyTopic> GetOldestDailyTopic(){
+            return await _context.DailyTopics.OrderBy(dt => dt.LastDiscussed).FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GetPostedTopicCountForUser(string userId){
+            var records = await _context.DailyTopics.Where(dt => dt.UserId == userId).ToListAsync();
+            return records.Count();
+        }
+
+        public async Task<TopicLike> GetTopicLike(string userId, int recordId){
+            return await _context.TopicLikes.FirstOrDefaultAsync(tl => tl.SupportUserId == userId && tl.DailyTopicId == recordId);
+        }
+
+        public async Task<IEnumerable<DailyTopic>> GetDailyTopicList(){
+            return await _context.DailyTopics.Include(dt => dt.TopicLikes).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TopicLike>> GetTopicLikesForUser(string userId){
+            return await _context.TopicLikes.Where(tl => tl.SupportUserId == userId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TopicLike>> GetTopicLikesForTopic(int topicId){
+            return await _context.TopicLikes.Where(tl => tl.DailyTopicId == topicId).ToListAsync();
+        }
+
+        public void ResetTopicLikes(int topicId){
+            var topicLikes = _context.TopicLikes.Where(tl => tl.DailyTopicId == topicId);
+            _context.RemoveRange(topicLikes);
+        }
+        
     }
 }

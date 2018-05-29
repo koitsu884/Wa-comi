@@ -5,31 +5,14 @@ import { City } from '../_models/City';
 import { Hometown } from '../_models/Hometown';
 import 'rxjs/add/operator/catch';
 import { BlogFeed } from '../_models/BlogFeed';
+import { ClanSeek } from '../_models/ClanSeek';
 
 @Injectable()
 export class GlobalService {
     baseUrl = environment.apiUrl;
-    // cities : City[] = [];
-    // hometowns: Hometown[] = [];
 
     constructor(private httpClient : HttpClient){
-        // this.authHttp.get<City[]>(this.baseUrl + 'city').subscribe(cities => {
-        //     this.cities = cities;
-        //     console.log(this.cities);
-        // });
-
-        // this.authHttp.get<Hometown[]>(this.baseUrl + 'hometown').subscribe(hometowns => {
-        //     this.hometowns = hometowns;
-        // });
     }
-
-    // getCities(){
-    //     return this.httpClient.get<City[]>(this.baseUrl + 'city');
-    // }
-
-    // getHometowns(){
-    //     return this.httpClient.get<Hometown[]>(this.baseUrl + 'hometown');
-    // }
 
     getClanSeekCategories(){
         return this.httpClient.get<{id: number, name: string}>(this.baseUrl + 'clanseek/categories');
@@ -41,5 +24,9 @@ export class GlobalService {
 
     getBlogFeeds(){
         return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed');
+    }
+
+    getLatestClanSeekList(){
+        return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?latest=true');
     }
 }

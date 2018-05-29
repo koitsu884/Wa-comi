@@ -1,13 +1,15 @@
 <div class="container">
   <div class="row">
     <div class="col-md-9">
-      <div>
+      <div class="row">
         <h2>みんなのブログ</h2>
         <app-blogfeed-list [blogFeedList]="blogFeedList | async"></app-blogfeed-list>
       </div>
-      <div>
-        <h2>〇〇募集！！！</h2>
+      <div class="row">
+        <h2>仲間募集中！</h2>
+        <app-latest-clan-list [latestClanSeeklist]="latestClanSeekList | async"></app-latest-clan-list>
       </div>
+      <a class="btn btn-primary" [routerLink]="['/clan']">一覧</a>
       <div>
         <h2>本日のトピック</h2>
       </div>

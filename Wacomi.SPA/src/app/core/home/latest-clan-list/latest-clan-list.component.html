@@ -1,0 +1,13 @@
+<div class="col-sm-6" *ngFor="let clanSeek of latestClanSeeklist" [ngSwitch]="clanSeek.categoryName">
+  <div class="clanCard" [ngClass]="{'isMine' : memberId == clanSeek.memberId}" [routerLink]="['/clan/detail', clanSeek.id]">
+    <img class="clanImage pull-left" src="{{clanSeek.mainPhotoUrl}}">
+    <span class="categoryName color-friend" *ngSwitchCase="'友達'">{{clanSeek.categoryName}}</span>
+    <span class="categoryName color-circle" *ngSwitchCase="'サークル'">{{clanSeek.categoryName}}</span>
+    <span class="categoryName color-travel" *ngSwitchCase="'旅行'">{{clanSeek.categoryName}}</span>
+    <span class="categoryName color-study" *ngSwitchCase="'勉強・自己啓発'">{{clanSeek.categoryName}}</span>
+    <span class="categoryName" *ngSwitchDefault>{{clanSeek.categoryName}}</span>
+    <h4>{{clanSeek.title}}</h4>
+    <p>{{clanSeek.memberName}} {{clanSeek.locationName}}</p>
+    <span class="clearfix"></span>
+  </div>
+</div>

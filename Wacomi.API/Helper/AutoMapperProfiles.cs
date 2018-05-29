@@ -52,6 +52,10 @@ namespace Wacomi.API.Helper
 
           CreateMap<PropertySeekForCreationDto, PropertySeek>();
           CreateMap<PropertySeekUpdateDto, PropertySeek>();
+
+          CreateMap<DailyTopicCreationDto, DailyTopic>();
+          CreateMap<DailyTopic, DailyTopicForReturnDto>()
+            .ForMember(dtr => dtr.LikedCount, opt => opt.MapFrom(src => src.TopicLikes.Count));
         }
     }
 }

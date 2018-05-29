@@ -9,6 +9,7 @@ namespace Wacomi.API.Data
     {
          void Add<T>(T entity) where T: class;
          void Delete<T>(T entity) where T: class;
+         void DeleteAll<T>(T entities) where T: class;
          Task<bool> SaveAll();
 
          Task<IEnumerable<City>> GetCities();
@@ -29,10 +30,21 @@ namespace Wacomi.API.Data
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
         Task<ClanSeek> GetClanSeek(int id);
         Task<IEnumerable<ClanSeekCategory>> GetClanSeekCategories();
-        Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId, int? cityId);
+        Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId, int? cityId, bool? latest);
         Task<PropertySeek> GetPropertySeek(int id);
         Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId);
         Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
+
+        Task<DailyTopic> GetDailyTopic(int id);
+        Task<DailyTopic> GetActiveDailyTopic();
+        Task<DailyTopic> GetTopDailyTopic();
+        Task<DailyTopic> GetOldestDailyTopic();
+        Task<int> GetPostedTopicCountForUser(string userId);
+        Task<TopicLike> GetTopicLike(string userId, int recordId);
+        Task<IEnumerable<DailyTopic>> GetDailyTopicList();
+        Task<IEnumerable<TopicLike>> GetTopicLikesForUser(string userId);
+        Task<IEnumerable<TopicLike>> GetTopicLikesForTopic(int topicId);
+        void ResetTopicLikes(int topicId);
     }
 
     

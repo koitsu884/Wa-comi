@@ -1,0 +1,13 @@
+<div class="panel panel-default">
+  <img class="profile-image thumbnail" src="{{imageUrl}}" alt="{{displayName}}">
+  <div class="panel-body">
+    <div>
+      <strong>最終ログイン </strong>
+      <p>{{lastActive | timeAgo}}</p>
+    </div>
+    <div>
+      <strong>アカウント作成日</strong>
+      <p>{{created | date: 'mediumDate'}}</p>
+    </div>
+  </div>
+</div>

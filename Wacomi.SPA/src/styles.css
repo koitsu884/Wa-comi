@@ -1,3 +1,35 @@
+/* Ligature Symbols */
+
+@font-face {
+    font-family: 'LigatureSymbols';
+    src: url('./assets/fonts/LigatureSymbols-2.11.eot');
+    src: url('./assets/fonts/LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
+         url('./assets/fonts/LigatureSymbols-2.11.woff') format('woff'),
+         url('./assets/fonts/LigatureSymbols-2.11.ttf') format('truetype'),
+         url('./assets/fonts/LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
+    src: url('./assets/fonts/LigatureSymbols-2.11.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+.lsf, .lsf-icon:before {
+  font-family: 'LigatureSymbols';
+  -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  -ms-text-rendering: optimizeLegibility;
+  -o-text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -ms-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+.lsf-icon:before {
+  content:attr(title);
+  margin-right:0.3em;
+  font-size:130%;
+}
+
 form label.required::after {
     content: "必須";
     margin: 0 0.5em;
@@ -17,4 +49,54 @@ h2 {
     padding: .5em .75em;
     background-color: #18bc9c;
     border-radius: 6px;
+}
+
+.clanImage {
+    width:80px;
+    margin:5px;
+}
+
+.clanCard {
+    background-color: rgb(212, 248, 236);
+    height: 120px;
+    margin: 10px;
+    overflow: auto;
+}
+
+.clanCard:hover  {
+    transform : scale(1.1, 1.1);
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+    opacity: 0.8;
+}
+
+
+.clanCard .color-friend {
+    color: white;
+    background-color: rgb(63, 133, 236);
+}
+
+.clanCard .color-circle {
+    color: white;
+    background-color: rgb(8, 161, 21);
+}
+
+.clanCard .color-travel {
+    color: white;
+    background-color: rgb(253, 96, 5);
+}
+
+.clanCard .color-study {
+    color: white;
+    background-color: rgb(202, 253, 17);
+}
+
+
+.clanCard span.categoryName {
+    position: absolute;
+    padding: 2px;
+    left: 2px;
+    top: 2px;
+    font-weight: bold;
+    z-index: 10;
 }

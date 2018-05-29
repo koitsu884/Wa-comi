@@ -6,16 +6,24 @@ import { MemberEditResolver } from "../../_resolvers/member-edit.resolver";
 import { CityListResolver } from "../../_resolvers/citylist.resolver";
 import { HomeTownListResolver } from "../../_resolvers/hometownlist.resolver";
 import { MemberListComponent } from "./member-list/member-list/member-list.component";
+import { MemberDetailComponent } from "./member-detail/member-detail.component";
+import { MemberDetailResolver } from "../../_resolvers/member-detail.resolver";
 
 const membersRoutes: Routes = [
+    // {
+    //     path: '',
+    //     runGuardsAndResolvers: 'always',
+    //     canActivate: [MemberGuard],
+    //     children: [
+    //         {path: 'home', component: MemberHomeComponent, resolve: {member:MemberEditResolver}},
+    //    ]
+    // },
     {
-        path: '',
+        path:'details/:id',
         runGuardsAndResolvers: 'always',
-        canActivate: [MemberGuard],
-        children: [
-            {path: 'home', component: MemberHomeComponent, resolve: {member:MemberEditResolver}},
-       ]
-    },
+        component: MemberDetailComponent,
+        resolve: {member:MemberDetailResolver}
+    }
 ];
 
 @NgModule({

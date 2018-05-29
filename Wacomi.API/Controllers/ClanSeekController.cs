@@ -30,9 +30,9 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId)
+        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
         {
-            var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId);
+            var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId, latest);
             var clanSeeksForReturn = this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks);
             return Ok(clanSeeksForReturn);
         }

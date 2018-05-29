@@ -7,12 +7,14 @@ import { FooterComponent } from './footer/footer.component';
 import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
 import { SharedModule } from '../shared/shared.module';
 import { BlogModule } from '../blog/blog.module';
+import { LatestClanListComponent } from './home/latest-clan-list/latest-clan-list.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    LatestClanListComponent
   ],
   imports: [
     CommonModule,
@@ -26,6 +28,7 @@ import { BlogModule } from '../blog/blog.module';
     HeaderComponent,
     HomeComponent,
     FooterComponent,
+    LatestClanListComponent
   ]
 })
 export class CoreModule {}

@@ -28,7 +28,34 @@ namespace Wacomi.API.Data
             SeedUsers(userManager);
             SeedClanSeekCategories(context);
             SeedPropertySeekCategories(context);
+            SeedDailyTopic(context);
             SeedOthers(context);
+        }
+
+        public static void SeedDailyTopic(ApplicationDbContext context){
+            string[] initialDailyTopics = {
+                "今食べたい物",
+                "行きたい所",
+                "今何してる？",
+                "マイブーム",
+                "明日の予定",
+                "週末の予定",
+                "ボケて",
+                "今日の独り言"};
+
+            foreach (var initialDailyTopic in initialDailyTopics)
+            {
+                if (!context.DailyTopics.Any(h => h.Title == initialDailyTopic))
+                {
+                    var result = context.DailyTopics.AddAsync(new DailyTopic() { Title = initialDailyTopic, IsTemporary = false }).Result;
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create daily topic " + initialDailyTopic);
+                    }
+                }
+            }
+
+            context.SaveChanges();
         }
 
         public static void SeedClanSeekCategories(ApplicationDbContext context){

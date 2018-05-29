@@ -1,0 +1,27 @@
+<div class="container">
+  <h2>現在のトピックランキング</h2>
+  <p>*ランキング1位の物が明日のトピックになります</p>
+  <div class="table-responsive" *ngIf="(dailyTopicState | async).topicList">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="col-topic">トピック</th>
+          <th class="col-like">サポート数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let topic of (dailyTopicState | async).topicList index as i">
+          <td>{{i+1}}</td>
+          <td>{{topic.title}}</td>
+          <td><span>{{topic.likedCount}}</span> 
+            <button *ngIf="!topic.isLiked" class="btn btn-primary btn-xs" (click)="sendLike(topic.id)">
+              <i class="fa fa-thumbs-up" title="呟きたい！"></i>
+              <!-- <i class="lsf-icon" title="good" alt="呟きたい！" ></i> -->
+            </button>
+            <p *ngIf="topic.isLiked">Already Liked</p></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

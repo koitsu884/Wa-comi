@@ -32,6 +32,7 @@ namespace Wacomi.API.Data
         // public DbSet<PropertySeek> PropertySeeks { get; set;}
         public DbSet<TopicComment> TopicComments { get; set; }
         public DbSet<TopicCommentFeel> TopicCommentFeels { get; set; }
+        public DbSet<TopicLike> TopicLikes { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<HomeTown> HomeTowns { get; set; }
 
@@ -102,19 +103,19 @@ namespace Wacomi.API.Data
                 .OnDelete(DeleteBehavior.ClientSetNull);
             //---- Topic Like ----
             builder.Entity<TopicLike>()
-                .HasKey(tl => new { tl.SupportMemberId, tl.DairyTopicId });
+                .HasKey(tl => new { tl.SupportUserId, tl.DailyTopicId });
 
-            builder.Entity<TopicLike>()
-                .HasOne(tl => tl.SupportMember)
-                .WithMany(m => m.LikedTopic)
-                .HasForeignKey(tl => tl.DairyTopicId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            // builder.Entity<TopicLike>()
+            //     .HasOne(tl => tl.SupportUser)
+            //     .WithOne()
+            //     .HasForeignKey(tl => tl.DairyTopicId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull);
 
-            builder.Entity<TopicLike>()
-                .HasOne(tl => tl.DairyTopic)
-                .WithMany(dt => dt.TopicLikes)
-                .HasForeignKey(tl => tl.SupportMemberId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // builder.Entity<TopicLike>()
+            //     .HasOne(tl => tl.DairyTopic)
+            //     .WithMany(dt => dt.TopicLikes)
+            //     .HasForeignKey(tl => tl.SupportMemberId)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
             //---- Topic Comment Feel ----
             builder.Entity<TopicCommentFeel>()

@@ -374,7 +374,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("MemberId");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .IsRequired();
 
                     b.Property<string>("WebsiteUrl");
 
@@ -410,9 +411,13 @@ namespace Wacomi.API.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<bool>("IsTemporary");
+
                     b.Property<DateTime>("LastDiscussed");
 
                     b.Property<string>("Title");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
@@ -642,13 +647,18 @@ namespace Wacomi.API.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Comment")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                    b.Property<int?>("MemberId");
+                    b.Property<string>("TopicTitle");
+
+                    b.Property<int>("UserId");
+
+                    b.Property<string>("UserId1");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("TopicComments");
                 });
@@ -670,15 +680,15 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicLike", b =>
                 {
-                    b.Property<int>("SupportMemberId");
+                    b.Property<string>("SupportUserId");
 
-                    b.Property<int>("DairyTopicId");
+                    b.Property<int>("DailyTopicId");
 
-                    b.HasKey("SupportMemberId", "DairyTopicId");
+                    b.HasKey("SupportUserId", "DailyTopicId");
 
-                    b.HasIndex("DairyTopicId");
+                    b.HasIndex("DailyTopicId");
 
-                    b.ToTable("TopicLike");
+                    b.ToTable("TopicLikes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -896,9 +906,9 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicComment", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
+                    b.HasOne("Wacomi.API.Models.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.TopicCommentFeel", b =>
@@ -915,13 +925,14 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicLike", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.Member", "SupportMember")
-                        .WithMany("LikedTopic")
-                        .HasForeignKey("DairyTopicId");
-
-                    b.HasOne("Wacomi.API.Models.DailyTopic", "DairyTopic")
+                    b.HasOne("Wacomi.API.Models.DailyTopic", "DailyTopic")
                         .WithMany("TopicLikes")
-                        .HasForeignKey("SupportMemberId")
+                        .HasForeignKey("DailyTopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.AppUser", "SupportUser")
+                        .WithMany()
+                        .HasForeignKey("SupportUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

@@ -35,7 +35,7 @@ namespace Wacomi.API.Models
         public ICollection<BlackList> NoAccessMembers { get; set; }
 
         //Dairy Topic
-        public ICollection<TopicLike> LikedTopic { get; set; }
+        // public ICollection<TopicLike> LikedTopic { get; set; }
         public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
         public bool BannedFromTopic{ get; set;}
         public int BannedCount{get; set;}

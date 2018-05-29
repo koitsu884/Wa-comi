@@ -4,7 +4,6 @@ namespace Wacomi.API.Models
 {
     public enum FeelingEnum {
         Like,
-        Funny,
         Dislike,
         Hate,
     };
