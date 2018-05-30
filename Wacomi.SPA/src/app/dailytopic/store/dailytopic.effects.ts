@@ -41,14 +41,16 @@ export class DailyTopicEffects {
             return action.payload;
         })
         .switchMap((payload) => {
-            return this.httpClient.post<any>(this.baseUrl + 'dailytopic',
+            return this.httpClient.post<DailyTopic>(this.baseUrl + 'dailytopic',
                 payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .map((result) => {
+                .map((newDailyTopic) => {
+                    newDailyTopic.likedCount = 0;
+                    newDailyTopic.isLiked = false;
                     return {
-                        type: TopicActions.ADD_TOPIC, payload: result
+                        type: TopicActions.ADD_TOPIC, payload: newDailyTopic
                     };
                 })
                 .catch((error: string) => {

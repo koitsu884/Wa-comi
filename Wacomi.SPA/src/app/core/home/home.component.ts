@@ -12,6 +12,7 @@ import { ClanSeek } from '../../_models/ClanSeek';
 export class HomeComponent implements OnInit {
   blogFeedList : Observable<BlogFeed[]>;
   latestClanSeekList : Observable<ClanSeek[]>;
+  todaysTopic: Observable<string>;
   constructor(private globalService: GlobalService) { }
 
   ngOnInit() {
@@ -24,6 +25,12 @@ export class HomeComponent implements OnInit {
     this.latestClanSeekList = this.globalService.getLatestClanSeekList()
     .catch(error => {
         console.log('Error occured when getting latest clan list');
+        return Observable.of(null);
+    })
+
+    this.todaysTopic = this.globalService.getTodaysTopic()
+    .catch(error => {
+        console.log('Error occured when getting todays topic');
         return Observable.of(null);
     })
   }

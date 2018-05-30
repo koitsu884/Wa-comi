@@ -5,3 +5,8 @@
 .col-button{
     width: 50px;
 }
+
+.liked {
+    font-weight: bold;
+    color: rgb(9, 157, 226);
+}

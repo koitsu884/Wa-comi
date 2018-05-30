@@ -8,6 +8,7 @@ import * as fromDailyTopic from '../store/dailytopic.reducers';
 import * as TopicActions from '../store/dailytopic.actions';
 import { Observable } from 'rxjs/Observable';
 import { AppUser } from '../../_models/AppUser';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-topic-list',
@@ -36,5 +37,14 @@ export class TopicListComponent implements OnInit {
   sendLike(id: number){
     // this.alertify.message("Like!! " + id);
     this.store.dispatch(new TopicActions.LikeTopic({supportUserId:this.userId, dailyTopicId:id}));
+  }
+
+  onCreate(form: NgForm){
+    if(this.userId)
+    {
+      // console.log(form.value.newTopic + " | " + this.userId);
+      this.store.dispatch(new TopicActions.TryAddTopic({title:form.value.newTopic, userId:this.userId}));
+      form.reset();
+    }
   }
 }

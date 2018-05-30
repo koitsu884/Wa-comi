@@ -11,7 +11,8 @@
       </div>
       <a class="btn btn-primary" [routerLink]="['/clan']">一覧</a>
       <div>
-        <h2>本日のトピック</h2>
+        <h2>皆の一言</h2>
+        <h4>本日のお題：{{todaysTopic | async}}</h4>
       </div>
       <div>
         <h2>何か情報とか？</h2>

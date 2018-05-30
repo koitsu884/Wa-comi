@@ -37,6 +37,11 @@ namespace Wacomi.API.Controllers
             return Ok( await _repo.GetTopDailyTopic());
         }
 
+        [HttpGet("today")]
+        public async Task<ActionResult> GetTodaysTopic(){
+            return Ok( await _repo.GetTodaysTopic());
+        }
+
         [HttpGet()]
         public async Task<ActionResult> GetDailyTopicList(string userId = null){
             var topicListFromRepo = await _repo.GetDailyTopicList();

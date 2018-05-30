@@ -29,4 +29,8 @@ export class GlobalService {
     getLatestClanSeekList(){
         return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?latest=true');
     }
+
+    getTodaysTopic(){
+        return this.httpClient.get(this.baseUrl + 'dailytopic/today', {responseType: 'text'});
+    }
 }

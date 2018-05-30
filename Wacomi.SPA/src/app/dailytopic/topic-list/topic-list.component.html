@@ -14,14 +14,18 @@
         <tr *ngFor="let topic of (dailyTopicState | async).topicList index as i">
           <td>{{i+1}}</td>
           <td>{{topic.title}}</td>
-          <td><span>{{topic.likedCount}}</span> 
-            <button *ngIf="!topic.isLiked" class="btn btn-primary btn-xs" (click)="sendLike(topic.id)">
+          <td><span [ngClass]="{liked: topic.isLiked}">{{topic.likedCount}}</span> 
+            <button *ngIf="!topic.isLiked"  class="btn btn-primary btn-xs" (click)="sendLike(topic.id)">
               <i class="fa fa-thumbs-up" title="呟きたい！"></i>
               <!-- <i class="lsf-icon" title="good" alt="呟きたい！" ></i> -->
             </button>
-            <p *ngIf="topic.isLiked">Already Liked</p></td>
         </tr>
       </tbody>
     </table>
   </div>
+  <form (ngSubmit)="onCreate(newTopicForm)" id="newTopicForm" #newTopicForm="ngForm">
+    <h4>新しいトピック候補を提案</h4>
+    <input type="text" class="form-control" id="newTopic" name="newTopic" ngModel required maxlength="100" #newTopic>
+    <button class="btn btn-success" [disabled]="!newTopicForm.valid || newTopicForm.pristine" type="submit">候補に追加</button>
+  </form>
 </div>

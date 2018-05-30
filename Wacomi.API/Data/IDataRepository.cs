@@ -38,6 +38,7 @@ namespace Wacomi.API.Data
         Task<DailyTopic> GetDailyTopic(int id);
         Task<DailyTopic> GetActiveDailyTopic();
         Task<DailyTopic> GetTopDailyTopic();
+        Task<string> GetTodaysTopic();
         Task<DailyTopic> GetOldestDailyTopic();
         Task<int> GetPostedTopicCountForUser(string userId);
         Task<TopicLike> GetTopicLike(string userId, int recordId);
@@ -45,6 +46,12 @@ namespace Wacomi.API.Data
         Task<IEnumerable<TopicLike>> GetTopicLikesForUser(string userId);
         Task<IEnumerable<TopicLike>> GetTopicLikesForTopic(int topicId);
         void ResetTopicLikes(int topicId);
+
+        Task<TopicComment> GetTopicComment(int id);
+        Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int memberId);
+        Task<IEnumerable<TopicComment>> GetLatestTopicCommentList();
+        Task<IEnumerable<TopicComment>> GetTopicComments();
+        Task<int> ResetTopicComments();
     }
 
     

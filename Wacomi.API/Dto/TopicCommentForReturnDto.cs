@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using Wacomi.API.Models;
 
-namespace Wacomi.API.Models
+namespace Wacomi.API.Dto
 {
-    public class TopicComment
+    public class TopicCommentForReturnDto
     {
         public int Id{ get; set;}
-        [Required]
         public int MemberId { get; set;}
-        public Member Member{ get; set;}
+        public string DisplayName { get; set;}
+        public string MainPhotoUrl { get; set;}
         public string TopicTitle{ get; set;}
-        [Required]
-        [MaxLength(100)]
         public string Comment{ get; set;}
         public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
     }
