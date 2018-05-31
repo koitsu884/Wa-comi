@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Wacomi.API.Models;
 
@@ -12,5 +13,6 @@ namespace Wacomi.API.Dto
         public string TopicTitle{ get; set;}
         public string Comment{ get; set;}
         public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
+        public DateTime Created{ get; set;}
     }
 }

@@ -51,7 +51,11 @@ namespace Wacomi.API.Data
         Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int memberId);
         Task<IEnumerable<TopicComment>> GetLatestTopicCommentList();
         Task<IEnumerable<TopicComment>> GetTopicComments();
-        Task<int> ResetTopicComments();
+        void ResetTopicComments();
+
+        Task<bool> TopicCommentExists(int id);
+        Task<TopicReply> GetTopicReply(int id);
+        Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId);
     }
 
     

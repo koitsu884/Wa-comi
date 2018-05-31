@@ -16,21 +16,21 @@ namespace Wacomi.API.Controllers
         public DailyTopicCommentController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
 
         [HttpGet("{id}", Name = "GetTopicComment")]
-        public async Task<ActionResult> GetTopicComment(int id)
+        public async Task<ActionResult> Get(int id)
         {
             return Ok(await _repo.GetTopicComment(id));
         }
 
         //List for index page (limited information)
         [HttpGet("list")]
-        public async Task<ActionResult> GetTopicCommentList(){
+        public async Task<ActionResult> GetList(){
             var listFromRepo = await _repo.GetLatestTopicCommentList();
             var listToReturn = _mapper.Map<IEnumerable<TopicCommentListForReturnDto>>(listFromRepo);
             return Ok(listToReturn);
         }
 
         [HttpGet()]
-        public async Task<ActionResult> GetTopicComments(){
+        public async Task<ActionResult> Get(){
             var listFromRepo = await _repo.GetTopicComments();
             var listToReturn = _mapper.Map<IEnumerable<TopicCommentForReturnDto>>(listFromRepo);
             return Ok(listToReturn);
@@ -38,12 +38,19 @@ namespace Wacomi.API.Controllers
 
         [HttpPost()]
         [Authorize]
-        public async Task<IActionResult> AddTopicComment([FromBody]TopicComment model){ 
+        public async Task<IActionResult> Post([FromBody]TopicComment model){ 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var topicCommentsForMember = await this._repo.GetTopicCommentsForMember(model.MemberId);
+            var member = await this._repo.GetMember(model.MemberId.GetValueOrDefault());
+            if(member == null)
+                return NotFound();
+            
+            var topicCommentsForMember = await this._repo.GetTopicCommentsForMember(model.MemberId.GetValueOrDefault());
             if(topicCommentsForMember.Count() > 0)
                 return BadRequest("投稿は１日１回のみです");
+            
+            model.MainPhotoUrl = member.MainPhotoUrl;
+            model.DisplayName = member.Identity.DisplayName;
             
             _repo.Add(model);
             if(await _repo.SaveAll())
@@ -55,13 +62,13 @@ namespace Wacomi.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTopicComment(int id){
+        public async Task<IActionResult> Delete(int id){
 
             var topicCommentFromRepo = await _repo.GetTopicComment(id);
             if(topicCommentFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(topicCommentFromRepo.MemberId))
+            if(!await this.MatchMemberWithToken(topicCommentFromRepo.MemberId.GetValueOrDefault()))
                 return Unauthorized();
 
             _repo.Delete(topicCommentFromRepo);

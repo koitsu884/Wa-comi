@@ -272,23 +272,23 @@ namespace Wacomi.API.Data
         //=============================================================
         public async Task<TopicComment> GetTopicComment(int id){
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
-                                               .Include(tc => tc.Member)
-                                               .Include(tc => tc.Member.Identity)
+                                            //    .Include(tc => tc.Member)
+                                            //    .Include(tc => tc.Member.Identity)
                                                .FirstOrDefaultAsync(tc => tc.Id == id);
         }
 
         public async Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int memberId){
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
                                                .Include(tc => tc.Member)
-                                               .Include(tc => tc.Member.Identity)
+                                            //    .Include(tc => tc.Member.Identity)
                                                .Where(tc => tc.MemberId == memberId)
                                                .ToListAsync();
         }
 
         public async Task<IEnumerable<TopicComment>> GetLatestTopicCommentList(){
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
-                                               .Include(tc => tc.Member)
-                                               .Include(tc => tc.Member.Identity)
+                                            //    .Include(tc => tc.Member)
+                                            //    .Include(tc => tc.Member.Identity)
                                                .OrderByDescending(tc => tc.Id)
                                                .Take(10)
                                                .ToListAsync();
@@ -296,16 +296,30 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<TopicComment>> GetTopicComments(){
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
-                                               .Include(tc => tc.Member)
-                                               .Include(tc => tc.Member.Identity)
+                                            //    .Include(tc => tc.Member)
+                                            //    .Include(tc => tc.Member.Identity)
                                                .OrderByDescending(tc => tc.Id)
                                                .Take(1000)
                                                .ToListAsync();
         }
 
-        public async Task<int> ResetTopicComments(){
-            return await _context.Database.ExecuteSqlCommandAsync("TRUNCATE TABLE TopicComments");
+        public  void ResetTopicComments(){
+            _context.TopicComments.RemoveRange(_context.TopicComments);
         }
-        
+
+        //====================================================================
+        // Daily Topic Reply
+        //====================================================================
+        public async Task<bool> TopicCommentExists(int id){
+            return await _context.TopicComments.AnyAsync(tc => tc.Id == id);
+        }
+        public async Task<TopicReply> GetTopicReply(int id){
+            return await _context.TopicReplies.FirstOrDefaultAsync(tr => tr.Id == id);
+        }
+
+        public async Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId)
+        {
+            return await _context.TopicReplies.Where(tr => tr.TopicCommentId == commentId).ToListAsync();
+        }
     }
 }

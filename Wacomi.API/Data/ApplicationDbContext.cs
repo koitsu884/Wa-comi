@@ -32,6 +32,7 @@ namespace Wacomi.API.Data
         // public DbSet<PropertySeek> PropertySeeks { get; set;}
         public DbSet<TopicComment> TopicComments { get; set; }
         public DbSet<TopicCommentFeel> TopicCommentFeels { get; set; }
+        public DbSet<TopicReply> TopicReplies { get; set; }
         public DbSet<TopicLike> TopicLikes { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<HomeTown> HomeTowns { get; set; }

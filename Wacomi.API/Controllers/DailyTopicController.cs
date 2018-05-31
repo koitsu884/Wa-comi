@@ -82,6 +82,7 @@ namespace Wacomi.API.Controllers
 
             newTopic.IsActive = true;
 
+            _repo.ResetTopicComments();
             await _repo.SaveAll();
             return Ok("New Topic " + newTopic.Title);
         }

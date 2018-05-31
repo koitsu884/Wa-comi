@@ -1,22 +1,23 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Wacomi.API.Models
 {
-    public class TopicComment
+    public class TopicReply
     {
-        public int Id{ get; set;}
+        public int Id {get; set;}
+        [Required]
+        public int TopicCommentId{get; set;}
+        public TopicComment TopicComment{get; set;}
+
         public int? MemberId { get; set;}
         public Member Member{ get; set;}
         public string DisplayName{ get; set;}
         public string MainPhotoUrl{ get; set;}
-        public string TopicTitle{ get; set;}
         [Required]
-        [MaxLength(100)]
-        public string Comment{ get; set;}
-        public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
-        public ICollection<TopicReply> TopicReplies { get; set;}
+        [MaxLength(1000)]
+        public string Reply{ get; set;}
         public DateTime Created{ get; set;} = DateTime.Now;
+
     }
 }

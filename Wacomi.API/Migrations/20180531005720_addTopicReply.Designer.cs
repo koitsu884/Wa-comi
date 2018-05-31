@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180531005720_addTopicReply")]
+    partial class addTopicReply
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -652,11 +653,10 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("Created");
 
-                    b.Property<string>("DisplayName");
+                    b.Property<string>("DisplayName")
+                        .IsRequired();
 
-                    b.Property<string>("MainPhotoUrl");
-
-                    b.Property<int?>("MemberId");
+                    b.Property<int>("MemberId");
 
                     b.Property<string>("TopicTitle");
 
@@ -693,34 +693,6 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("DailyTopicId");
 
                     b.ToTable("TopicLikes");
-                });
-
-            modelBuilder.Entity("Wacomi.API.Models.TopicReply", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<string>("DisplayName");
-
-                    b.Property<string>("MainPhotoUrl");
-
-                    b.Property<int?>("MemberId");
-
-                    b.Property<string>("Reply")
-                        .IsRequired()
-                        .HasMaxLength(1000);
-
-                    b.Property<int>("TopicCommentId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberId");
-
-                    b.HasIndex("TopicCommentId");
-
-                    b.ToTable("TopicReplies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -940,7 +912,8 @@ namespace Wacomi.API.Migrations
                 {
                     b.HasOne("Wacomi.API.Models.Member", "Member")
                         .WithMany()
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.TopicCommentFeel", b =>
@@ -965,18 +938,6 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.AppUser", "SupportUser")
                         .WithMany()
                         .HasForeignKey("SupportUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Wacomi.API.Models.TopicReply", b =>
-                {
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId");
-
-                    b.HasOne("Wacomi.API.Models.TopicComment", "TopicComment")
-                        .WithMany("TopicReplies")
-                        .HasForeignKey("TopicCommentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
