@@ -3,6 +3,11 @@ import { BlogFeed } from '../../_models/BlogFeed';
 import { GlobalService } from '../../_services/global.service';
 import { Observable } from 'rxjs/Observable';
 import { ClanSeek } from '../../_models/ClanSeek';
+import { TopicComment } from '../../_models/TopicComment';
+
+import * as fromApp from '../../store/app.reducer';
+import * as fromAccount from '../../account/store/account.reducers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +17,14 @@ import { ClanSeek } from '../../_models/ClanSeek';
 export class HomeComponent implements OnInit {
   blogFeedList : Observable<BlogFeed[]>;
   latestClanSeekList : Observable<ClanSeek[]>;
+  latestTopicComments : Observable<TopicComment[]>;
+  authState: Observable<fromAccount.State>;
+
   todaysTopic: Observable<string>;
-  constructor(private globalService: GlobalService) { }
+  constructor(private store: Store<fromApp.AppState>, private globalService: GlobalService) { }
 
   ngOnInit() {
+    this.authState = this.store.select('account');
     this.blogFeedList = this.globalService.getBlogFeeds()
     .catch(error => {
         console.log('Error occured when getting blog feeds');
@@ -33,6 +42,12 @@ export class HomeComponent implements OnInit {
         console.log('Error occured when getting todays topic');
         return Observable.of(null);
     })
+
+    this.latestTopicComments = this.globalService.getLatestTopicComments()
+    .catch(error => {
+      console.log('Error occured when getting topic comments');
+      return Observable.of(null);
+  })
   }
 
 }

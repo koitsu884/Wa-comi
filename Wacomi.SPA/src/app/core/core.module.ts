@@ -8,13 +8,15 @@ import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
 import { SharedModule } from '../shared/shared.module';
 import { BlogModule } from '../blog/blog.module';
 import { LatestClanListComponent } from './home/latest-clan-list/latest-clan-list.component';
+import { LatestTopiccommentListComponent } from './home/latest-topiccomment-list/latest-topiccomment-list.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
     HeaderComponent,
     FooterComponent,
-    LatestClanListComponent
+    LatestClanListComponent,
+    LatestTopiccommentListComponent
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,9 @@
 import * as DailyTopicActions from './dailytopic.actions';
 import * as fromApp from '../../store/app.reducer';
 import { DailyTopic } from '../../_models/DailyTopic';
+import { TopicComment } from '../../_models/TopicComment';
+import { TopicReply } from '../../_models/TopicReply';
+import { TopicCommentFeel } from '../../_models/TopicCommentFeel';
 
 export interface FeatureState extends fromApp.AppState {
     dailytopic : State
@@ -8,15 +11,27 @@ export interface FeatureState extends fromApp.AppState {
 
 export interface State {
     topicList: DailyTopic[];
+    topicComments: TopicComment[];
+    commentFeelings: TopicCommentFeel[]; 
+    topicReplies: {topicCommentId: number, replies: TopicReply[]}
+    todaysComment: number;
 }
 
 const initialState: State = {
-    topicList: null
+    topicList: null,
+    topicComments : null,
+    commentFeelings : null,
+    topicReplies : null,
+    todaysComment : null
 };
 
 export function dailyTopicReducer(state = initialState, action: DailyTopicActions.DailyTopicActions ){
     let temp : DailyTopic[] = null;
+    let tempTopicComments : TopicComment[] = null;
     switch(action.type){
+        //====================================================
+        // Daily Topic Ranking
+        //====================================================
         case DailyTopicActions.SET_TOPIC_LIST:
             return {
                 ...state,
@@ -44,6 +59,60 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
                 ...state,
                 topicList: temp
             };
+        //====================================================
+        // Topic Comment
+        //====================================================
+        case DailyTopicActions.SET_TOPIC_COMMENTS:
+        var myComment = action.payload.comments.find(c => c.memberId == action.payload.memberId);
+            return {
+                ...state,
+                topicComments: action.payload.comments,
+                todaysComment: myComment ? myComment.id : null
+            };
+        case DailyTopicActions.ADD_TOPIC_COMMENT:
+            var newComment = action.payload;
+            newComment.replyCount = 0;
+            newComment.likedCount = 0;
+            return {
+                ...state,
+                topicComments: [newComment, ...state.topicComments],
+                todaysComment: newComment.id
+            };
+        case DailyTopicActions.DELETE_TOPIC_COMMENT:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload);
+            tempTopicComments.splice(index, 1);
+            return{
+                ...state,
+                topicComments: tempTopicComments,
+                todaysComment: state.todaysComment == action.payload ? null : state.todaysComment
+            };
+        case DailyTopicActions.SET_COMMENT_FEELINGS:
+            tempTopicComments = [...state.topicComments];
+
+            action.payload.forEach((feel) => {
+                var index = tempTopicComments.findIndex(x => x.id == feel.commentId);
+                tempTopicComments[index].reactionByUser = feel.feeling;
+                // console.log(feel);
+                // console.log("index" + index);
+            })
+
+            return {
+                ...state,
+                commentFeelings: action.payload,
+                topicComments: tempTopicComments
+            }
+        case DailyTopicActions.ADD_COMMENT_FEELING:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload.commentId);
+            tempTopicComments[index].reactionByUser = action.payload.feeling;
+            tempTopicComments[index].likedCount++;
+
+            return {
+                ...state,
+                commentFeelings: [...state.commentFeelings, action.payload],
+                topicComments: tempTopicComments
+            }
         default:
             return state;
     }

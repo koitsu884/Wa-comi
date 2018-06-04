@@ -4,7 +4,6 @@ import { AppComponent } from './app.component';
 import { BsDropdownModule, defineLocale, BsLocaleService, jaLocale, TabsModule } from 'ngx-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
 
 import { AlertifyService } from './_services/alertify.service';
 import { GlobalService } from './_services/global.service';
@@ -35,6 +34,7 @@ import { GlobalEffect } from './store/global.effects';
 import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
 import { AppUserResolver } from './_resolvers/appuser.resolver';
 import { UserBlogResolver } from './_resolvers/userblog.resolver';
+import { MemberIdGuard } from './_guards/memberid.guard';
 
 
 defineLocale('ja', jaLocale); 
@@ -70,6 +70,7 @@ defineLocale('ja', jaLocale);
     ErrorInterceptorProvider,
     AuthInterceptorProvider,
     AuthGuard,
+    MemberIdGuard,
     //Third Party
     BsLocaleService,
   ],

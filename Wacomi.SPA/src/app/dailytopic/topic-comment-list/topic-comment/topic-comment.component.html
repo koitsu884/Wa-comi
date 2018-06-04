@@ -1,0 +1,20 @@
+<div class="commentContainer">
+  <div class="commentImage">
+    <img class="img-circle" src="{{topicComment.mainPhotoUrl}}" alt="{{topicComment.displayName}}" title="{{topicComment.displayName}}">
+  </div>
+  <div class="comment">
+    <div class="commentBaloon">
+      <p>{{topicComment.comment}}</p>
+    </div>
+  </div>
+  <div class="commentTools">
+    <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !memberId">
+      <i class="fa fa-thumbs-up" title="良いね"></i>
+    </button>
+    <span class="likedCount">{{topicComment.likedCount}}</span>
+    <i class="fa fa-comment" title="返信数"></i>
+    <span class="replyCount">{{topicComment.replyCount}}</span>
+  </div>
+</div>
+<span class="clearfix"></span>
+<a *ngIf="topicComment.memberId == memberId" class="btn btn-danger" (click)="onDelete(topicComment)">削除</a>

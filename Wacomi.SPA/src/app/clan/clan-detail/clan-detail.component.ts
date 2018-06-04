@@ -16,6 +16,7 @@ import { AppUser } from '../../_models/AppUser';
 export class ClanDetailComponent implements OnInit {
   clanId: number;
   appUser: AppUser;
+  memberId: number;
   clanState: Observable<fromClan.State>;
 
   constructor(private route: ActivatedRoute, 
@@ -25,7 +26,8 @@ export class ClanDetailComponent implements OnInit {
 
   ngOnInit() {
     this.clanId = this.route.snapshot.params['id'];
-    this.appUser = this.route.snapshot.data['appUser'];
+    let appUser : AppUser = this.route.snapshot.data['appUser'];
+    this.memberId = appUser ? appUser.relatedUserClassId : null;
     if(!this.clanId){
       this.router.navigate(['/clan']);
       return;

@@ -56,6 +56,9 @@ namespace Wacomi.API.Data
         Task<bool> TopicCommentExists(int id);
         Task<TopicReply> GetTopicReply(int id);
         Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId);
+
+        Task<TopicCommentFeel> GetCommentFeel(int memberId, int commentId);
+        Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int memberId);
     }
 
     

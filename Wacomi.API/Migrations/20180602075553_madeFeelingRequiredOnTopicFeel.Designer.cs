@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180602075553_madeFeelingRequiredOnTopicFeel")]
+    partial class madeFeelingRequiredOnTopicFeel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -945,14 +946,13 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicCommentFeel", b =>
                 {
+                    b.HasOne("Wacomi.API.Models.Member", "Member")
+                        .WithMany("TopicCommentFeels")
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("Wacomi.API.Models.TopicComment", "Comment")
                         .WithMany("TopicCommentFeels")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Wacomi.API.Models.Member", "Member")
-                        .WithMany("TopicCommentFeels")
-                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

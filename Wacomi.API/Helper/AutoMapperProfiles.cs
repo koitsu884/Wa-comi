@@ -66,10 +66,14 @@ namespace Wacomi.API.Helper
             CreateMap<TopicComment, TopicCommentListForReturnDto>()
               // .ForMember(tcl => tcl.MainPhotoUrl, opt => opt.MapFrom(src => src.Member.MainPhotoUrl))
               // .ForMember(tcl => tcl.DisplayName, opt => opt.MapFrom(src => src.Member.Identity.DisplayName))
+              .ForMember(tcl => tcl.ReplyCount,
+                         opt => opt.MapFrom(src => src.TopicReplies.Count()))
               .ForMember(tcl => tcl.LikedCount,
                          opt => opt.MapFrom(src => src.TopicCommentFeels.Where(tcf => tcf.Feeling == FeelingEnum.Like).Count()));
 
             CreateMap<TopicReply, TopicReplyForReturnDto>();
+
+            CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();
         }
     }
 }

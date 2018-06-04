@@ -4,6 +4,7 @@ namespace Wacomi.API.Dto
 {
     public class TopicReplyForReturnDto
     {
+        int Id{ get; set;}
         public int TopicCommentId { get; set;}
         public int? MemberId { get; set;}
         public string DisplayName{ get; set;}

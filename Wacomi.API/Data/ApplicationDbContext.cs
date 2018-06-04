@@ -125,8 +125,8 @@ namespace Wacomi.API.Data
             builder.Entity<TopicCommentFeel>()
                 .HasOne(tcl => tcl.Member)
                 .WithMany(m => m.TopicCommentFeels)
-                .HasForeignKey(tcl => tcl.CommentId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(tcl => tcl.MemberId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<TopicCommentFeel>()
                 .HasOne(tcl => tcl.Comment)

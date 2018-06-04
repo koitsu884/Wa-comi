@@ -7,11 +7,15 @@ import { StoreModule } from "@ngrx/store";
 import { dailyTopicReducer } from "./store/dailytopic.reducers";
 import { EffectsModule } from "@ngrx/effects";
 import { DailyTopicEffects } from "./store/dailytopic.effects";
+import { TopicCommentListComponent } from "./topic-comment-list/topic-comment-list.component";
+import { TopicCommentComponent } from "./topic-comment-list/topic-comment/topic-comment.component";
 
 
 @NgModule({
     declarations: [
         TopicListComponent,
+        TopicCommentListComponent,        
+        TopicCommentComponent
     ],
     imports: [
         SharedModule,

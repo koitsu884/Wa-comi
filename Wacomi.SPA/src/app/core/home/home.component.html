@@ -9,11 +9,14 @@
         <h2>仲間募集中！</h2>
         <app-latest-clan-list [latestClanSeeklist]="latestClanSeekList | async"></app-latest-clan-list>
       </div>
-      <a class="btn btn-primary" [routerLink]="['/clan']">一覧</a>
+      <a class="btn btn-primary" *ngIf="(authState | async).authenticated" [routerLink]="['/clan']">仲間募集検索</a>
+      <a class="btn btn-primary" *ngIf="!(authState | async).authenticated" [routerLink]="['/account/login']">ログイン</a>
       <div>
         <h2>皆の一言</h2>
         <h4>本日のお題：{{todaysTopic | async}}</h4>
+        <app-latest-topiccomment-list [latestTopicComments]="latestTopicComments | async"></app-latest-topiccomment-list>
       </div>
+      <a class="btn btn-primary" [routerLink]="['/dailytopic']">全て見る</a>
       <div>
         <h2>何か情報とか？</h2>
       </div>

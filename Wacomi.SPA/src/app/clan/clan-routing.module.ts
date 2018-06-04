@@ -9,6 +9,8 @@ import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 import { AppUserResolver } from "../_resolvers/appuser.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { ClanEditComponent } from "./clan-edit/clan-edit.component";
+import { AuthGuard } from "../_guards/auth.guard";
+import { MemberIdGuard } from "../_guards/memberid.guard";
 
 
 
@@ -17,6 +19,7 @@ const clanRoute: Routes = [
         path: '',
         runGuardsAndResolvers: 'always',
         component:ClanHomeComponent,
+        canActivate: [AuthGuard],
         resolve: {
             
             appUser:AppUserResolver,            
@@ -37,7 +40,9 @@ const clanRoute: Routes = [
     },
     {
         path: 'edit/:memberId', 
+        runGuardsAndResolvers: 'always',
         component: ClanEditComponent, 
+        canActivate: [MemberIdGuard],
         resolve: {
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,
@@ -47,6 +52,7 @@ const clanRoute: Routes = [
     {
         path: 'edit/:memberId/:id', 
         component: ClanEditComponent, 
+        canActivate: [MemberIdGuard],
         resolve: {
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,
