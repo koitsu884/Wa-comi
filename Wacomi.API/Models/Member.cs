@@ -18,25 +18,25 @@ namespace Wacomi.API.Models
         public int? HomeTownId { get; set;}
         public HomeTown HomeTown {get; set;}
         //Friend
-        public ICollection<Friend> Friends{ get; set;}
-        public ICollection<FriendRequest> FriendRequestSent{get; set;}
-        public ICollection<FriendRequest> FriendRequestReceived{get; set;}
+        public virtual ICollection<Friend> Friends{ get; set;}
+        public virtual ICollection<FriendRequest> FriendRequestSent{get; set;}
+        public virtual ICollection<FriendRequest> FriendRequestReceived{get; set;}
         //ClanSeek
-        public ICollection<ClanSeek> ClanSeekPosted{ get; set;}
+        public virtual ICollection<ClanSeek> ClanSeekPosted{ get; set;}
         //Property
         //public ICollection<PropertySeek> PropertySeekPosted{ get; set;}
         //Blog
-        public ICollection<BlogPreference> BlogPreferences{ get; set;}
+        public virtual ICollection<BlogPreference> BlogPreferences{ get; set;}
 
         //Private Message
-        public ICollection<Message> MessageSent { get; set; }
-        public ICollection<Message> MessageReceived { get; set;}
-        public ICollection<BlackList> MyBlackLists { get; set; }
-        public ICollection<BlackList> NoAccessMembers { get; set; }
+        public virtual  ICollection<Message> MessageSent { get; set; }
+        public virtual ICollection<Message> MessageReceived { get; set;}
+        public virtual ICollection<BlackList> MyBlackLists { get; set; }
+        public virtual ICollection<BlackList> NoAccessMembers { get; set; }
 
         //Dairy Topic
         // public ICollection<TopicLike> LikedTopic { get; set; }
-        public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
+        public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
         public bool BannedFromTopic{ get; set;}
         public int BannedCount{get; set;}
     }

@@ -22,6 +22,7 @@ namespace Wacomi.API.Data
         Task<Member> GetMember(int id);
         Task<Member> GetMemberByIdentityId(string id);
         Task<IEnumerable<Member>> GetMembers(UserParams userParams);
+        Task<bool> MemberExist(int memberId);
         Task<Blog> GetBlog(int id);
         Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);
         Task<IEnumerable<Blog>> GetBlogs();
@@ -59,6 +60,14 @@ namespace Wacomi.API.Data
 
         Task<TopicCommentFeel> GetCommentFeel(int memberId, int commentId);
         Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int memberId);
+
+        Task<Friend> GetFriend(int memberId, int friendId);
+        Task<IEnumerable<Friend>> GetFriends(int memberId);
+        Task<FriendRequest> GetFriendRequestFrom(int memberId, int senderId);
+        Task<FriendRequest> GetFriendRequest(int senderId, int recipientId);
+        Task<IEnumerable<FriendRequest>> GetFriendRequestsReceived(int memberId);
+        Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId);
+
     }
 
     

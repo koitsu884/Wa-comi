@@ -53,6 +53,8 @@ namespace Wacomi.API.Data
             //---- Friend ----
             builder.Entity<Friend>()
                 .HasKey(fr => new { fr.MemberId, fr.FriendMemberid });
+            builder.Entity<Friend>()
+                .HasIndex(fr => fr.Relationship);
 
             builder.Entity<Friend>()
                 .HasOne(fr => fr.Member)

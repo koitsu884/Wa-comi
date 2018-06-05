@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180605035614_bitAdjustmentForFriendModels")]
+    partial class bitAdjustmentForFriendModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,18 +427,18 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.Friend", b =>
                 {
-                    b.Property<int>("MemberId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("FriendMemberid");
 
-                    b.Property<string>("Relationship")
-                        .IsRequired();
+                    b.Property<int>("MemberId");
 
-                    b.HasKey("MemberId", "FriendMemberid");
+                    b.HasKey("Id");
 
                     b.HasIndex("FriendMemberid");
 
-                    b.HasIndex("Relationship");
+                    b.HasIndex("MemberId");
 
                     b.ToTable("Friends");
                 });

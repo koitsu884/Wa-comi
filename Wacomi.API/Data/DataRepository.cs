@@ -102,6 +102,12 @@ namespace Wacomi.API.Data
                                         .Include(m => m.Blogs)
                                         .FirstOrDefaultAsync(m => m.Id == id);
         }
+
+        
+        public async Task<bool> MemberExist(int memberId)
+        {
+            return await _context.Members.AnyAsync(m => m.Id == memberId);
+        }
         public async Task<Member> GetMember(int id)
         {
             return await _context.Members.Include(m => m.City)
@@ -376,6 +382,47 @@ namespace Wacomi.API.Data
             if(memberId > 0)
                return await _context.TopicCommentFeels.Where(tcf => tcf.MemberId == memberId).ToListAsync();
             return await _context.TopicCommentFeels.ToListAsync();
+        }
+
+        public async Task<Friend> GetFriend(int memberId, int friendId)
+        {
+            return await _context.Friends.Include(f => f.Member)
+                                         .Include(f => f.Member.Identity)
+                                         .FirstOrDefaultAsync(f => f.MemberId == memberId && f.FriendMemberid == friendId);
+        }
+
+        public async Task<IEnumerable<Friend>> GetFriends(int memberId)
+        {
+            return await _context.Friends.Include(f => f.Member)
+                                         .Include(f => f.Member.Identity)
+                                         .Where(f => f.MemberId == memberId)
+                                         .ToListAsync();
+        }
+
+        public async Task<FriendRequest> GetFriendRequest(int senderId, int recipientId)
+        {
+            return await _context.FriendRequests.FirstOrDefaultAsync(fr => fr.SenderId == senderId && fr.RecipientId == recipientId);
+        }
+
+        public async Task<IEnumerable<FriendRequest>> GetFriendRequestsReceived(int memberId)
+        {
+            return await _context.FriendRequests.Include(fr => fr.Sender)
+                                                .Include(fr => fr.Sender.Identity)
+                                                .Where(fr => fr.RecipientId == memberId)
+                                                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId)
+        {
+            return await _context.FriendRequests.Include(fr => fr.Recipient)
+                                                .Include(fr => fr.Recipient.Identity)
+                                                .Where(fr => fr.SenderId == memberId)
+                                                .ToListAsync();
+        }
+
+        public async Task<FriendRequest> GetFriendRequestFrom(int memberId, int senderId)
+        {
+            return await _context.FriendRequests.FirstOrDefaultAsync(fr => fr.RecipientId == memberId && fr.SenderId == senderId);
         }
     }
 }

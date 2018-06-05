@@ -7,8 +7,10 @@ namespace Wacomi.API.Models
         [Required]
         public int MemberId{ get; set;}
         public Member Member{ get; set;}
+        [Required]
         public int FriendMemberid{ get; set;}
         public Member FriendMember{ get; set;}
+        [Required]
         public string Relationship{ get; set;}
     }
 }

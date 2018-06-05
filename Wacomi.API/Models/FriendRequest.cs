@@ -10,8 +10,8 @@ namespace Wacomi.API.Models
         public Member Recipient {get; set;}
         [Required]
         public int RecipientId{ get; set;}
-        bool IsRead{ get; set;}
-        bool IsSecret{ get; set;}
+        bool IsRead{ get; set;} = false;
+        bool Declined{ get; set;} = false;
         string Message { get; set;}
 
     }

@@ -74,6 +74,20 @@ namespace Wacomi.API.Helper
             CreateMap<TopicReply, TopicReplyForReturnDto>();
 
             CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();
+
+            CreateMap<Friend, FriendForReturnDto>()
+              .ForMember(f => f.FriendDisplayName,
+                        opt => opt.MapFrom(src => src.FriendMember.Identity.DisplayName))
+              .ForMember(f => f.FriendPhotoUrl,
+                        opt => opt.MapFrom(src => src.FriendMember.MainPhotoUrl));
+
+            CreateMap<FriendRequest, FriendRequestReceivedForReturnDto>()
+              .ForMember(fr => fr.SenderDisplayName, opt => opt.MapFrom(src => src.Sender.Identity.DisplayName))
+              .ForMember(fr => fr.SenderPhotoUrl, opt => opt.MapFrom(src => src.Sender.MainPhotoUrl));
+
+            CreateMap<FriendRequest, FriendRequestSentForReturnDto>()
+              .ForMember(fr => fr.RecipientDisplayName, opt => opt.MapFrom(src => src.Recipient.Identity.DisplayName))
+              .ForMember(fr => fr.RecipientPhotoUrl, opt => opt.MapFrom(src => src.Recipient.MainPhotoUrl));
         }
     }
 }
