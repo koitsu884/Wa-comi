@@ -9,6 +9,7 @@ import { DailyTopic } from "../../_models/DailyTopic";
 import { of } from "rxjs/observable/of";
 import { TopicComment } from "../../_models/TopicComment";
 import { TopicCommentFeel } from "../../_models/TopicCommentFeel";
+import { TopicReply } from "../../_models/TopicReply";
 
 @Injectable()
 export class DailyTopicEffects {
@@ -100,123 +101,192 @@ export class DailyTopicEffects {
                 });
         })
 
-        //==================================================
-        @Effect()
-        getTopicComments = this.actions$
-            .ofType(TopicActions.GET_TOPIC_COMMENTS)
-            .map((action: TopicActions.GetTopicComments) => {
-                return action.payload;
-            })
-            .switchMap((memberId) => {
-                return this.httpClient.get<TopicComment[]>(this.baseUrl + 'dailytopiccomment/list')
-                    .mergeMap((result) => {
-                        return [{
-                            type: TopicActions.SET_TOPIC_COMMENTS,
-                            payload: {comments: result, memberId: memberId}
+    //==================================================
+    @Effect()
+    getTopicComments = this.actions$
+        .ofType(TopicActions.GET_TOPIC_COMMENTS)
+        .map((action: TopicActions.GetTopicComments) => {
+            return action.payload;
+        })
+        .switchMap((memberId) => {
+            return this.httpClient.get<TopicComment[]>(this.baseUrl + 'dailytopiccomment/list')
+                .mergeMap((result) => {
+                    return [{
+                        type: TopicActions.SET_TOPIC_COMMENTS,
+                        payload: { comments: result, memberId: memberId }
+                    },
+                    {
+                        type: TopicActions.GET_COMMENT_FEELINGS,
+                        payload: memberId
+                    }
+                    ]
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+    @Effect()
+    tryAddComment = this.actions$
+        .ofType(TopicActions.TRY_ADD_TOPIC_COMMENT)
+        .map((action: TopicActions.TryAddTopicComment) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            console.log(payload);
+            return this.httpClient.post<TopicComment>(this.baseUrl + 'dailytopiccomment',
+                payload,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .mergeMap((newComment) => {
+                    return [
+                        {
+                            type: TopicActions.ADD_TOPIC_COMMENT, payload: newComment
                         },
                         {
-                            type: TopicActions.GET_COMMENT_FEELINGS,
-                            payload: memberId
+                            type: GlobalActions.SUCCESS, payload: "トピックコメントを投稿しました"
                         }
-                        ]
-                    })
-                    .catch((error: string) => {
-                        return of({ type: GlobalActions.FAILED, payload: error })
-                    });
-            })
-            @Effect()
-            tryAddComment = this.actions$
-                .ofType(TopicActions.TRY_ADD_TOPIC_COMMENT)
-                .map((action: TopicActions.TryAddTopicComment) => {
-                    return action.payload;
+                    ]
                 })
-                .switchMap((payload) => {
-                    console.log(payload);
-                    return this.httpClient.post<TopicComment>(this.baseUrl + 'dailytopiccomment',
-                        payload,
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryDeleteTopicComment = this.actions$
+        .ofType(TopicActions.TRY_DELETE_TOPIC_COMMENT)
+        .map((action: TopicActions.TryDeleteTopicComment) => {
+            return action.payload //topicId
+        })
+        .switchMap((topicId) => {
+            return this.httpClient.delete(this.baseUrl + 'dailytopiccomment/' + topicId)
+                .mergeMap(() => {
+                    return [
                         {
-                            headers: new HttpHeaders().set('Content-Type', 'application/json')
-                        })
-                        .mergeMap((newComment) => {
-                            return [
-                                {
-                                    type: TopicActions.ADD_TOPIC_COMMENT, payload: newComment
-                                },
-                                {
-                                    type: GlobalActions.SUCCESS, payload: "トピックコメントを投稿しました"
-                                }
-                            ]
-                        })
-                        .catch((error: string) => {
-                            return of({ type: GlobalActions.FAILED, payload: error })
-                        });
+                            type: TopicActions.DELETE_TOPIC_COMMENT, payload: topicId
+                        },
+                        { type: GlobalActions.SUCCESS, payload: "削除しました" }
+                    ];
                 })
-
-                @Effect()
-                tryDeleteTopicComment = this.actions$
-                    .ofType(TopicActions.TRY_DELETE_TOPIC_COMMENT)
-                    .map((action: TopicActions.TryDeleteTopicComment) => {
-                        return action.payload //topicId
-                    })
-                    .switchMap((topicId) => {
-                        return this.httpClient.delete(this.baseUrl + 'dailytopiccomment/' + topicId)
-                            .mergeMap(() => {
-                                return [
-                                {
-                                    type: TopicActions.DELETE_TOPIC_COMMENT, payload: topicId
-                                },
-                                { type: GlobalActions.SUCCESS, payload: "削除しました"}
-                                ];
-                            })
-                            .catch((error: string) => {
-                                return of({ type: GlobalActions.FAILED, payload: error })
-                            })
-                    });
-
-            @Effect()
-            getCommentFeelings = this.actions$
-                .ofType(TopicActions.GET_COMMENT_FEELINGS)
-                .map((action: TopicActions.GetCommentFeelings) => {
-                    return action.payload;
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
                 })
-                .switchMap((memberId) => {
-                    if(!memberId)
-                    return of({
+        });
+
+    @Effect()
+    getCommentFeelings = this.actions$
+        .ofType(TopicActions.GET_COMMENT_FEELINGS)
+        .map((action: TopicActions.GetCommentFeelings) => {
+            return action.payload;
+        })
+        .switchMap((memberId) => {
+            if (!memberId)
+                return of({
+                    type: TopicActions.SET_COMMENT_FEELINGS,
+                    payload: []
+                });
+
+            return this.httpClient.get<TopicCommentFeel[]>(this.baseUrl + 'topiccommentfeel/' + memberId)
+                .map((result) => {
+                    return {
                         type: TopicActions.SET_COMMENT_FEELINGS,
-                        payload: []
-                    });
-
-                    return this.httpClient.get<TopicCommentFeel[]>(this.baseUrl + 'topiccommentfeel/' + memberId)
-                        .map((result) => {
-                            return {
-                                type: TopicActions.SET_COMMENT_FEELINGS,
-                                payload: result
-                            }
-                        })
-                        .catch((error: string) => {
-                            return of({ type: GlobalActions.FAILED, payload: error })
-                        });
+                        payload: result
+                    }
                 })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
 
-                @Effect()
-                tryAddCommentFeeling = this.actions$
-                    .ofType(TopicActions.TRY_ADD_COMMENT_FEELING)
-                    .map((action: TopicActions.TryAddCommentFeeling) => {
-                        return action.payload;
-                    })
-                    .switchMap((payload) => {
-                        return this.httpClient.post<TopicCommentFeel>(this.baseUrl + 'topiccommentfeel',
-                            payload,
-                            {
-                                headers: new HttpHeaders().set('Content-Type', 'application/json')
-                            })
-                            .map((newFeeling) => {
-                                return {
-                                    type: TopicActions.ADD_COMMENT_FEELING, payload: newFeeling
-                                };
-                            })
-                            .catch((error: string) => {
-                                return of({ type: GlobalActions.FAILED, payload: error })
-                            });
-                    })
+    @Effect()
+    tryAddCommentFeeling = this.actions$
+        .ofType(TopicActions.TRY_ADD_COMMENT_FEELING)
+        .map((action: TopicActions.TryAddCommentFeeling) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.post<TopicCommentFeel>(this.baseUrl + 'topiccommentfeel',
+                payload,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map((newFeeling) => {
+                    return {
+                        type: TopicActions.ADD_COMMENT_FEELING, payload: newFeeling
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getTopicReplies = this.actions$
+        .ofType(TopicActions.GET_TOPIC_REPLIES)
+        .map((action: TopicActions.GetTopicReplies) => {
+            return action.payload.commentId;
+        })
+        .switchMap((commentId) => {
+            return this.httpClient.get<TopicReply[]>(this.baseUrl + 'dailytopicreply/topic/' + commentId)
+                .map((result) => {
+                    return {
+                        type: TopicActions.SET_TOPIC_REPLIES,
+                        payload: { commentId: commentId, topicReplies: result }
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryAddTopicReply = this.actions$
+        .ofType(TopicActions.TRY_ADD_TOPIC_REPLY)
+        .map((action: TopicActions.TryAddTopicReply) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            console.log(payload);
+            return this.httpClient.post<TopicReply>(this.baseUrl + 'dailytopicreply',
+                payload,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .mergeMap((newReply) => {
+                    return [{
+                        type: TopicActions.ADD_TOPIC_REPLY, payload: newReply
+                    }
+                        ,
+                    {
+                        type: GlobalActions.SUCCESS, payload: "コメントを送信しました"
+                    }
+                    ];
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryDeleteTopicReply = this.actions$
+        .ofType(TopicActions.TRY_DELETE_TOPIC_REPLY)
+        .map((action: TopicActions.TryDeleteTopicReply) => {
+            return action.payload 
+        })
+        .switchMap((topicReply) => {
+            console.log(topicReply);
+            return this.httpClient.delete(this.baseUrl + 'dailytopicreply/' + topicReply.id)
+                .mergeMap(() => {
+                    return [
+                        {
+                            type: TopicActions.DELETE_TOPIC_REPLY, payload: topicReply
+                        },
+                        { type: GlobalActions.SUCCESS, payload: "削除しました" }
+                    ];
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        });
 }

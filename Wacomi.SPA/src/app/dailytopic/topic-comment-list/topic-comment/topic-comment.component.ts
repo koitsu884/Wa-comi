@@ -28,6 +28,13 @@ export class TopicCommentComponent implements OnInit {
       this.store.dispatch(new DailyTopicActions.TryAddCommentFeeling({memberId: this.memberId, commentId: this.topicComment.id, feeling: this.commentFeelEnum["Like"]}));
   }
 
+  toggleReplyForm(topicComment: TopicComment){
+    if(!topicComment.displayReplies){
+      this.store.dispatch(new DailyTopicActions.GetTopicReplies({commentId: topicComment.id}));
+    }
+    this.store.dispatch( new DailyTopicActions.ToggleReplyForm({commentId: topicComment.id}));
+  }
+
   onDelete(topicComment: TopicComment){
     this.alertify.confirm("本当にこのコメント(" + topicComment.comment + ")を削除しますか？", () => {
       this.store.dispatch(new DailyTopicActions.TryDeleteTopicComment(topicComment.id));

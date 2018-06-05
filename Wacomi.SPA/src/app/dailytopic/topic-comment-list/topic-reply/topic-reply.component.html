@@ -1,0 +1,21 @@
+<div class="replyContainer">
+  <div class="reply" *ngFor="let topicReply of topicReplies">
+      <div class="commentImage">
+          <img class="img-circle" src="{{topicReply.mainPhotoUrl}}" alt="{{topicReply.displayName}}" title="{{topicReply.displayName}}">
+       </div>
+       <div class="comment">
+          <div class="commentBaloon">
+            <p><b>{{topicReply.displayName}}</b>: {{topicReply.reply}}</p>
+          </div>
+        </div>
+        <a *ngIf="topicReply.memberId == currentMemberId" class="btn btn-danger" (click)="onDelete(topicReply)">削除</a>
+  </div>
+  <h4>コメント</h4>
+  <form #TopicReplyForm="ngForm" id="TopicReplyForm" (ngSubmit)="onSubmit(TopicReplyForm)">
+      <div class="form-group">
+          <textarea class="form-control" name="reply" rows="3" ngModel required maxlength="1000"></textarea>
+        </div>
+        <button [disabled]="!TopicReplyForm.valid" class="btn btn-primary" type="submit">送信</button>
+  </form>
+</div>
+<span class="clearfix"></span>

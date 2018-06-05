@@ -113,6 +113,51 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
                 commentFeelings: [...state.commentFeelings, action.payload],
                 topicComments: tempTopicComments
             }
+        //====================================================
+        // Topic Reply
+        //====================================================
+        case DailyTopicActions.TOGGLE_REPLY_FORM:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload.commentId);
+            tempTopicComments[index].displayReplies = !tempTopicComments[index].displayReplies;
+            return {
+                ...state,
+                topicComments: tempTopicComments
+            }
+        case DailyTopicActions.SET_TOPIC_REPLIES:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload.commentId);
+            tempTopicComments[index].topicReplies = action.payload.topicReplies;
+
+            return {
+                ...state,
+                topicComments: tempTopicComments
+            }
+        case DailyTopicActions.ADD_TOPIC_REPLY:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload.topicCommentId);
+            tempTopicComments[index].topicReplies.push(action.payload);
+            tempTopicComments[index].replyCount++;
+
+            return {
+                ...state,
+                topicComments: tempTopicComments
+            }
+        case DailyTopicActions.DELETE_TOPIC_REPLY:
+            tempTopicComments = [...state.topicComments];
+            var index = tempTopicComments.findIndex(x => x.id == action.payload.topicCommentId);
+            var tempTopicReplies = tempTopicComments[index].topicReplies;
+            var replyIndex = tempTopicReplies.findIndex(x => x.id == action.payload.id);
+
+            tempTopicReplies.splice(replyIndex, 1);
+            tempTopicComments[index].topicReplies = tempTopicReplies;
+            tempTopicComments[index].replyCount--;
+
+            return{
+                ...state,
+                topicComments: tempTopicComments
+            };
+        //=======
         default:
             return state;
     }

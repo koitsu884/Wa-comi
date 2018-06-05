@@ -1,3 +1,5 @@
+import { TopicReply } from "./TopicReply";
+
 export interface TopicComment {
     id: number;
     mainPhotoUrl: string;
@@ -8,4 +10,8 @@ export interface TopicComment {
     replyCount: number;
     created: Date;
     reactionByUser: number;
+
+    //Client side only
+    displayReplies: boolean;
+    topicReplies: TopicReply[];
 }

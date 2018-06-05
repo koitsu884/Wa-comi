@@ -13,8 +13,5 @@ export class LatestTopiccommentListComponent implements OnInit {
   ngOnInit() {
   }
 
-  sendLike(commentId: number){
-
-  }
 
 }

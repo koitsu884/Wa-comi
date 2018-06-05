@@ -3,6 +3,7 @@ import { DailyTopic } from "../../_models/DailyTopic";
 import { TopicComment } from "../../_models/TopicComment";
 import { TopicCommentFeel } from "../../_models/TopicCommentFeel";
 import { importExpr } from "@angular/compiler/src/output/output_ast";
+import { TopicReply } from "../../_models/TopicReply";
 
 //====================================================
 // Daily Topic Ranking
@@ -60,6 +61,7 @@ export const ADD_TOPIC_COMMENT = 'ADD_TOPIC_COMMENT';
 export const TRY_DELETE_TOPIC_COMMENT = 'TRY_DELETE_TOPIC_COMMENT';
 export const DELETE_TOPIC_COMMENT = 'DELETE_TOPIC_COMMENT';
 
+export const TOGGLE_REPLY_FORM = "TOGGLE_REPLY_FORM";
 export const GET_TOPIC_REPLIES = 'GET_TOPIC_REPLIES';
 export const SET_TOPIC_REPLIES = 'SET_TOPIC_REPLIES';
 export const TRY_ADD_TOPIC_REPLY = 'TRY_ADD_TOPIC_REPLY';
@@ -122,6 +124,40 @@ export class AddCommentFeeling implements Action {
     constructor(public payload: TopicCommentFeel){}
 }
 
+export class ToggleReplyForm implements Action {
+    readonly type = TOGGLE_REPLY_FORM;
+    constructor(public payload: {commentId: number}){}
+}
+
+export class GetTopicReplies implements Action {
+    readonly type = GET_TOPIC_REPLIES;
+    constructor(public payload: {commentId: number}){}
+}
+
+export class SetTopicReplies implements Action {
+    readonly type = SET_TOPIC_REPLIES;
+    constructor(public payload:{commentId: number, topicReplies: TopicReply[]}){}
+}
+
+export class TryAddTopicReply implements Action {
+    readonly type = TRY_ADD_TOPIC_REPLY;
+    constructor(public payload:{topicCommentId: number, memberId: number, reply: string }){}
+}
+
+export class AddTopicReply implements Action {
+    readonly type = ADD_TOPIC_REPLY;
+    constructor(public payload:TopicReply){}
+}
+
+export class TryDeleteTopicReply implements Action {
+    readonly type = TRY_DELETE_TOPIC_REPLY;
+    constructor(public payload:TopicReply){}
+}
+
+export class DeleteTopicReply implements Action {
+    readonly type = DELETE_TOPIC_REPLY;
+    constructor(public payload:TopicReply){}
+}
 
 
 export type DailyTopicActions = GetTopicList 
@@ -140,4 +176,11 @@ export type DailyTopicActions = GetTopicList
                           | GetCommentFeelings
                           | SetCommentFeelings
                           | TryAddCommentFeeling
-                          | AddCommentFeeling;
+                          | AddCommentFeeling
+                          | ToggleReplyForm
+                          | GetTopicReplies
+                          | SetTopicReplies
+                          | TryAddTopicReply
+                          | AddTopicReply
+                          | TryDeleteTopicReply
+                          | DeleteTopicReply;

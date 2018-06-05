@@ -2,13 +2,14 @@
   <h2>本日のトピック - {{todaysTopic}} </h2>
   <form *ngIf="!(dailyTopicState | async).todaysComment" #topicCommentForm="ngForm" id="topicCommentForm" (ngSubmit)="submit(topicCommentForm)">
     <div class="form-group">
-      <label for="title" class="control-label">コメントを追加する（1日1回のみ）</label>
-      <input class="form-control" name="comment" type="text" ngModel required>
+      <label for="title" class="control-label">一言を追加する（1日1回のみ, 最大100文字）</label>
+      <input class="form-control" name="comment" type="text" ngModel required maxlength="100">
     </div>
-    <button [disabled]="!topicCommentForm.valid" class="btn btn-primary" type="submit">コメント追加</button>
+    <button [disabled]="!topicCommentForm.valid" class="btn btn-primary" type="submit">一言追加</button>
   </form>
   <div *ngFor="let topicComment of (dailyTopicState | async).topicComments">
     <app-topic-comment *ngIf="(dailyTopicState | async).commentFeelings" [topicComment]="topicComment" [memberId]="appUser? appUser.relatedUserClassId : null"
       [commentFeelEnum]="commentFeelingEnum"></app-topic-comment>
+    <app-topic-reply *ngIf="topicComment.displayReplies" [topicCommentId]="topicComment.id" [currentMemberId]="appUser.relatedUserClassId"  [topicReplies]="topicComment.topicReplies" ></app-topic-reply>
   </div>
 </div>
