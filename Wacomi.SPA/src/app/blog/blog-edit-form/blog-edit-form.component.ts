@@ -19,20 +19,23 @@ import { NgForm } from '@angular/forms';
 // }
 
 export class BlogEditFormComponent implements OnInit {
-  @Input() blog:Blog;
-  @Input() recordId: number;
-  @Input() type: string;
+  @Input() selectedBlog:Blog;
   @Input() photos: Photo[];
+  blog : Blog;
 
   blogCategories : string[];
   constructor(private store : Store<fromBlog.State>, private global: GlobalService) { }
 
   ngOnInit() {
     this.blogCategories = this.global.getBlogCategories();
+    if(this.selectedBlog)
+      Object.assign(this.blog, this.selectedBlog);
+    else
+      this.blog = null;
   }
 
   submit(blogEditForm : NgForm){
-    this.store.dispatch(new BlogAction.UpdateBlog({type: this.type, recordId: this.recordId, blog: this.blog}));
+    this.store.dispatch(new BlogAction.UpdateBlog(this.blog));
     blogEditForm.form.markAsPristine();
   }
 

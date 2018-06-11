@@ -10,12 +10,14 @@
   <div class="commentTools">
     <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !memberId">
       <i class="fa fa-thumbs-up" title="良いね"></i>
-    </button>
-    <span class="likedCount">{{topicComment.likedCount}}</span>
+      <span class="badge">{{topicComment.likedCount}}</span>
+    </button><br/>
+    <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
     <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!memberId">
         <i class="fa fa-comment" title="返信数"></i>
+        <span class="badge">{{topicComment.replyCount}}</span>
     </button>
-    <span class="replyCount">{{topicComment.replyCount}}</span>
+    <!-- <span class="replyCount">{{topicComment.replyCount}}</span> -->
   </div>
 </div>
 <span class="clearfix"></span>

@@ -18,7 +18,7 @@ export class MemberIdGuard implements CanActivate {
         return this.store.select('account')
         .take(1)
         .map((authState: fromAccount.State) => {
-            if(authState.authenticated && authState.appUser.userType == "Member" && authState.appUser.relatedUserClassId == memberId){
+            if(authState.authenticated && authState.appUser.userType == "Member" && authState.appUser.userProfileId == memberId){
                 return true;
             }
             else{

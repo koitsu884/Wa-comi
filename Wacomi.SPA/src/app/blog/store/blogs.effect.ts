@@ -30,8 +30,8 @@ export class BlogEffects {
         .map((action: BlogActions.GetBlog) => {
             return action.payload;
         })
-        .switchMap((payload) => {
-            return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/' + payload.type + '/' + payload.recordId)
+        .switchMap((appUserId) => {
+            return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/user/' + appUserId)
             .map((result) => {
                 return {
                     type: BlogActions.SET_BLOG,
@@ -49,8 +49,8 @@ export class BlogEffects {
         .map((action: BlogActions.TryAddBlog) => {
             return action.payload
         })
-        .switchMap((payload) => {
-            return this.httpClient.post<Blog>(this.baseUrl + 'blog/' + payload.type + '/' + payload.recordId,
+        .switchMap((appUserId) => {
+            return this.httpClient.post<Blog>(this.baseUrl + 'blog/' + appUserId,
                 null,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
@@ -71,16 +71,16 @@ export class BlogEffects {
         .map((action: BlogActions.UpdateBlog) => {
             return action.payload
         })
-        .switchMap((payload) => {
-            return this.httpClient.put(this.baseUrl + 'blog/' + payload.type + '/' + payload.recordId + '/' + payload.blog.id,
-                payload.blog,
+        .switchMap((blog) => {
+            return this.httpClient.put(this.baseUrl + 'blog/',
+                blog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .map(() => {
                     this.alertify.success("更新しました");
                     return {
-                        type: BlogActions.GET_BLOG, payload: {type:payload.type, recordId:payload.recordId}
+                        type: BlogActions.GET_BLOG, payload: blog.ownerId
                     };
                 })
                 .catch((error: string) => {
@@ -94,11 +94,12 @@ export class BlogEffects {
         .map((action: BlogActions.TryDeleteBlog) => {
             return action.payload
         })
-        .switchMap((payload) => {
-            return this.httpClient.delete(this.baseUrl + 'blog/' + payload.type + '/' + payload.recordId + '/' + payload.id)
+        .switchMap((id) => {
+            return this.httpClient.delete(this.baseUrl + 'blog/' + id)
                 .map(() => {
+                    this.alertify.success("削除しました");
                     return {
-                        type: BlogActions.DELETE_BLOG, payload: payload.id
+                        type: BlogActions.DELETE_BLOG, payload: id
                     };
                 })
                 .catch((error: string) => {

@@ -12,8 +12,8 @@ namespace Wacomi.API.Models
         public int? CategoryId{ get; set;}
         public ClanSeekCategory Category{get; set;}
         [Required]
-        public int MemberId{ get; set;}
-        public Member Member{ get; set;}
+        public int AppUserId{ get; set;}
+        public AppUser AppUser{ get; set;}
         public ICollection<Photo> Photos { get; set; }
         public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}

@@ -1,0 +1,37 @@
+.latestClanImage{
+    width: 50px;
+    margin: 5px;
+    float: left;
+}
+
+.latestClanInfo {
+    left: 70px;
+    top: 5px;
+}
+
+.latestClanTitle {
+    font-weight: bold;
+}
+
+.latestClanCard{
+    width:100%;
+    position: relative;
+    margin: 5px;
+    padding: 5px;
+    border: solid 2px rgb(209, 243, 193);
+}
+
+.latestClanCard:hover  {
+    cursor: pointer;
+    transform : scale(1.02, 1.02);
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+    opacity: 0.8;
+}
+
+.latestClanLocation {
+    color: white;
+    background-color: rgb(2, 56, 16);
+    border-radius: 5px;
+    padding:3px;
+} 

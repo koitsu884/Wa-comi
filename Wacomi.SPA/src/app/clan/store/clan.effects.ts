@@ -67,7 +67,7 @@ export class ClanSeekEffects {
                 return action.payload
             })
             .switchMap((clanSeek) => {
-                return this.httpClient.put(this.baseUrl + 'clanseek/' + clanSeek.id,
+                return this.httpClient.put(this.baseUrl + 'clanseek',
                     clanSeek,
                     {
                         headers: new HttpHeaders().set('Content-Type', 'application/json')

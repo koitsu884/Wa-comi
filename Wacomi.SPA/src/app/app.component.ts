@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Member } from './_models/Member';
 import { Store } from '@ngrx/store';
 import * as jwt_decode from "jwt-decode";
 import * as fromApp from './store/app.reducer';
@@ -7,6 +6,8 @@ import * as AccountActions from './account/store/account.actions';
 import * as PhotoActions from './photo/store/photos.action';
 import * as GlobalActions from './store/global.actions';
 import { decode } from 'punycode';
+import { Route } from '@angular/compiler/src/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,7 @@ import { decode } from 'punycode';
 })
 export class AppComponent implements OnInit{
 
-  constructor(private store:Store<fromApp.AppState>) {}
+  constructor(private store:Store<fromApp.AppState>, public location: Location) {}
 
   ngOnInit() {
     const token = localStorage.getItem('token');
@@ -30,11 +31,23 @@ export class AppComponent implements OnInit{
       }
       else{
         const appUser = JSON.parse(localStorage.getItem('appUser'));
-        const profile = JSON.parse(localStorage.getItem('profile'));
-        this.store.dispatch(new AccountActions.Login({appUser: appUser, token: token}));
+        const account = JSON.parse(localStorage.getItem('account'));
+        const memberProfile = localStorage.getItem('memberProfile');
+        const businessProfile = localStorage.getItem('businessProfile');
+        const photos = JSON.parse(localStorage.getItem('photos'));
+        const blogs = JSON.parse(localStorage.getItem('blogs'));
+        this.store.dispatch(new AccountActions.Login({
+                tokenString: token,
+                appUser: appUser,
+                account: account,
+                photos: photos == null ? [] : photos,
+                blogs: blogs == null ? [] : blogs,
+                memberProfile: memberProfile == null ? null : JSON.parse(memberProfile),
+                businessProfile: businessProfile == null ? null : JSON.parse(businessProfile)
+              }));
         // this.store.dispatch(new AccountActions.SetToken({token: token, appUser: appUser}));
         // this.store.dispatch(new AccountActions.SetAppUser(appUser));
-        this.store.dispatch(new PhotoActions.GetPhotos({type: appUser.userType, recordId:appUser.relatedUserClassId}));   
+//        this.store.dispatch(new PhotoActions.GetPhotos({type: appUser.userType, recordId:appUser.relatedUserClassId}));   
       }
     }
 
@@ -50,5 +63,9 @@ export class AppComponent implements OnInit{
     //   // this.authService.decodedToken = this.jwtHelperService.decodeToken(token);
     //   // this.authService.appUser = JSON.parse(appUser);
     // }
+  }
+
+  backClicked() {
+    this.location.back();
   }
 }

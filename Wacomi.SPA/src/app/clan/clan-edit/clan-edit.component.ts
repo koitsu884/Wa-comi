@@ -19,7 +19,7 @@ import * as ClanActions from '../store/clan.actions';
 export class ClanEditComponent implements OnInit {
   @Input() editMode : boolean;
   id: number;
-  memberId: number;
+  appUserId: number;
   editingClan: ClanSeek;
   cities: City[];
   categories: ClanSeekCategory[];
@@ -32,9 +32,9 @@ export class ClanEditComponent implements OnInit {
       .subscribe(
         (params: Params) => {
           this.id = +params['id'];
-          this.memberId = +params['memberId'];
+          this.appUserId = +params['appUserId'];
           console.log(params);
-          if(this.memberId == null){
+          if(this.appUserId == null){
             this.router.navigate(['/home']);
             return;
           }
@@ -54,7 +54,7 @@ export class ClanEditComponent implements OnInit {
     else{
       this.editingClan = <ClanSeek>{};
     }
-    this.editingClan.memberId = this.memberId;
+    this.editingClan.appUserId = this.appUserId;
   }
 
   onClear(){
@@ -67,9 +67,13 @@ export class ClanEditComponent implements OnInit {
   }
 
   submit(){
-    if(this.editMode)
+    if(this.editMode){
       this.store.dispatch(new ClanActions.UpdateClanSeek(this.editingClan));
+    }
     else
+    {
       this.store.dispatch(new ClanActions.TryAddClanSeek(this.editingClan));
+    }
+    this.router.navigate(['/clan']);
   }
 }

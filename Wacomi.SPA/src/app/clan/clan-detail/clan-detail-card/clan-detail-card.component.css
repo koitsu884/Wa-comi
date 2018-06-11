@@ -1,5 +1,8 @@
 .profile-image {
     margin: 5px;
-    width: 85%;
-    height: 85%;
+    width: 80px;
 }
+
+.btn {
+    white-space: normal;
+  }

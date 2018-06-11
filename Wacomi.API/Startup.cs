@@ -45,7 +45,7 @@ namespace Wacomi.API
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
 
-            services.AddIdentity<AppUser, IdentityRole>
+            services.AddIdentity<Account, IdentityRole>
             (o =>
             {
                 // configure identity options

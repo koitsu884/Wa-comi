@@ -33,7 +33,7 @@ namespace Wacomi.API.Controllers
         public async Task<IActionResult> Post([FromBody]TopicCommentFeel model){ 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var member = await this._repo.GetMember(model.MemberId);
+            var member = await this._repo.GetMemberProfile(model.MemberId);
             if(member == null)
                 return NotFound();
             
@@ -62,7 +62,7 @@ namespace Wacomi.API.Controllers
             if(topicCommentFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(topicCommentFromRepo.MemberId))
+            if(!await this.MatchAppUserWithToken(topicCommentFromRepo.Member.AppUserId))
                 return Unauthorized();
 
             _repo.Delete(topicCommentFromRepo);

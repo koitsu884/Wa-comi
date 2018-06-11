@@ -25,17 +25,42 @@ export class DailyTopicEffects {
             return action.payload;
         })
         .switchMap((userId) => {
-            return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic?userId=' + userId)
-                .map((result) => {
-                    return {
-                        type: TopicActions.SET_TOPIC_LIST,
-                        payload: result
-                    }
+            return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic')
+                .mergeMap((result) => {
+                    return [
+                        {
+                            type: TopicActions.SET_TOPIC_LIST,
+                            payload: result
+                        },
+                        {
+                            type: TopicActions.GET_LIKED_TOPIC_LIST,
+                            payload: userId
+                        }
+                    ] 
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
                 });
         })
+
+        @Effect()
+        getLikedTopicList = this.actions$
+            .ofType(TopicActions.GET_LIKED_TOPIC_LIST)
+            .map((action: TopicActions.GetLikedTopicList) => {
+                return action.payload;
+            })
+            .switchMap((userId) => {
+                return this.httpClient.get<number[]>(this.baseUrl + 'topiclike/' + userId)
+                    .map((result) => {
+                        return {
+                            type: TopicActions.SET_LIKED_TOPIC_LIST,
+                            payload: result
+                        }
+                    })
+                    .catch((error: string) => {
+                        return of({ type: GlobalActions.FAILED, payload: error })
+                    });
+            })
 
     @Effect()
     tryAddTopic = this.actions$
@@ -86,7 +111,7 @@ export class DailyTopicEffects {
             return action.payload
         })
         .switchMap((payload) => {
-            return this.httpClient.post<any>(this.baseUrl + 'dailytopic/like',
+            return this.httpClient.post<any>(this.baseUrl + 'topiclike',
                 payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')

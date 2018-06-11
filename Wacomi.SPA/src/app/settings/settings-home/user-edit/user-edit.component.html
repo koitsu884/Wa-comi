@@ -1,28 +1,25 @@
 <div class="container">
   <div class="row">
     <form #userEditForm="ngForm" id="userEditForm" (ngSubmit)="submit(userEditForm)">
-      <div class="form-group" [ngClass]="{'has-error': username.errors && username.touched}">
-        <label for="userName" class="required">ユーザーネーム</label>
-        <input class="form-control form-group " type="text" name="userName" [(ngModel)]="appUser.userName" required #username="ngModel"
-        />
-        <span class="help-block" *ngIf="username?.errors?.required && username.touched">
-          ユーザーネームは必須項目です
-        </span>
-      </div>
-      <div class="form-group" [ngClass]="{'has-error': email.errors && email.touched}">
-        <label class="required" for="email">Eメール</label>
-        <input class="form-control" type="text" name="email" [(ngModel)]="appUser.email" required email #email="ngModel" />
-        <span class="help-block" *ngIf="email?.errors?.required && email.touched">
-          Eメールアドレスは必須項目です
-        </span>
-        <span class="help-block" *ngIf="email?.errors?.email && email.touched">
-          Eメールが正しくありません
-        </span>
-      </div>
-
+      <label>プロフィール写真選択</label>
+      <div class="photoSelector" *ngIf="photos.length > 0">
+          <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="appUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, userEditForm)"></app-mainphoto-selector>
+        </div>
+        <a class="btn btn-primary" [routerLink]="['/editphoto']">写真の追加・削除</a>
+        <hr>
       <label for="displayName">表示名</label>
       <input class="form-control form-group " type="text" name="displayName" [(ngModel)]="appUser.displayName" />
-      <hr>
+      <div class="form-group">
+        <label for="city" class="control-label">滞在先</label>
+        <select [(ngModel)]="appUser.cityId" name="city">
+          <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="blogs" class="control-label">ブログ</label>
+        <app-blog-list [blogs]="blogs"></app-blog-list>
+        <a [routerLink]="['/editblog',  appUser.id]">ブログの追加・削除</a>
+      </div>
       <button class="btn btn-success" [disabled]="!userEditForm.valid || userEditForm.pristine" type="submit">更新</button>
     </form>
   </div>

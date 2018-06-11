@@ -5,10 +5,13 @@ import { environment } from '../../../environments/environment';
 import { AlertifyService } from '../../_services/alertify.service';
 import * as fromApp from "../../store/app.reducer";
 import * as fromPhoto from "../store/photos.reducers";
+import * as fromAccount from "../../account/store/account.reducers";
 import * as PhotoActions from '../store/photos.action';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { Location } from '@angular/common';
+import { AppUser } from '../../_models/AppUser';
 
 @Component({
   selector: 'app-photo-editor',
@@ -18,31 +21,45 @@ import { Observable } from 'rxjs/Observable';
 export class PhotoEditorComponent implements OnInit {
   // photos: Photo[];
   selectedPhoto: Photo;
-  recordId: number;
-  type: string;
+  appUserId: number;
   baseUrl = environment.apiUrl;
   photoState: Observable<fromPhoto.State>;
+  // accountState: Observable<fromAccount.State>;
   selectedFile: File;
   previewUrl:string;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
              private alertify: AlertifyService, 
+             private location: Location,
              private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
+    console.log("WHD");
     this.photoState = this.store.select('photos');
-    this.route.params.subscribe(params => {
-      this.recordId = +params['recordId'];
-      this.type = params['type'];
-      if(!this.recordId || !this.type){
-        this.alertify.error("パラメーターが未設定です");
-        console.log(params);
-        this.router.navigate(['/home']);
-        return;
-      }
-      this.store.dispatch(new PhotoActions.GetPhotos({type: this.type, recordId: this.recordId}));
-    });
+    this.store.select('account')
+              .subscribe((state: fromAccount.State) => {
+                console.log("State");
+                console.log(state);
+                this.appUserId = state.appUser.id;
+                this.store.dispatch(new PhotoActions.GetPhotos(state.appUser.id));
+              }, (error) => {
+                this.alertify.error('Problem retrieving data');
+                this.router.navigate(['/home']);
+                return Observable.of(null);
+              });
+
+
+    // this.route.params.subscribe(params => {
+    //   this.appUserId = +params['appUserId'];
+    //   if(!this.appUserId){
+    //     this.alertify.error("パラメーターが未設定です");
+    //     console.log(params);
+    //     this.router.navigate(['/home']);
+    //     return;
+    //   }
+    //   this.store.dispatch(new PhotoActions.GetPhotos(this.appUserId));
+    // });
   }
 
 
@@ -63,13 +80,12 @@ export class PhotoEditorComponent implements OnInit {
 
   onUpload() {
     console.log(this.selectedFile);
-    this.store.dispatch(new PhotoActions.TryAddPhoto( {type: this.type, recordId: this.recordId, fileData: this.selectedFile}));
+    this.store.dispatch(new PhotoActions.TryAddPhoto( {appUserId: this.appUserId, fileData: this.selectedFile}));
   }
 
   deletePhoto(id: number) {
     this.alertify.confirm('この写真を本当に削除しますか?', () => {
-      this.store.dispatch(new PhotoActions.TryDeletePhoto({type: this.type, recordId: this.recordId, photoId: id}));
+      this.store.dispatch(new PhotoActions.TryDeletePhoto({userId: this.appUserId, id: id}));
     })
   }
-
 }

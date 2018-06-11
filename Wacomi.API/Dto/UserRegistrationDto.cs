@@ -13,6 +13,5 @@ namespace Wacomi.API.Dto
         public string Password { get; set; }
         [Required]
         public string UserType { get; set;} = "Member";
-        public string DisplayName { get; set;}
     }
 }

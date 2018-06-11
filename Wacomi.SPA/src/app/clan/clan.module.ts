@@ -15,6 +15,7 @@ import { ClanDetailCardComponent } from "./clan-detail/clan-detail-card/clan-det
 import { ClanDetailInfoComponent } from "./clan-detail/clan-detail-info/clan-detail-info.component";
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
+import { ClanCardComponent } from "./clan-home/clan-list/clan-card/clan-card.component";
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
         ClanDetailCardComponent,
         ClanDetailInfoComponent,
         ClanListComponent,
+        ClanCardComponent
     ],
     imports: [
         ClanRoutingModule,

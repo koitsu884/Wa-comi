@@ -11,7 +11,7 @@ namespace Wacomi.API.Models
         public TopicComment TopicComment{get; set;}
 
         public int? MemberId { get; set;}
-        public Member Member{ get; set;}
+        public MemberProfile Member{ get; set;}
         public string DisplayName{ get; set;}
         public string MainPhotoUrl{ get; set;}
         [Required]

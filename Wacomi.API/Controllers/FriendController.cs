@@ -34,10 +34,10 @@ namespace Wacomi.API.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await this._repo.MemberExist(model.MemberId))
+            if(!await this._repo.MemberProfileExist(model.MemberId))
                 return NotFound();
 
-            if(!await this._repo.MemberExist(model.FriendMemberid))
+            if(!await this._repo.MemberProfileExist(model.FriendMemberid))
                 return NotFound();
 
             var friendFromRepo = await _repo.GetFriend(model.MemberId, model.FriendMemberid);
@@ -45,7 +45,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest("既に友達になっています");
             }
             
-            if(!await this.MatchMemberWithToken(model.MemberId) && !await this.MatchMemberWithToken(model.FriendMemberid))
+            if(!await this.MatchAppUserWithToken(model.Member.AppUserId) && !await this.MatchAppUserWithToken(model.FriendMember.AppUserId))
                 return Unauthorized();
 
             _repo.Add(model);

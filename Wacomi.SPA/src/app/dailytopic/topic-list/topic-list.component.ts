@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DailyTopic } from '../../_models/DailyTopic';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
@@ -15,10 +15,10 @@ import { NgForm } from '@angular/forms';
   templateUrl: './topic-list.component.html',
   styleUrls: ['./topic-list.component.css']
 })
-export class TopicListComponent implements OnInit {
+export class TopicListComponent implements OnInit, OnDestroy {
   //dailyTopicList: DailyTopic[];
   dailyTopicState: Observable<fromDailyTopic.State>;
-  userId: string;
+  userId: number;
 
 
   constructor(private route: ActivatedRoute,
@@ -34,9 +34,13 @@ export class TopicListComponent implements OnInit {
     //this.dailyTopicList = this.route.snapshot.data['topicList'];
   }
 
+  ngOnDestroy(){
+    this.store.dispatch(new TopicActions.TopicClear());
+  }
+
   sendLike(id: number){
-    // this.alertify.message("Like!! " + id);
-    this.store.dispatch(new TopicActions.LikeTopic({supportUserId:this.userId, dailyTopicId:id}));
+    console.log(this.userId)
+    this.store.dispatch(new TopicActions.LikeTopic({supportAppUserId:this.userId, dailyTopicId:id}));
   }
 
   onCreate(form: NgForm){

@@ -1,0 +1,20 @@
+<div class="panel panel-default">
+  <img class="profile-image thumbnail" src="{{imageUrl}}">
+  <div class="panel-body">
+    <div>
+      <strong>最終ログイン </strong>
+      <p>{{lastActive | timeAgo}}</p>
+    </div>
+    <div>
+      <strong>アカウント作成日</strong>
+      <p>{{created | date: 'mediumDate'}}</p>
+    </div>
+    <div>
+      <strong>拠点</strong>
+      <p>{{city}}</p>
+    </div>
+  </div>
+  <!-- <div class="panel-footer">
+    <app-member-buttons *ngIf="expression"></app-member-buttons>
+  </div> -->
+</div>

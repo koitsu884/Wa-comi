@@ -4,6 +4,16 @@ img.thumbnail {
     margin-bottom: 2px;
 }
 
+.profImage{
+    padding:10px;
+    border: solid 2px black;
+}
+
+.selector {
+    background-color: rgb(195, 234, 252);
+    padding:5px;
+}
+
 .selected{
     border: 2px solid red;
 }

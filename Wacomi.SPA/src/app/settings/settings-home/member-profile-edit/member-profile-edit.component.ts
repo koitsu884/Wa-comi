@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Member } from '../../../_models/Member';
 import { BsDatepickerConfig, BsLocaleService, defineLocale} from 'ngx-bootstrap';
 import { City } from '../../../_models/City';
 import { Hometown } from '../../../_models/Hometown';
@@ -14,6 +13,7 @@ import { Observer } from 'rxjs/Observer';
 import { Observable } from 'rxjs/Observable';
 import { NgForm } from '@angular/forms';
 import { Blog } from '../../../_models/Blog';
+import { MemberProfile } from '../../../_models/MemberProfile';
 
 
 @Component({
@@ -22,11 +22,10 @@ import { Blog } from '../../../_models/Blog';
   styleUrls: ['./member-profile-edit.component.css']
 })
 export class MemberProfileEditComponent implements OnInit {
-  @Input() member: Member; 
-  @Input() cities: City[];
+  @Input() member: MemberProfile; 
   @Input() hometowns: Hometown[];
-  @Input() photos: Photo[];
-  @Input() blogs: Blog[];
+  // @Input() photos: Photo[];
+  // @Input() blogs: Blog[];
   
   blogAdding: boolean = false;
 
@@ -58,9 +57,9 @@ export class MemberProfileEditComponent implements OnInit {
 
   }
 
-  mainPhotoSelected(event, ngForm: NgForm){
-    this.member.mainPhotoUrl = event;
-    ngForm.form.markAsDirty();
-  }
+  // mainPhotoSelected(event, ngForm: NgForm){
+  //   this.member.mainPhotoUrl = event;
+  //   ngForm.form.markAsDirty();
+  // }
 
 }

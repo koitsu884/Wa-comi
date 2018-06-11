@@ -13,6 +13,8 @@ import { BusinessProfileEditComponent } from "./settings-home/business-profile-e
 import { UserEditComponent } from "./settings-home/user-edit/user-edit.component";
 import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 import { AppUserResolver } from "../_resolvers/appuser.resolver";
+import { AccountEditResolver } from "../_resolvers/account-edit.resolver";
+import { UserBlogResolver } from "../_resolvers/userblog.resolver";
 
 
 const settingRoute: Routes = [
@@ -23,11 +25,13 @@ const settingRoute: Routes = [
         component:SettingsHomeComponent,
         resolve: {
             appUser:AppUserResolver,
+            account:AccountEditResolver,
             bisUser:BusinessEditResolver,
             member:MemberEditResolver,
             cities:CityListResolver,
             hometowns:HomeTownListResolver,
-            photos:UserPhotoResolver
+            photos:UserPhotoResolver,
+            blogs:UserBlogResolver
         },
        
     },

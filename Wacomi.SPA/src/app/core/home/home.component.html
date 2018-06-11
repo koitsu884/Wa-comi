@@ -2,28 +2,28 @@
   <div class="row">
     <div class="col-md-9">
       <div class="row">
-        <h2>みんなのブログ</h2>
+        <h2 class="bg-info">みんなのブログ</h2>
         <app-blogfeed-list [blogFeedList]="blogFeedList | async"></app-blogfeed-list>
       </div>
       <div class="row">
-        <h2>仲間募集中！</h2>
+        <h2  class="bg-info">仲間募集中！</h2>
         <app-latest-clan-list [latestClanSeeklist]="latestClanSeekList | async"></app-latest-clan-list>
       </div>
-      <a class="btn btn-primary" *ngIf="(authState | async).authenticated" [routerLink]="['/clan']">仲間募集検索</a>
-      <a class="btn btn-primary" *ngIf="!(authState | async).authenticated" [routerLink]="['/account/login']">ログイン</a>
-      <div>
-        <h2>皆の一言</h2>
+      <a class="btn btn-primary" [routerLink]="['/clan']">仲間募集検索</a>
+      <!-- <a class="btn btn-primary" *ngIf="!(authState | async).authenticated" [routerLink]="['/account/login']">ログイン</a> -->
+      <div [routerLink]="['/dailytopic']">
+        <h2  class="bg-info">皆の一言</h2>
         <h4>本日のお題：{{todaysTopic | async}}</h4>
         <app-latest-topiccomment-list [latestTopicComments]="latestTopicComments | async"></app-latest-topiccomment-list>
       </div>
-      <a class="btn btn-primary" [routerLink]="['/dailytopic']">全て見る</a>
+      <!-- <a class="btn btn-primary" [routerLink]="['/dailytopic']">全て見る</a> -->
       <div>
-        <h2>何か情報とか？</h2>
+        <h2  class="bg-info">何か情報とか？</h2>
       </div>
     </div>
     <div class="col-md-3">
       <div>
-        <h2>広告</h2>
+        <h2 >広告</h2>
       </div>
       <div>
         <h2>広告</h2>

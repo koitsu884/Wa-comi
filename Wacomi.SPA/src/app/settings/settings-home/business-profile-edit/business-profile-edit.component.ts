@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BusinessUser } from '../../../_models/BusinessUser';
 import { City } from '../../../_models/City';
 import { Hometown } from '../../../_models/Hometown';
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap';
@@ -11,6 +10,7 @@ import * as AccountActions from '../../../account/store/account.actions';
 import { Photo } from '../../../_models/Photo';
 import { NgForm } from '@angular/forms';
 import { Blog } from '../../../_models/Blog';
+import { BusinessProfile } from '../../../_models/BusinessProfile';
 
 @Component({
   selector: 'app-business-profile-edit',
@@ -18,11 +18,7 @@ import { Blog } from '../../../_models/Blog';
   styleUrls: ['./business-profile-edit.component.css']
 })
 export class BusinessProfileEditComponent implements OnInit {
-  @Input() bisUser: BusinessUser; 
-  @Input() cities: City[];
-  @Input() hometowns: Hometown[];
-  @Input() photos: Photo[];
-  @Input() blogs: Blog[];
+  @Input() bisUser: BusinessProfile; 
 
   bsConfig: Partial<BsDatepickerConfig>;
 
@@ -40,11 +36,6 @@ export class BusinessProfileEditComponent implements OnInit {
     submit(ngForm: NgForm){
       this.store.dispatch(new AccountActions.UpdateBisUser(this.bisUser));
       ngForm.form.markAsPristine();
-    }
-
-    mainPhotoSelected(event, ngForm: NgForm){
-      this.bisUser.mainPhotoUrl = event;
-      ngForm.form.markAsDirty();
     }
 
 }

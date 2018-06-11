@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+      <h1>{{userDetail.appUser.displayName}} のプロフィール</h1>
+    </div>
+  
+    <div class="row">
+      <div class="col-sm-4">
+        <!-- <app-member-card  [member]="member" [appUser]="appUser"></app-member-card> -->
+        <app-user-card [imageUrl]="userDetail.appUser.mainPhotoUrl" [created]="userDetail.appUser.dateCreated" [city]="userDetail.appUser.city" [lastActive]="userDetail.appUser.lastActive"></app-user-card>
+      </div>
+      <div *ngIf="userDetail.appUser.userType == 'Member'" class="col-sm-6">
+        <div>
+          <h4>出身</h4>
+          <p>{{memberProfile.homeTown}}</p>
+        </div>
+        <div *ngIf="memberProfile.dateOfBirth">
+          <h4>誕生日</h4>
+          <p>{{memberProfile.dateOfBirth | date: 'mediumDate'}}</p>
+        </div>
+        <h4>自己紹介</h4>
+        <p>{{memberProfile.introduction}}</p>
+        <h4>趣味</h4>
+        <p>{{memberProfile.interests}}</p>
+      </div>
+      <div *ngIf="userDetail.appUser.userType == 'Business'" class="col-sm-6">
+        <div *ngIf="businessProfile.establishedDate">
+          <h4>誕生日</h4>
+          <p>{{businessProfile.establishedDate | date: 'mediumDate'}}</p>
+        </div>
+        <h4>会社概要</h4>
+        <p>{{businessProfile.introduction}}</p>
+      </div>
+      <div class="col-sm-2">
+        <h4>広告…</h4>
+      </div>
+    </div>
+  </div>

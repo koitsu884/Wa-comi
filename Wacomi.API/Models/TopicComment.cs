@@ -8,7 +8,7 @@ namespace Wacomi.API.Models
     {
         public int Id{ get; set;}
         public int? MemberId { get; set;}
-        public Member Member{ get; set;}
+        public MemberProfile Member{ get; set;}
         public string DisplayName{ get; set;}
         public string MainPhotoUrl{ get; set;}
         public string TopicTitle{ get; set;}

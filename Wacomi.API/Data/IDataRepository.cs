@@ -15,17 +15,23 @@ namespace Wacomi.API.Data
          Task<IEnumerable<City>> GetCities();
          Task<IEnumerable<HomeTown>> GetHomeTowns();
          Task<Photo> GetPhoto(int id);
-         Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id);
+        //  Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id);
+        Task<IEnumerable<Photo>> GetPhotosForAppUser(int id);
+         Task<AppUser> GetAppUser(int id);
+         Task<AppUser> GetAppUserByAccountId(string accountId);
 
-        Task<UserBase> GetUser(string type, int id);
-        Task<BusinessUser> GetBusinessUser(int id);
-        Task<Member> GetMember(int id);
-        Task<Member> GetMemberByIdentityId(string id);
-        Task<IEnumerable<Member>> GetMembers(UserParams userParams);
-        Task<bool> MemberExist(int memberId);
+        // Task<UserBase> GetUser(string type, int id);
+        Task<BusinessProfile> GetBusinessProfile(int id);
+        Task<MemberProfile> GetMemberProfile(int id);
+        Task<MemberProfile> GetMemberProfileByAccountId(string id);
+        // Task<IEnumerable<MemberProfile>> GetMemberProfiles(UserParams userParams);
+        Task<bool> AppUserExist(int appUserid);
+        Task<bool> MemberProfileExist(int memberId);
         Task<Blog> GetBlog(int id);
-        Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);
         Task<IEnumerable<Blog>> GetBlogs();
+        Task<int> GetBlogCountForUser(int id);
+        Task<IEnumerable<Blog>> GetBlogsForUser(int id);
+        // Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);
         Task<BlogFeed> GetLatestBlogFeed(Blog blog);
         Task<BlogFeed> GetBlogFeed(int id);
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
@@ -36,15 +42,17 @@ namespace Wacomi.API.Data
         Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId);
         Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
 
-        Task<DailyTopic> GetDailyTopic(int id);
+        Task<DailyTopic> GetDailyTopic(int id); 
+        Task<bool> DailyTopicExists(int id);
+
         Task<DailyTopic> GetActiveDailyTopic();
         Task<DailyTopic> GetTopDailyTopic();
         Task<string> GetTodaysTopic();
         Task<DailyTopic> GetOldestDailyTopic();
-        Task<int> GetPostedTopicCountForUser(string userId);
-        Task<TopicLike> GetTopicLike(string userId, int recordId);
+        Task<int> GetPostedTopicCountForUser(int userId);
+        Task<TopicLike> GetTopicLike(int userId, int recordId);
         Task<IEnumerable<DailyTopic>> GetDailyTopicList();
-        Task<IEnumerable<TopicLike>> GetTopicLikesForUser(string userId);
+        Task<IEnumerable<TopicLike>> GetTopicLikesForUser(int userId);
         Task<IEnumerable<TopicLike>> GetTopicLikesForTopic(int topicId);
         void ResetTopicLikes(int topicId);
 
@@ -67,6 +75,14 @@ namespace Wacomi.API.Data
         Task<FriendRequest> GetFriendRequest(int senderId, int recipientId);
         Task<IEnumerable<FriendRequest>> GetFriendRequestsReceived(int memberId);
         Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId);
+
+        Task<Message> GetMessage(int id);
+        // Task<IEnumerable<Message>> GetReceivedMessages(string userId);
+        IEnumerable<Message> GetLatestReceivedMessages(int userId);
+        Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId);
+        // Task<IEnumerable<Message>> GetSentMessages(string userId);
+        Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
+        Task<IEnumerable<Message>> GetMessagesSentTo(int userId, int recipientId);
 
     }
 

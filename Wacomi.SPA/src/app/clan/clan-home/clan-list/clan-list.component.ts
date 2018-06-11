@@ -8,7 +8,7 @@ import { ClanSeek } from '../../../_models/ClanSeek';
 })
 export class ClanListComponent implements OnInit {
   @Input() clanSeeks: ClanSeek[];
-  @Input() memberId: number;
+  @Input() appUserId: number;
   constructor() { }
 
   ngOnInit() {

@@ -7,5 +7,5 @@ export interface BlogFeed {
     imageUrl: string;
     blogImageUrl: string;
     writerName: string;
-    ownerId: string;
+    ownerId: number;
 }

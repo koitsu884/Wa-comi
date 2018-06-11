@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ClanSeek } from '../../_models/ClanSeek';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as fromClan from '../store/clan.reducers';
+import * as fromAccount from '../../account/store/account.reducers';
 import * as ClanSeekActions from '../store/clan.actions';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -18,6 +19,7 @@ export class ClanDetailComponent implements OnInit {
   appUser: AppUser;
   memberId: number;
   clanState: Observable<fromClan.State>;
+  // accountState: Observable<fromAccount.State>;
 
   constructor(private route: ActivatedRoute, 
               private router:Router, 
@@ -26,20 +28,20 @@ export class ClanDetailComponent implements OnInit {
 
   ngOnInit() {
     this.clanId = this.route.snapshot.params['id'];
-    let appUser : AppUser = this.route.snapshot.data['appUser'];
-    this.memberId = appUser ? appUser.relatedUserClassId : null;
+    this.appUser= this.route.snapshot.data['appUser'];
+    // this.memberId = appUser ? appUser.relatedUserClassId : null;
     if(!this.clanId){
       this.router.navigate(['/clan']);
       return;
     }
     this.store.dispatch(new ClanSeekActions.GetClanSeek(this.clanId));
     this.clanState = this.store.select('clan');
+    // this.accountState = this.store.select('account').take(1);
   }
 
-  onDelete(){
-      this.alertify.confirm("本当に削除しますか？", ()=>{
-        this.store.dispatch(new ClanSeekActions.TryDeleteClanSeek(this.clanId));
-      });
-  }
-
+  // onDelete(){
+  //     this.alertify.confirm("本当に削除しますか？", ()=>{
+  //       this.store.dispatch(new ClanSeekActions.TryDeleteClanSeek(this.clanId));
+  //     });
+  // }
 }

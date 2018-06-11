@@ -22,13 +22,15 @@ export class PhotoEffect{
     getPhotos = this.actions$
         .ofType(PhotoActions.GET_PHOTOS)
         .map((action: PhotoActions.GetPhotos) => { return action.payload })
-        .switchMap((payload) => {
-            return this.httpClient.get<Photo[]>(this.baseUrl + 'photo/' + payload.type + '/' + payload.recordId)
-            .map((photos) => {
-                return {
-                    type: PhotoActions.SET_PHOTOS,
-                    payload: {photos: photos, type:payload.type, id:payload.recordId}
-                };
+        .switchMap((appUserId) => {
+            return this.httpClient.get<Photo[]>(this.baseUrl + 'photo/user/' + appUserId)
+            .mergeMap((photos) => {
+                return [
+                    {
+                        type: PhotoActions.SET_PHOTOS,
+                        payload: photos
+                    }
+                ];
             })
             .catch((error) => {
                 return of({ type: 'FAILED', payload: "画像の取得に失敗しました: " + error })
@@ -41,7 +43,7 @@ export class PhotoEffect{
         .map((actions: PhotoActions.TryDeletePhoto) => {return actions.payload})
         .switchMap(payload => {
             this.alertify.message("写真を削除中…");
-            return this.httpClient.delete(this.baseUrl + 'photo/' + payload.type + '/' + payload.recordId + '/' + payload.photoId)
+            return this.httpClient.delete(this.baseUrl + 'photo/' + payload.userId + '/' + payload.id)
                 .mergeMap(() => {
                     return [
                         {
@@ -50,7 +52,7 @@ export class PhotoEffect{
                         },
                         {
                             type: PhotoActions.DELETE_PHOTO,
-                            payload: payload.photoId
+                            payload: payload.id
                         }
                     ]
                 }
@@ -72,7 +74,7 @@ export class PhotoEffect{
 
             this.alertify.message("写真をアップロード中…");
 
-            return this.httpClient.post(this.baseUrl + 'photo/' + payload.type + '/' + payload.recordId,
+            return this.httpClient.post(this.baseUrl + 'photo/' + payload.appUserId,
             formData)
             .mergeMap((newPhoto: Photo) => {
                 return [

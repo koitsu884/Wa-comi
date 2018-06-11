@@ -11,6 +11,7 @@ import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { ClanEditComponent } from "./clan-edit/clan-edit.component";
 import { AuthGuard } from "../_guards/auth.guard";
 import { MemberIdGuard } from "../_guards/memberid.guard";
+import { MemberGuard } from "../_guards/member.guard";
 
 
 
@@ -39,10 +40,10 @@ const clanRoute: Routes = [
         }
     },
     {
-        path: 'edit/:memberId', 
+        path: 'edit/:appUserId', 
         runGuardsAndResolvers: 'always',
         component: ClanEditComponent, 
-        canActivate: [MemberIdGuard],
+        canActivate: [MemberGuard],
         resolve: {
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,
@@ -50,9 +51,9 @@ const clanRoute: Routes = [
         },
     },
     {
-        path: 'edit/:memberId/:id', 
+        path: 'edit/:appUserId/:id', 
         component: ClanEditComponent, 
-        canActivate: [MemberIdGuard],
+        canActivate: [MemberGuard],
         resolve: {
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,

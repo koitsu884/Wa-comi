@@ -11,6 +11,7 @@ export interface FeatureState extends fromApp.AppState {
 
 export interface State {
     topicList: DailyTopic[];
+    likedTopicList: number[];
     topicComments: TopicComment[];
     commentFeelings: TopicCommentFeel[]; 
     topicReplies: {topicCommentId: number, replies: TopicReply[]}
@@ -19,6 +20,7 @@ export interface State {
 
 const initialState: State = {
     topicList: null,
+    likedTopicList: null,
     topicComments : null,
     commentFeelings : null,
     topicReplies : null,
@@ -29,6 +31,16 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
     let temp : DailyTopic[] = null;
     let tempTopicComments : TopicComment[] = null;
     switch(action.type){
+        case DailyTopicActions.TOPIC_CLEAR:
+            return{
+                ...state,
+                topicList: null,
+                topicComments : null,
+                commentFeelings : null,
+                topicReplies : null,
+                todaysComment : null,
+                likedTopicList: null,                
+            }
         //====================================================
         // Daily Topic Ranking
         //====================================================
@@ -36,6 +48,18 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             return {
                 ...state,
                 topicList: action.payload,
+            };
+        case DailyTopicActions.SET_LIKED_TOPIC_LIST:
+            temp = [...state.topicList];
+            action.payload.forEach((topicId) => {
+                var index = temp.findIndex(x => x.id == topicId);
+                if(index != null)
+                    temp[index].isLiked = true;
+            });
+            return {
+                ...state,
+                topicList: temp,
+                likedTopicList: action.payload,
             };
         case DailyTopicActions.ADD_TOPIC:
             return {
@@ -57,7 +81,8 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             temp[index].likedCount++;
             return{
                 ...state,
-                topicList: temp
+                topicList: temp,
+                likedTopicList: [...state.likedTopicList, action.payload.dailyTopicId]
             };
         //====================================================
         // Topic Comment

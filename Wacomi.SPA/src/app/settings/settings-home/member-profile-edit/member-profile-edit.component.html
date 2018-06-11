@@ -18,12 +18,12 @@
           <input type="radio" value="unknown" name="gender" [(ngModel)]="member.gender">その他
         </label>
       </div>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="city" class="control-label">滞在先</label>
         <select [(ngModel)]="member.cityId" name="city">
           <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
         </select>
-      </div>
+      </div> -->
 
       <div class="form-group">
         <label for="hometown" class="control-label">出身地</label>
@@ -43,15 +43,11 @@
         <textarea class="form-control" [(ngModel)]="member.interests" name="interests" rows="6">
       </textarea>
       </div>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="blogs" class="control-label">ブログ</label>
         <app-blog-list [blogs]="blogs"></app-blog-list>
         <a [routerLink]="['/editblog', 'member', member.id]">ブログの追加・削除</a>
-      </div>
-      <div *ngIf="photos">
-        <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="member.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, memberEditForm)"></app-mainphoto-selector>
-      </div>
-      <a [routerLink]="['/editphoto', 'member', member.id]">写真の追加・削除</a>
+      </div> -->
       <hr>
       <button class="btn btn-success" [disabled]="!memberEditForm.valid || memberEditForm.pristine" type="submit">更新</button>
     </form>

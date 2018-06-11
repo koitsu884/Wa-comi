@@ -1,9 +1,11 @@
 import { Action } from "@ngrx/store";
 import { AppUser } from "../../_models/AppUser";
-import { Member } from "../../_models/Member";
-import { BusinessUser } from "../../_models/BusinessUser";
 import { Blog } from "../../_models/Blog";
-import { AuthUser } from "../../_models/AuthUser";
+import { RegisterInfo } from "../../_models/RegisterInfo";
+import { LoginResult } from "../../_models/LoginResult";
+import { MemberProfile } from "../../_models/MemberProfile";
+import { BusinessProfile } from "../../_models/BusinessProfile";
+import { UserAccount } from "../../_models/UserAccount";
 
 export const TRY_LOGIN = 'TRY_LOGIN';
 export const LOGIN = 'LOGIN';
@@ -12,13 +14,17 @@ export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
 export const LOGOUT = 'LOGOUT'
 export const SET_TOKEN = 'SET_TOKEN';
 export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
+export const GET_APPUSER = 'GET_APPUSER';
 export const SET_APPUSER = 'SET_APPUSER';
-export const GET_MEMBER = 'GET_MEMBER';
-export const SET_MEMBER = 'SET_MEMBER';
-export const GET_BISUSER = 'GET_BISUSER';
-export const SET_BISUSER = 'SET_BISUSER';
+export const GET_ACCOUNT = 'GET_ACCOUNT';
+export const SET_ACCOUNT = 'SET_ACCOUNT';
+export const GET_MEMBER_PROFILE = 'GET_MEMBER_PROFILE';
+export const SET_MEMBER_PROFILE = 'SET_MEMBER_PROFILE';
+export const GET_BUSINESS_PROFILE = 'GET_BUSINESS_PROFILE';
+export const SET_BUSINESS_PROFILE = 'SET_BUSINESS_PROFILE';
 
 export const UPDATE_APPUSER = 'UPDATE_APPUSER';
+export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
 export const UPDATE_MEMBER = 'UPDATE_MEMBER';
 export const UPDATE_BISUSER = 'UPDATE_BISUSER';
 
@@ -33,7 +39,7 @@ export const DELETE_BLOG = 'DELETE_BLOG';
 export class TrySignup implements Action{
     readonly type = TRY_SIGNUP;
 
-    constructor(public payload: {registerInfo: AppUser}){}
+    constructor(public payload: {registerInfo: RegisterInfo}){}
 }
 
 export class SignUpSuccess implements Action {
@@ -50,7 +56,7 @@ export class TryLogin implements Action{
 
 export class Login implements Action {
     readonly type = LOGIN;
-    constructor(public payload: {appUser: AppUser, token: string}){};
+    constructor(public payload: LoginResult){};
 }
 
 export class Logout implements Action {
@@ -60,7 +66,7 @@ export class Logout implements Action {
 export class SetToken implements Action {
     readonly type = SET_TOKEN;
 
-    constructor(public payload: {token: string, appUser: AppUser}) {}
+    constructor(public payload:string) {}
 }
 
 export class TokenExpired implements Action {
@@ -69,34 +75,52 @@ export class TokenExpired implements Action {
     constructor() {}
 }
 
+export class GetAccount implements Action {
+    readonly type = GET_ACCOUNT;
+
+    constructor(public payload: string) {}
+}
+
+export class SetAccount implements Action {
+    readonly type = SET_ACCOUNT;
+
+    constructor(public payload: UserAccount) {}
+}
+
+export class GetAppUser implements Action {
+    readonly type = GET_APPUSER;
+
+    constructor(public payload: number) {}
+}
+
 export class SetAppUser implements Action {
     readonly type = SET_APPUSER;
 
     constructor(public payload: AppUser) {}
 }
 
-export class GetMember implements Action {
-    readonly type = GET_MEMBER;
+export class GetMemberProfile implements Action {
+    readonly type = GET_MEMBER_PROFILE;
 
     constructor(public payload: number) {}
 }
 
-export class SetMember implements Action {
-    readonly type = SET_MEMBER;
+export class SetMemberProfile implements Action {
+    readonly type = SET_MEMBER_PROFILE;
 
-    constructor(public payload: Member) {}
+    constructor(public payload: MemberProfile) {}
 }
 
-export class GetBisUser implements Action {
-    readonly type = GET_BISUSER;
+export class GetBusinessProfile implements Action {
+    readonly type = GET_BUSINESS_PROFILE;
 
     constructor(public payload: number) {}
 }
 
-export class SetBisUser implements Action {
-    readonly type = SET_BISUSER;
+export class SetBusinessProfile implements Action {
+    readonly type = SET_BUSINESS_PROFILE;
 
-    constructor(public payload: BusinessUser) {}
+    constructor(public payload: BusinessProfile) {}
 }
 
 export class UpdateAppUser implements Action {
@@ -105,17 +129,23 @@ export class UpdateAppUser implements Action {
     constructor(public payload: AppUser) {}
 }
 
+export class UpdateAccount implements Action {
+    readonly type = UPDATE_ACCOUNT;
+
+    constructor(public payload: UserAccount) {}
+}
+
 
 export class UpdateMember implements Action {
     readonly type = UPDATE_MEMBER;
 
-    constructor(public payload: Member) {}
+    constructor(public payload: MemberProfile) {}
 }
 
 export class UpdateBisUser implements Action {
     readonly type = UPDATE_BISUSER;
 
-    constructor(public payload: BusinessUser) {}
+    constructor(public payload: BusinessProfile) {}
 }
 
 export class TryAddBlog implements Action {
@@ -158,13 +188,17 @@ export type AccountActions = TryLogin
                         | SignUpSuccess
                         | Logout 
                         | SetToken 
+                        | GetAccount
+                        | SetAccount
+                        | GetAppUser
                         | SetAppUser
                         | TokenExpired
-                        | GetMember
-                        | SetMember
-                        | GetBisUser
-                        | SetBisUser
+                        | GetMemberProfile
+                        | SetMemberProfile
+                        | GetBusinessProfile
+                        | SetBusinessProfile
                         | UpdateAppUser
+                        | UpdateAccount
                         | UpdateMember
                         | UpdateBisUser
                         | SetBlog

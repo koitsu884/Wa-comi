@@ -4,6 +4,7 @@ namespace Wacomi.API.Dto
 {
     public class ClanSeekUpdateDto
     {
+        public int Id{ get; set;}
         public string Title{ get; set;}
         public int? CategoryId{ get; set;}
         public string MainPhotoUrl{ get; set;}

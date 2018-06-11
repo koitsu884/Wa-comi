@@ -1,7 +1,7 @@
 <div class="container">
   <h2>現在のトピックランキング</h2>
   <p>*ランキング1位の物が明日のトピックになります</p>
-  <div class="table-responsive" *ngIf="(dailyTopicState | async).topicList">
+  <div *ngIf="(dailyTopicState | async).topicList">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -14,18 +14,21 @@
         <tr *ngFor="let topic of (dailyTopicState | async).topicList index as i">
           <td>{{i+1}}</td>
           <td>{{topic.title}}</td>
-          <td><span [ngClass]="{liked: topic.isLiked}">{{topic.likedCount}}</span> 
-            <button *ngIf="!topic.isLiked"  class="btn btn-primary btn-xs" (click)="sendLike(topic.id)">
-              <i class="fa fa-thumbs-up" title="呟きたい！"></i>
-              <!-- <i class="lsf-icon" title="good" alt="呟きたい！" ></i> -->
+          <td>
+            <button class="btn btn-primary btn-xs" (click)="sendLike(topic.id)" [disabled]="topic.isLiked" [ngClass]="{liked: topic.isLiked}">
+              <i class="fa fa-thumbs-up" title="良いね!"></i>
+              <span class="badge">{{topic.likedCount}}</span>
             </button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
   <form (ngSubmit)="onCreate(newTopicForm)" id="newTopicForm" #newTopicForm="ngForm">
-    <h4>新しいトピック候補を提案</h4>
-    <input type="text" class="form-control" id="newTopic" name="newTopic" ngModel required maxlength="100" #newTopic>
+    <div class="form-group">
+      <label class="h4" for="newTopic">新しいトピック候補を提案</label>
+      <input type="text" class="form-control" id="newTopic" name="newTopic" ngModel required maxlength="100" #newTopic>
+    </div>
     <button class="btn btn-success" [disabled]="!newTopicForm.valid || newTopicForm.pristine" type="submit">候補に追加</button>
   </form>
 </div>

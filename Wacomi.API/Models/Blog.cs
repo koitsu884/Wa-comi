@@ -8,7 +8,8 @@ namespace Wacomi.API.Models
         public int Id { get; set;}
 
         public bool HideOwner{ get; set;} = false;
-        public string OwnerId { get; set;}
+        public int OwnerId { get; set;}
+        public AppUser Owner{ get; set;}
         public string WriterName{ get; set;}
         public string WriterIntroduction {get; set;}
         public string Title { get; set;}

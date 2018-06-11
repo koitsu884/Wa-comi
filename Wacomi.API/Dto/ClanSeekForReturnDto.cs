@@ -8,8 +8,8 @@ namespace Wacomi.API.Dto
         public string Title{ get; set;}
         public int? CategoryId{ get; set;}
         public string CategoryName{get; set;}
-        public int MemberId{ get; set;}
-        public string MemberName{ get; set;}
+        public int AppUserId{ get; set;}
+        public string DisplayName{ get; set;}
         public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}

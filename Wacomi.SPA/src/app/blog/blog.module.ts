@@ -5,6 +5,7 @@ import { BlogEditFormComponent } from "./blog-edit-form/blog-edit-form.component
 import { BlogfeedListComponent } from "./blogfeed/blogfeed-list/blogfeed-list.component";
 import { BlogfeedCardComponent } from "./blogfeed/blogfeed-list/blogfeed-card/blogfeed-card.component";
 import { SharedModule } from "../shared/shared.module";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
     declarations: [
@@ -16,6 +17,7 @@ import { SharedModule } from "../shared/shared.module";
     ],
     imports:[
         SharedModule,
+        RouterModule
     ],
     exports:[
         BlogListComponent,

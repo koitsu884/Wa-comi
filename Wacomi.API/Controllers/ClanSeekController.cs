@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,15 +12,9 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class ClanSeekController : Controller
+    public class ClanSeekController : DataController
     {
-        private readonly IDataRepository _repo;
-        private readonly IMapper _mapper;
-        public ClanSeekController(IDataRepository repo, IMapper mapper)
-        {
-            this._mapper = mapper;
-            this._repo = repo;
-        }
+        public ClanSeekController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
 
         [HttpGet("{id}", Name = "GetClanSeek")]
         public async Task<ActionResult> GetClanSeek(int id)
@@ -57,21 +52,22 @@ namespace Wacomi.API.Controllers
             return BadRequest("Failed to add clanseek");
         }
 
-        [HttpPut("{id}")]
+        [HttpPut()]
         [Authorize]
-        public async Task<ActionResult> UpdateClanSeek(int id, [FromBody]ClanSeekUpdateDto model){
+        public async Task<ActionResult> UpdateClanSeek([FromBody]ClanSeekUpdateDto model){
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var clanSeekFromRepo = await this._repo.GetClanSeek(id);
+            var clanSeekFromRepo = await this._repo.GetClanSeek(model.Id);
             if(clanSeekFromRepo == null){
                 return NotFound();
             }
-            if(!await MatchUserWithToken(clanSeekFromRepo.MemberId))
+            if(!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
             {
                 return Unauthorized();
             }
 
+            model.LastActive = DateTime.Now;
             _mapper.Map(model, clanSeekFromRepo);
             if(await _repo.SaveAll())
             {
@@ -87,7 +83,7 @@ namespace Wacomi.API.Controllers
             if(clanSeek == null){
                 return NotFound();
             }
-            if(!await MatchUserWithToken(clanSeek.MemberId))
+            if(!await MatchAppUserWithToken(clanSeek.AppUserId))
             {
                 return Unauthorized();
             }
@@ -97,14 +93,6 @@ namespace Wacomi.API.Controllers
                 return Ok();
 
             return BadRequest("Failed to delete the clan seek");
-        }
-
-        private async Task<bool> MatchUserWithToken(int memberId)
-        {
-            var member = await _repo.GetMember(memberId);
-            if(member.IdentityId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return true;
-            return false;
         }
     }
 }

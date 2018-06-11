@@ -23,8 +23,7 @@ export class BlogEditorComponent implements OnInit {
   //blogs: Blog[];
   photos: Photo[];
   selectedBlog: Blog;
-  recordId: number;
-  type: string;
+  appUserId: number;
 
   constructor(private store : Store<fromApp.AppState>, 
               private route: ActivatedRoute, 
@@ -37,9 +36,8 @@ export class BlogEditorComponent implements OnInit {
 
     this.selectedBlog = null;
     this.route.params.subscribe(params => {
-      this.recordId = +params['recordId'];
-      this.type = params['type'];
-      if(!this.recordId || !this.type){
+      this.appUserId = +params['appUserId'];
+      if(!this.appUserId ){
         this.alertify.error("パラメーターが未設定です");
         this.router.navigate(['/home']);
         return;
@@ -47,7 +45,7 @@ export class BlogEditorComponent implements OnInit {
       this.photos = this.route.snapshot.data["photos"];
       //this.blogs = this.route.snapshot.data["blogs"];
       // this.store.dispatch(new PhotoActions.GetPhotos({type: this.type, recordId: this.recordId}));
-      this.store.dispatch(new BlogAction.GetBlog({type: this.type, recordId: this.recordId}));
+      this.store.dispatch(new BlogAction.GetBlog(this.appUserId));
     });
   }
 
@@ -56,10 +54,12 @@ export class BlogEditorComponent implements OnInit {
   }
 
   onClickAdd(){
-    this.store.dispatch(new BlogAction.TryAddBlog({type: this.type, recordId: this.recordId}));
+    this.store.dispatch(new BlogAction.TryAddBlog(this.appUserId));
   }
 
   onClickDelete(id: number){
-    this.store.dispatch(new BlogAction.TryDeleteBlog({type: this.type, recordId: this.recordId, id:id}));
+    this.store.dispatch(new BlogAction.TryDeleteBlog(id));
+    this.selectedBlog = null;
+    console.log("Hwy" + this.selectedBlog);
   }
 }

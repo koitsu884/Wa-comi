@@ -5,8 +5,8 @@ namespace Wacomi.API.Models
     public class MemberSetting
     {
         [Key]
-        public int MemberId{ get; set;}
-        public Member Member{get; set;}
+        public string AppUserId{ get; set;}
+        public AppUser AppUser{get; set;}
         public bool AllowFriendSearch{get; set;}
         //Maybe need black list
         public bool AllowCancidateSearch{get; set;}

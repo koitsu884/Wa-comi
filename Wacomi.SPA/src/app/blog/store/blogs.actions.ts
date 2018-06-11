@@ -15,18 +15,18 @@ export const CLEAR_BLOG = 'CLEAR_BLOG';
 export class TryAddBlog implements Action {
     readonly type = TRY_ADDBLOG;
 
-    constructor(public payload:{type:string, recordId:number}){}
+    constructor(public payload:number){}
 }
 
 export class TryDeleteBlog implements Action {
     readonly type = TRY_DELETEBLOG;
 
-    constructor(public payload: {type:string, recordId:number, id:number}) {}
+    constructor(public payload: number) {}
 }
 
 export class GetBlog implements Action {
     readonly type = GET_BLOG;
-    constructor(public payload: {type:string, recordId:number}) {}
+    constructor(public payload: number) {}
 }
 
 export class SetBlog implements Action {
@@ -42,7 +42,7 @@ export class AddBlog implements Action {
 export class UpdateBlog implements Action {
     readonly type = UPDATE_BLOG;
 
-    constructor(public payload: {type:string, recordId:number, blog: Blog}) {}
+    constructor(public payload: Blog) {}
 }
 
 export class DeleteBlog implements Action {

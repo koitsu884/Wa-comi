@@ -15,7 +15,7 @@
         <button class="btn btn-primary" (click)="onClickAdd()">ブログの追加</button>
     </div>
     <div class="col-sm-9">
-      <app-blog-edit-form *ngIf="selectedBlog" [blog]="selectedBlog" [type]="type" [recordId]="recordId" [photos]="photos"></app-blog-edit-form>
+      <app-blog-edit-form [selectedBlog]="selectedBlog" [photos]="photos"></app-blog-edit-form>
     </div>
   </div>
 </div>

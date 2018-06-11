@@ -14,11 +14,16 @@ export const TRY_ADD_TOPIC = 'TRY_ADD_TOPIC';
 export const ADD_TOPIC = 'ADD_TOPIC';
 export const TRY_DELETE_TOPIC = 'TRY_DELETE_TOPIC';
 export const DELETE_TOPIC = 'DELETE_TOPIC';
+export const GET_LIKED_TOPIC_LIST = 'GET_LIKED_TOPIC_LIST';
+export const SET_LIKED_TOPIC_LIST = 'SET_LIKED_TOPIC_LIST';
+
 export const LIKE_TOPIC = 'LIKE_TOPIC';
+
+export const TOPIC_CLEAR = 'TOPIC_CLEAR';
 
 export class GetTopicList implements Action {
     readonly type = GET_TOPIC_LIST;
-    constructor(public payload:string) {} //userId
+    constructor(public payload:number) {} //appUserId
 }
 
 export class SetTopicList implements Action {
@@ -28,7 +33,7 @@ export class SetTopicList implements Action {
 
 export class TryAddTopic implements Action {
     readonly type = TRY_ADD_TOPIC;
-    constructor(public payload: {userId: string, title: string}){}
+    constructor(public payload: {userId: number, title: string}){}
 }
 
 export class AddTopic implements Action {
@@ -46,9 +51,23 @@ export class DeleteTopic implements Action {
     constructor(public payload: number) {}
 }
 
+export class GetLikedTopicList implements Action {
+    readonly type = GET_LIKED_TOPIC_LIST;
+    constructor(public payload:number) {} //userId
+}
+
+export class SetLikedTopicList implements Action {
+    readonly type = SET_LIKED_TOPIC_LIST;
+    constructor(public payload: number[]) {}
+}
+
 export class LikeTopic implements Action {
     readonly type = LIKE_TOPIC;
-    constructor(public payload: {supportUserId: string, dailyTopicId:number}){}
+    constructor(public payload: {supportAppUserId: number, dailyTopicId:number}){}
+}
+
+export class TopicClear implements Action {
+    readonly type = TOPIC_CLEAR;
 }
 
 //====================================================
@@ -166,6 +185,8 @@ export type DailyTopicActions = GetTopicList
                           | AddTopic
                           | TryDeleteTopic
                           | DeleteTopic
+                          | GetLikedTopicList
+                          | SetLikedTopicList
                           | LikeTopic
                           | GetTopicComments
                           | SetTopicComments
@@ -183,4 +204,5 @@ export type DailyTopicActions = GetTopicList
                           | TryAddTopicReply
                           | AddTopicReply
                           | TryDeleteTopicReply
-                          | DeleteTopicReply;
+                          | DeleteTopicReply
+                          | TopicClear;

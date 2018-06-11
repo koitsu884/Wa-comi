@@ -1,0 +1,21 @@
+<div class="clanCard" [ngClass]="{isMine: isMine}" [routerLink]="['detail', clanSeek.id]" [ngSwitch]="clanSeek.categoryName">
+  <div class="panel panel-success">
+    <div class="panel-heading">
+        <span class="categoryName color-friend" *ngSwitchCase="'友達'">{{clanSeek.categoryName}}</span>
+        <span class="categoryName color-circle" *ngSwitchCase="'サークル'">{{clanSeek.categoryName}}</span>
+        <span class="categoryName color-travel" *ngSwitchCase="'旅行'">{{clanSeek.categoryName}}</span>
+        <span class="categoryName color-study" *ngSwitchCase="'勉強・自己啓発'">{{clanSeek.categoryName}}</span>
+        <span class="categoryName" *ngSwitchDefault>{{clanSeek.categoryName}}</span>
+        <span class="h4">{{clanSeek.title}}</span>
+    </div>
+    <div class="panel-body">
+      <img class="clanImage pull-left" src="{{clanSeek.mainPhotoUrl}}">
+      <p>{{clanSeek.displayName}}</p>
+      <p>{{clanSeek.locationName}}</p>
+      <span class="clearfix"></span>
+    </div>
+    <div class="panel-footer">
+      <span class="bg-primary">{{clanSeek.locationName}}</span>  <span class="small">最終更新：{{clanSeek.lastActive | timeAgo}}</span>
+    </div>
+  </div>
+</div>

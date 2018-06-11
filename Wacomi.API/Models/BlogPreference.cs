@@ -12,8 +12,8 @@ namespace Wacomi.API.Models
     {
         public int Id { get; set;}
         [Required]
-        public int MemberId{ get; set;}
-        public Member Member{ get; set;}
+        public int AppUserId{ get; set;}
+        public AppUser AppUser{ get; set;}
         [Required]
         public int BlogId{ get; set;}
         public Blog Blog{ get; set;}

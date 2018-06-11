@@ -5,18 +5,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wacomi.API.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole, string>
+    public class ApplicationDbContext : IdentityDbContext<Account, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
         }
 
-        public DbSet<BlackList> BlackLists { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        // public DbSet<BlackList> BlackLists { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogFeed> BlogFeeds { get; set; }
-        public DbSet<BlogPreference> BlogPreferences { get; set; }
-        public DbSet<BusinessUser> BusinessUsers { get; set; }
+        // public DbSet<BlogPreference> BlogPreferences { get; set; }
+        public DbSet<BusinessProfile> BusinessProfiles { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }
         public DbSet<ClanSeekCategory> ClanSeekCategories { get; set;}
         public DbSet<PropertySeek> PropertySeeks{ get; set;}
@@ -24,9 +25,8 @@ namespace Wacomi.API.Data
         public DbSet<DailyTopic> DailyTopics { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
-        public DbSet<Member> Members { get; set; }
+        public DbSet<MemberProfile> MemberProfiles { get; set; }
         public DbSet<MemberSetting> MemberSettings { get; set; }
-        public DbSet<BusinessUser> Businesses { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Photo> Photos { get; set; }
         // public DbSet<PropertySeek> PropertySeeks { get; set;}
@@ -42,6 +42,11 @@ namespace Wacomi.API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            // builder.Entity<Account>()
+            //     .HasOne(a => a.AppUser)
+            //     .WithOne(u => u.Account)
+            //     .HasForeignKey<AppUser>(a => a.AccountId);
 
             builder.Entity<Blog>()
                 .HasIndex(b => b.Category);
@@ -83,17 +88,17 @@ namespace Wacomi.API.Data
                 .WithMany(fr => fr.FriendRequestReceived)
                 .HasForeignKey(fr => fr.SenderId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
-            //---- Black List ----
-            builder.Entity<BlackList>()
-                .HasOne(bl => bl.Member)
-                .WithMany(m => m.MyBlackLists)
-                .HasForeignKey(bl => bl.BlockedMemberId)
-                .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<BlackList>()
-                .HasOne(bl => bl.BlockedMember)
-                .WithMany(m => m.NoAccessMembers)
-                .HasForeignKey(bl => bl.MemberId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            // //---- Black List ----
+            // builder.Entity<BlackList>()
+            //     .HasOne(bl => bl.Member)
+            //     .WithMany(m => m.MyBlackLists)
+            //     .HasForeignKey(bl => bl.BlockedMemberId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+            // builder.Entity<BlackList>()
+            //     .HasOne(bl => bl.BlockedMember)
+            //     .WithMany(m => m.NoAccessMembers)
+            //     .HasForeignKey(bl => bl.MemberId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull);
             //---- Messaging ----
             builder.Entity<Message>()
                 .HasOne(u => u.Sender)
@@ -106,7 +111,7 @@ namespace Wacomi.API.Data
                 .OnDelete(DeleteBehavior.ClientSetNull);
             //---- Topic Like ----
             builder.Entity<TopicLike>()
-                .HasKey(tl => new { tl.SupportUserId, tl.DailyTopicId });
+                .HasKey(tl => new { tl.SupportAppUserId, tl.DailyTopicId });
 
             // builder.Entity<TopicLike>()
             //     .HasOne(tl => tl.SupportUser)

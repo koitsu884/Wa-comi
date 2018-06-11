@@ -16,18 +16,12 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class DailyTopicController : Controller
+    public class DailyTopicController : DataController
     {
-        private readonly IDataRepository _repo;
-        private readonly IMapper _mapper;
-        public DailyTopicController(IDataRepository repo, IMapper mapper)
-        {
-            this._mapper = mapper;
-            this._repo = repo;
-        }
+        public DailyTopicController(IDataRepository repo, IMapper mapper) : base ( repo, mapper){}
 
         [HttpGet("{id}", Name = "GetDailyTopic")]
-        public async Task<ActionResult> GetDailyTopic(int id)
+        public async Task<ActionResult> Get(int id)
         {
             return Ok(await _repo.GetDailyTopic(id));
         }
@@ -43,17 +37,9 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult> GetDailyTopicList(string userId = null){
+        public async Task<ActionResult> GetDailyTopicList(int? userId){
             var topicListFromRepo = await _repo.GetDailyTopicList();
             var topicListForReturn = _mapper.Map<IEnumerable<DailyTopicForReturnDto>>(topicListFromRepo);
-            if(userId != null){
-                var topicLikesForUser = await _repo.GetTopicLikesForUser(userId);
-                foreach( var topicList in topicListForReturn){
-                    if(topicLikesForUser.Any(tl => tl.DailyTopicId == topicList.Id)){
-                        topicList.IsLiked = true;
-                    }
-                }
-            }
             
             return Ok(topicListForReturn);
         }
@@ -89,7 +75,7 @@ namespace Wacomi.API.Controllers
 
         [HttpPost()]
         [Authorize]
-        public async Task<IActionResult> AddDailyTopic([FromBody]DailyTopicCreationDto model){ 
+        public async Task<IActionResult> Post([FromBody]DailyTopicCreationDto model){ 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             if( await this._repo.GetPostedTopicCountForUser(model.UserId) >= 3)
@@ -104,17 +90,14 @@ namespace Wacomi.API.Controllers
             return BadRequest("トピック候補の作成に失敗しました");
         }
 
-        [HttpDelete()]
+        [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteTopic(string userId, int recordId){
-            if(!this.MatchUserWithToken(userId))
-                return Unauthorized();
-
-            var topicFromRepo = await _repo.GetDailyTopic(recordId);
+        public async Task<IActionResult> Delete(int id){
+            var topicFromRepo = await _repo.GetDailyTopic(id);
             if(topicFromRepo == null)
                 return NotFound();
 
-            if(topicFromRepo.UserId != userId)
+            if(! await MatchAppUserWithToken(topicFromRepo.UserId))
                 return Unauthorized();
 
             _repo.Delete(topicFromRepo);
@@ -124,53 +107,5 @@ namespace Wacomi.API.Controllers
 
             return BadRequest("トピック候補の削除に失敗しました");
         }
-
-        [HttpPost("like")]
-        public async Task<IActionResult> LikeTopic([FromBody]TopicLike model){
-            if(!this.MatchUserWithToken(model.SupportUserId))
-                return Unauthorized();
-
-            var topicFromRepo = await _repo.GetDailyTopic(model.DailyTopicId);
-            if(topicFromRepo == null)
-                return NotFound();
-
-            if(await _repo.GetTopicLike(model.SupportUserId, model.DailyTopicId) != null){
-                return BadRequest("既に良いねされています");
-            }
-
-            _repo.Add(new TopicLike(){SupportUserId = model.SupportUserId, DailyTopicId = model.DailyTopicId});
-            if (await _repo.SaveAll())
-                return Ok();
-
-            return BadRequest("トピックいいねに失敗しました…？");
-        }
-
-        [HttpDelete("like")]
-        [Authorize]
-        public async Task<IActionResult> DeleteTopicLike([FromBody]TopicLike model){
-            if(!this.MatchUserWithToken(model.SupportUserId))
-                return Unauthorized();
-
-            var topicLikeFromRepo = await _repo.GetTopicLike(model.SupportUserId, model.DailyTopicId);
-            if(topicLikeFromRepo == null)
-                return NotFound();
-
-            if(topicLikeFromRepo.SupportUserId != model.SupportUserId)
-                return Unauthorized();
-
-            _repo.Delete(topicLikeFromRepo);
-
-           if (await _repo.SaveAll())
-                return Ok();
-
-            return BadRequest("トピックいいねの削除に失敗しました");
-        }
-        
-
-        private bool MatchUserWithToken(string userId){
-            return (userId == User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        }
     }
-
-    
 }

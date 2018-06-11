@@ -19,20 +19,16 @@ namespace Wacomi.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
-    public class PhotoController : Controller
+    public class PhotoController : DataController
     {
-        private readonly IDataRepository _repo;
-        private readonly IMapper _mapper;
         //Cloudinary Specific
         private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
         private Cloudinary _cloudinary;
-        public PhotoController(IDataRepository repo, IMapper mapper, IOptions<CloudinarySettings> cloudinarySettings)
+        public PhotoController(IDataRepository repo, IMapper mapper, IOptions<CloudinarySettings> cloudinarySettings) : base(repo, mapper)
         {
             this._cloudinaryConfig = cloudinarySettings;
-            this._mapper = mapper;
-            this._repo = repo;
 
-            Account acc = new Account(
+            CloudinaryDotNet.Account acc = new CloudinaryDotNet.Account(
                 _cloudinaryConfig.Value.CloudName,
                 _cloudinaryConfig.Value.ApiKey,
                 _cloudinaryConfig.Value.ApiSecret
@@ -42,7 +38,7 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetPhoto")]
-        public async Task<ActionResult> GetPhoto(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var photoFromRepo = await _repo.GetPhoto(id);
             var photo = _mapper.Map<PhotoForReturnDto>(photoFromRepo);
@@ -50,39 +46,35 @@ namespace Wacomi.API.Controllers
             return Ok(photo);
         }
 
-        [HttpGet("{type}/{recordId}")]
-        public async Task<ActionResult> GetPhotosForClass(string type, int recordId)
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> GetPhotosForClass(int userId)
         {
-            if(!await this.MatchUserWithToken(type, recordId))
+            if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var photosFromRepo = await _repo.GetPhotosForClass(type, recordId);
+            var photosFromRepo = await _repo.GetPhotosForAppUser(userId);
             var photosForReturn = _mapper.Map<IEnumerable<PhotoForReturnDto>>(photosFromRepo);
 
             return Ok(photosForReturn);
         }
 
-        [HttpPost("{type}/{recordId}")]
-        public async Task<ActionResult> AddPhotoForClass(string type, int recordId, [FromForm]PhotoForCreationDto photoForCreationDto){
+        [HttpPost("{userId}")]
+        public async Task<ActionResult> Post(int userId, [FromForm]PhotoForCreationDto model){
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var appUser = await _repo.GetAppUser(userId);
+            if(appUser == null)
+                return NotFound();
+
+            if(!await this.MatchAppUserWithToken(userId))
+                return Unauthorized();
             
             try
             {
                 //Just for validation
-                using (var image = System.Drawing.Image.FromStream(photoForCreationDto.File.OpenReadStream()))
+                using (var image = System.Drawing.Image.FromStream(model.File.OpenReadStream()))
                 {
-                    type = type.ToLower();
-                    if(!await this.MatchUserWithToken(type, recordId))
-                        return Unauthorized();
-
-                    switch(type){
-                        case "member":
-                            var currentMember = await _repo.GetMember(recordId);
-                            return await AddPhotoToUser(currentMember, photoForCreationDto);
-                        case "business":
-                            var currentBisUser = await _repo.GetBusinessUser(recordId);
-                            return await AddPhotoToUser(currentBisUser, photoForCreationDto);
-                        default:
-                            return BadRequest("Invalid type name '" + type + "'");
-                    }
+                    return await AddPhotoToUser(appUser, model);
                 }
             }
             catch (Exception ex)
@@ -91,10 +83,13 @@ namespace Wacomi.API.Controllers
             }
         }
 
-        [HttpDelete("{type}/{recordId}/{id}")]
-        public async Task<ActionResult> DeletePhotoForClass(string type, int recordId, int id){
-            type = type.ToLower();
-            if(!await this.MatchUserWithToken(type, recordId))
+        [HttpDelete("{userId}/{id}")]
+        public async Task<ActionResult> Delete(int userId, int id){
+            var appUser = await _repo.GetAppUser(userId);
+            if( appUser == null)
+                return NotFound();
+
+            if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
 
             var photoFromRepo = await _repo.GetPhoto(id);
@@ -106,27 +101,14 @@ namespace Wacomi.API.Controllers
                 var result = _cloudinary.Destroy(deleteParams);
                 if(result.Result == "ok" || result.Result =="not found") //Temp fix for not found
                     _repo.Delete(photoFromRepo);
-
             }
 
             if(photoFromRepo.PublicId == null){
                 _repo.Delete(photoFromRepo);
             }
 
-            switch(type){
-                case "member":
-                    var member = await _repo.GetMember(recordId);
-                    if(member != null && member.MainPhotoUrl == photoFromRepo.Url){
-                        member.MainPhotoUrl = null;
-                    }
-                    break;
-                case "business":
-                    var business = await _repo.GetBusinessUser(recordId);
-                    if(business != null && business.MainPhotoUrl == photoFromRepo.Url){
-                        business.MainPhotoUrl = null;
-                    }
-                    break;
-            }
+            if(appUser.MainPhotoUrl == photoFromRepo.Url)
+                appUser.MainPhotoUrl = null;
 
             if (await _repo.SaveAll())
                 return Ok();
@@ -134,10 +116,7 @@ namespace Wacomi.API.Controllers
             return BadRequest("Failed to delete the photo");
         }
 
-        private async Task<ActionResult> AddPhotoToUser(UserBase user, PhotoForCreationDto photoDto){
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if(currentUserId != user.IdentityId)
-                return Unauthorized();
+        private async Task<ActionResult> AddPhotoToUser(AppUser user, PhotoForCreationDto photoDto){
 
             var file = photoDto.File;
 
@@ -149,7 +128,7 @@ namespace Wacomi.API.Controllers
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(file.Name, stream),
-                        Transformation = new Transformation().Width(500).Height(500).Crop("fill").Gravity("face")
+                        Transformation = new Transformation().Width(600).Height(600).Crop("fit")
                     };
 
                     uploadResult = _cloudinary.Upload(uploadParams);
@@ -160,7 +139,8 @@ namespace Wacomi.API.Controllers
             photoDto.PublicId = uploadResult.PublicId;
 
             var photo = _mapper.Map<Photo>(photoDto);
-            user.Photos.Add(photo);
+            photo.AppUserId = user.Id;
+            _repo.Add(photo);
             if(user.MainPhotoUrl == null){
                 user.MainPhotoUrl = photoDto.Url;
             }
@@ -172,28 +152,6 @@ namespace Wacomi.API.Controllers
             }
 
             return BadRequest("Could not add the photo");
-        }
-
-        private async Task<bool> MatchUserWithToken(string userType, int userId){
-            userType = userType.ToLower();
-            string appUserId = "";
-            switch(userType){
-                case "member":
-                    var member = await _repo.GetMember(userId);
-                    appUserId = member.IdentityId;
-                    break;
-                case "business":
-                    var bisUser = await _repo.GetBusinessUser(userId);
-                    appUserId = bisUser.IdentityId;
-                    break;
-                default:
-                    return false;
-            }
-
-            if(appUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return true;
-
-            return false;
         }
     }
 }

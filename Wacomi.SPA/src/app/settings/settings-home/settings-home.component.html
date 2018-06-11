@@ -3,27 +3,22 @@
     <div class="col-sm-8">
       <div class="tab-panel">
         <tabset class="member-tabset">
-          <tab heading="プロフィール">
-            <h4>プロフィール</h4>
-            <div *ngIf="photos">
-              <app-member-profile-edit *ngIf="member" [member]="member" [photos]="photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-member-profile-edit>
-              <app-business-profile-edit *ngIf="bisUser" [bisUser]="bisUser" [photos]="photos" [blogs]="(blogState | async).blogs" [cities]="cities" [hometowns]="hometowns"></app-business-profile-edit>
+          <tab heading="ユーザー設定">
+            <h4>ユーザー設定</h4>
+            <div>
+              <app-user-edit [cities]="cities" [photos]="photos" [appUser]="appUser" [blogs]="blogs"></app-user-edit>
             </div>
           </tab>
-          <!-- <tab heading="">
-            <app-photo-editor 
-              [userType]="appUser.userType" 
-              [userId]="appUser.relatedUserClassId"
-              [photos]="photos"
-              [mainPhotoUrl]="member? member.mainPhotoUrl : bisUser.mainPhotoUrl"
-              ></app-photo-editor>
-          </tab> -->
-          <tab heading="アカウント情報">
-            <app-user-edit [appUser]="appUser"></app-user-edit>
+          <tab heading="プロフィール">
+            <h4>プロフィール設定</h4>
+            <div>
+              <app-member-profile-edit *ngIf="member" [member]="member" [hometowns]="hometowns"></app-member-profile-edit>
+              <app-business-profile-edit *ngIf="bisUser" [bisUser]="bisUser"></app-business-profile-edit>
+            </div>
           </tab>
-          <!-- <tab heading="マイブログ">
-            <app-myblog-edit [appUser]="appUser"></app-myblog-edit>
-          </tab> -->
+          <tab heading="アカウント情報">
+            <app-account-edit [account]="account"></app-account-edit>
+          </tab>
         </tabset>
       </div>
     </div>

@@ -16,8 +16,8 @@ export class AuthGuard implements CanActivate {
         .take(1)
         .map((authState: fromAccount.State) => {
             if(!authState.authenticated){
-                this.alertify.error("このページにアクセスするにはログインが必要です");
-                this.router.navigate(['/home']);
+                // this.alertify.error("このページにアクセスするにはログインが必要です");
+                this.router.navigate(['/account/login']);
             }
              return authState.authenticated
         })

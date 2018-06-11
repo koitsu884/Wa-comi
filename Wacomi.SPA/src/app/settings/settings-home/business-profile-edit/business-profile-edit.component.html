@@ -6,20 +6,10 @@
         <input class="form-control" name="establishedDate" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="bisUser.establishedDate">
       </div>
       <div class="form-group">
-        <label for="city" class="control-label">所在地</label>
-        <select [(ngModel)]="bisUser.cityId" name="city">
-          <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
-        </select>
-      </div>
-      <div class="form-group">
         <label for="introduction" class="control-label">会社紹介</label>
         <textarea class="form-control" [(ngModel)]="bisUser.introduction" name="introduction" rows="6">
       </textarea>
       </div>
-      <div *ngIf="photos">
-        <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="bisUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, bisuserEditForm)"></app-mainphoto-selector>
-      </div>
-      <a [routerLink]="['/editphoto', 'business', bisUser.id]">写真の追加・削除</a>
       <hr>
       <button class="btn btn-success" [disabled]="!bisuserEditForm.valid || bisuserEditForm.pristine" type="submit">更新</button>
     </form>

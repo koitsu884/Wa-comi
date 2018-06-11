@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/observable/of';
-import { BusinessUser } from "../_models/BusinessUser";
 import { AlertifyService } from "../_services/alertify.service";
 
 import * as fromApp from '../store/app.reducer';

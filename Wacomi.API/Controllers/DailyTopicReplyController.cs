@@ -37,12 +37,12 @@ namespace Wacomi.API.Controllers
             if(!await this._repo.TopicCommentExists(model.TopicCommentId))
                 return NotFound("トピックコメントが見つかりませんでした。 ID:"+model.TopicCommentId);
 
-            var member = await this._repo.GetMember(model.MemberId.GetValueOrDefault());
+            var member = await this._repo.GetMemberProfile(model.MemberId.GetValueOrDefault());
             if(member == null)
                 return NotFound("メンバーが見つかりませんでした。 ID:" + model.MemberId);
             
-            model.MainPhotoUrl = member.MainPhotoUrl;
-            model.DisplayName = member.Identity.DisplayName;
+            model.MainPhotoUrl = member.AppUser.MainPhotoUrl;
+            model.DisplayName = member.AppUser.DisplayName;
             
             _repo.Add(model);
             if(await _repo.SaveAll())
@@ -60,7 +60,7 @@ namespace Wacomi.API.Controllers
             if(topicReplyFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(topicReplyFromRepo.MemberId.GetValueOrDefault()))
+            if(!await this.MatchAppUserWithToken(topicReplyFromRepo.Member.AppUserId))
                 return Unauthorized();
 
             _repo.Delete(topicReplyFromRepo);

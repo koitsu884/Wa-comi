@@ -3,28 +3,31 @@ import * as PhotoActions from './photos.action';
 import * as fromApp from '../../store/app.reducer';
 
 export interface State {
-    type: string;
-    recordId: number;
+   // appUserId: number;
     photos: Photo[];
 }
 
 const initialState: State = {
-    type : null,
-    recordId: null,
+  //  appUserId: null,
     photos: []
 };
 
 export function photoReducer(state = initialState, action: PhotoActions.PhotoActions ){
     switch(action.type){
+        // case PhotoActions.SET_USER_ID:
+        //     return{
+        //         ...state,
+        //         appUserId : action.payload
+        //     }
         case PhotoActions.SET_PHOTOS:
-            localStorage.setItem('photos', JSON.stringify(action.payload.photos));
+            const tempPhotos = action.payload ? action.payload : [];
+            localStorage.setItem('photos', JSON.stringify(tempPhotos));
             return {
                 ...state,
-                photos: [...action.payload.photos],
-                type: action.payload.type,
-                recordId: action.payload.recordId
+                photos: [...tempPhotos]
             }
         case PhotoActions.ADD_PHOTO:
+            localStorage.setItem('photos', JSON.stringify([...state.photos, action.payload])); 
             return {
                 ...state,
                 photos: [...state.photos, action.payload]

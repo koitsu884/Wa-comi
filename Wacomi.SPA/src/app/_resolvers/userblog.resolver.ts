@@ -14,7 +14,6 @@ export class UserBlogResolver implements Resolve<Blog[]> {
          private router: Router ){}
 
     resolve(route: ActivatedRouteSnapshot) : Observable<Blog[]> {
-
         return this.store.select('blogs')
         .take(1)
         .switchMap((state : fromBlog.State) => {

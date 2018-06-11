@@ -5,7 +5,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../../account/store/account.reducers';
 import * as AccountActions from '../../account/store/account.actions';
 import { Store } from '@ngrx/store';
-import { AppUser } from '../../_models/AppUser';
+import { RegisterInfo } from '../../_models/RegisterInfo';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   passwordMinLength = 6;
   passwordMaxLength = 20;
   registerForm: FormGroup;
-  user: AppUser;
+  registerInfo: RegisterInfo;
   passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,20}";
 
   constructor(
@@ -48,8 +48,8 @@ export class RegisterComponent implements OnInit {
 
   register() {
     if(this.registerForm.valid){
-      this.user = Object.assign({}, this.registerForm.value);
-      this.store.dispatch(new AccountActions.TrySignup({registerInfo: this.user}));
+      this.registerInfo = Object.assign({}, this.registerForm.value);
+      this.store.dispatch(new AccountActions.TrySignup({registerInfo: this.registerInfo}));
     }
   }
 }

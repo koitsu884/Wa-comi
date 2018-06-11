@@ -35,6 +35,7 @@ import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
 import { AppUserResolver } from './_resolvers/appuser.resolver';
 import { UserBlogResolver } from './_resolvers/userblog.resolver';
 import { MemberIdGuard } from './_guards/memberid.guard';
+import { MemberGuard } from './_guards/member.guard';
 
 
 defineLocale('ja', jaLocale); 
@@ -70,6 +71,7 @@ defineLocale('ja', jaLocale);
     ErrorInterceptorProvider,
     AuthInterceptorProvider,
     AuthGuard,
+    MemberGuard,
     MemberIdGuard,
     //Third Party
     BsLocaleService,

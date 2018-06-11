@@ -41,7 +41,7 @@ namespace Wacomi.API.Controllers
         public async Task<IActionResult> Post([FromBody]TopicComment model){ 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var member = await this._repo.GetMember(model.MemberId.GetValueOrDefault());
+            var member = await this._repo.GetMemberProfile(model.MemberId.GetValueOrDefault());
             if(member == null)
                 return NotFound();
             
@@ -49,8 +49,8 @@ namespace Wacomi.API.Controllers
             if(topicCommentsForMember.Count() > 0)
                 return BadRequest("投稿は１日１回のみです");
             
-            model.MainPhotoUrl = member.MainPhotoUrl;
-            model.DisplayName = member.Identity.DisplayName;
+            model.MainPhotoUrl = member.AppUser.MainPhotoUrl;
+            model.DisplayName = member.AppUser.DisplayName;
             
             _repo.Add(model);
             if(await _repo.SaveAll())
@@ -68,7 +68,7 @@ namespace Wacomi.API.Controllers
             if(topicCommentFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(topicCommentFromRepo.MemberId.GetValueOrDefault()))
+            if(!await this.MatchAppUserWithToken(topicCommentFromRepo.Member.AppUserId))
                 return Unauthorized();
 
             _repo.Delete(topicCommentFromRepo);

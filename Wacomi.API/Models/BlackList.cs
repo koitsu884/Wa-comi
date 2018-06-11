@@ -6,11 +6,11 @@ namespace Wacomi.API.Models
     {
         public int Id { get; set;}
         [Required]
-        public int MemberId { get; set;}
+        public int AppUserId { get; set;}
         [Required]
-        public int BlockedMemberId { get; set;}
+        public int BlockedAppUserId { get; set;}
         public bool IsSerious{ get; set;}
-        public Member Member { get; set;}
-        public Member BlockedMember { get; set;}
+        public AppUser AppUser { get; set;}
+        public AppUser BlockedAppUser { get; set;}
     }
 }

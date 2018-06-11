@@ -28,8 +28,8 @@
       </table>
     </div>
     <div class="col-sm-6 col-md-4">
-      <a class="btn btn-success" [routerLink]="['edit', appUser.relatedUserClassId]" >投稿する</a>
+      <a class="btn btn-primary" [routerLink]="['edit', appUser.id]" >投稿する</a>
     </div>
   </div>
-  <app-clan-list [clanSeeks]="clanSeeks" [memberId]="appUser.relatedUserClassId"></app-clan-list>
+  <app-clan-list [clanSeeks]="clanSeeks" [appUserId]="appUser.id"></app-clan-list>
 </div>

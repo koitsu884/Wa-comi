@@ -6,7 +6,6 @@ import * as fromApp from '../store/app.reducer';
 import * as fromAccount from '../account/store/account.reducers';
 import * as AccountActions from '../account/store/account.actions';
 import { Store } from "@ngrx/store";
-import { BusinessUser } from "../_models/BusinessUser";
 import { Observable } from "rxjs/Observable";
 import { AlertifyService } from "../_services/alertify.service";
 

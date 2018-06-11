@@ -1,12 +1,17 @@
 <div class="row">
-  <div class="col-xs-12 col-sm-6">
-    <img src="{{mainPhotoUrl}}" alt="" class="img-responsive">
-  </div>
-  <div class="col-xs-12 col-sm-6">
-    <ul class="list-inline">
+  <div class="col-sm-6 selector">
+    <div class="row">
+      <div class="col-xs-4" *ngFor="let photo of photos">
+        <img src="{{photo.url}}" (click)="onSelect(photo)" alt="" class="img-responsive" [ngClass]="photo.url == mainPhotoUrl ? 'selected' : ''" >
+      </div>
+    </div>
+    <div *ngIf="mainPhotoUrl" class="col-sm-6 profImage">
+        <img src="{{mainPhotoUrl}}" alt="" class="img-responsive">
+      </div>
+    <!-- <ul class="list-inline">
         <li *ngFor="let photo of photos" class="list-inline-item">
             <img src="{{photo.url}}" (click)="onSelect(photo)" alt="" class="thumbnail" [ngClass]="photo.url == mainPhotoUrl ? 'selected' : ''" >
         </li>
-    </ul>
+    </ul> -->
   </div>
 </div>

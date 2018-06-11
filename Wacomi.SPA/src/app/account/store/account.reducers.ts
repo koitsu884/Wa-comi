@@ -1,23 +1,26 @@
 import * as AccountActions from './account.actions';
 import { AppUser } from '../../_models/AppUser';
 import * as fromApp from '../../store/app.reducer';
-import { Member } from '../../_models/Member';
-import { BusinessUser } from '../../_models/BusinessUser';
+import { MemberProfile } from '../../_models/MemberProfile';
+import { BusinessProfile } from '../../_models/BusinessProfile';
+import { UserAccount } from '../../_models/UserAccount';
 
 export interface State {
     token: string;
     authenticated: boolean;
+    account: UserAccount;
     appUser: AppUser;
-    memberProfile: Member;
-    bisuserProfile: BusinessUser;
+    memberProfile: MemberProfile;
+    businessProfile: BusinessProfile;
 }
 
 const initialState: State = {
     authenticated: false,
     token: null,
+    account: null,
     appUser: null,
     memberProfile: null,
-    bisuserProfile: null
+    businessProfile: null
 };
 
 export function accountReducer(state = initialState, action: AccountActions.AccountActions ){
@@ -26,7 +29,9 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
         case AccountActions.TOKEN_EXPIRED:
             localStorage.removeItem('token');
             localStorage.removeItem('appUser');
-            localStorage.removeItem('profile');
+            localStorage.removeItem('account');
+            localStorage.removeItem('memberProfile');
+            localStorage.removeItem('businessProfile');
             localStorage.removeItem('photos');
             return {
                 ...state,
@@ -34,33 +39,45 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
                 appUser: null,
                 token: null,
                 memberProfile: null,
-                bisuserProfile: null
+                businessProfile: null
             };
         case AccountActions.SET_TOKEN:
-            localStorage.setItem('token', action.payload.token);
-        return {
-             ...state,
-                token: action.payload.token,
-                authenticated: true
-            };
+            localStorage.setItem('token', action.payload);
+            return {
+                ...state,
+                    token: action.payload,
+                    authenticated: true
+                };
         case AccountActions.SET_APPUSER:
             localStorage.setItem('appUser', JSON.stringify(action.payload));
             return {
                 ...state,
                 appUser: action.payload
             };
-        case AccountActions.SET_MEMBER:
-            localStorage.setItem('profile', JSON.stringify(action.payload));
+            case AccountActions.SET_ACCOUNT:
+            localStorage.setItem('account', JSON.stringify(action.payload));
+            return {
+                ...state,
+                account: action.payload
+            };
+        case AccountActions.SET_MEMBER_PROFILE:
+            if(action.payload == null)
+                return state;
+            localStorage.setItem('memberProfile', JSON.stringify(action.payload));
+            localStorage.removeItem('businessProfile');
             return {
                 ...state,
                 memberProfile: action.payload,
-                bisuserProfile: null
+                businessProfile: null
             };
-        case AccountActions.SET_BISUSER:
-            localStorage.setItem('profile', JSON.stringify(action.payload));
+        case AccountActions.SET_BUSINESS_PROFILE:
+            if(action.payload == null)
+                return state;
+            localStorage.setItem('businessProfile', JSON.stringify(action.payload));
+            localStorage.removeItem('memberProfile');
             return {
                 ...state,
-                bisuserProfile: action.payload,
+                businessProfile: action.payload,
                 memberProfile: null
             };
         default:

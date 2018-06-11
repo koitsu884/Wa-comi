@@ -1,5 +1,6 @@
 export interface Blog {
     id: number;
+    ownerId: number;
     hideOwner: boolean;
     writerName: string;
     writerIntroduction: string;

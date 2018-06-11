@@ -43,62 +43,29 @@ form label.required::after {
     font-size: 90%;
 }
 
+.rounded-bg-light {
+    background-color: aliceblue;
+    border-radius: 7px;
+}
+
+.bg-light-blue {
+    background-color: aliceblue;
+}
+
+.bg-light-yellow {
+    background-color: rgb(247, 255, 240);
+}
+
+.bg-light-green {
+    background-color: rgb(228, 250, 237);
+}
+
 h2 {
     font-size: 24px;
     color:white;
     padding: .5em .75em;
     background-color: #18bc9c;
     border-radius: 6px;
-}
-
-.clanImage {
-    width:80px;
-    margin:5px;
-}
-
-.clanCard {
-    background-color: rgb(212, 248, 236);
-    height: 120px;
-    margin: 10px;
-    overflow: auto;
-}
-
-.clanCard:hover  {
-    transform : scale(1.1, 1.1);
-    transition-duration: 200ms;
-    transition-timing-function: ease-out;
-    opacity: 0.8;
-}
-
-
-.clanCard .color-friend {
-    color: white;
-    background-color: rgb(63, 133, 236);
-}
-
-.clanCard .color-circle {
-    color: white;
-    background-color: rgb(8, 161, 21);
-}
-
-.clanCard .color-travel {
-    color: white;
-    background-color: rgb(253, 96, 5);
-}
-
-.clanCard .color-study {
-    color: white;
-    background-color: rgb(202, 253, 17);
-}
-
-
-.clanCard span.categoryName {
-    position: absolute;
-    padding: 2px;
-    left: 2px;
-    top: 2px;
-    font-weight: bold;
-    z-index: 10;
 }
 
 /*-----------------------------------
@@ -120,6 +87,7 @@ h2 {
 .commentImage img{
     width: 50px;
     height: 50px;
+    object-fit: cover;
 }
 
 .comment{
@@ -152,7 +120,7 @@ h2 {
 
 .commentTools{
     display: table-cell;
-    width:100px;
+    width:70px;
     padding:5px;
     vertical-align: middle;
 }

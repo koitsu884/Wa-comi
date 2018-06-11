@@ -8,18 +8,9 @@ namespace Wacomi.API.Data
 {
     public static class Seed
     {
-        // private static readonly ApplicationDbContext _context;
-        // private static readonly UserManager<AppUser> _userManager;
-        // private static readonly RoleManager<IdentityRole> _roleManager;
-        // public static Seed(ApplicationDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
-        // {
-        //     this._roleManager = roleManager;
-        //     this._userManager = userManager;
-        //     this._context = context;
-        // }
-
         public static void SeedData(
-            UserManager<AppUser> userManager,
+           UserManager<Account> userManager,
+            // UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context
         )
@@ -105,14 +96,14 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedUsers(UserManager<AppUser> userManager)
+        public static void SeedUsers(UserManager<Account> userManager)
         {
             string password = "P@ssw0rd!!";
 
-            AppUser user = new AppUser
+            Account user = new Account
             {
                 UserName = "Admin",
-                UserType = "Admin",
+              //  UserType = "Admin",
                 Email = "kazunori.hayashi.nz@gmail.com",
                 EmailConfirmed = true
             };

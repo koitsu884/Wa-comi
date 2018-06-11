@@ -4,6 +4,8 @@ namespace Wacomi.API.Dto
 {
     public class BlogForUpdateDto
     {
+        [Required]
+        public int Id{ get; set;}
         public bool HideOwner{ get; set;} = false;
         public string WriterName{ get; set;}
         public string WriterIntroduction {get; set;}

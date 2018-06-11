@@ -10,8 +10,8 @@ namespace Wacomi.API.Models
         public int? CategoryId{ get; set;}
         public PropertySeekCategory Category{get; set;}
         [Required]
-        public string OwnerUserId{ get; set;}
-        public AppUser OwnerUser{ get; set;}
+        public string OwnerAppUserId{ get; set;}
+        public AppUser OwnerAppUser{ get; set;}
         public ICollection<Photo> Photos { get; set; }
         public string MainPhotoUrl{ get; set;}
         public string WebsiteUrl{ get; set;}

@@ -48,17 +48,17 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> Post([FromBody]FriendRequest model){
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if(!await this._repo.MemberExist(model.SenderId))
+            if(!await this._repo.MemberProfileExist(model.SenderId))
                 return NotFound();
 
-            if(!await this._repo.MemberExist(model.RecipientId))
+            if(!await this._repo.MemberProfileExist(model.RecipientId))
                 return NotFound();
 
             var requestFromRepo = await this._repo.GetFriendRequest(model.SenderId, model.RecipientId);
             if(requestFromRepo != null)
                 return BadRequest("友達リクエスト送信済みです");
             
-            if(!await this.MatchMemberWithToken(model.SenderId))
+            if(!await this.MatchAppUserWithToken(model.Sender.AppUserId))
                 return Unauthorized();
 
             _repo.Add(model);
@@ -77,7 +77,7 @@ namespace Wacomi.API.Controllers
             if(requestFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(requestFromRepo.SenderId) && !await this.MatchMemberWithToken(requestFromRepo.RecipientId))
+            if(!await this.MatchAppUserWithToken(requestFromRepo.Sender.AppUserId) && !await this.MatchAppUserWithToken(requestFromRepo.Recipient.AppUserId))
                 return Unauthorized();
 
             _repo.Delete(requestFromRepo);

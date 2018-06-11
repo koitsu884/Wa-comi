@@ -52,112 +52,132 @@ namespace Wacomi.API.Data
             return await _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id)
+        public async Task<IEnumerable<Photo>> GetPhotosForAppUser(int id)
         {
-            className = className.ToLower();
-            switch (className)
+            var appUser = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == id);
+            if (appUser != null)
             {
-                case "member":
-                    var member = await _context.Members.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
-                    if (member != null)
-                    {
-                        return member.Photos.ToList();
-                    }
-                    break;
-                case "business":
-                    var business = await _context.BusinessUsers.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
-                    if (business != null)
-                    {
-                        return business.Photos.ToList();
-                    }
-                    break;
-                case "clanseek":
-                    var clanSeek = await _context.ClanSeeks.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
-                    if (clanSeek != null)
-                    {
-                        return clanSeek.Photos.ToList();
-                    }
-                    break;
+                return appUser.Photos.ToList();
             }
             return null;
         }
-        public async Task<UserBase> GetUser(string type, int id)
+        // public async Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id)
+        // {
+        //     className = className.ToLower();
+        //     switch (className)
+        //     {
+        //         case "member":
+        //             var member = await _context.Members.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
+        //             if (member != null)
+        //             {
+        //                 return member.Photos.ToList();
+        //             }
+        //             break;
+        //         case "business":
+        //             var business = await _context.BusinessUsers.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
+        //             if (business != null)
+        //             {
+        //                 return business.Photos.ToList();
+        //             }
+        //             break;
+        //         case "clanseek":
+        //             var clanSeek = await _context.ClanSeeks.Include(p => p.Photos).FirstOrDefaultAsync(m => m.Id == id);
+        //             if (clanSeek != null)
+        //             {
+        //                 return clanSeek.Photos.ToList();
+        //             }
+        //             break;
+        //     }
+        //     return null;
+        // }
+
+        public async Task<AppUser> GetAppUser(int id)
         {
-            switch (type.ToLower())
-            {
-                case "member":
-                    return await GetMember(id);
-                case "business":
-                    return await GetBusinessUser(id);
-                default:
-                    return null;
-            }
+            return await _context.AppUsers.Include(au => au.City)
+                                        //     .Include(au => au.Photos)
+                                        //   .Include(au => au.Blogs)
+                                          .FirstOrDefaultAsync(au => au.Id == id);
         }
 
-        public async Task<BusinessUser> GetBusinessUser(int id)
+
+         public async Task<AppUser> GetAppUserByAccountId(string accountId)
+         {
+             return await _context.AppUsers.Include(au => au.City)
+                                        //     .Include(au => au.Photos)
+                                        //   .Include(au => au.Blogs)
+                                          .FirstOrDefaultAsync(au => au.AccountId == accountId);
+         }
+
+
+        public async Task<BusinessProfile> GetBusinessProfile(int id)
         {
-            return await _context.BusinessUsers.Include(m => m.City)
-                                        .Include(m => m.Identity)
-                                        .Include(m => m.Photos)
-                                        .Include(m => m.Blogs)
+            return await _context.BusinessProfiles.Include(b => b.AppUser)
                                         .FirstOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task<bool> AppUserExist(int appUserId){
+            return await _context.AppUsers.AnyAsync(u => u.Id == appUserId);
+        }
         
-        public async Task<bool> MemberExist(int memberId)
+        public async Task<bool> MemberProfileExist(int memberId)
         {
-            return await _context.Members.AnyAsync(m => m.Id == memberId);
+            return await _context.MemberProfiles.AnyAsync(m => m.Id == memberId);
         }
-        public async Task<Member> GetMember(int id)
+        public async Task<MemberProfile> GetMemberProfile(int id)
         {
-            return await _context.Members.Include(m => m.City)
-                                        .Include(m => m.HomeTown)
-                                        .Include(m => m.Identity)
-                                        .Include(m => m.Photos)
-                                        .Include(m => m.Blogs)
-                                        .FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.MemberProfiles.Include(m => m.HomeTown)
+                                                .Include(m => m.AppUser)
+                                                // .Include(m => m.AppUser.Photos)
+                                                // .Include(m => m.AppUser.Blogs)
+                                                .FirstOrDefaultAsync(m => m.Id == id);
         }
-        public async Task<Member> GetMemberByIdentityId(string id)
+
+        public async Task<MemberProfile> GetMemberProfileByAccountId(string id)
         {
-            return await _context.Members.Include(m => m.City)
-                                        .Include(m => m.HomeTown)
-                                        .Include(m => m.Identity)
-                                        .Include(m => m.Photos)
-                                        .Include(m => m.Blogs)
-                                        .FirstOrDefaultAsync(m => m.IdentityId == id);
+            return await _context.MemberProfiles.Include(m => m.HomeTown)
+                                                .Include(m => m.AppUser)
+                                                .FirstOrDefaultAsync(m => m.AppUser.AccountId == id);
         }
-        public async Task<IEnumerable<Member>> GetMembers(UserParams userParams)
-        {
-            return await _context.Members.Where(m => m.IsActive == true).ToListAsync();
-        }
+        // public async Task<IEnumerable<MemberProfile>> GetMemberProfiles(UserParams userParams)
+        // {
+        //     return await _context.MemberProfiles.Where(m => m.IsActive == true).ToListAsync();
+        // }
 
         public async Task<Blog> GetBlog(int id)
         {
             return await _context.Blogs.FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id)
-        {
-            className = className.ToLower();
-            switch (className)
-            {
-                case "member":
-                    var member = await _context.Members.Include(m => m.Blogs).FirstOrDefaultAsync(m => m.Id == id);
-                    if (member != null)
-                    {
-                        return member.Blogs.ToList();
-                    }
-                    break;
-                case "business":
-                    var business = await _context.BusinessUsers.Include(b => b.Blogs).FirstOrDefaultAsync(b => b.Id == id);
-                    if (business != null)
-                    {
-                        return business.Blogs.ToList();
-                    }
-                    break;
-            }
-            return null;
+        public async Task<int> GetBlogCountForUser(int id){
+            return await _context.Blogs.Where(b => b.OwnerId == id).CountAsync();
         }
+
+        public async Task<IEnumerable<Blog>> GetBlogsForUser(int id){
+            return await _context.Blogs.Where(b => b.OwnerId == id).ToListAsync();
+        }
+
+        // public async Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id)
+        // {
+        //     className = className.ToLower();
+        //     switch (className)
+        //     {
+        //         case "member":
+        //             var member = await _context.Members.Include(m => m.Blogs).FirstOrDefaultAsync(m => m.Id == id);
+        //             if (member != null)
+        //             {
+        //                 return member.Blogs.ToList();
+        //             }
+        //             break;
+        //         case "business":
+        //             var business = await _context.BusinessUsers.Include(b => b.Blogs).FirstOrDefaultAsync(b => b.Id == id);
+        //             if (business != null)
+        //             {
+        //                 return business.Blogs.ToList();
+        //             }
+        //             break;
+        //     }
+        //     return null;
+        // }
 
         public async Task<IEnumerable<Blog>> GetBlogs()
         {
@@ -185,8 +205,7 @@ namespace Wacomi.API.Data
         public async Task<ClanSeek> GetClanSeek(int id)
         {
             return await _context.ClanSeeks.Include(cs => cs.Category)
-                                           .Include(cs => cs.Member)
-                                           .Include(cs => cs.Member.Identity)
+                                           .Include(cs => cs.AppUser)
                                            .Include(cs => cs.Location)
                                            .FirstOrDefaultAsync(cs => cs.Id == id);
         }
@@ -199,8 +218,7 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null, bool? latest = null)
         {
             var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
-                                           .Include(cs => cs.Member)
-                                           .Include(cs => cs.Member.Identity)
+                                           .Include(cs => cs.AppUser)
                                            .Include(cs => cs.Location)
                                            .OrderByDescending(cs => cs.LastActive)
                                            .AsQueryable();
@@ -244,6 +262,11 @@ namespace Wacomi.API.Data
             return await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.Id == id);
         }
 
+        public async Task<bool> DailyTopicExists(int id)
+        {
+            return await _context.DailyTopics.AnyAsync(dt => dt.Id == id);
+        }
+
         public async Task<DailyTopic> GetActiveDailyTopic()
         {
             return await _context.DailyTopics.Where(dt => dt.IsActive == true).FirstOrDefaultAsync();
@@ -266,6 +289,12 @@ namespace Wacomi.API.Data
         public async Task<string> GetTodaysTopic()
         {
             var topic = await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.IsActive == true);
+            if(topic == null)
+            {
+                topic = await _context.DailyTopics.FirstOrDefaultAsync();
+                topic.IsActive = true;
+                var result = await _context.SaveChangesAsync();
+            }
             return topic.Title;
         }
 
@@ -274,15 +303,16 @@ namespace Wacomi.API.Data
             return await _context.DailyTopics.OrderBy(dt => dt.LastDiscussed).FirstOrDefaultAsync();
         }
 
-        public async Task<int> GetPostedTopicCountForUser(string userId)
+        public async Task<int> GetPostedTopicCountForUser(int userId)
         {
             var records = await _context.DailyTopics.Where(dt => dt.UserId == userId).ToListAsync();
             return records.Count();
         }
 
-        public async Task<TopicLike> GetTopicLike(string userId, int recordId)
+
+        public async Task<TopicLike> GetTopicLike(int userId, int recordId)
         {
-            return await _context.TopicLikes.FirstOrDefaultAsync(tl => tl.SupportUserId == userId && tl.DailyTopicId == recordId);
+            return await _context.TopicLikes.FirstOrDefaultAsync(tl => tl.SupportAppUserId == userId && tl.DailyTopicId == recordId);
         }
 
         public async Task<IEnumerable<DailyTopic>> GetDailyTopicList()
@@ -290,9 +320,9 @@ namespace Wacomi.API.Data
             return await _context.DailyTopics.Include(dt => dt.TopicLikes).Where(dt => dt.IsActive == false).OrderByDescending(dt => dt.TopicLikes.Count()).ToListAsync();
         }
 
-        public async Task<IEnumerable<TopicLike>> GetTopicLikesForUser(string userId)
+        public async Task<IEnumerable<TopicLike>> GetTopicLikesForUser(int userId)
         {
-            return await _context.TopicLikes.Where(tl => tl.SupportUserId == userId).ToListAsync();
+            return await _context.TopicLikes.Where(tl => tl.SupportAppUserId == userId).ToListAsync();
         }
 
         public async Task<IEnumerable<TopicLike>> GetTopicLikesForTopic(int topicId)
@@ -311,7 +341,8 @@ namespace Wacomi.API.Data
         //=============================================================
         public async Task<TopicComment> GetTopicComment(int id)
         {
-            return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
+            return await _context.TopicComments.Include(tc => tc.Member)
+                                             .Include(tc => tc.TopicCommentFeels)
                                             .Include(tc => tc.TopicReplies)
                                                //    .Include(tc => tc.Member)
                                                //    .Include(tc => tc.Member.Identity)
@@ -330,7 +361,8 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<TopicComment>> GetLatestTopicCommentList()
         {
-            return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
+            return await _context.TopicComments.Include(tc => tc.Member)
+                                                .Include(tc => tc.TopicCommentFeels)
                                                 .Include(tc => tc.TopicReplies)
                                                //    .Include(tc => tc.Member)
                                                //    .Include(tc => tc.Member.Identity)
@@ -343,7 +375,7 @@ namespace Wacomi.API.Data
         {
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
                                                 .Include(tc => tc.TopicReplies)
-                                               //    .Include(tc => tc.Member)
+                                                .Include(tc => tc.Member)
                                                //    .Include(tc => tc.Member.Identity)
                                                .OrderByDescending(tc => tc.Id)
                                                .Take(1000)
@@ -364,37 +396,37 @@ namespace Wacomi.API.Data
         }
         public async Task<TopicReply> GetTopicReply(int id)
         {
-            return await _context.TopicReplies.FirstOrDefaultAsync(tr => tr.Id == id);
+            return await _context.TopicReplies.Include(tr => tr.Member).FirstOrDefaultAsync(tr => tr.Id == id);
         }
 
         public async Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId)
         {
-            return await _context.TopicReplies.Where(tr => tr.TopicCommentId == commentId).ToListAsync();
+            return await _context.TopicReplies.Include(tr => tr.Member).Where(tr => tr.TopicCommentId == commentId).ToListAsync();
         }
 
         public async Task<TopicCommentFeel> GetCommentFeel(int memberId, int commentId)
         {
-            return await _context.TopicCommentFeels.Where(tcf => tcf.MemberId == memberId && tcf.CommentId == commentId).FirstOrDefaultAsync();
+            return await _context.TopicCommentFeels.Include(tcf => tcf.Member).Where(tcf => tcf.MemberId == memberId && tcf.CommentId == commentId).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int memberId = 0)
         {
             if(memberId > 0)
-               return await _context.TopicCommentFeels.Where(tcf => tcf.MemberId == memberId).ToListAsync();
+               return await _context.TopicCommentFeels.Include(tcf => tcf.Member).Where(tcf => tcf.MemberId == memberId).ToListAsync();
             return await _context.TopicCommentFeels.ToListAsync();
         }
 
         public async Task<Friend> GetFriend(int memberId, int friendId)
         {
             return await _context.Friends.Include(f => f.Member)
-                                         .Include(f => f.Member.Identity)
+                                         .Include(f => f.Member.AppUser)
                                          .FirstOrDefaultAsync(f => f.MemberId == memberId && f.FriendMemberid == friendId);
         }
 
         public async Task<IEnumerable<Friend>> GetFriends(int memberId)
         {
             return await _context.Friends.Include(f => f.Member)
-                                         .Include(f => f.Member.Identity)
+                                         .Include(f => f.Member.AppUser)
                                          .Where(f => f.MemberId == memberId)
                                          .ToListAsync();
         }
@@ -407,7 +439,7 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsReceived(int memberId)
         {
             return await _context.FriendRequests.Include(fr => fr.Sender)
-                                                .Include(fr => fr.Sender.Identity)
+                                                .Include(fr => fr.Sender.AppUser)
                                                 .Where(fr => fr.RecipientId == memberId)
                                                 .ToListAsync();
         }
@@ -415,7 +447,7 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId)
         {
             return await _context.FriendRequests.Include(fr => fr.Recipient)
-                                                .Include(fr => fr.Recipient.Identity)
+                                                .Include(fr => fr.Recipient.AppUser)
                                                 .Where(fr => fr.SenderId == memberId)
                                                 .ToListAsync();
         }
@@ -423,6 +455,55 @@ namespace Wacomi.API.Data
         public async Task<FriendRequest> GetFriendRequestFrom(int memberId, int senderId)
         {
             return await _context.FriendRequests.FirstOrDefaultAsync(fr => fr.RecipientId == memberId && fr.SenderId == senderId);
+        }
+
+        public async Task<Message> GetMessage(int id)
+        {
+            return await _context.Messages.Include(m => m.Recipient)
+                                          .Include(m => m.Sender)
+                                          .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public IEnumerable<Message> GetLatestReceivedMessages(int userId)
+        {
+            var queryGroup = _context.Messages.Include(m => m.Recipient)
+                                          .Include(m => m.Sender)
+                                          .Where(m => m.RecipientId == userId)
+                                          .GroupBy(m => m.SenderId).ToList();
+
+            return queryGroup.Select(g => g.OrderByDescending(m => m.DateCreated).First()).ToList();
+
+            // return await _context.Messages.Where(m => m.RecipientId == userId)
+            //                               .Include(m => m.Recipient)
+            //                               .Include(m => m.Sender)
+            //                               .GroupBy(m => m.SenderId)
+            //                           //    .Select(g => g.OrderByDescending(m => m.DateCreated).First())
+            //                               .Select(m => m.First())
+            //                               .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId)
+        {
+            return await _context.Messages.Include(m => m.Recipient)
+                                          .Include(m => m.Sender)
+                                          .Where(m => m.RecipientId == userId && m.SenderId == senderId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetLatestSentMessages(int userId)
+        {
+            return await _context.Messages.Include(m => m.Recipient)
+                                          .Include(m => m.Sender)
+                                          .Where(m => m.SenderId == userId)
+                                          .GroupBy(m => m.RecipientId)
+                                          .Select(g => g.OrderByDescending(m => m.DateCreated).First())
+                                          .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetMessagesSentTo(int userId, int recipientId)
+        {
+            return await _context.Messages.Include(m => m.Recipient)
+                                          .Include(m => m.Sender)
+                                          .Where(m => m.SenderId == userId && m.RecipientId == recipientId).ToListAsync();
         }
     }
 }

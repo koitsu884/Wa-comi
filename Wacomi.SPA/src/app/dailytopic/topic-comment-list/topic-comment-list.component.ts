@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import * as fromDailyTopic from '../store/dailytopic.reducers';
@@ -16,7 +16,7 @@ import { NgForm } from '@angular/forms';
   templateUrl: './topic-comment-list.component.html',
   styleUrls: ['./topic-comment-list.component.css']
 })
-export class TopicCommentListComponent implements OnInit {
+export class TopicCommentListComponent implements OnInit, OnDestroy {
   todaysTopic : string;
   dailyTopicState: Observable<fromDailyTopic.State>;
   test : TopicCommentFeel[];
@@ -30,11 +30,12 @@ export class TopicCommentListComponent implements OnInit {
 
   ngOnInit() {
     this.appUser = this.route.snapshot.data['appUser'];
+    console.log(this.appUser);
     this.commentFeelingEnum = this.globalService.getFeelings();
     // console.log(this.commentFeelingEnum);
     this.dailyTopicState = this.store.select('dailytopic');
     // console.log("memberId?" + this.appUser.relatedUserClassId);
-    let memberId = this.appUser ? this.appUser.relatedUserClassId : null;
+    let memberId = this.appUser ? this.appUser.userProfileId : null;
     this.store.dispatch(new TopicActions.GetTopicComments(memberId));
     
     // this.store.dispatch(new TopicActions.GetCommentFeelings(this.appUser.relatedUserClassId));
@@ -46,8 +47,12 @@ export class TopicCommentListComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(){
+    this.store.dispatch(new TopicActions.TopicClear());
+  }
+
   submit(form: NgForm){
       console.log(form.value);
-      this.store.dispatch(new TopicActions.TryAddTopicComment({memberId: this.appUser.relatedUserClassId, comment: form.value.comment, topicTitle:this.todaysTopic}));
+      this.store.dispatch(new TopicActions.TryAddTopicComment({memberId: this.appUser.userProfileId, comment: form.value.comment, topicTitle:this.todaysTopic}));
   }
 }

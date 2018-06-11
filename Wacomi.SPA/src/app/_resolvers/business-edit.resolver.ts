@@ -3,24 +3,24 @@ import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/observable/of';
-import { BusinessUser } from "../_models/BusinessUser";
 import { AlertifyService } from "../_services/alertify.service";
 
 import * as fromApp from '../store/app.reducer';
 import * as fromAccount from '../account/store/account.reducers';
 import * as AccountActions from '../account/store/account.actions';
+import { BusinessProfile } from "../_models/BusinessProfile";
 
 @Injectable()
-export class BusinessEditResolver implements Resolve<BusinessUser> {
+export class BusinessEditResolver implements Resolve<BusinessProfile> {
     constructor(private store: Store<fromApp.AppState>,
                 private router: Router, 
                 private alertify: AlertifyService){}
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<BusinessUser> {
+    resolve(route: ActivatedRouteSnapshot) : Observable<BusinessProfile> {
         return this.store.select('account')
         .take(1)
         .switchMap((state : fromAccount.State) => {
-            return Observable.of(state.bisuserProfile);
+            return Observable.of(state.businessProfile);
         })
         .catch((error) => {
             this.alertify.error('Problem retrieving data');

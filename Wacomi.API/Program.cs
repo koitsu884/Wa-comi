@@ -29,7 +29,7 @@ namespace Wacomi.API
                     var serviceProvider = scope.ServiceProvider;
 
                     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
+                    var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
                     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                     Seed.SeedData(userManager, roleManager, context);
 
