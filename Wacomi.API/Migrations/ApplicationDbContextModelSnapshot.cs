@@ -514,6 +514,9 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("SenderId");
 
+                    b.Property<string>("Title")
+                        .HasMaxLength(100);
+
                     b.HasKey("Id");
 
                     b.HasIndex("RecipientId");

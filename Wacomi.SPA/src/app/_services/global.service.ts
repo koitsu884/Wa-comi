@@ -9,14 +9,18 @@ import { ClanSeek } from '../_models/ClanSeek';
 import { TopicComment } from '../_models/TopicComment';
 import { TopicCommentFeel } from '../_models/TopicCommentFeel';
 import { TopicCommentComponent } from '../dailytopic/topic-comment-list/topic-comment/topic-comment.component';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
+import * as MessageActions from '../message/store/message.actions';
+import { Message } from '../_models/Message';
 
 @Injectable()
 export class GlobalService {
     baseUrl = environment.apiUrl;
 
-    constructor(private httpClient : HttpClient){
+    constructor(private httpClient : HttpClient, private store: Store<fromApp.AppState>){
     }
-
+    
     getClanSeekCategories(){
         return this.httpClient.get<{id: number, name: string}>(this.baseUrl + 'clanseek/categories');
     }

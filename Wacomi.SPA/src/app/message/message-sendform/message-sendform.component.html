@@ -1,0 +1,21 @@
+<div class="container">
+  <div *ngIf="!message">Loading...</div>
+  <div *ngIf="message">
+    <h4>To: {{message.recipientDisplayName}}</h4>
+    <div *ngIf="messageReplyingTo" class="messageReplyingTo bg-info">
+      <h5>（以下の文に対する返信）</h5>
+      <div [innerHTML]="messageReplyingTo | nl2br"></div>
+    </div>
+    <form id="shortMessageForm" #shortMessageForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title" class="control-label required">タイトル</label>
+        <input class="form-control" name="title" type="text" [(ngModel)]="message.title" required maxlength="100">
+      </div>
+      <div class="form-group">
+        <label for="description" class="control-label required">メッセージ</label>
+        <textarea class="form-control" name="content" rows="10" [(ngModel)]="message.content" required maxlength="1000"></textarea>
+      </div>
+      <button class="btn btn-success" [disabled]="!shortMessageForm.valid || shortMessageForm.pristine" type="submit">メッセージを送信</button>
+    </form>
+  </div>
+</div>

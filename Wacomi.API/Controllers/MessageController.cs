@@ -22,6 +22,24 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet("{userId}/received")]
+        public async Task<ActionResult> GetReceivedMessages(int userId)
+        {
+            if(!await this.MatchAppUserWithToken(userId))
+                return Unauthorized();
+            var messages =  await _repo.GetReceivedMessages(userId);
+            return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
+        }
+
+         [HttpGet("{userId}/sent")]
+        public async Task<ActionResult> GetSentMessages(int userId)
+        {
+            if(!await this.MatchAppUserWithToken(userId))
+                return Unauthorized();
+            var messages = await _repo.GetSentMessages(userId);
+            return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
+        }
+
+        [HttpGet("{userId}/received/list")]
         public async Task<ActionResult> GetLatestReceivedMessages(int userId)
         {
             if(!await this.MatchAppUserWithToken(userId))
@@ -30,7 +48,7 @@ namespace Wacomi.API.Controllers
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 
-         [HttpGet("{userId}/sent")]
+         [HttpGet("{userId}/sent/list")]
         public async Task<ActionResult> GetLatestSentMessages(int userId)
         {
             if(!await this.MatchAppUserWithToken(userId))

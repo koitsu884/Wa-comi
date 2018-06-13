@@ -2,6 +2,7 @@ import { ActionReducerMap } from '@ngrx/store';
 import * as fromAccount from '../account/store/account.reducers';
 import * as fromPhoto from '../photo/store/photos.reducers';
 import * as fromBlog from '../blog/store/blogs.reducers';
+import * as fromMessage from '../message/store/message.reducers';
 import * as fromGlobal from './global.reducers';
 
 export interface AppState {
@@ -9,11 +10,13 @@ export interface AppState {
   account: fromAccount.State;
   photos: fromPhoto.State;
   blogs: fromBlog.State;
+  messages: fromMessage.State;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
   global: fromGlobal.globalReducer,
   account: fromAccount.accountReducer,
   photos: fromPhoto.photoReducer,
-  blogs: fromBlog.blogReducer
+  blogs: fromBlog.blogReducer,
+  messages: fromMessage.messageReducer,
 };

@@ -1,0 +1,12 @@
+<app-loading *ngIf="!message || !type"></app-loading>
+<div class="container" *ngIf="message && type">
+  <h3>{{message.title}}</h3>
+  <div class="senderInfo" [routerLink]="['/users/detail/' + userId]">
+    <img src="{{imageUrl}}" class="thumbnail pull-left">
+    <p>{{displayName}}</p>
+    <p>{{message.dateCreated | timeAgo}}</p>
+    <span class="clearfix"></span>
+  </div>
+  <div [innerHTML]="message.content | nl2br"></div>
+  <button *ngIf="type == 'received'" class="btn btn-primary" (click)="onReply()">返信する</button>
+</div>

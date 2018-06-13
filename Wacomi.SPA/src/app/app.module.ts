@@ -36,6 +36,8 @@ import { AppUserResolver } from './_resolvers/appuser.resolver';
 import { UserBlogResolver } from './_resolvers/userblog.resolver';
 import { MemberIdGuard } from './_guards/memberid.guard';
 import { MemberGuard } from './_guards/member.guard';
+import { MessageEffects } from './message/store/message.effects';
+import { MessageService } from './_services/message.service';
 
 
 defineLocale('ja', jaLocale); 
@@ -54,7 +56,7 @@ defineLocale('ja', jaLocale);
     BlogModule,
     PhotoModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects, GlobalEffect]),
+    EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects, GlobalEffect, MessageEffects]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
@@ -62,6 +64,7 @@ defineLocale('ja', jaLocale);
   ],
   providers: [
     GlobalService,
+    MessageService,
     AlertifyService,
     CityListResolver,
     HomeTownListResolver,

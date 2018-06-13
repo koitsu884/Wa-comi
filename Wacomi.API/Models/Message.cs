@@ -12,6 +12,8 @@ namespace Wacomi.API.Models
         [Required]
         public int RecipientId { get; set;}
         public AppUser Recipient { get; set;}
+        [MaxLength(100)]
+        public string Title{ get; set;}
         [Required]
         [MaxLength(1000)]
         public string Content { get; set;}

@@ -8,11 +8,13 @@ import { AppRoutingModule } from '../app-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { MainphotoSelectorComponent } from './mainphoto-selector/mainphoto-selector.component';
 import {Nl2BrPipeModule} from 'nl2br-pipe';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
     TimeAgoPipe,
-    MainphotoSelectorComponent
+    MainphotoSelectorComponent,
+    LoadingComponent
 ],
   imports:[
     CommonModule,
@@ -25,6 +27,7 @@ import {Nl2BrPipeModule} from 'nl2br-pipe';
     CommonModule,
     FormsModule,
     Nl2BrPipeModule,
+    LoadingComponent,
     MainphotoSelectorComponent
   ]
 })

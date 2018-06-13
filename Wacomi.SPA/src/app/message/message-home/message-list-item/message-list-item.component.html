@@ -1,0 +1,8 @@
+<div class="message-list-item" [ngClass]="{'bg-light-yellow': isSent, 'bg-light-blue': !isSent}" (click)="onSelect()">
+  <h5 class="bg-success">{{message.title}}</h5>
+  <div>
+      <img *ngIf="imageUrl" src="{{imageUrl}}" class="thumbnail pull-left">
+  <p><b>{{isSent? 'To' : 'From'}}: {{displayName}} - {{message.dateCreated | timeAgo}}</b></p>
+  <p>{{message.content.substring(0, 50)}}...</p>
+</div>
+<span class="clearfix"></span>

@@ -6,7 +6,7 @@
   </div>
   <div class="panel-footer">
     <div *ngIf="appUser && clanSeek.appUserId != appUser.id">
-      <a class="btn btn-success">ショートメッセージを送る</a>
+      <a class="btn btn-success" (click)="onSend()">ショートメッセージを送る</a>
     </div>
     <div *ngIf="clanSeek.appUserId == appUser?.id">
       <a class="btn btn-primary" [routerLink]="['/clan/edit',  appUser.id, clanSeek.id]">編集</a>

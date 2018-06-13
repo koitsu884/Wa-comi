@@ -19,8 +19,9 @@ const appRoutes: Routes = [
     }
   },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
-  { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
   { path: 'dailytopic', loadChildren: './dailytopic/dailytopic.module#DailyTopicModule'},
+  { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
+  { path: 'message', loadChildren: './message/message.module#MessageModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},
   // { path: 'member', loadChildren: './users/members/members.module#MembersModule'},
   { path: 'users', loadChildren: './users/users.module#UsersModule'},

@@ -28,6 +28,7 @@ export class ClanHomeComponent implements OnInit {
   baseUrl = environment.apiUrl;
   // authState: Observable<fromAccount.State>;
   appUser: AppUser;
+  loading: boolean;
 
   constructor( private route: ActivatedRoute, 
               private httpClient : HttpClient, 
@@ -49,6 +50,7 @@ export class ClanHomeComponent implements OnInit {
   }
 
   loadList(){
+    this.loading = true;
     let Params = new HttpParams();
     if(this.selectedCategoryId > 0)
       Params = Params.append('categoryId', this.selectedCategoryId.toString());
@@ -58,8 +60,10 @@ export class ClanHomeComponent implements OnInit {
     this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek' , { params: Params })
                     .subscribe((result) => {
                       this.clanSeeks = result;
+                      this.loading = false;
                     }, (error) => {
                       this.alertify.error(error);
+                      this.loading = false;
                     });
   }
 }

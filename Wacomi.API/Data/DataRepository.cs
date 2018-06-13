@@ -486,7 +486,9 @@ namespace Wacomi.API.Data
         {
             return await _context.Messages.Include(m => m.Recipient)
                                           .Include(m => m.Sender)
-                                          .Where(m => m.RecipientId == userId && m.SenderId == senderId).ToListAsync();
+                                          .Where(m => m.RecipientId == userId && m.SenderId == senderId)
+                                          .OrderByDescending(m => m.DateCreated)
+                                          .ToListAsync();
         }
 
         public async Task<IEnumerable<Message>> GetLatestSentMessages(int userId)
@@ -503,7 +505,25 @@ namespace Wacomi.API.Data
         {
             return await _context.Messages.Include(m => m.Recipient)
                                           .Include(m => m.Sender)
-                                          .Where(m => m.SenderId == userId && m.RecipientId == recipientId).ToListAsync();
+                                          .Where(m => m.SenderId == userId && m.RecipientId == recipientId)
+                                          .OrderByDescending(m => m.DateCreated)
+                                          .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetReceivedMessages(int userId)
+        {
+            return await _context.Messages.Include(m => m.Sender)
+                                          .Where(m => m.RecipientId == userId)
+                                          .OrderByDescending(m => m.DateCreated)
+                                          .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetSentMessages(int userId)
+        {
+            return await _context.Messages.Include(m => m.Recipient)
+                                          .Where(m => m.SenderId == userId)
+                                          .OrderByDescending(m => m.DateCreated)
+                                          .ToListAsync();
         }
     }
 }

@@ -17,7 +17,7 @@ import { LatestTopiccommentListComponent } from './home/latest-topiccomment-list
     FooterComponent,
     LatestClanListComponent,
     LatestTopiccommentListComponent
-  ],
+],
   imports: [
     CommonModule,
     BlogModule,

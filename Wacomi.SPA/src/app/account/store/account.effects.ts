@@ -9,6 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 import * as AccountActions from './account.actions';
 import * as PhotoActions from '../../photo/store/photos.action';
 import * as BlogActions from '../../blog/store/blogs.actions';
+import * as MessageActions from '../../message/store/message.actions';
 import * as GlobalActions from '../../store/global.actions';
 import { Router } from "@angular/router";
 import { LoginResult } from "../../_models/LoginResult";
@@ -314,7 +315,8 @@ export class AccountEffects {
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
                 { type: PhotoActions.CLEAR_PHOTO},
-                { type: BlogActions.CLEAR_BLOG}
+                { type: BlogActions.CLEAR_BLOG},
+                { type: MessageActions.CLEAR_MESSAGE},
             ]
         })
 

@@ -77,10 +77,10 @@ namespace Wacomi.API.Data
         Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId);
 
         Task<Message> GetMessage(int id);
-        // Task<IEnumerable<Message>> GetReceivedMessages(string userId);
+        Task<IEnumerable<Message>> GetReceivedMessages(int userId);
         IEnumerable<Message> GetLatestReceivedMessages(int userId);
         Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId);
-        // Task<IEnumerable<Message>> GetSentMessages(string userId);
+        Task<IEnumerable<Message>> GetSentMessages(int userId);
         Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
         Task<IEnumerable<Message>> GetMessagesSentTo(int userId, int recipientId);
 

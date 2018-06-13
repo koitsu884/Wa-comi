@@ -31,5 +31,6 @@
       <a class="btn btn-primary" [routerLink]="['edit', appUser.id]" >投稿する</a>
     </div>
   </div>
-  <app-clan-list [clanSeeks]="clanSeeks" [appUserId]="appUser.id"></app-clan-list>
+  <app-loading *ngIf="loading"></app-loading>
+  <app-clan-list *ngIf="!loading" [clanSeeks]="clanSeeks" [appUserId]="appUser.id"></app-clan-list>
 </div>

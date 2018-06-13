@@ -12,7 +12,6 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     public class AppUserController : DataController
     {
         public AppUserController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
@@ -49,6 +48,7 @@ namespace Wacomi.API.Controllers
             return Ok(returnValues);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]AppUserUpdateDto updateUserDto){
             var appUserFromRepo = await _repo.GetAppUser(id);

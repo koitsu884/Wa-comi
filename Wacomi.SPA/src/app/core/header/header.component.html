@@ -15,6 +15,7 @@
         <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
         <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
         <li *ngIf="(authState | async).authenticated" routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
+        <li *ngIf="(authState | async).authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ</a></li>
       </ul>
       <ul *ngIf="!(authState | async).authenticated" class="nav navbar-nav navbar-right">
         <li><a  [routerLink]="['/account/login']" >ログイン</a></li>
