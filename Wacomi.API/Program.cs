@@ -19,10 +19,10 @@ namespace Wacomi.API
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            // var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                // logger.Debug("init main");
                 var host = BuildWebHost(args);
                 using (var scope = host.Services.CreateScope())
                 {
@@ -39,13 +39,13 @@ namespace Wacomi.API
             catch (Exception ex)
             {
                 //NLog: catch setup errors
-                logger.Error(ex, "Stopped program because of exception");
+                // logger.Error(ex, "Stopped program because of exception");
                 throw;
             }
             finally
             {
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                NLog.LogManager.Shutdown();
+                // NLog.LogManager.Shutdown();
             }
 
             // var host = new WebHostBuilder()  
@@ -57,12 +57,12 @@ namespace Wacomi.API
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 // .UseUrls("http://*:80") //Docker
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                })
-                .UseNLog()
+                // .ConfigureLogging(logging =>
+                // {
+                //     logging.ClearProviders();
+                //     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                // })
+                // .UseNLog()
                 .Build();
     }
 }

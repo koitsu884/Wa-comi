@@ -18,6 +18,7 @@ import { NgForm } from '@angular/forms';
 })
 export class TopicCommentListComponent implements OnInit, OnDestroy {
   todaysTopic : string;
+  loading: boolean;
   dailyTopicState: Observable<fromDailyTopic.State>;
   test : TopicCommentFeel[];
   appUser: AppUser;
@@ -33,7 +34,11 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
     console.log(this.appUser);
     this.commentFeelingEnum = this.globalService.getFeelings();
     // console.log(this.commentFeelingEnum);
+    this.loading = true;
     this.dailyTopicState = this.store.select('dailytopic');
+    this.dailyTopicState.subscribe((result) => {
+      this.loading = false;
+    });
     // console.log("memberId?" + this.appUser.relatedUserClassId);
     let memberId = this.appUser ? this.appUser.userProfileId : null;
     this.store.dispatch(new TopicActions.GetTopicComments(memberId));

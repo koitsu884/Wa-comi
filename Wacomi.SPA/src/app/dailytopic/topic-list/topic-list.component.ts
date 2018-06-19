@@ -16,7 +16,6 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./topic-list.component.css']
 })
 export class TopicListComponent implements OnInit, OnDestroy {
-  //dailyTopicList: DailyTopic[];
   dailyTopicState: Observable<fromDailyTopic.State>;
   userId: number;
 
