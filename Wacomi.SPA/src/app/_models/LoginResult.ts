@@ -14,4 +14,5 @@ export interface LoginResult {
     blogs: Blog[];
     memberProfile: MemberProfile;
     businessProfile: BusinessProfile;
+    isAdmin: boolean;
 }

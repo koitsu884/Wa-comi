@@ -22,6 +22,7 @@ export const GET_MEMBER_PROFILE = 'GET_MEMBER_PROFILE';
 export const SET_MEMBER_PROFILE = 'SET_MEMBER_PROFILE';
 export const GET_BUSINESS_PROFILE = 'GET_BUSINESS_PROFILE';
 export const SET_BUSINESS_PROFILE = 'SET_BUSINESS_PROFILE';
+export const SET_ADMIN_FLAG = 'SET_ADMIN_FLAG';
 
 export const UPDATE_APPUSER = 'UPDATE_APPUSER';
 export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
@@ -67,6 +68,12 @@ export class SetToken implements Action {
     readonly type = SET_TOKEN;
 
     constructor(public payload:string) {}
+}
+
+export class SetAdminFlag implements Action {
+    readonly type = SET_ADMIN_FLAG;
+
+    constructor(public payload:boolean) {}
 }
 
 export class TokenExpired implements Action {
@@ -188,6 +195,7 @@ export type AccountActions = TryLogin
                         | SignUpSuccess
                         | Logout 
                         | SetToken 
+                        | SetAdminFlag
                         | GetAccount
                         | SetAccount
                         | GetAppUser

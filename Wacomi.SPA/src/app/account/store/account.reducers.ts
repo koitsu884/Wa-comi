@@ -12,6 +12,7 @@ export interface State {
     appUser: AppUser;
     memberProfile: MemberProfile;
     businessProfile: BusinessProfile;
+    isAdmin: boolean;
 }
 
 const initialState: State = {
@@ -20,7 +21,8 @@ const initialState: State = {
     account: null,
     appUser: null,
     memberProfile: null,
-    businessProfile: null
+    businessProfile: null,
+    isAdmin: false
 };
 
 export function accountReducer(state = initialState, action: AccountActions.AccountActions ){
@@ -32,6 +34,7 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
             localStorage.removeItem('account');
             localStorage.removeItem('memberProfile');
             localStorage.removeItem('businessProfile');
+            localStorage.removeItem('isAdmin');
             localStorage.removeItem('photos');
             return {
                 ...state,
@@ -39,7 +42,8 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
                 appUser: null,
                 token: null,
                 memberProfile: null,
-                businessProfile: null
+                businessProfile: null,
+                isAdmin: false,
             };
         case AccountActions.SET_TOKEN:
             localStorage.setItem('token', action.payload);
@@ -80,6 +84,12 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
                 businessProfile: action.payload,
                 memberProfile: null
             };
+        case AccountActions.SET_ADMIN_FLAG:
+        localStorage.setItem('isAdmin', JSON.stringify(action.payload));
+        return {
+            ...state,
+            isAdmin: action.payload,
+        };
         default:
             return state;
     }

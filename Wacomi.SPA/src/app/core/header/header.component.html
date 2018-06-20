@@ -26,8 +26,8 @@
            <a (click)="false" class="dropdown-toggle" dropdownToggle>{{(authState | async).appUser?.displayName}}  <span class="caret"></span></a> 
            <ul class="dropdown-menu" *dropdownMenu>
              <li role="separator" class="divider"></li>
-             <li *ngIf="(authState | async).appUser.userType!='Admin'"><a [routerLink]="['/settings']">登録情報確認</a></li>
-             <li *ngIf="(authState | async).appUser.userType=='Admin'" ><a [routerLink]="['/admin']">管理ページ</a></li>
+             <li *ngIf="!(authState | async).isAdmin"><a [routerLink]="['/settings']">登録情報確認</a></li>
+             <li *ngIf="(authState | async).isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>
            </ul>
         </li>

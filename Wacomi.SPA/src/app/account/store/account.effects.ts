@@ -119,6 +119,11 @@ export class AccountEffects {
                         type: AccountActions.SET_BUSINESS_PROFILE,
                         payload: loginResult.businessProfile
                     },
+                    {
+                        type: AccountActions.SET_ADMIN_FLAG,
+                        payload: loginResult.isAdmin ? true : false
+
+                    }
                 ];
             })
 

@@ -134,6 +134,8 @@ namespace Wacomi.API.Controllers
                     default:
                         break;
                 }
+            } else if(roles.Where(r => r == "Administrator").FirstOrDefault() != null) {
+                returnValues.Add("isAdmin", true);
             }
 
             //            return Ok(new { tokenString, account, appUser});

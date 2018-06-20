@@ -34,6 +34,7 @@ export class AppComponent implements OnInit{
         const account = JSON.parse(localStorage.getItem('account'));
         const memberProfile = localStorage.getItem('memberProfile');
         const businessProfile = localStorage.getItem('businessProfile');
+        const isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
         const photos = JSON.parse(localStorage.getItem('photos'));
         const blogs = JSON.parse(localStorage.getItem('blogs'));
         this.store.dispatch(new AccountActions.Login({
@@ -43,7 +44,8 @@ export class AppComponent implements OnInit{
                 photos: photos == null ? [] : photos,
                 blogs: blogs == null ? [] : blogs,
                 memberProfile: memberProfile == null ? null : JSON.parse(memberProfile),
-                businessProfile: businessProfile == null ? null : JSON.parse(businessProfile)
+                businessProfile: businessProfile == null ? null : JSON.parse(businessProfile),
+                isAdmin : isAdmin
               }));
         // this.store.dispatch(new AccountActions.SetToken({token: token, appUser: appUser}));
         // this.store.dispatch(new AccountActions.SetAppUser(appUser));

@@ -106,7 +106,7 @@ namespace Wacomi.API
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseMvc();
+            // app.UseMvc();
 
             app.UseMvc(routes => {
                 routes.MapSpaFallbackRoute(
