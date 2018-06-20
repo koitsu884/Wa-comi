@@ -41,7 +41,7 @@ namespace Wacomi.API
             services.AddAutoMapper();
             services.AddDbContext<ApplicationDbContext>(options => 
             options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
-            // services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
+            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
             //options.UseSqlServer(@"Server=db;Database=WacomiNZ;User=sa;Password=P@ssw0rd!!;"));
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
