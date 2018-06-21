@@ -103,7 +103,7 @@ namespace Wacomi.API.Controllers
             {
                 Subject = claimsIdentity,
                 Expires = DateTime.Now.AddDays(1),
-                Issuer = _config.GetSection("Logging:JwtIssuerOptions:Issuer").Value,
+                Issuer = _config.GetSection("JwtIssuerOptions:Issuer").Value,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha512Signature)
             };

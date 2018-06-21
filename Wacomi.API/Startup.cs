@@ -71,7 +71,7 @@ namespace Wacomi.API
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         //ValidateIssuer = false,
-                        ValidIssuers = new [] {Configuration.GetSection("Logging:JwtIssuerOptions:Issuer").Value},
+                        ValidIssuers = new [] {Configuration.GetSection("JwtIssuerOptions:Issuer").Value},
                         ValidateAudience = false,
                         ClockSkew = TimeSpan.Zero
                     };
