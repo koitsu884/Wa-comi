@@ -314,7 +314,6 @@ export class AccountEffects {
     authLogout = this.actions$
         .ofType(AccountActions.LOGOUT)
         .mergeMap(() => {
-            console.log("なにごと");
             this.router.navigate(['/home'])
 
             return [

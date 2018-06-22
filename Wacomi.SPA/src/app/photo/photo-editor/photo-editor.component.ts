@@ -35,12 +35,10 @@ export class PhotoEditorComponent implements OnInit {
              private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
-    console.log("WHD");
     this.photoState = this.store.select('photos');
     this.store.select('account')
+              .take(1)
               .subscribe((state: fromAccount.State) => {
-                console.log("State");
-                console.log(state);
                 this.appUserId = state.appUser.id;
                 this.store.dispatch(new PhotoActions.GetPhotos(state.appUser.id));
               }, (error) => {
