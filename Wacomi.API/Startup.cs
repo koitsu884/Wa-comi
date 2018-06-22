@@ -42,7 +42,7 @@ namespace Wacomi.API
             services.AddMvc();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper();
-            services.AddDbContext<ApplicationDbContext>(options => 
+            services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
             logger.Error("Connection String");
             logger.Error(Configuration.GetConnectionString("MyDbConnection"));
@@ -66,23 +66,25 @@ namespace Wacomi.API
             // Configure JwtIssuerOptions
             //var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
-            services.AddAuthentication(options => {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(opeionts => {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(opeionts =>
+                {
                     opeionts.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         //ValidateIssuer = false,
-                        ValidIssuers = new [] {Configuration.GetSection("JwtIssuerOptions:Issuer").Value},
+                        ValidIssuers = new[] { Configuration.GetSection("JwtIssuerOptions:Issuer").Value },
                         ValidateAudience = false,
                         ClockSkew = TimeSpan.Zero
                     };
                 });
 
-          
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,12 +96,15 @@ namespace Wacomi.API
             }
             else
             {
-                app.UseExceptionHandler(builder => {
-                    builder.Run(async context => {
+                app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(async context =>
+                    {
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                         var error = context.Features.Get<IExceptionHandlerFeature>();
-                        if(error != null){
+                        if (error != null)
+                        {
                             context.Response.AddApplicationError(error.Error.Message);
                             await context.Response.WriteAsync(error.Error.Message);
                         }
@@ -109,16 +114,22 @@ namespace Wacomi.API
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
-            // app.UseDefaultFiles();
-            // app.UseStaticFiles();
-            app.UseMvc();
-
-            // app.UseMvc(routes => {
-            //     routes.MapSpaFallbackRoute(
-            //         name: "spa-fallback",
-            //         defaults: new { controller = "Fallback", action ="Index"}
-            //     );
-            // });
+            if (env.IsDevelopment())
+            {
+                app.UseMvc();
+            }
+            else
+            {
+                app.UseDefaultFiles();
+                app.UseStaticFiles();
+                app.UseMvc(routes =>
+                {
+                    routes.MapSpaFallbackRoute(
+                        name: "spa-fallback",
+                        defaults: new { controller = "Fallback", action = "Index" }
+                    );
+                });
+            }
         }
     }
 }
