@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using NLog.Web;
 
 namespace Wacomi.API
 {
@@ -35,12 +36,16 @@ namespace Wacomi.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
             services.AddCors();
             services.AddMvc();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper();
             services.AddDbContext<ApplicationDbContext>(options => 
             options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+            logger.Error("Connection String");
+            logger.Error(Configuration.GetConnectionString("MyDbConnection"));
             services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
             //options.UseSqlServer(@"Server=db;Database=WacomiNZ;User=sa;Password=P@ssw0rd!!;"));
             services.AddScoped<IAuthRepository, AuthRepository>();
@@ -104,16 +109,16 @@ namespace Wacomi.API
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-            // app.UseMvc();
+            // app.UseDefaultFiles();
+            // app.UseStaticFiles();
+            app.UseMvc();
 
-            app.UseMvc(routes => {
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Fallback", action ="Index"}
-                );
-            });
+            // app.UseMvc(routes => {
+            //     routes.MapSpaFallbackRoute(
+            //         name: "spa-fallback",
+            //         defaults: new { controller = "Fallback", action ="Index"}
+            //     );
+            // });
         }
     }
 }

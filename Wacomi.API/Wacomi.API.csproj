@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <UserSecretsId>ca7ce75b-5784-4d05-95b0-4f7fc20702c4</UserSecretsId>
+    <!-- <UserSecretsId>ca7ce75b-5784-4d05-95b0-4f7fc20702c4</UserSecretsId> -->
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
