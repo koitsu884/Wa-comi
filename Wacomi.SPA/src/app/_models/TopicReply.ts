@@ -4,6 +4,7 @@ export interface TopicReply {
     displayName: string;
     topicCommentId: number;
     memberId: number;
+    appUserId: number;
     reply: string;
     created: Date;
 }

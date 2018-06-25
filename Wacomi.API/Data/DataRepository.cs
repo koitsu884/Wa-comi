@@ -215,19 +215,14 @@ namespace Wacomi.API.Data
             return await _context.ClanSeekCategories.ToListAsync();
         }
 
-        public async Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null, bool? latest = null)
+        //public async Task<PagedList<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null, bool? latest = null)
+        public async Task<PagedList<ClanSeek>> GetClanSeeks(PaginationParams paginationParams, int? categoryId = null, int? cityId = null)
         {
-            var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
+             var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
                                            .Include(cs => cs.AppUser)
                                            .Include(cs => cs.Location)
                                            .OrderByDescending(cs => cs.LastActive)
                                            .AsQueryable();
-
-            if (latest != null)
-            {
-                clanSeeks = clanSeeks.Take(6);
-            }
-
             if (categoryId != null)
             {
                 clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
@@ -237,7 +232,29 @@ namespace Wacomi.API.Data
             {
                 clanSeeks = clanSeeks.Where(cs => cs.LocationId == cityId);
             }
-            return await clanSeeks.ToListAsync();
+
+            return await PagedList<ClanSeek>.CreateAsync(clanSeeks, paginationParams.PageNumber, paginationParams.PageSize);
+            // var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
+            //                                .Include(cs => cs.AppUser)
+            //                                .Include(cs => cs.Location)
+            //                                .OrderByDescending(cs => cs.LastActive)
+            //                                .AsQueryable();
+
+            // if (latest != null)
+            // {
+            //     clanSeeks = clanSeeks.Take(6);
+            // }
+
+            // if (categoryId != null)
+            // {
+            //     clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
+            // }
+
+            // if (cityId != null)
+            // {
+            //     clanSeeks = clanSeeks.Where(cs => cs.LocationId == cityId);
+            // }
+            // return await clanSeeks.ToListAsync();
         }
 
         public async Task<PropertySeek> GetPropertySeek(int id)
@@ -464,66 +481,69 @@ namespace Wacomi.API.Data
                                           .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public IEnumerable<Message> GetLatestReceivedMessages(int userId)
+        // public IEnumerable<Message> GetLatestReceivedMessages(int userId)
+        // {
+        //     var queryGroup = _context.Messages.Include(m => m.Recipient)
+        //                                   .Include(m => m.Sender)
+        //                                   .Where(m => m.RecipientId == userId)
+        //                                   .GroupBy(m => m.SenderId).ToList();
+
+        //     return queryGroup.Select(g => g.OrderByDescending(m => m.DateCreated).First()).ToList();
+
+        //     // return await _context.Messages.Where(m => m.RecipientId == userId)
+        //     //                               .Include(m => m.Recipient)
+        //     //                               .Include(m => m.Sender)
+        //     //                               .GroupBy(m => m.SenderId)
+        //     //                           //    .Select(g => g.OrderByDescending(m => m.DateCreated).First())
+        //     //                               .Select(m => m.First())
+        //     //                               .ToListAsync();
+        // }
+
+        public async Task<PagedList<Message>> GetReceivedMessagesFrom(PaginationParams paginationParams, int userId, int senderId)
         {
-            var queryGroup = _context.Messages.Include(m => m.Recipient)
-                                          .Include(m => m.Sender)
-                                          .Where(m => m.RecipientId == userId)
-                                          .GroupBy(m => m.SenderId).ToList();
-
-            return queryGroup.Select(g => g.OrderByDescending(m => m.DateCreated).First()).ToList();
-
-            // return await _context.Messages.Where(m => m.RecipientId == userId)
-            //                               .Include(m => m.Recipient)
-            //                               .Include(m => m.Sender)
-            //                               .GroupBy(m => m.SenderId)
-            //                           //    .Select(g => g.OrderByDescending(m => m.DateCreated).First())
-            //                               .Select(m => m.First())
-            //                               .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId)
-        {
-            return await _context.Messages.Include(m => m.Recipient)
+            var messages = _context.Messages.Include(m => m.Recipient)
                                           .Include(m => m.Sender)
                                           .Where(m => m.RecipientId == userId && m.SenderId == senderId)
-                                          .OrderByDescending(m => m.DateCreated)
-                                          .ToListAsync();
+                                          .OrderByDescending(m => m.DateCreated);
+
+            return await PagedList<Message>.CreateAsync(messages, paginationParams.PageNumber, paginationParams.PageSize);
+
         }
 
-        public async Task<IEnumerable<Message>> GetLatestSentMessages(int userId)
-        {
-            return await _context.Messages.Include(m => m.Recipient)
-                                          .Include(m => m.Sender)
-                                          .Where(m => m.SenderId == userId)
-                                          .GroupBy(m => m.RecipientId)
-                                          .Select(g => g.OrderByDescending(m => m.DateCreated).First())
-                                          .ToListAsync();
-        }
+        // public async Task<IEnumerable<Message>> GetLatestSentMessages(int userId)
+        // {
+        //     return await _context.Messages.Include(m => m.Recipient)
+        //                                   .Include(m => m.Sender)
+        //                                   .Where(m => m.SenderId == userId)
+        //                                   .GroupBy(m => m.RecipientId)
+        //                                   .Select(g => g.OrderByDescending(m => m.DateCreated).First())
+        //                                   .ToListAsync();
+        // }
 
-        public async Task<IEnumerable<Message>> GetMessagesSentTo(int userId, int recipientId)
+        public async Task<PagedList<Message>> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId)
         {
-            return await _context.Messages.Include(m => m.Recipient)
+            var messages = _context.Messages.Include(m => m.Recipient)
                                           .Include(m => m.Sender)
                                           .Where(m => m.SenderId == userId && m.RecipientId == recipientId)
-                                          .OrderByDescending(m => m.DateCreated)
-                                          .ToListAsync();
+                                          .OrderByDescending(m => m.DateCreated);
+            return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
         }
 
-        public async Task<IEnumerable<Message>> GetReceivedMessages(int userId)
+        public async Task<PagedList<Message>> GetReceivedMessages(PaginationParams paginationParams, int userId)
         {
-            return await _context.Messages.Include(m => m.Sender)
+            var messages = _context.Messages.Include(m => m.Sender)
                                           .Where(m => m.RecipientId == userId)
-                                          .OrderByDescending(m => m.DateCreated)
-                                          .ToListAsync();
+                                          .OrderByDescending(m => m.DateCreated);
+            return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
         }
 
-        public async Task<IEnumerable<Message>> GetSentMessages(int userId)
+        public async Task<PagedList<Message>> GetSentMessages(PaginationParams paginationParams, int userId )
         {
-            return await _context.Messages.Include(m => m.Recipient)
+            var messages = _context.Messages.Include(m => m.Recipient)
                                           .Where(m => m.SenderId == userId)
-                                          .OrderByDescending(m => m.DateCreated)
-                                          .ToListAsync();
+                                          .OrderByDescending(m => m.DateCreated);
+
+            return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
         }
     }
 }

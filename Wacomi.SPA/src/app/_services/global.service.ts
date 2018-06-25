@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import * as fromApp from '../store/app.reducer';
 import * as MessageActions from '../message/store/message.actions';
 import { Message } from '../_models/Message';
+import { PaginatedResult } from '../_models/Pagination';
 
 @Injectable()
 export class GlobalService {
@@ -42,7 +43,7 @@ export class GlobalService {
     }
 
     getLatestClanSeekList(){
-        return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?latest=true');
+        return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?pageSize=10');
     }
 
     getTodaysTopic(){

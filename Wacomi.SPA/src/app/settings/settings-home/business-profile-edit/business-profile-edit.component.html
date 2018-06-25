@@ -1,17 +1,13 @@
-<div class="container">
-  <div class="row">
-    <form #bisuserEditForm="ngForm" id="bisuserEditForm" (ngSubmit)="submit(bisuserEditForm)">
-      <div class="form-group">
-        <label for="establishedDate" class="control-label">設立日</label>
-        <input class="form-control" name="establishedDate" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="bisUser.establishedDate">
-      </div>
-      <div class="form-group">
-        <label for="introduction" class="control-label">会社紹介</label>
-        <textarea class="form-control" [(ngModel)]="bisUser.introduction" name="introduction" rows="6">
-      </textarea>
-      </div>
-      <hr>
-      <button class="btn btn-success" [disabled]="!bisuserEditForm.valid || bisuserEditForm.pristine" type="submit">更新</button>
-    </form>
+<form #bisuserEditForm="ngForm" id="bisuserEditForm" (ngSubmit)="submit(bisuserEditForm)">
+  <div class="form-group">
+    <label for="establishedDate" class="control-label">設立日</label>
+    <input class="form-control" name="establishedDate" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="bisUser.establishedDate">
   </div>
-</div>
+  <div class="form-group">
+    <label for="introduction" class="control-label">会社紹介</label>
+    <textarea class="form-control" [(ngModel)]="bisUser.introduction" name="introduction" rows="6">
+      </textarea>
+  </div>
+  <hr>
+  <button class="btn btn-success" [disabled]="!bisuserEditForm.valid || bisuserEditForm.pristine" type="submit">更新</button>
+</form>

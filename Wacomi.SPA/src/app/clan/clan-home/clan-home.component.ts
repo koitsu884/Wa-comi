@@ -13,6 +13,7 @@ import * as fromAccount from '../../account/store/account.reducers';
 import * as fromApp from '../../store/app.reducer';
 import { Store } from '@ngrx/store';
 import { AppUser } from '../../_models/AppUser';
+import { PaginatedResult, Pagination } from '../../_models/Pagination';
 
 @Component({
   selector: 'app-clan-home',
@@ -29,6 +30,8 @@ export class ClanHomeComponent implements OnInit {
   // authState: Observable<fromAccount.State>;
   appUser: AppUser;
   loading: boolean;
+  pagingParams: any = {};
+  pagination: Pagination;
 
   constructor( private route: ActivatedRoute, 
               private httpClient : HttpClient, 
@@ -46,24 +49,36 @@ export class ClanHomeComponent implements OnInit {
     this.selectedCityId = 0;
     // this.authState = this.store.select('account');
     this.appUser = this.route.snapshot.data['appUser'];
+    this.loading = true;
     this.loadList();
   }
 
   loadList(){
-    this.loading = true;
     let Params = new HttpParams();
     if(this.selectedCategoryId > 0)
       Params = Params.append('categoryId', this.selectedCategoryId.toString());
     if(this.selectedCityId > 0)
       Params = Params.append('cityId', this.selectedCityId.toString());
+    if(this.pagination)
+    {
+      Params = Params.append('pageNumber', this.pagination.currentPage.toString());
+      Params = Params.append('pageSize', this.pagination.itemsPerPage.toString());
+    }      
     
-    this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek' , { params: Params })
-                    .subscribe((result) => {
-                      this.clanSeeks = result;
+    this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek' , { params: Params, observe: 'response' })
+                    .subscribe((response) => {
+                      this.clanSeeks = response.body;
+                      this.pagination = JSON.parse(response.headers.get("Pagination"));
                       this.loading = false;
                     }, (error) => {
                       this.alertify.error(error);
                       this.loading = false;
                     });
+  }
+
+  pageChanged(event){
+    this.pagination.currentPage = event.page;
+    this.loading = true;
+    this.loadList();
   }
 }

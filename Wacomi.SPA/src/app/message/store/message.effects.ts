@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect } from '@ngrx/effects';
 import { environment } from "../../../environments/environment";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 import * as MessageActions from "./message.actions";
 import * as GlobalActions from "../../store/global.actions";
@@ -18,19 +18,27 @@ export class MessageEffects {
         private router: Router) { }
 
     @Effect()
-    getMessageReceived = this.actions$
-        .ofType(MessageActions.GET_MESSAGES_RECEIVED)
-        .map((action: MessageActions.GetMessagesReceived) => {
+        getMessages = this.actions$
+        .ofType(MessageActions.GET_MESSAGES)
+        .map((action: MessageActions.GetMessages) => {
             return action.payload;
         })
-        .switchMap((appUserId) => {
-            return this.httpClient.get<Message[]>(this.baseUrl + 'message/' + appUserId + '/received',
+        .switchMap((payload) => {
+            let httpParams = new HttpParams();
+            if(payload.pageNumber > 0)
+                httpParams = httpParams.append('pageNumber', payload.pageNumber.toString());
+            if(payload.pageSize > 0)
+                httpParams = httpParams.append('pageSize', payload.pageSize.toString());
+
+            return this.httpClient.get<Message[]>(this.baseUrl + 'message/' + payload.appUserId + '/' + payload.type,
                 {
-                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                    headers: new HttpHeaders().set('Content-Type', 'application/json'),
+                    params: httpParams,
+                    observe: 'response'
                 })
-                .map((result) => {
+                .map((response) => {
                     return {
-                        type: MessageActions.SET_MESSAGES_RECEIVED, payload: result
+                        type: MessageActions.SET_MESSAGES, payload: {messages: response.body, pagination: JSON.parse(response.headers.get("Pagination"))}
                     };
                 })
                 .catch((error: string) => {
@@ -38,26 +46,63 @@ export class MessageEffects {
                 });
         })
 
-    @Effect()
-    getMessageSent = this.actions$
-        .ofType(MessageActions.GET_MESSAGES_SENT)
-        .map((action: MessageActions.GetMessagesSent) => {
-            return action.payload;
-        })
-        .switchMap((appUserId) => {
-            return this.httpClient.get<Message[]>(this.baseUrl + 'message/' + appUserId + '/sent',
-                {
-                    headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map((result) => {
-                    return {
-                        type: MessageActions.SET_MESSAGES_SENT, payload: result
-                    };
-                })
-                .catch((error: string) => {
-                    return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+    // @Effect()
+    // getMessageReceived = this.actions$
+    //     .ofType(MessageActions.GET_MESSAGES_RECEIVED)
+    //     .map((action: MessageActions.GetMessagesReceived) => {
+    //         return action.payload;
+    //     })
+    //     .switchMap((payload) => {
+    //         let httpParams = new HttpParams();
+    //         if(payload.pageNumber > 0)
+    //             httpParams = httpParams.append('pageNumber', payload.pageNumber.toString());
+    //         if(payload.pageSize > 0)
+    //             httpParams = httpParams.append('pageSize', payload.pageSize.toString());
+
+    //         return this.httpClient.get<Message[]>(this.baseUrl + 'message/' + payload.appUserId + '/received',
+    //             {
+    //                 headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    //                 params: httpParams,
+    //                 observe: 'response'
+    //             })
+    //             .map((response) => {
+    //                 return {
+    //                     type: MessageActions.SET_MESSAGES_RECEIVED, payload: {messages: response.body, pagination: JSON.parse(response.headers.get("Pagination"))}
+    //                 };
+    //             })
+    //             .catch((error: string) => {
+    //                 return of({ type: GlobalActions.FAILED, payload: error })
+    //             });
+    //     })
+
+    // @Effect()
+    // getMessageSent = this.actions$
+    //     .ofType(MessageActions.GET_MESSAGES_SENT)
+    //     .map((action: MessageActions.GetMessagesSent) => {
+    //         return action.payload;
+    //     })
+    //     .switchMap((payload) => {
+    //         let httpParams = new HttpParams();
+    //         if(payload.pageNumber > 0)
+    //             httpParams = httpParams.append('pageNumber', payload.pageNumber.toString());
+    //         if(payload.pageSize > 0)
+    //             httpParams = httpParams.append('pageSize', payload.pageSize.toString());
+
+    //         return this.httpClient.get<Message[]>(this.baseUrl + 'message/' + payload.appUserId + '/sent',
+    //             {
+    //                 params: httpParams,
+    //                 observe: 'response',
+    //                 headers: new HttpHeaders().set('Content-Type', 'application/json')
+    //             })
+    //             .map((response) => {
+    //                 return {
+    //                     type: MessageActions.SET_MESSAGES_SENT, payload: {messages: response.body, pagination: JSON.parse(response.headers.get("Pagination"))}
+    //                 };
+    //             })
+    //             .catch((error: string) => {
+    //                 return of({ type: GlobalActions.FAILED, payload: error })
+    //             });
+    //     })
 
     @Effect()
     sendMessage = this.actions$

@@ -69,7 +69,7 @@ namespace Wacomi.API.Helper
 
             CreateMap<TopicComment, TopicCommentListForReturnDto>()
               // .ForMember(tcl => tcl.MainPhotoUrl, opt => opt.MapFrom(src => src.Member.MainPhotoUrl))
-              // .ForMember(tcl => tcl.DisplayName, opt => opt.MapFrom(src => src.Member.Identity.DisplayName))
+              .ForMember(tcl => tcl.AppUserId, opt => opt.MapFrom(src => src.Member.AppUserId))
               .ForMember(tcl => tcl.ReplyCount,
                          opt => opt.MapFrom(src => src.TopicReplies.Count()))
               .ForMember(tcl => tcl.LikedCount,
@@ -77,7 +77,8 @@ namespace Wacomi.API.Helper
 
             CreateMap<TopicLike, TopicLikeForReturnDto>();
 
-            CreateMap<TopicReply, TopicReplyForReturnDto>();
+            CreateMap<TopicReply, TopicReplyForReturnDto>()
+              .ForMember(tr => tr.AppUserId, opt => opt.MapFrom(src => src.Member.AppUserId));
 
             CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();
 

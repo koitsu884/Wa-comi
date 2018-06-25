@@ -37,7 +37,8 @@ namespace Wacomi.API.Data
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
         Task<ClanSeek> GetClanSeek(int id);
         Task<IEnumerable<ClanSeekCategory>> GetClanSeekCategories();
-        Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId, int? cityId, bool? latest);
+        //Task<IEnumerable<ClanSeek>> GetClanSeeks(int? categoryId, int? cityId, bool? latest);
+        Task<PagedList<ClanSeek>> GetClanSeeks(PaginationParams paginationParams, int? categoryId = null, int? cityId = null);
         Task<PropertySeek> GetPropertySeek(int id);
         Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId);
         Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
@@ -77,12 +78,13 @@ namespace Wacomi.API.Data
         Task<IEnumerable<FriendRequest>> GetFriendRequestsSent(int memberId);
 
         Task<Message> GetMessage(int id);
-        Task<IEnumerable<Message>> GetReceivedMessages(int userId);
-        IEnumerable<Message> GetLatestReceivedMessages(int userId);
-        Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId);
-        Task<IEnumerable<Message>> GetSentMessages(int userId);
-        Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
-        Task<IEnumerable<Message>> GetMessagesSentTo(int userId, int recipientId);
+        Task<PagedList<Message>> GetReceivedMessages(PaginationParams paginationParams,int userId);
+        // IEnumerable<Message> GetLatestReceivedMessages(int userId);
+//        Task<IEnumerable<Message>> GetReceivedMessagesFrom(int userId, int senderId);
+        Task<PagedList<Message>> GetReceivedMessagesFrom(PaginationParams paginationParams, int userId, int senderId);
+        Task<PagedList<Message>> GetSentMessages(PaginationParams paginationParams, int userId);
+        // Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
+        Task<PagedList<Message>> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId);
 
     }
 

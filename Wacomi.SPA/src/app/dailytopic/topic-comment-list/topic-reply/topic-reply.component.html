@@ -1,7 +1,12 @@
 <div class="replyContainer">
   <div class="reply" *ngFor="let topicReply of topicReplies">
       <div class="commentImage">
-          <img class="img-circle" src="{{topicReply.mainPhotoUrl}}" alt="{{topicReply.displayName}}" title="{{topicReply.displayName}}">
+          <img class="img-circle" 
+          [routerLink]="['/users/detail/', topicReply.appUserId]" 
+           src="{{topicReply.mainPhotoUrl ? topicReply.mainPhotoUrl : 'assets/NoImage.png'}}" 
+           alt="{{topicReply.displayName}}" 
+           title="{{topicReply.displayName}}"
+           style="cursor: pointer">
        </div>
        <div class="comment">
           <div class="commentBaloon">

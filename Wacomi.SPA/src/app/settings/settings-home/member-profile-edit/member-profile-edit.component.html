@@ -1,55 +1,50 @@
-<div class="container">
-
-  <div class="row">
-    <form #memberEditForm="ngForm" id="memberEditForm" (ngSubmit)="submit(memberEditForm)">
-      <div class="form-group">
-        <label for="dateOfBirth" class="control-label">生年月日</label>
-        <input class="form-control" name="dateOfBirth" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="member.dateOfBirth">
-      </div>
-      <div class="form-group">
-        <label class="control-label">性別</label>
-        <label class="radio-inline">
-          <input type="radio" value="male" name="gender" [(ngModel)]="member.gender">男
-        </label>
-        <label class="radio-inline">
-          <input type="radio" value="female" name="gender" [(ngModel)]="member.gender">女
-        </label>
-        <label class="radio-inline">
-          <input type="radio" value="unknown" name="gender" [(ngModel)]="member.gender">その他
-        </label>
-      </div>
-      <!-- <div class="form-group">
+<form #memberEditForm="ngForm" id="memberEditForm" (ngSubmit)="submit(memberEditForm)">
+  <div class="form-group">
+    <label for="dateOfBirth" class="control-label">生年月日</label>
+    <input class="form-control" name="dateOfBirth" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="member.dateOfBirth">
+  </div>
+  <div class="form-group">
+    <label class="control-label">性別</label>
+    <label class="radio-inline">
+      <input type="radio" value="male" name="gender" [(ngModel)]="member.gender">男
+    </label>
+    <label class="radio-inline">
+      <input type="radio" value="female" name="gender" [(ngModel)]="member.gender">女
+    </label>
+    <label class="radio-inline">
+      <input type="radio" value="unknown" name="gender" [(ngModel)]="member.gender">その他
+    </label>
+  </div>
+  <!-- <div class="form-group">
         <label for="city" class="control-label">滞在先</label>
         <select [(ngModel)]="member.cityId" name="city">
           <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
         </select>
       </div> -->
 
-      <div class="form-group">
-        <label for="hometown" class="control-label">出身地</label>
-        <select [(ngModel)]="member.homeTownId" name="hometown">
-          <option *ngFor="let hometown of hometowns" value="{{hometown.id}}">{{hometown.prefecture}}</option>
-        </select>
-      </div>
+  <div class="form-group">
+    <label for="hometown" class="control-label">出身地</label>
+    <select [(ngModel)]="member.homeTownId" name="hometown">
+      <option *ngFor="let hometown of hometowns" value="{{hometown.id}}">{{hometown.prefecture}}</option>
+    </select>
+  </div>
 
-      <div class="form-group">
-        <label for="introduction" class="control-label">自己紹介</label>
-        <textarea class="form-control" [(ngModel)]="member.introduction" name="introduction" rows="6">
+  <div class="form-group">
+    <label for="introduction" class="control-label">自己紹介</label>
+    <textarea class="form-control" [(ngModel)]="member.introduction" name="introduction" rows="6">
       </textarea>
-      </div>
+  </div>
 
-      <div class="form-group">
-        <label for="interests" class="control-label">趣味</label>
-        <textarea class="form-control" [(ngModel)]="member.interests" name="interests" rows="6">
+  <div class="form-group">
+    <label for="interests" class="control-label">趣味</label>
+    <textarea class="form-control" [(ngModel)]="member.interests" name="interests" rows="6">
       </textarea>
-      </div>
-      <!-- <div class="form-group">
+  </div>
+  <!-- <div class="form-group">
         <label for="blogs" class="control-label">ブログ</label>
         <app-blog-list [blogs]="blogs"></app-blog-list>
         <a [routerLink]="['/editblog', 'member', member.id]">ブログの追加・削除</a>
       </div> -->
-      <hr>
-      <button class="btn btn-success" [disabled]="!memberEditForm.valid || memberEditForm.pristine" type="submit">更新</button>
-    </form>
-  </div>
-</div>
+  <hr>
+  <button class="btn btn-success" [disabled]="!memberEditForm.valid || memberEditForm.pristine" type="submit">更新</button>
+</form>

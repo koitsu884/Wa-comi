@@ -1,9 +1,0 @@
-<app-loading *ngIf="!(messageState | async).receivedMessages"></app-loading>
-<div class="container">
-  <!-- <div *ngIf="!(messageState | async).receivedMessages">Loading...</div> -->
-  <div *ngIf="(messageState | async).receivedMessages">
-    <div *ngFor="let receivedMessage of (messageState | async).receivedMessages">
-      <app-message-list-item [message]="receivedMessage" [isSent]=false></app-message-list-item>
-    </div>
-  </div>
-</div>

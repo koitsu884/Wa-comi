@@ -4,7 +4,8 @@
       <table class="table-responsive">
         <thead>
           <tr>
-            <th></th><th>フィルター</th>
+            <th></th>
+            <th>フィルター</th>
           </tr>
         </thead>
         <tbody>
@@ -28,9 +29,23 @@
       </table>
     </div>
     <div class="col-sm-6 col-md-4">
-      <a class="btn btn-primary" [routerLink]="['edit', appUser.id]" >投稿する</a>
+      <a class="btn btn-primary" [routerLink]="['edit', appUser.id]">投稿する</a>
     </div>
   </div>
   <app-loading *ngIf="loading"></app-loading>
   <app-clan-list *ngIf="!loading" [clanSeeks]="clanSeeks" [appUserId]="appUser.id"></app-clan-list>
+  <div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
+    <pagination 
+      [boundaryLinks]="true" 
+      [totalItems]="pagination.totalItems" 
+      [(ngModel)]="pagination.currentPage" 
+      [itemsPerPage]="pagination.itemsPerPage"
+      (pageChanged)="pageChanged($event)" 
+      class="pagination-sm" 
+      previousText="&lsaquo;" 
+      nextText="&rsaquo;" 
+      firstText="&laquo;"
+      lastText="&raquo;">
+    </pagination>
+  </div>
 </div>

@@ -2,13 +2,10 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { MessageHomeComponent } from "./message-home/message-home.component";
 import { AuthGuard } from "../_guards/auth.guard";
-import { MessageSentlistComponent } from "./message-home/message-sentlist/message-sentlist.component";
-import { MessageReceivedlistComponent } from "./message-home/message-receivedlist/message-receivedlist.component";
 import { AppUserResolver } from "../_resolvers/appuser.resolver";
-import { MessageListComponent } from "./message-home/message-list/message-list.component";
 import { MessageSendformComponent } from "./message-sendform/message-sendform.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
-
+import { MessageStaticsComponent } from "./message-statics/message-statics.component";
 
 const messageRoute: Routes = [
     {
@@ -28,11 +25,12 @@ const messageRoute: Routes = [
         resolve: {
             appUser:AppUserResolver,            
         },
-        children: [
-            { path:'', component: MessageListComponent},
-            { path:':userId/sent', component: MessageSentlistComponent},
-            { path:':userId/received', component: MessageReceivedlistComponent},
-        ]
+        // children: [
+        //     { path:'', component: MessageStaticsComponent},
+        //     // { path:':userId/:type', component: MessageListComponent},
+        //     { path:':userId/sent', component: MessageListSentComponent},
+        //     { path:':userId/received', component: MessageListReceivedComponent},
+        // ]
     }
 ];
 

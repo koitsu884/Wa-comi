@@ -9,7 +9,7 @@
         <span class="h4">{{clanSeek.title}}</span>
     </div>
     <div class="panel-body">
-      <img class="clanImage pull-left" src="{{clanSeek.mainPhotoUrl}}">
+      <img *ngIf="clanSeek.mainPhotoUrl" class="clanImage pull-left" src="{{clanSeek.mainPhotoUrl}}">
       <p>{{clanSeek.displayName}}</p>
       <p>{{clanSeek.locationName}}</p>
       <span class="clearfix"></span>

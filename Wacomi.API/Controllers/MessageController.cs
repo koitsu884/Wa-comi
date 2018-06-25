@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
+using Wacomi.API.Helper;
 using Wacomi.API.Models;
 
 namespace Wacomi.API.Controllers
@@ -22,56 +23,60 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet("{userId}/received")]
-        public async Task<ActionResult> GetReceivedMessages(int userId)
+        public async Task<ActionResult> GetReceivedMessages(PaginationParams paginationParams, int userId)
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages =  await _repo.GetReceivedMessages(userId);
+            var messages =  await _repo.GetReceivedMessages(paginationParams, userId);
+            Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 
          [HttpGet("{userId}/sent")]
-        public async Task<ActionResult> GetSentMessages(int userId)
+        public async Task<ActionResult> GetSentMessages(PaginationParams paginationParams, int userId)
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetSentMessages(userId);
+            var messages = await _repo.GetSentMessages(paginationParams, userId);
+            Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 
-        [HttpGet("{userId}/received/list")]
-        public async Task<ActionResult> GetLatestReceivedMessages(int userId)
-        {
-            if(!await this.MatchAppUserWithToken(userId))
-                return Unauthorized();
-            var messages =  _repo.GetLatestReceivedMessages(userId);
-            return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
-        }
+        // [HttpGet("{userId}/received/list")]
+        // public async Task<ActionResult> GetLatestReceivedMessages(int userId)
+        // {
+        //     if(!await this.MatchAppUserWithToken(userId))
+        //         return Unauthorized();
+        //     var messages =  _repo.GetLatestReceivedMessages(userId);
+        //     return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
+        // }
 
-         [HttpGet("{userId}/sent/list")]
-        public async Task<ActionResult> GetLatestSentMessages(int userId)
-        {
-            if(!await this.MatchAppUserWithToken(userId))
-                return Unauthorized();
-            var messages = await _repo.GetLatestSentMessages(userId);
-            return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
-        }
+        //  [HttpGet("{userId}/sent/list")]
+        // public async Task<ActionResult> GetLatestSentMessages(int userId)
+        // {
+        //     if(!await this.MatchAppUserWithToken(userId))
+        //         return Unauthorized();
+        //     var messages = await _repo.GetLatestSentMessages(userId);
+        //     return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
+        // }
 
         [HttpGet("{userId}/received/{senderId}")]
-        public async Task<ActionResult> GetReceivedMessagesFrom(int userId, int senderId)
+        public async Task<ActionResult> GetReceivedMessagesFrom(PaginationParams paginationParams, int userId, int senderId)
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetReceivedMessagesFrom(userId, senderId);
+            var messages = await _repo.GetReceivedMessagesFrom(paginationParams, userId, senderId);
+            Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 
         [HttpGet("{userId}/sent/{recipientId}")]
-        public async Task<ActionResult> GetMessagesSentTo(int userId, int recipientId)
+        public async Task<ActionResult> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId)
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetMessagesSentTo(userId, recipientId);
+            var messages = await _repo.GetMessagesSentTo(paginationParams, userId, recipientId);
+            Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 

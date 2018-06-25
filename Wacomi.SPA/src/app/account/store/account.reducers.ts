@@ -53,6 +53,7 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
                     authenticated: true
                 };
         case AccountActions.SET_APPUSER:
+            var appUser = action.payload;
             localStorage.setItem('appUser', JSON.stringify(action.payload));
             return {
                 ...state,

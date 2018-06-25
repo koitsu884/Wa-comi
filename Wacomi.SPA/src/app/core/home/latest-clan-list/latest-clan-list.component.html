@@ -1,8 +1,8 @@
-<div class="col-md-6" *ngFor="let clanSeek of latestClanSeeklist index as i">
+<div class="col-md-6" [@clanCard] *ngFor="let clanSeek of latestClanSeeklist index as i">
   <div class="latestClanCard" 
     [ngClass]="{'isMine' : memberId == clanSeek.memberId, 'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}"
     [routerLink]="['/clan/detail', clanSeek.id]">
-    <img class="latestClanImage" src="{{clanSeek.mainPhotoUrl}}">
+    <img class="latestClanImage" src="{{clanSeek.mainPhotoUrl ? clanSeek.mainPhotoUrl : 'assets/NoImage.png'}}">
     <div class="latestClanInfo">
     <h4 class="latestClanTitle">{{clanSeek.title}}</h4>
     <span class="latestClanLocation">{{clanSeek.locationName}}</span>

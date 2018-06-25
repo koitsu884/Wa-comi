@@ -4,6 +4,7 @@ export interface TopicComment {
     id: number;
     mainPhotoUrl: string;
     memberId: number;
+    appUserId: number;
     displayName: string;
     comment: string;
     likedCount: number;

@@ -22,8 +22,11 @@
         <li><a  [routerLink]="['/account/register']" >アカウント作成</a></li>
       </ul>
       <ul *ngIf="(authState | async).authenticated" class="nav navbar-nav navbar-right">
+        <li>
+            <img class="img-circle" src="{{(authState | async).appUser?.mainPhotoUrl}}">
+        </li>
         <li class="dropdown" dropdown>
-           <a (click)="false" class="dropdown-toggle" dropdownToggle>{{(authState | async).appUser?.displayName}}  <span class="caret"></span></a> 
+           <a (click)="false" class="dropdown-toggle" dropdownToggle>{{(authState | async).appUser?.displayName}}<span class="caret"></span></a> 
            <ul class="dropdown-menu" *dropdownMenu>
              <li role="separator" class="divider"></li>
              <li *ngIf="!(authState | async).isAdmin"><a [routerLink]="['/settings']">登録情報確認</a></li>

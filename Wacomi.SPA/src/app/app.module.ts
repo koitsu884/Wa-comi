@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { BsDropdownModule, defineLocale, BsLocaleService, jaLocale, TabsModule } from 'ngx-bootstrap';
+import { BsDropdownModule, defineLocale, BsLocaleService, jaLocale, TabsModule, PaginationModule } from 'ngx-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -38,6 +38,7 @@ import { MemberIdGuard } from './_guards/memberid.guard';
 import { MemberGuard } from './_guards/member.guard';
 import { MessageEffects } from './message/store/message.effects';
 import { MessageService } from './_services/message.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 defineLocale('ja', jaLocale); 
@@ -48,6 +49,7 @@ defineLocale('ja', jaLocale);
 ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     CoreModule,
@@ -61,6 +63,7 @@ defineLocale('ja', jaLocale);
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    PaginationModule.forRoot(),
   ],
   providers: [
     GlobalService,

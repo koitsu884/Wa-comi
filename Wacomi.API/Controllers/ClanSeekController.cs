@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
+using Wacomi.API.Helper;
 using Wacomi.API.Models;
 
 namespace Wacomi.API.Controllers
@@ -25,10 +26,14 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
+//        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
+        public async Task<ActionResult> GetClanSeeks(PaginationParams paginationParams, int? categoryId, int? cityId)
         {
-            var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId, latest);
+            //var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId, latest);
+            var clanSeeks = await _repo.GetClanSeeks(paginationParams, categoryId, cityId);
             var clanSeeksForReturn = this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks);
+            
+            Response.AddPagination(clanSeeks.CurrentPage, clanSeeks.PageSize, clanSeeks.TotalCount, clanSeeks.TotalPages);
             return Ok(clanSeeksForReturn);
         }
 

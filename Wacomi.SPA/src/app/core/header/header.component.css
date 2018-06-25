@@ -2,3 +2,8 @@
     height: 50px;
     margin: 10px;
 }
+
+li img {
+    max-height: 40px;
+    margin-top: 10px;
+}

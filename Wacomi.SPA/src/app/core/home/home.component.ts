@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { BlogFeed } from '../../_models/BlogFeed';
 import { GlobalService } from '../../_services/global.service';
 import { Observable } from 'rxjs/Observable';
