@@ -13,12 +13,6 @@ export class ClanSeekCategoryResolver implements Resolve<KeyValue[]> {
     constructor(private store: Store<fromApp.AppState>, private router: Router ){}
 
     resolve(route: ActivatedRouteSnapshot) : Observable<KeyValue[]> {
-        // return this.globalService.getClanSeekCategories()
-        // .catch(error => {
-        //     console.log('Error occured when getting clan seek category list');
-        //     this.router.navigate(['/home']);
-        //     return Observable.of(null);
-        // })
         return this.store.select('global')
         .take(1)
         .switchMap((state : fromGlobal.State) => {

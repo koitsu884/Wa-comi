@@ -13,19 +13,16 @@ import { BusinessProfile } from "../_models/BusinessProfile";
 @Injectable()
 export class BusinessEditResolver implements Resolve<BusinessProfile> {
     constructor(private store: Store<fromApp.AppState>,
-                private router: Router, 
-                private alertify: AlertifyService){}
+        private router: Router,
+        private alertify: AlertifyService) { }
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<BusinessProfile> {
-        return this.store.select('account')
-        .take(1)
-        .switchMap((state : fromAccount.State) => {
-            return Observable.of(state.businessProfile);
-        })
-        .catch((error) => {
-            this.alertify.error('Problem retrieving data');
-            this.router.navigate(['/home']);
-            return Observable.of(null);
-        });
+    resolve(route: ActivatedRouteSnapshot): BusinessProfile {
+        let businessProfile: BusinessProfile = null;
+        this.store.select('account')
+            .take(1)
+            .subscribe((state) => {
+                businessProfile = Object.assign({}, state.businessProfile);
+            });
+        return businessProfile;
     }
 }

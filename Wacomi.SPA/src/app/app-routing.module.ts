@@ -11,7 +11,15 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'editphoto', component: PhotoEditorComponent, canActivate: [AuthGuard]},
   { 
-    path: 'editblog/:appUserId', 
+    path: 'editblog/:id', 
+    component: BlogEditorComponent, 
+    canActivate: [AuthGuard],
+    resolve: {
+      photos: UserPhotoResolver
+    }
+  },
+  { 
+    path: 'editblog', 
     component: BlogEditorComponent, 
     canActivate: [AuthGuard],
     resolve: {

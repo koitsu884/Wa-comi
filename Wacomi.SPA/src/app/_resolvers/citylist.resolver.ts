@@ -13,22 +13,14 @@ export class CityListResolver implements Resolve<City[]> {
     constructor(private store: Store<fromApp.AppState>, 
          private router: Router ){}
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<City[]> {
-        // return this.globalService.getCities()
-        // .catch(error => {
-        //     console.log('Error occured when getting city list');
-        //     this.router.navigate(['/home']);
-        //     return Observable.of(null);
-        // })
-        return this.store.select('global')
+    resolve(route: ActivatedRouteSnapshot) : City[] {
+        let cityList = [];
+        this.store.select('global')
         .take(1)
-        .switchMap((state : fromGlobal.State) => {
-            return Observable.of<City[]>(state.cityList);
-        })
-        .catch((error) => {
-            console.log('Problem retrieving data');
-            this.router.navigate(['/home']);
-            return Observable.of(null);
+        .subscribe((state) => {
+            cityList = state.cityList;
         });
+
+        return cityList;
     }
 }

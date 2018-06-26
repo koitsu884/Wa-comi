@@ -1,7 +1,8 @@
 <div class="container">
   <form #clanEditForm="ngForm" id="clanEditForm" (ngSubmit)="submit()">
     <div class="form-group" *ngIf="photos">
-        <label for="mainPhotoUrl" class="control-label">メイン画像</label>
+        <h4>メイン画像選択</h4>
+        <img src="{{editingClan.mainPhotoUrl ? editingClan.mainPhotoUrl : 'assets/NoImage.png'}}" alt="">
         <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="editingClan.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, clanEditForm)"></app-mainphoto-selector>
         <a class="btn btn-primary" [routerLink]="['/editphoto']">写真の追加・削除</a>
     </div>

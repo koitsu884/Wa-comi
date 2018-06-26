@@ -10,19 +10,17 @@ import { Blog } from "../_models/Blog";
 
 @Injectable()
 export class UserBlogResolver implements Resolve<Blog[]> {
-    constructor(private store: Store<fromApp.AppState>, 
-         private router: Router ){}
+    constructor(private store: Store<fromApp.AppState>,
+        private router: Router) { }
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<Blog[]> {
-        return this.store.select('blogs')
-        .take(1)
-        .switchMap((state : fromBlog.State) => {
-            return Observable.of<Blog[]>(state.blogs);
-        })
-        .catch((error) => {
-            console.log('Problem retrieving data');
-            // this.router.navigate(['/home']);
-            return Observable.of(null);
-        });
+    resolve(route: ActivatedRouteSnapshot): Blog[] {
+        let blogs = null;
+        this.store.select('blogs')
+            .take(1)
+            .subscribe((state) => {
+                blogs = Object.assign([], state.blogs);
+            });
+
+        return blogs;
     }
 }

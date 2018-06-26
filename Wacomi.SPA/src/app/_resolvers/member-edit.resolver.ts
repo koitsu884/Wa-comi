@@ -13,19 +13,16 @@ import { MemberProfile } from "../_models/MemberProfile";
 @Injectable()
 export class MemberEditResolver implements Resolve<MemberProfile> {
     constructor(private store: Store<fromApp.AppState>,
-                private router: Router, 
-                private alertify: AlertifyService){}
+        private router: Router,
+        private alertify: AlertifyService) { }
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<MemberProfile> {
-        return this.store.select('account')
-        .take(1)
-        .switchMap((state : fromAccount.State) => {
-            return Observable.of(state.memberProfile);
-        })
-        .catch((error) => {
-            this.alertify.error('Problem retrieving data');
-            this.router.navigate(['/home']);
-            return Observable.of(null);
-        });
+    resolve(route: ActivatedRouteSnapshot): MemberProfile {
+        let memberProfile: MemberProfile = null;
+        this.store.select('account')
+            .take(1)
+            .subscribe((state) => {
+                memberProfile = Object.assign({},state.memberProfile);
+            });
+        return memberProfile;
     }
 }

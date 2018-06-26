@@ -49,13 +49,14 @@ export class BlogEffects {
         .map((action: BlogActions.TryAddBlog) => {
             return action.payload
         })
-        .switchMap((appUserId) => {
-            return this.httpClient.post<Blog>(this.baseUrl + 'blog/' + appUserId,
-                null,
+        .switchMap((newBlog) => {
+            return this.httpClient.post<Blog>(this.baseUrl + 'blog',
+                newBlog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .map((result) => {
+                    this.alertify.success("ブログを追加しました");
                     return {
                         type: BlogActions.ADD_BLOG, payload: result
                     };

@@ -1,23 +1,42 @@
-
-    <form #userEditForm="ngForm" id="userEditForm" (ngSubmit)="submit(userEditForm)">
-      <h4>プロフィール写真選択</h4>
-      <div class="photoSelector" *ngIf="photos.length > 0">
-        <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="appUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, userEditForm)"></app-mainphoto-selector>
+<form #userEditForm="ngForm" id="userEditForm" (ngSubmit)="submit(userEditForm)">
+  <h4>プロフィール写真選択</h4>
+  <div>
+    <img src="{{appUser.mainPhotoUrl ? appUser.mainPhotoUrl : 'assets/NoImage.png'}}">
+  </div>
+  <div class="photoSelector" *ngIf="photos.length > 0">
+    <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="appUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, userEditForm)"></app-mainphoto-selector>
+  </div>
+  <button class="btn btn-primary" [routerLink]="['/editphoto']">写真の追加・削除</button>
+  <hr>
+  <label for="displayName">表示名</label>
+  <input class="form-control form-group " type="text" name="displayName" [(ngModel)]="appUser.displayName" />
+  <div class="form-group">
+    <label for="city" class="control-label">滞在先</label>
+    <select [(ngModel)]="appUser.cityId" name="city">
+      <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <h4 for="blogs" class="control-label">ブログ</h4>
+    <div *ngIf="blogs" class="row">
+      <div class="col-sm-4" *ngFor="let blog of blogs">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            {{blog.title}}
+          </div>
+          <div class="panel-body">
+            <img class="img-responsive" src="{{blog.blogImageUrl}}">
+          </div>
+          <div class="panel-footer">
+            <button class="btn btn-primary" [routerLink]="['/editblog', blog.id]">編集</button>
+            <button class="btn btn-danger" type="button" (click)="onBlogDelete(blog.id)">削除</button>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-primary" [routerLink]="['/editphoto']">写真の追加・削除</button>
-      <hr>
-      <label for="displayName">表示名</label>
-      <input class="form-control form-group " type="text" name="displayName" [(ngModel)]="appUser.displayName" />
-      <div class="form-group">
-        <label for="city" class="control-label">滞在先</label>
-        <select [(ngModel)]="appUser.cityId" name="city">
-          <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="blogs" class="control-label">ブログ</label>
-        <app-blog-list [blogs]="blogs"></app-blog-list>
-        <a [routerLink]="['/editblog',  appUser.id]">ブログの追加・削除</a>
-      </div>
-      <button class="btn btn-success" [disabled]="!userEditForm.valid || userEditForm.pristine" type="submit">更新</button>
-    </form>
+    </div>
+    <button *ngIf="canAddBlog" class="btn btn-primary" [routerLink]="['/editblog']">ブログの追加</button>
+    <!-- <app-blog-list [blogs]="blogs"></app-blog-list> -->
+    <!-- <a [routerLink]="['/editblog',  appUser.id]">ブログの追加・削除</a> -->
+  </div>
+  <button class="btn btn-success" [disabled]="!userEditForm.valid || userEditForm.pristine" type="submit">更新</button>
+</form>

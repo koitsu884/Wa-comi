@@ -26,7 +26,7 @@ import { Blog } from '../../_models/Blog';
 export class SettingsHomeComponent implements OnInit {
   // photoState: Observable<fromPhoto.State>;
   // blogState: Observable<fromBlog.State>;
-  blogs: Blog[];
+  // blogs: Blog[];
   
   account: UserAccount;
   appUser: AppUser;
@@ -47,7 +47,7 @@ export class SettingsHomeComponent implements OnInit {
     this.cities = this.route.snapshot.data['cities'];
     this.hometowns = this.route.snapshot.data['hometowns'];
     this.photos = this.route.snapshot.data['photos'];
-    this.blogs = this.route.snapshot.data['blogs'];
+    // this.blogs = this.route.snapshot.data['blogs'];
     if(this.appUser.userType == "Member"){
       this.member = this.route.snapshot.data['member'];
       this.bisUser = null;

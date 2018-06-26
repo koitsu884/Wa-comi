@@ -4,6 +4,14 @@ img.thumbnail {
     margin-bottom: 2px;
 }
 
+.imgList {
+    width: 100%;
+}
+
+.imgList:hover {
+    transform: scale(1.05); 
+}
+
 .profImage{
     padding:10px;
     border: solid 2px black;

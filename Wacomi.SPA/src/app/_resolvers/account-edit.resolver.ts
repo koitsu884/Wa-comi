@@ -10,19 +10,30 @@ import * as fromAccount from "../account/store/account.reducers";
 @Injectable()
 export class AccountEditResolver implements Resolve<UserAccount> {
     constructor(private store: Store<fromApp.AppState>,
-                private router: Router, 
-                private alertify: AlertifyService){}
+        private router: Router,
+        private alertify: AlertifyService) { }
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<UserAccount> {
-        return this.store.select('account')
-        .take(1)
-        .switchMap((state : fromAccount.State) => {
-            return Observable.of(state.account);
-        })
-        .catch((error) => {
-            this.alertify.error('Problem retrieving data');
-            this.router.navigate(['/home']);
-            return Observable.of(null);
-        });
+    resolve(route: ActivatedRouteSnapshot): UserAccount {
+        let userAccount = null;
+        this.store.select('account')
+            .take(1)
+            .subscribe((state) => {
+                userAccount = Object.assign({}, state.account);
+            });
+
+        return userAccount;
     }
+
+    // resolve(route: ActivatedRouteSnapshot): Observable<UserAccount> {
+    //     return this.store.select('account')
+    //         .take(1)
+    //         .switchMap((state: fromAccount.State) => {
+    //             return Observable.of(state.account);
+    //         })
+    //         .catch((error) => {
+    //             this.alertify.error('Problem retrieving data');
+    //             this.router.navigate(['/home']);
+    //             return Observable.of(null);
+    //         });
+    // }
 }

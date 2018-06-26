@@ -7,10 +7,13 @@ import * as fromBlog from '../store/blogs.reducers';
 import * as BlogAction from '../store/blogs.actions';
 // import * as PhotoActions from '../../photo/store/photos.action';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Blog } from '../../_models/Blog';
 import { Photo } from '../../_models/Photo';
+import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { GlobalService } from '../../_services/global.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-blog-editor',
@@ -18,48 +21,59 @@ import { Photo } from '../../_models/Photo';
   styleUrls: ['./blog-editor.component.css']
 })
 export class BlogEditorComponent implements OnInit {
-  blogState: Observable<fromBlog.State>;
-  // photoState: Observable<fromPhoto.State>;
-  //blogs: Blog[];
   photos: Photo[];
-  selectedBlog: Blog;
-  appUserId: number;
+  editMode: boolean;
+  loading: boolean;
+  blog: any = {};
+  blogCategories: string[];
 
-  constructor(private store : Store<fromApp.AppState>, 
-              private route: ActivatedRoute, 
-              private router: Router,
-              private alertify: AlertifyService) { }
+  constructor(private store: Store<fromApp.AppState>,
+    private global: GlobalService,
+    private route: ActivatedRoute,
+    private location: Location,
+    private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.blogState = this.store.select('blogs');
-    // this.photoState = this.store.select('photos');
-
-    this.selectedBlog = null;
+    this.blogCategories = this.global.getBlogCategories();
+    this.route.data.subscribe(data => {
+      this.photos = data['photos'];
+    })
     this.route.params.subscribe(params => {
-      this.appUserId = +params['appUserId'];
-      if(!this.appUserId ){
-        this.alertify.error("パラメーターが未設定です");
-        this.router.navigate(['/home']);
-        return;
+      let blogId = +params['id'];
+      this.editMode = blogId ? true : false;
+      if (this.editMode) {
+        this.loading = true;
+        this.store.select('blogs')
+          .take(1)
+          .subscribe((state: fromBlog.State) => {
+            var index = state.blogs.findIndex(x => x.id == blogId);
+            if (index >= 0) {
+              Object.assign(this.blog, state.blogs[index]);
+              this.loading = false;
+            }
+          });
+      } else {
+        this.store.select('account')
+          .take(1)
+          .subscribe((state) => {
+            this.blog.ownerId = state.appUser.id;
+          })
       }
-      this.photos = this.route.snapshot.data["photos"];
-      //this.blogs = this.route.snapshot.data["blogs"];
-      // this.store.dispatch(new PhotoActions.GetPhotos({type: this.type, recordId: this.recordId}));
-      this.store.dispatch(new BlogAction.GetBlog(this.appUserId));
-    });
+    })
   }
 
-  onSelect(blog : Blog){
-    this.selectedBlog = blog;
+  mainPhotoSelected(event, ngForm: NgForm){
+    this.blog.blogImageUrl = event;
+    ngForm.form.markAsDirty();
   }
 
-  onClickAdd(){
-    this.store.dispatch(new BlogAction.TryAddBlog(this.appUserId));
-  }
-
-  onClickDelete(id: number){
-    this.store.dispatch(new BlogAction.TryDeleteBlog(id));
-    this.selectedBlog = null;
-    console.log("Hwy" + this.selectedBlog);
+  onSubmit() {
+    // console.log(this.blog);
+    if (this.editMode) {
+      this.store.dispatch(new BlogAction.UpdateBlog(this.blog));
+    } else {
+      this.store.dispatch(new BlogAction.TryAddBlog(this.blog));
+    }
+    this.location.back();
   }
 }

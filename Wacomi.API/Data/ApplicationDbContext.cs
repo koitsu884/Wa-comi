@@ -55,6 +55,9 @@ namespace Wacomi.API.Data
             builder.Entity<Blog>()
                 .HasIndex(b => b.Category3);
 
+            builder.Entity<ClanSeek>()
+                .HasIndex(c => c.Created);
+
             //---- Friend ----
             builder.Entity<Friend>()
                 .HasKey(fr => new { fr.MemberId, fr.FriendMemberid });
@@ -109,6 +112,9 @@ namespace Wacomi.API.Data
                 .HasOne(u => u.Recipient)
                 .WithMany(u => u.MessageReceived)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Message>()
+                .HasIndex(m => m.DateCreated);
             //---- Topic Like ----
             builder.Entity<TopicLike>()
                 .HasKey(tl => new { tl.SupportAppUserId, tl.DailyTopicId });

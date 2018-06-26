@@ -31,7 +31,7 @@ const settingRoute: Routes = [
             cities:CityListResolver,
             hometowns:HomeTownListResolver,
             photos:UserPhotoResolver,
-            blogs:UserBlogResolver
+            // blogs:UserBlogResolver
         },
        
     },

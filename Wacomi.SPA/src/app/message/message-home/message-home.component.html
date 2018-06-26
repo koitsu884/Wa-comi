@@ -1,32 +1,33 @@
 <div class="container">
   <h3>メッセージ一覧</h3>
-    <!-- <a class="btn btn-primary" [routerLink]="[appUser.id, 'sent']">Sent</a>
+  <!-- <a class="btn btn-primary" [routerLink]="[appUser.id, 'sent']">Sent</a>
   <a class="btn btn-primary" [routerLink]="[appUser.id, 'received']">Received</a> -->
-  <button class="btn btn-primary" (click)="onSent()" [disabled]="isSent">Sent</button>
-  <button class="btn btn-primary" (click)="onReceived()"  [disabled]="!isSent">Received</button>
+  <div class="btn-group btn-group-sm" role="group">
+    <button class="btn btn-primary" (click)="onReceived()">受信メッセージ</button>
+    <button class="btn btn-primary" (click)="onSent()">送信メッセージ</button>
+  </div>
 </div>
 
 <app-loading *ngIf="!messages"></app-loading>
 <div class="container">
-    <div *ngIf="messages">
-      <div *ngFor="let message of messages">
-        <app-message-list-item [message]="message" [isSent]='isSent'></app-message-list-item>
+  <div class="row">
+    <div class="col-sm-8">
+      <div *ngIf="messages">
+        <div *ngFor="let message of messages">
+          <app-message-list-item [message]="message" [isSent]='isSent'></app-message-list-item>
+        </div>
+      </div>
+      <div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
+        <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [(ngModel)]="pagination.currentPage" [itemsPerPage]="pagination.itemsPerPage"
+          (pageChanged)="pageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+          lastText="&raquo;">
+        </pagination>
       </div>
     </div>
-    <div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
-      <pagination 
-        [boundaryLinks]="true" 
-        [totalItems]="pagination.totalItems" 
-        [(ngModel)]="pagination.currentPage" 
-        [itemsPerPage]="pagination.itemsPerPage"
-        (pageChanged)="pageChanged($event)" 
-        class="pagination-sm" 
-        previousText="&lsaquo;" 
-        nextText="&rsaquo;" 
-        firstText="&laquo;"
-        lastText="&raquo;">
-      </pagination>
+    <div class="col-sm-4">
+      <h4>スペース</h4>
     </div>
   </div>
+</div>
 
 <!-- <router-outlet></router-outlet> -->

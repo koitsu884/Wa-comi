@@ -3,6 +3,7 @@ import { Effect, Actions } from "@ngrx/effects";
 import { AlertifyService } from "../../_services/alertify.service";
 import * as fromPhoto from './photos.reducers';
 import * as PhotoActions from './photos.action';
+import * as AccountActions from '../../account/store/account.actions';
 import { Store } from "@ngrx/store";
 import { of } from "rxjs/observable/of";
 import { Photo } from "../../_models/Photo";
@@ -53,6 +54,10 @@ export class PhotoEffect{
                         {
                             type: PhotoActions.DELETE_PHOTO,
                             payload: payload.id
+                        },
+                        {
+                            type: AccountActions.GET_APPUSER,
+                            payload: payload.userId
                         }
                     ]
                 }

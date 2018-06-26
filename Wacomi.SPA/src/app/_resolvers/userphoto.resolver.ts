@@ -10,20 +10,31 @@ import { Photo } from "../_models/Photo";
 
 @Injectable()
 export class UserPhotoResolver implements Resolve<Photo[]> {
-    constructor(private store: Store<fromApp.AppState>, 
-         private router: Router ){}
+    constructor(private store: Store<fromApp.AppState>,
+        private router: Router) { }
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<Photo[]> {
+    resolve(route: ActivatedRouteSnapshot): Photo[] {
+        let photos = null;
+        this.store.select('photos')
+            .take(1)
+            .subscribe((state) => {
+                photos = Object.assign([], state.photos);
+            });
 
-        return this.store.select('photos')
-        .take(1)
-        .switchMap((state : fromPhoto.State) => {
-            return Observable.of<Photo[]>(state.photos);
-        })
-        .catch((error) => {
-            console.log('Problem retrieving data');
-            // this.router.navigate(['/home']);
-            return Observable.of(null);
-        });
+        return photos;
     }
+
+    // resolve(route: ActivatedRouteSnapshot) : Observable<Photo[]> {
+
+    //     return this.store.select('photos')
+    //     .take(1)
+    //     .switchMap((state : fromPhoto.State) => {
+    //         return Observable.of<Photo[]>(state.photos);
+    //     })
+    //     .catch((error) => {
+    //         console.log('Problem retrieving data');
+    //         // this.router.navigate(['/home']);
+    //         return Observable.of(null);
+    //     });
+    // }
 }

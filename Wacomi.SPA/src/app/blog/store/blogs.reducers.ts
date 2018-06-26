@@ -4,10 +4,12 @@ import { Blog } from '../../_models/Blog';
 
 export interface State {
     blogs: Blog[];
+    selectedBlog : Blog;
 }
 
 const initialState: State = {
-    blogs: []
+    blogs: [],
+    selectedBlog: null
 };
 
 export function blogReducer(state = initialState, action: BlogActions.AccountActions ){

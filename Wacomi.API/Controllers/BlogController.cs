@@ -92,6 +92,36 @@ namespace Wacomi.API.Controllers
             return Ok(cnt);
         }
 
+        [HttpPost()]
+        [Authorize]
+        public async Task<IActionResult> AddBlogInfoToUser([FromBody]Blog model){ 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if(!await this.MatchAppUserWithToken(model.OwnerId))
+                return Unauthorized();
+
+            var user = await this._repo.GetAppUser(model.OwnerId);
+            if(user == null)
+                return NotFound();
+
+            var blogCount = await this._repo.GetBlogCountForUser(user.Id);
+
+            if(blogCount >= MAX_BLOGCOUNT && !user.IsPremium){
+                return BadRequest("ブログは" + MAX_BLOGCOUNT + "つだけ登録可能です");
+            }
+            else if (blogCount >= MAX_BLOGCOUNT_PR){
+                return BadRequest("ブログは" + MAX_BLOGCOUNT_PR + "つまで登録可能です");
+            }
+
+            _repo.Add(model);
+            if(await _repo.SaveAll())
+            {
+                return CreatedAtRoute("GetBlog", new {id = model.Id}, _mapper.Map<BlogForReturnDto>(model));
+            }
+            return BadRequest("ブログの作成に失敗しました");
+        }
+
         [HttpPost("{appUserId}")]
         [Authorize]
         public async Task<IActionResult> AddBlogInfoToUser(int appUserId){ 

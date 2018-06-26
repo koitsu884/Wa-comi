@@ -141,9 +141,9 @@ namespace Wacomi.API.Controllers
             var photo = _mapper.Map<Photo>(photoDto);
             photo.AppUserId = user.Id;
             _repo.Add(photo);
-            if(user.MainPhotoUrl == null){
-                user.MainPhotoUrl = photoDto.Url;
-            }
+            // if(user.MainPhotoUrl == null){
+            //     user.MainPhotoUrl = photoDto.Url;
+            // }
 
             if(await _repo.SaveAll())
             {

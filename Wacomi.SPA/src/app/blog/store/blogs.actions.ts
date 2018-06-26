@@ -9,13 +9,14 @@ export const ADD_BLOG = 'ADD_BLOG';
 export const UPDATE_BLOG = 'UPDATE_BLOG';
 export const DELETE_BLOG = 'DELETE_BLOG';
 export const CLEAR_BLOG = 'CLEAR_BLOG';
+export const SET_SELECTED_BLOG = 'SET_SELECTED_BLOG';
 
 
 
 export class TryAddBlog implements Action {
     readonly type = TRY_ADDBLOG;
 
-    constructor(public payload:number){}
+    constructor(public payload:Blog){}
 }
 
 export class TryDeleteBlog implements Action {
@@ -32,6 +33,11 @@ export class GetBlog implements Action {
 export class SetBlog implements Action {
     readonly type = SET_BLOG;
     constructor(public payload: Blog[]) {}
+}
+
+export class SetSelectedBlog implements Action {
+    readonly type = SET_SELECTED_BLOG;
+    constructor(public payload: Blog) {}
 }
 
 export class AddBlog implements Action {

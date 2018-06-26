@@ -15,23 +15,14 @@ export class AppUserResolver implements Resolve<AppUser> {
                 private alertify: AlertifyService, 
                 private router: Router){}
 
-    resolve(route: ActivatedRouteSnapshot) : Observable<AppUser> {
-        return this.store.select('account')
-                .take(1)
-                .switchMap((state : fromAccount.State) => {
-                    return Observable.of<AppUser>(state.appUser);
-                })
-                .catch((error) => {
-                    this.alertify.error('Problem retrieving data');
-                    this.router.navigate(['/home']);
-                    return Observable.of(null);
-                });
+    resolve(route: ActivatedRouteSnapshot) : AppUser {
+        let appUser = null;
+        this.store.select('account')
+        .take(1)
+        .subscribe((state) => {
+            appUser = Object.assign({},state.appUser);
+        });
 
-        // const appUser = JSON.parse(localStorage.getItem('appUser'));
-        // return this.businessService.getBusinessUser(appUser.relatedUserClassId).catch(error => {
-        //     this.alertify.error('Problem retrieving data');
-        //     this.router.navigate(['/home']);
-        //     return Observable.of(null);
-        // })
+        return appUser;
     }
 }
