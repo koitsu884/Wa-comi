@@ -21,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using NLog.Web;
+using Hangfire;
 
 namespace Wacomi.API
 {
@@ -32,6 +33,7 @@ namespace Wacomi.API
         }
 
         public IConfiguration Configuration { get; }
+        public CronTask cronTask;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -44,9 +46,6 @@ namespace Wacomi.API
             services.AddAutoMapper();
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
-            logger.Error("Connection String");
-            logger.Error(Configuration.GetConnectionString("MyDbConnection"));
-            services.BuildServiceProvider().GetService<ApplicationDbContext>().Database.Migrate();
             //options.UseSqlServer(@"Server=db;Database=WacomiNZ;User=sa;Password=P@ssw0rd!!;"));
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
@@ -84,7 +83,12 @@ namespace Wacomi.API
                     };
                 });
 
+            services.AddHangfire(config => 
+                config.UseSqlServerStorage(Configuration.GetConnectionString("MyDbConnection")));
 
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +118,10 @@ namespace Wacomi.API
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
+            // app.UseHangfireDashboard();
+            app.UseHangfireServer();
+          //  this.cronTask.StartRssReader();
+
             if (env.IsDevelopment())
             {
                 app.UseMvc();
@@ -132,4 +140,5 @@ namespace Wacomi.API
             }
         }
     }
+    
 }

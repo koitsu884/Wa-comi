@@ -1,5 +1,5 @@
 <div class="row">
-  <div *ngFor="let blogFeed of blogFeedList" class="col-sm-4 col-md-3" [routerLink]="['/users/detail/' + blogFeed.ownerId]">
+  <div *ngFor="let blogFeed of blogFeedList" class="col-sm-4 col-md-3">
     <app-blogfeed-card [blogFeed]="blogFeed"></app-blogfeed-card>
   </div>
 </div>

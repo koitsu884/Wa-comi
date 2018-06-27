@@ -3,9 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import * as fromApp from '../../store/app.reducer';
 import * as fromBlog from '../store/blogs.reducers';
-// import * as fromPhoto from '../../photo/store/photos.reducers';
 import * as BlogAction from '../store/blogs.actions';
-// import * as PhotoActions from '../../photo/store/photos.action';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
