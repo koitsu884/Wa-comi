@@ -120,7 +120,11 @@ namespace Wacomi.API
             app.UseAuthentication();
             // app.UseHangfireDashboard();
             app.UseHangfireServer();
-          //  this.cronTask.StartRssReader();
+            // this.cronTask.StartRssReader();
+            // this.cronTask.StartTopicManager();
+
+            // this.cronTask.RunTopicManagerOnce(); //Test
+            // this.cronTask.RunRssReader();
 
             if (env.IsDevelopment())
             {

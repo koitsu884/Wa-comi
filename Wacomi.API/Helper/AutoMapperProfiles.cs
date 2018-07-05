@@ -41,6 +41,7 @@ namespace Wacomi.API.Helper
             CreateMap<Blog, BlogForReturnDto>();
             CreateMap<BlogFeed, BlogFeedForReturnDto>()
               .ForMember(bf => bf.OwnerId, opt => opt.MapFrom(src => src.Blog.OwnerId))
+              .ForMember(bf => bf.BlogTitle, opt => opt.MapFrom(src => src.Blog.Title))
               .ForMember(bf => bf.BlogImageUrl, opt => opt.MapFrom(src => src.Blog.BlogImageUrl))
               .ForMember(bf => bf.WriterName, opt => opt.MapFrom(src => src.Blog.WriterName));
 

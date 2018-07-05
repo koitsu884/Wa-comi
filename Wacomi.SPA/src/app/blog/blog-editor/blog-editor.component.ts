@@ -22,6 +22,7 @@ export class BlogEditorComponent implements OnInit {
   photos: Photo[];
   editMode: boolean;
   loading: boolean;
+  feedUriLoading: boolean;
   blog: any = {};
   blogCategories: string[];
 
@@ -29,7 +30,10 @@ export class BlogEditorComponent implements OnInit {
     private global: GlobalService,
     private route: ActivatedRoute,
     private location: Location,
-    private alertify: AlertifyService) { }
+    private alertify: AlertifyService) {
+      this.feedUriLoading = false;
+      this.loading = false;
+     }
 
   ngOnInit() {
     this.blogCategories = this.global.getBlogCategories();
@@ -73,5 +77,16 @@ export class BlogEditorComponent implements OnInit {
       this.store.dispatch(new BlogAction.TryAddBlog(this.blog));
     }
     this.location.back();
+  }
+
+  onGetFeedUri(){
+    this.feedUriLoading = true;
+    this.global.getBlogFeedUri(this.blog.url)
+      .subscribe((result) => {
+        this.blog.rss = result;
+        this.feedUriLoading = false;
+      }, (error) => {
+        this.feedUriLoading = false;
+      });
   }
 }

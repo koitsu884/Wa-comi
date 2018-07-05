@@ -42,9 +42,9 @@ namespace Wacomi.API.Data
             return await _context.HomeTowns.ToListAsync();
         }
 
-        public async Task<bool> SaveAll()
+        public async Task<int> SaveAll()
         {
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<Photo> GetPhoto(int id)
@@ -182,6 +182,14 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<Blog>> GetBlogs()
         {
             return await _context.Blogs.Where(b => b.IsActive == true).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Blog>> GetBlogsForRssFeed(int count = 100)
+        {
+            return await _context.Blogs.Where(b => b.IsActive == true && !string.IsNullOrEmpty(b.RSS))  
+                                       .OrderBy(b => b.DateRssRead)
+                                       .Take(count)
+                                       .ToListAsync();
         }
 
         public async Task<BlogFeed> GetLatestBlogFeed(Blog blog)

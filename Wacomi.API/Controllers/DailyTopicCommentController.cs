@@ -53,7 +53,7 @@ namespace Wacomi.API.Controllers
             model.DisplayName = member.AppUser.DisplayName;
             
             _repo.Add(model);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetTopicComment", new {id = model.Id}, model);
             }
@@ -73,7 +73,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(topicCommentFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("トピック候補の削除に失敗しました");

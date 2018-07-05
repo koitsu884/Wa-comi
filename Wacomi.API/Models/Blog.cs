@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,6 +24,7 @@ namespace Wacomi.API.Models
         public string Url{get; set;}
         public string BlogImageUrl{get; set;}
         public string RSS{get; set;}
+        public DateTime DateRssRead{ get; set;} = DateTime.Now;
         public int FollowerCount{get; set;}
         public int HatedCount{ get; set;}
         public bool IsActive{ get; set;} = true;

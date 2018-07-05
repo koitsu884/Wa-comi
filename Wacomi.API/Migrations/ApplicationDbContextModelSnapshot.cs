@@ -228,6 +228,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Category3");
 
+                    b.Property<DateTime>("DateRssRead");
+
                     b.Property<string>("Description");
 
                     b.Property<int>("FollowerCount");
@@ -242,9 +244,11 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("RSS");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .IsRequired();
 
-                    b.Property<string>("Url");
+                    b.Property<string>("Url")
+                        .IsRequired();
 
                     b.Property<string>("WriterIntroduction");
 
@@ -257,6 +261,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("Category2");
 
                     b.HasIndex("Category3");
+
+                    b.HasIndex("DateRssRead");
 
                     b.HasIndex("OwnerId");
 
@@ -354,6 +360,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Created");
 
                     b.HasIndex("LocationId");
 
@@ -518,6 +526,8 @@ namespace Wacomi.API.Migrations
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DateCreated");
 
                     b.HasIndex("RecipientId");
 

@@ -6,6 +6,7 @@ namespace Wacomi.API.Dto
     {
         public int Id{ get; set;}
         public int BlogId { get; set;}
+        public string BlogTitle { get; set;}
         public DateTime? PublishingDate { get; set;}
         public string Title{ get; set;}
         public string Url{ get; set;}

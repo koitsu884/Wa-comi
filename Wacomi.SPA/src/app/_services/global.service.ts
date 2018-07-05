@@ -42,6 +42,10 @@ export class GlobalService {
         return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed');
     }
 
+    getBlogFeedUri(url: string) {
+        return this.httpClient.get(this.baseUrl + 'blog/rss?url=' + encodeURI(url),{responseType: 'text'});
+    }
+
     getLatestClanSeekList(){
         return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?pageSize=10');
     }

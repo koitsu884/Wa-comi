@@ -110,7 +110,7 @@ namespace Wacomi.API.Controllers
             if(appUser.MainPhotoUrl == photoFromRepo.Url)
                 appUser.MainPhotoUrl = null;
 
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the photo");
@@ -145,7 +145,7 @@ namespace Wacomi.API.Controllers
             //     user.MainPhotoUrl = photoDto.Url;
             // }
 
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
                 return CreatedAtRoute("GetPhoto", new {id = photo.Id}, photoToReturn);

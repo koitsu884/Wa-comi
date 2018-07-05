@@ -54,6 +54,8 @@ namespace Wacomi.API.Data
                 .HasIndex(b => b.Category2);
             builder.Entity<Blog>()
                 .HasIndex(b => b.Category3);
+            builder.Entity<Blog>()
+                .HasIndex(b => b.DateRssRead);
 
             builder.Entity<ClanSeek>()
                 .HasIndex(c => c.Created);

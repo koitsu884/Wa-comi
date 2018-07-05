@@ -21,7 +21,8 @@ export class BusinessEditResolver implements Resolve<BusinessProfile> {
         this.store.select('account')
             .take(1)
             .subscribe((state) => {
-                businessProfile = Object.assign({}, state.businessProfile);
+                if(state.businessProfile)
+                    businessProfile = Object.assign({}, state.businessProfile);
             });
         return businessProfile;
     }

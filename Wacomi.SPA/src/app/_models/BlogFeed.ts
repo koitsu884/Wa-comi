@@ -1,6 +1,7 @@
 export interface BlogFeed {
     id: number;
     blogId: number;
+    blogTitle: string;
     publishingDate: Date;
     title: string;
     url: string;

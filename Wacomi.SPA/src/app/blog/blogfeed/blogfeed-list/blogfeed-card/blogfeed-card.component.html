@@ -1,10 +1,11 @@
 <div class="card clearfix">
   <img class="articleImage" src="{{articleImageUrl}}">
-  <h4><a class="articleTitle" href="{{blogFeed.url}}">{{blogFeed.title}}</a></h4>
+  <h5><a class="articleTitle" href="{{blogFeed.url}}">{{blogFeed.title.substr(0,50)}}</a></h5>
   <div class="articleInfo">
     <div>
       <img class="blogImage img-circle" src="{{blogImageUrl}}">
-      <p class="writerName">{{blogFeed.writerName}}</p>
+      <p class="blogTitle">{{blogFeed.blogTitle.substr(0, 20)}}</p>
+      <span class="clearfix"></span>
     </div>
   </div>
 </div>

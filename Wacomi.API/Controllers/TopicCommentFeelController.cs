@@ -47,7 +47,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest("既にリアクションされています");
 
             _repo.Add(model);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetCommentFeel", new {memberId = model.MemberId, commentId = model.CommentId}, _mapper.Map<TopicCommentFeelForReturnDto>(model));
             }
@@ -67,7 +67,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(topicCommentFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("コメント反応の削除に失敗しました");

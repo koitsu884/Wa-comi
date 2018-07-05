@@ -84,7 +84,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             _mapper.Map(model, memberFromRepo);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return Ok();
             }

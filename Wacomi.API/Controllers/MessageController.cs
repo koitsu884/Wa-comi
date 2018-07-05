@@ -98,7 +98,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
             }
             _repo.Add(model);
-            if(await _repo.SaveAll()){
+            if(await _repo.SaveAll() > 0){
                 return CreatedAtRoute("GetMessage", new {id = model.Id}, new {}); 
             }
             return BadRequest("Failed to add message");
@@ -116,7 +116,7 @@ namespace Wacomi.API.Controllers
             }
             _repo.Delete(message);
 
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the message");

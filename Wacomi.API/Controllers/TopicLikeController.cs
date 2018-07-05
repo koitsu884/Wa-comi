@@ -53,7 +53,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest("既にリアクションされています");
 
             _repo.Add(model);
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetTopicLike", new { userId = model.SupportAppUserId, recordId = model.DailyTopicId }, _mapper.Map<TopicLikeForReturnDto>(model));
             }

@@ -50,7 +50,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Add(model);
 
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetFriend", new {memberId = model.MemberId, friendId = model.FriendMemberid}, _mapper.Map<FriendForReturnDto>(model));
             }
@@ -70,7 +70,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(friendFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("友達の削除に失敗しました");

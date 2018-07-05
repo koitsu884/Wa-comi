@@ -62,7 +62,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             _repo.Add(model);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetFriendRequest", new {senderId = model.SenderId, recipientId = model.RecipientId}, _mapper.Map<FriendRequestSentForReturnDto>(model));
             }
@@ -82,7 +82,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(requestFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("友達リクエストの削除に失敗しました");

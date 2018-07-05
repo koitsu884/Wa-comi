@@ -36,7 +36,7 @@ namespace Wacomi.API.Controllers
             }
             _repo.Delete(feed);
 
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the blog feed");

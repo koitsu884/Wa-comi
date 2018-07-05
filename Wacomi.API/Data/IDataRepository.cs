@@ -10,7 +10,7 @@ namespace Wacomi.API.Data
          void Add<T>(T entity) where T: class;
          void Delete<T>(T entity) where T: class;
          void DeleteAll<T>(T entities) where T: class;
-         Task<bool> SaveAll();
+         Task<int> SaveAll();
 
          Task<IEnumerable<City>> GetCities();
          Task<IEnumerable<HomeTown>> GetHomeTowns();
@@ -29,6 +29,7 @@ namespace Wacomi.API.Data
         Task<bool> MemberProfileExist(int memberId);
         Task<Blog> GetBlog(int id);
         Task<IEnumerable<Blog>> GetBlogs();
+        Task<IEnumerable<Blog>> GetBlogsForRssFeed(int count = 100);
         Task<int> GetBlogCountForUser(int id);
         Task<IEnumerable<Blog>> GetBlogsForUser(int id);
         // Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);

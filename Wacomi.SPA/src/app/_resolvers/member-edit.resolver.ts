@@ -21,7 +21,8 @@ export class MemberEditResolver implements Resolve<MemberProfile> {
         this.store.select('account')
             .take(1)
             .subscribe((state) => {
-                memberProfile = Object.assign({},state.memberProfile);
+                if(state.memberProfile)
+                    memberProfile = Object.assign({},state.memberProfile);
             });
         return memberProfile;
     }

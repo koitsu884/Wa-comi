@@ -62,10 +62,7 @@ namespace Wacomi.API.Controllers
                 updateUserDto.CityId = null;
             _mapper.Map(updateUserDto, appUserFromRepo);
 
-            if (await _repo.SaveAll())
-                return Ok();
-            
-            return BadRequest("ユーザー情報の更新に失敗しました");
+            return Ok(await _repo.SaveAll());
         }
 
     }

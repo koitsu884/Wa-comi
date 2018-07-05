@@ -51,7 +51,7 @@ namespace Wacomi.API.Controllers
 
             var newClanSeek = this._mapper.Map<ClanSeek>(model);
             _repo.Add(newClanSeek);
-            if(await _repo.SaveAll()){
+            if(await _repo.SaveAll() > 0){
                 return CreatedAtRoute("GetClanSeek", new {id = newClanSeek.Id}, newClanSeek); 
             }
             return BadRequest("Failed to add clanseek");
@@ -74,11 +74,11 @@ namespace Wacomi.API.Controllers
 
             model.LastActive = DateTime.Now;
             _mapper.Map(model, clanSeekFromRepo);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return Ok();
             }
-            return BadRequest("Failed to update the clan seek");
+            return BadRequest("募集内容の変更に失敗しました。");
         }
 
         [Authorize]
@@ -94,7 +94,7 @@ namespace Wacomi.API.Controllers
             }
             _repo.Delete(clanSeek);
 
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the clan seek");

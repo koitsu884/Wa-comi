@@ -18,7 +18,8 @@ export class AccountEditResolver implements Resolve<UserAccount> {
         this.store.select('account')
             .take(1)
             .subscribe((state) => {
-                userAccount = Object.assign({}, state.account);
+                if(state.account)
+                    userAccount = Object.assign({}, state.account);
             });
 
         return userAccount;

@@ -83,7 +83,7 @@ namespace Wacomi.API.Controllers
             
             var newTopic = _mapper.Map<DailyTopic>(model);
             _repo.Add(newTopic);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetDailyTopic", new {id = newTopic.Id}, newTopic);
             }
@@ -102,7 +102,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(topicFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("トピック候補の削除に失敗しました");

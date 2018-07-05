@@ -20,7 +20,10 @@ export class AppUserResolver implements Resolve<AppUser> {
         this.store.select('account')
         .take(1)
         .subscribe((state) => {
-            appUser = Object.assign({},state.appUser);
+            if(state.appUser)
+            {
+                appUser = Object.assign({},state.appUser);
+            }
         });
 
         return appUser;

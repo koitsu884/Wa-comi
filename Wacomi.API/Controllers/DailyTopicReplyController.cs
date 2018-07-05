@@ -45,7 +45,7 @@ namespace Wacomi.API.Controllers
             model.DisplayName = member.AppUser.DisplayName;
             
             _repo.Add(model);
-            if(await _repo.SaveAll())
+            if(await _repo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetTopicReply", new {id = model.Id}, _mapper.Map<TopicReplyForReturnDto>(model));
             }
@@ -65,7 +65,7 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(topicReplyFromRepo);
 
-           if (await _repo.SaveAll())
+           if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("削除に失敗しました");

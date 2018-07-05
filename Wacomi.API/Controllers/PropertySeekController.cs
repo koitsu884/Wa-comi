@@ -46,7 +46,7 @@ namespace Wacomi.API.Controllers
 
             var newPropertySeek = this._mapper.Map<PropertySeek>(model);
             _repo.Add(newPropertySeek);
-            if(await _repo.SaveAll()){
+            if(await _repo.SaveAll() > 0){
                 return CreatedAtRoute("GetPropertySeek", new {id = newPropertySeek.Id}, newPropertySeek); 
             }
             return BadRequest("Failed to add property seek");
@@ -61,7 +61,7 @@ namespace Wacomi.API.Controllers
             }
             _repo.Delete(clanSeek);
 
-            if (await _repo.SaveAll())
+            if (await _repo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the property seek");
