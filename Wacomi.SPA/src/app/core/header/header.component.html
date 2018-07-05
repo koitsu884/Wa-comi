@@ -19,7 +19,7 @@
       </ul>
       <ul *ngIf="!(authState | async).authenticated" class="nav navbar-nav navbar-right">
         <li><a  [routerLink]="['/account/login']" >ログイン</a></li>
-        <li><a  [routerLink]="['/account/register']" >アカウント作成!!</a></li>
+        <li><a  [routerLink]="['/account/register']" >アカウント作成</a></li>
       </ul>
       <ul *ngIf="(authState | async).authenticated" class="nav navbar-nav navbar-right">
         <li>
