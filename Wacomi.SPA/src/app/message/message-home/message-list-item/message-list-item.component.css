@@ -7,6 +7,10 @@ h5 {
     color:white;
 }
 
+.isNew{
+    border: solid 2px blue;
+}
+
 .message-list-item img {
     width: 50px;
 }

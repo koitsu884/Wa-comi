@@ -11,6 +11,7 @@ export const TRY_LOGIN = 'TRY_LOGIN';
 export const LOGIN = 'LOGIN';
 export const TRY_SIGNUP = 'TRY_SIGNUP';
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
+export const TRY_CONFIRM_EMAIL = 'TRY_CONFIRM_EMAIL';
 export const LOGOUT = 'LOGOUT'
 export const SET_TOKEN = 'SET_TOKEN';
 export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
@@ -22,6 +23,8 @@ export const GET_MEMBER_PROFILE = 'GET_MEMBER_PROFILE';
 export const SET_MEMBER_PROFILE = 'SET_MEMBER_PROFILE';
 export const GET_BUSINESS_PROFILE = 'GET_BUSINESS_PROFILE';
 export const SET_BUSINESS_PROFILE = 'SET_BUSINESS_PROFILE';
+export const GET_NEWMESSAGES_COUNT = 'GET_NEWMESSAGES_COUNT';
+export const SET_NEWMESSAGES_COUNT = 'SET_NEWMESSAGES_COUNT';
 export const SET_ADMIN_FLAG = 'SET_ADMIN_FLAG';
 
 export const UPDATE_APPUSER = 'UPDATE_APPUSER';
@@ -49,6 +52,11 @@ export class SignUpSuccess implements Action {
     constructor(public payload: string){}
 }
 
+export class TryConfirmEmail implements Action {
+    readonly type = TRY_CONFIRM_EMAIL;
+    constructor(public payload:{userId: string, code:string}){}
+}
+
 export class TryLogin implements Action{
     readonly type = TRY_LOGIN;
 
@@ -69,6 +77,19 @@ export class SetToken implements Action {
 
     constructor(public payload:string) {}
 }
+
+export class GetNewMessagesCount implements Action {
+    readonly type = GET_NEWMESSAGES_COUNT;
+
+    constructor(public payload:number){} //appUserId
+}
+
+export class SetNewMessagesCount implements Action {
+    readonly type = SET_NEWMESSAGES_COUNT;
+
+    constructor(public payload:number) {}
+}
+
 
 export class SetAdminFlag implements Action {
     readonly type = SET_ADMIN_FLAG;
@@ -193,8 +214,11 @@ export type AccountActions = TryLogin
                         | Login
                         | TrySignup 
                         | SignUpSuccess
+                        | TryConfirmEmail
                         | Logout 
                         | SetToken 
+                        | GetNewMessagesCount
+                        | SetNewMessagesCount
                         | SetAdminFlag
                         | GetAccount
                         | SetAccount

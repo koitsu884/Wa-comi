@@ -24,7 +24,7 @@ export class MessageHomeComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.isSent = true;
+    this.isSent = false;
     this.appUser = this.route.snapshot.data["appUser"];
     if (!this.appUser) {
       console.log("AppUser 入ってないで");

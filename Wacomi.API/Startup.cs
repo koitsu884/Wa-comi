@@ -22,6 +22,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using NLog.Web;
 using Hangfire;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace Wacomi.API
 {
@@ -38,14 +40,22 @@ namespace Wacomi.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            // var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
             services.AddCors();
             services.AddMvc();
+            // services.AddSingleton<IEmailSender, EmailSender>();
+
+            // services.Configure<AuthMessageSenderOptions>(Configuration);
+            // services.Configure<MvcOptions>(options =>
+            // {
+            //     options.Filters.Add(new RequireHttpsAttribute());
+            // });
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
             services.AddAutoMapper();
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("WacomiDbConnection")));
             //options.UseSqlServer(@"Server=db;Database=WacomiNZ;User=sa;Password=P@ssw0rd!!;"));
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
@@ -59,8 +69,12 @@ namespace Wacomi.API
                 o.Password.RequireUppercase = true;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 6;
+                o.Lockout.MaxFailedAccessAttempts = 20;
+                o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(24);
+                o.SignIn.RequireConfirmedEmail = true;
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             // Configure JwtIssuerOptions
             //var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
@@ -83,12 +97,13 @@ namespace Wacomi.API
                     };
                 });
 
-            services.AddHangfire(config => 
-                config.UseSqlServerStorage(Configuration.GetConnectionString("MyDbConnection")));
+            services.AddHangfire(config =>
+                config.UseSqlServerStorage(Configuration.GetConnectionString("WacomiDbConnection")));
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,6 +141,10 @@ namespace Wacomi.API
             // this.cronTask.RunTopicManagerOnce(); //Test
             // this.cronTask.RunRssReader();
 
+            // var options = new RewriteOptions()
+            // .AddRedirectToHttps();
+            // app.UseRewriter(options);
+
             if (env.IsDevelopment())
             {
                 app.UseMvc();
@@ -144,5 +163,5 @@ namespace Wacomi.API
             }
         }
     }
-    
+
 }

@@ -12,7 +12,7 @@
                 ユーザーネームは４文字以上２０文字以下で、英数字のみ入力してください。
             </span>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label class="control-label">ユーザータイプ</label>
             <label class="radio-inline">
                 <input type="radio" value="Member" formControlName="userType">個人
@@ -20,7 +20,7 @@
             <label class="radio-inline">
                 <input type="radio" value="Business" formControlName="userType">ビジネス
             </label>
-        </div>
+        </div> -->
 
         <div class="form-group" [ngClass]="{'has-error': registerForm.get('password').errors && registerForm.get('password').touched}">
             <label for="password" class="control-label required">パスワード</label>

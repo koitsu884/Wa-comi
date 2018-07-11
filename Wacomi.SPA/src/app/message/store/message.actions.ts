@@ -13,6 +13,7 @@ export const SET_BASE_INFORMATION = 'SET_BASE_INFORMATION';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const CLEAR_MESSAGE = 'CLEAR_MESSAGE';
 export const SET_SELECTED_MESSAGE = 'SET_SELECTED_MESSAGE';
+export const SET_ISREAD_FLAG = 'SET_ISREAD_FLAG';
 
 export class GetMessages implements Action {
     readonly type = GET_MESSAGES;
@@ -69,6 +70,12 @@ export class SetSelectedMessage implements Action {
     constructor(public payload:Message){}
 }
 
+export class SetIsReadFlag implements Action {
+    readonly type = SET_ISREAD_FLAG;
+
+    constructor(public payload:number){} //messageId
+}
+
 export type MessageActions = GetMessages 
                            | SetMessages 
                         //    | GetMessagesReceived
@@ -78,4 +85,5 @@ export type MessageActions = GetMessages
                            | SetBaseInformation
                            | SendMessage 
                            | ClearMessage
-                           | SetSelectedMessage;
+                           | SetSelectedMessage
+                           | SetIsReadFlag;

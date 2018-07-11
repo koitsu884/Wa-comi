@@ -9,6 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { BlogModule } from '../blog/blog.module';
 import { LatestClanListComponent } from './home/latest-clan-list/latest-clan-list.component';
 import { LatestTopiccommentListComponent } from './home/latest-topiccomment-list/latest-topiccomment-list.component';
+import { StaticpageComponent } from './staticpage/staticpage.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { LatestTopiccommentListComponent } from './home/latest-topiccomment-list
     HeaderComponent,
     FooterComponent,
     LatestClanListComponent,
-    LatestTopiccommentListComponent
+    LatestTopiccommentListComponent,
+    StaticpageComponent
 ],
   imports: [
     CommonModule,

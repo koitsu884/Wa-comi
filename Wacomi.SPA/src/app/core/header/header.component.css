@@ -7,3 +7,8 @@ li img {
     max-height: 40px;
     margin-top: 10px;
 }
+
+.nav .badge {
+    background-color: Red;
+    color: white;
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { City } from '../_models/City';
 import { Hometown } from '../_models/Hometown';
 import 'rxjs/add/operator/catch';
@@ -19,43 +19,55 @@ import { PaginatedResult } from '../_models/Pagination';
 export class GlobalService {
     baseUrl = environment.apiUrl;
 
-    constructor(private httpClient : HttpClient, private store: Store<fromApp.AppState>){
-    }
-    
-    getClanSeekCategories(){
-        return this.httpClient.get<{id: number, name: string}>(this.baseUrl + 'clanseek/categories');
+    constructor(private httpClient: HttpClient, private store: Store<fromApp.AppState>) {
     }
 
-    getBlogCategories(){
+    getClanSeekCategories() {
+        return this.httpClient.get<{ id: number, name: string }>(this.baseUrl + 'clanseek/categories');
+    }
+
+    getBlogCategories() {
         return ["日常", "ニュース", "グルメ", "国際恋愛", "仕事", "オピニオン"];
     }
 
-    getFeelings(){
+    getFeelings() {
         const array = [];
-        array["Like"]=1;
-        array["Dislike"]=2;
-        array["Hate"]=3;
+        array["Like"] = 1;
+        array["Dislike"] = 2;
+        array["Hate"] = 3;
         return array;
     }
 
-    getBlogFeeds(){
+    getBlogFeeds() {
         return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed');
     }
 
     getBlogFeedUri(url: string) {
-        return this.httpClient.get(this.baseUrl + 'blog/rss?url=' + encodeURI(url),{responseType: 'text'});
+        return this.httpClient.get(this.baseUrl + 'blog/rss?url=' + encodeURI(url), { responseType: 'text' });
     }
 
-    getLatestClanSeekList(){
+    getLatestClanSeekList() {
         return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?pageSize=10');
     }
 
-    getTodaysTopic(){
-        return this.httpClient.get(this.baseUrl + 'dailytopic/today', {responseType: 'text'});
+    getTodaysTopic() {
+        return this.httpClient.get(this.baseUrl + 'dailytopic/today', { responseType: 'text' });
     }
 
-    getLatestTopicComments(){
+    getLatestTopicComments() {
         return this.httpClient.get<TopicComment[]>(this.baseUrl + 'dailytopiccomment/list');
     }
 
+    sendPasswordResetCode(userId:string, email: string) {
+        return this.httpClient.post(
+            this.baseUrl + 'auth/password/forgot',
+            {userId:userId, email:email},
+            {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
+    sendResetPasswordRequest(userId: string, code: string, password: string) {
+        return this.httpClient.post(this.baseUrl + 'auth/password/reset', { UserId: userId, Code: code, Password: password });
+    }
 }

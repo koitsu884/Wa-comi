@@ -12,6 +12,7 @@ export interface State {
     appUser: AppUser;
     memberProfile: MemberProfile;
     businessProfile: BusinessProfile;
+    newMessagesCount: number;
     isAdmin: boolean;
 }
 
@@ -22,6 +23,7 @@ const initialState: State = {
     appUser: null,
     memberProfile: null,
     businessProfile: null,
+    newMessagesCount: null,
     isAdmin: false
 };
 
@@ -84,6 +86,11 @@ export function accountReducer(state = initialState, action: AccountActions.Acco
                 ...state,
                 businessProfile: action.payload,
                 memberProfile: null
+            };
+        case AccountActions.SET_NEWMESSAGES_COUNT:
+            return {
+                ...state,
+                newMessagesCount: action.payload,
             };
         case AccountActions.SET_ADMIN_FLAG:
         localStorage.setItem('isAdmin', JSON.stringify(action.payload));

@@ -6,6 +6,8 @@ import { AuthGuard } from './_guards/auth.guard';
 import { BlogEditorComponent } from './blog/blog-editor/blog-editor.component';
 import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
 import { UserBlogResolver } from './_resolvers/userblog.resolver';
+import { StaticpageComponent } from './core/staticpage/staticpage.component';
+import { StaticPageResolver } from './_resolvers/staticpage.resolver';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -35,6 +37,9 @@ const appRoutes: Routes = [
   { path: 'users', loadChildren: './users/users.module#UsersModule'},
   // { path: 'business', loadChildren: './users/businesses/businesses.module#BusinessesModule' },
   { path: 'account', loadChildren: './account/account.module#AccountModule' },
+  //Static Pages
+  { path: ':pageName', component: StaticpageComponent, resolve: {content: StaticPageResolver}
+},
   { path: '**', redirectTo: 'home', pathMatch: 'full'},
 ];
 

@@ -9,6 +9,9 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { AccountEffects } from './store/account.effects';
 import { accountReducer } from './store/account.reducers';
+import { ConfirmComponent } from './confirm/confirm.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { PasswordForgotComponent } from './password-forgot/password-forgot.component';
 
 
 @NgModule({
@@ -16,6 +19,9 @@ import { accountReducer } from './store/account.reducers';
     LoginComponent,
     RegisterComponent,
     PasswordEditComponent,
+    PasswordForgotComponent,
+    PasswordResetComponent,
+    ConfirmComponent,
   ],
   imports:[
     CommonModule,

@@ -5,7 +5,7 @@
             <img *ngIf="selectedFile" class="img-responsive" [src]="previewUrl" />
             <input type="file" accept="image/*" style="display: none" (change)="onFileChanged($event)" #fileInput>
             <button class="btn btn-block btn-primary" (click)="fileInput.click()">画像選択</button>
-            <button class="btn btn-block btn-primary" (click)="onUpload()">アップロード</button>
+            <button class="btn btn-block btn-primary" (click)="onUpload()" [disabled]="!selectedFile">アップロード</button>
         </div>
         <div class="col-sm-8 col-md-9">
             <h4>写真一覧</h4>

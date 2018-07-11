@@ -34,6 +34,7 @@ import { GlobalEffect } from './store/global.effects';
 import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
 import { AppUserResolver } from './_resolvers/appuser.resolver';
 import { UserBlogResolver } from './_resolvers/userblog.resolver';
+import { StaticPageResolver } from './_resolvers/staticpage.resolver';
 import { MemberIdGuard } from './_guards/memberid.guard';
 import { MemberGuard } from './_guards/member.guard';
 import { MessageEffects } from './message/store/message.effects';
@@ -74,6 +75,7 @@ defineLocale('ja', jaLocale);
     UserPhotoResolver,
     UserBlogResolver,
     AppUserResolver,
+    StaticPageResolver,
     ErrorInterceptorProvider,
     AuthInterceptorProvider,
     AuthGuard,

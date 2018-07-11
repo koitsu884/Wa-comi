@@ -17,6 +17,7 @@ namespace Wacomi.API.Data
          Task<Photo> GetPhoto(int id);
         //  Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id);
         Task<IEnumerable<Photo>> GetPhotosForAppUser(int id);
+        Task SetNullToPhotoUrls(string photoUrl);
          Task<AppUser> GetAppUser(int id);
          Task<AppUser> GetAppUserByAccountId(string accountId);
 
@@ -86,6 +87,7 @@ namespace Wacomi.API.Data
         Task<PagedList<Message>> GetSentMessages(PaginationParams paginationParams, int userId);
         // Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
         Task<PagedList<Message>> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId);
+        Task<int> GetNewMessagesCount(int userId);
 
     }
 

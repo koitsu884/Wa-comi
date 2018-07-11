@@ -107,8 +107,9 @@ namespace Wacomi.API.Controllers
                 _repo.Delete(photoFromRepo);
             }
 
-            if(appUser.MainPhotoUrl == photoFromRepo.Url)
-                appUser.MainPhotoUrl = null;
+            await _repo.SetNullToPhotoUrls(photoFromRepo.Url);
+            // if(appUser.MainPhotoUrl == photoFromRepo.Url)
+            //     appUser.MainPhotoUrl = null;
 
             if (await _repo.SaveAll() > 0)
                 return Ok();

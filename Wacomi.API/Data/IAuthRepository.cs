@@ -12,6 +12,7 @@ namespace Wacomi.API.Data
         Task<AppUser> AddAppUser(Account account, string userType);
         Task<IdentityResult>  AddRoles(Account user, string[] roles);
         Task<Account> Login(string username, string password);
+        Task<bool> EmailConfirmed(Account user);
         Task<Account> UpdateAccount(Account user);
         Task<bool> AccountExists(string username, string email);
         Task<bool> UserNameExists(string username, string exceptionId = "");
@@ -20,6 +21,7 @@ namespace Wacomi.API.Data
         Task<IList<string>> GetRolesForAccount(Account user);
         Task<IdentityResult> DelteAccount(Account user);
         Task<Account> GetAccount(string id);
+        Task<Account> GetAccountByEmail(string email);
         // Task<BusinessUser> GetBusinessUser(int id);
         // Task<Member> GetMember(int id);
         // Task<Member> GetMemberByIdentityId(string id);

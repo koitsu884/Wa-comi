@@ -80,6 +80,12 @@ namespace Wacomi.API.Controllers
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
 
+        [HttpGet("{userId}/new")]
+        public async Task<ActionResult> GetNewMessagesCount(int userId)
+        {
+            return Ok(await _repo.GetNewMessagesCount(userId));
+        } 
+
         [HttpPost()]
         public async Task<ActionResult> SendMessageTo([FromBody]Message model){
             if (!ModelState.IsValid)
@@ -102,6 +108,22 @@ namespace Wacomi.API.Controllers
                 return CreatedAtRoute("GetMessage", new {id = model.Id}, new {}); 
             }
             return BadRequest("Failed to add message");
+        }
+
+        [HttpPut("{id}/read")]
+        public async Task<ActionResult> SetReadFlag(int id){
+            var message = await _repo.GetMessage(id);
+            if(message == null){
+                return NotFound();
+            }
+            if(!await MatchAppUserWithToken(message.RecipientId))
+            {
+                return Unauthorized();
+            }
+            message.IsRead = true;
+
+            await _repo.SaveAll();
+            return Ok(await _repo.GetNewMessagesCount(message.RecipientId));
         }
 
         [HttpDelete("{id}")]

@@ -61,6 +61,34 @@ namespace Wacomi.API.Data
             }
             return null;
         }
+
+        public async Task SetNullToPhotoUrls(string photoUrl){
+            var appUser = await _context.AppUsers.Where(u => u.MainPhotoUrl == photoUrl).FirstOrDefaultAsync();
+            if(appUser != null){
+                appUser.MainPhotoUrl = null;
+            }
+
+            var clanSeek = await _context.ClanSeeks.Where(c => c.MainPhotoUrl == photoUrl).FirstOrDefaultAsync();
+            if(clanSeek != null){
+                clanSeek.MainPhotoUrl = null;
+            }
+
+            var blogs = await _context.Blogs.Where(b => b.BlogImageUrl == photoUrl).ToListAsync();
+            foreach(var blog in blogs){
+                blog.BlogImageUrl = null;
+            }
+
+            var dailyTopicComment = await _context.TopicComments.Where(tc => tc.MainPhotoUrl == photoUrl).ToListAsync();
+            foreach(var dailyTopic in dailyTopicComment){
+                dailyTopic.MainPhotoUrl = null;
+            }
+
+            var dailyTopicReply = await _context.TopicReplies.Where(tc => tc.MainPhotoUrl == photoUrl).ToListAsync();
+            foreach(var topicReply in dailyTopicReply){
+                topicReply.MainPhotoUrl = null;
+            }
+        }
+
         // public async Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id)
         // {
         //     className = className.ToLower();
@@ -552,6 +580,10 @@ namespace Wacomi.API.Data
                                           .OrderByDescending(m => m.DateCreated);
 
             return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
+        }
+
+        public async Task<int> GetNewMessagesCount(int userId){
+            return await _context.Messages.Where(m => m.RecipientId == userId && m.IsRead == false).CountAsync();
         }
     }
 }

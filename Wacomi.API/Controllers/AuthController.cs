@@ -13,6 +13,10 @@ using Microsoft.IdentityModel.Tokens;
 using Wacomi.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Wacomi.API.Helper;
+using System.Net;
+using System.IO;
 
 namespace Wacomi.API.Controllers
 {
@@ -23,12 +27,21 @@ namespace Wacomi.API.Controllers
         private readonly IDataRepository _repo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        public AuthController(IAuthRepository authRepo, IDataRepository repo, IConfiguration config, IMapper mapper)
+        private readonly IEmailSender _emailSender;
+        private readonly UserManager<Account> _userManager;
+        public AuthController(IAuthRepository authRepo,
+                             IDataRepository repo,
+                             IConfiguration config,
+                             UserManager<Account> userManager,
+                             IEmailSender emailSender,
+                             IMapper mapper)
         {
             this._mapper = mapper;
             this._config = config;
             this._authRepo = authRepo;
             this._repo = repo;
+            this._userManager = userManager;
+            this._emailSender = emailSender;
         }
 
         [HttpGet("{id}", Name = "GetUser")]
@@ -61,6 +74,12 @@ namespace Wacomi.API.Controllers
             // member.Identity = appUser;
 
             var user = await _authRepo.Register(appUser, model.UserType, model.Password);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var request = Url.ActionContext.HttpContext.Request;
+            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/confirm/" + user.Id + "/" + WebUtility.UrlEncode(code);
+            // var callbackUrl = Url.Action("ConfirmEmail", "Account",
+            //     new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+
             if (await _authRepo.AddAppUser(user, model.UserType) == null)
             {
                 var result = await _authRepo.DelteAccount(appUser);
@@ -68,10 +87,69 @@ namespace Wacomi.API.Controllers
             }
 
             await _authRepo.AddRoles(appUser, model.UserType == "Business" ? new string[] { "Business" } : new string[] { "Member" });
+            await _emailSender.SendEmailAsync(model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
 
             return CreatedAtRoute("GetUser", new { id = appUser.Id }, new { });
         }
 
+        [HttpPut("confirm")]
+        public async Task<IActionResult> ConfirmEmail([FromBody]EmailConfirmationDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var account = await _authRepo.GetAccount(model.UserId);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(account, model.Code);
+            if (result.Succeeded)
+            {
+                var loginResult = await loginAndCreateToken(account);
+                return Ok(loginResult);
+            }
+
+            return BadRequest("Eメール認証に失敗しました");
+        }
+
+        [HttpPost("password/forgot")]
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDto model){
+            var account = await _authRepo.GetAccountByEmail(model.Email);
+            if(account == null)
+                return NotFound($"そのEメールアドレス（{model.Email}）は登録されていません");
+            if(account.UserName != model.UserId)
+                return BadRequest("ユーザーIDとメールアドレスが一致しません");
+            if(!account.EmailConfirmed)
+                return BadRequest("ユーザー認証がされていません。");
+
+            string code = await _userManager.GeneratePasswordResetTokenAsync(account);
+            var request = Url.ActionContext.HttpContext.Request;
+            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/password/reset/" + account.Id + "/" + WebUtility.UrlEncode(code);
+            await _emailSender.SendEmailAsync(model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
+            return Ok();
+        }
+
+        [HttpPost("password/reset")]
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDeto model){
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var account = await _authRepo.GetAccount(model.UserId);
+            if (account == null)
+            {
+                return NotFound("ユーザーが見つかりません");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(account, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest("パスワードのリセットに失敗しました");
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
@@ -83,6 +161,18 @@ namespace Wacomi.API.Controllers
                 return BadRequest("ユーザーネームまたはパスワードが間違っています");
             }
 
+            if (!await _authRepo.EmailConfirmed(userFromRepo))
+            {
+                return BadRequest("Eメール認証がまだされていません");
+            }
+
+            var loginResult = await loginAndCreateToken(userFromRepo);
+            //            return Ok(new { tokenString, account, appUser});
+            return Ok(loginResult);
+        }
+        
+        private async Task<Dictionary<string, object>> loginAndCreateToken(Account userFromRepo)
+        {
             var appUser = await _repo.GetAppUserByAccountId(userFromRepo.Id);
 
             var roles = await this._authRepo.GetRolesForAccount(userFromRepo);
@@ -134,12 +224,63 @@ namespace Wacomi.API.Controllers
                     default:
                         break;
                 }
-            } else if(roles.Where(r => r == "Administrator").FirstOrDefault() != null) {
+            }
+            else if (roles.Where(r => r == "Administrator").FirstOrDefault() != null)
+            {
                 returnValues.Add("isAdmin", true);
             }
+            return returnValues;
+        }
 
-            //            return Ok(new { tokenString, account, appUser});
-            return Ok(returnValues);
+        private string BuildConfirmEmailContent(string userName, string callbackUrl)
+        {
+            string template = @"<p>お申し込み頂きましたアカウント情報は以下となります。</p>
+<br>
+<ul>
+    <li>ログインID：{{userName}}</li>
+    <li>パスワード：個人情報のため表示を伏せています</li>
+</ul>
+
+</p>ご本人様確認のため、下記URLへ「24時間以内」にアクセスし
+アカウントの本登録を完了させて下さい。</p>
+<a href='{{callBackUrl}}'>認証リンク</a>
+
+<p>
+※当メール送信後、24時間を超過しますと、セキュリティ保持のため有効期限切れとなります。
+　その場合は再度、最初からお手続きをお願い致します。</p>
+
+<p>※当メールは送信専用メールアドレスから配信されています。
+　このままご返信いただいてもお答えできませんのでご了承ください。</p>
+
+<p>※当メールに心当たりの無い場合は、誠に恐れ入りますが
+　破棄して頂けますよう、よろしくお願い致します。</p>";
+
+            template = template.Replace("{{callBackUrl}}", callbackUrl);
+            template = template.Replace("{{userName}}", userName);
+            return template;
+        }
+
+        private string BuildResetPasswordContent(string userName, string callbackUrl)
+        {
+            string template = @"
+            <p>ユーザーID：{{userName}}</p>
+            <p>以下のリンクをクリックして、パスワードをリセットしてください。</p>
+<br>
+<a href='{{callBackUrl}}'>パスワードリセット</a>
+
+<p>
+※当メール送信後、24時間を超過しますと、セキュリティ保持のため有効期限切れとなります。
+　その場合は再度、最初からお手続きをお願い致します。</p>
+
+<p>※当メールは送信専用メールアドレスから配信されています。
+　このままご返信いただいてもお答えできませんのでご了承ください。</p>
+
+<p>※当メールに心当たりの無い場合は、誠に恐れ入りますが
+　破棄して頂けますよう、よろしくお願い致します。</p>";
+
+            template = template.Replace("{{callBackUrl}}", callbackUrl);
+            template = template.Replace("{{userName}}", userName);
+            return template;
         }
     }
 }

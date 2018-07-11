@@ -1,6 +1,6 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
-<div  *ngIf="location.path() !== '/home'"  class="container">
+<div  *ngIf="location.path() !== '/home' && location.path() !== '/registered'"  class="container">
 <hr>
 <a class="btn btn-warning" (click)="backClicked()">戻る</a>
 </div>

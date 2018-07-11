@@ -46,17 +46,54 @@ export class AccountEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .mergeMap(() => {
-                    return of({
-                        type: AccountActions.TRY_LOGIN,
-                        payload: {
-                            UserName: action.payload.registerInfo.userName,
-                            Password: action.payload.registerInfo.password
+                    this.router.navigate(['registered']);
+                    return [
+                        // {
+                        //     type: AccountActions.TRY_LOGIN,
+                        //     payload: {
+                        //         UserName: action.payload.registerInfo.userName,
+                        //         Password: action.payload.registerInfo.password
+                        //     }
+                        // }
+                        {
+                            type: GlobalActions.SUCCESS,
+                            payload: "アカウントを作成しました"
                         }
-                    }
-                    )
+                    ]
                 }
                 )
                 .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        });
+
+    @Effect()
+    tryConfirmEmail = this.actions$
+        .ofType(AccountActions.TRY_CONFIRM_EMAIL)
+        .map((action: AccountActions.TryConfirmEmail) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.put<LoginResult>(
+                    this.baseUrl + 'auth/confirm',
+                    payload,
+                    { headers: new HttpHeaders().set('Content-Type', 'application/json') }
+                )
+                .mergeMap((loginResult : LoginResult) => {
+                    this.router.navigate(['/home']);
+                    return [
+                        {
+                            type: GlobalActions.SUCCESS,
+                            payload: "ログインしました"
+                        },
+                        {
+                            type: AccountActions.LOGIN,
+                            payload: loginResult
+                        }
+                    ];
+                })
+                .catch((error:string) => {
+                    this.router.navigate(['/home']);
                     return of({ type: GlobalActions.FAILED, payload: error })
                 })
         });
@@ -86,46 +123,49 @@ export class AccountEffects {
 
     @Effect()
     login = this.actions$
-            .ofType(AccountActions.LOGIN)
-            .map((action: AccountActions.Login) => { return action.payload })
-            .mergeMap((loginResult) => {
-                this.router.navigate(['/home']);
-                return [
-                    {
-                        type: AccountActions.SET_TOKEN,
-                        payload: loginResult.tokenString
-                    },
-                    {
-                        type: AccountActions.SET_APPUSER,
-                        payload: loginResult.appUser
-                    },
-                    {
-                        type: AccountActions.SET_ACCOUNT,
-                        payload: loginResult.account
-                    },
-                    {
-                        type: PhotoActions.SET_PHOTOS,
-                        payload: loginResult.photos
-                    },
-                    {
-                        type: BlogActions.SET_BLOG,
-                        payload: loginResult.blogs
-                    },
-                    {
-                        type: AccountActions.SET_MEMBER_PROFILE,
-                        payload: loginResult.memberProfile
-                    },
-                    {
-                        type: AccountActions.SET_BUSINESS_PROFILE,
-                        payload: loginResult.businessProfile
-                    },
-                    {
-                        type: AccountActions.SET_ADMIN_FLAG,
-                        payload: loginResult.isAdmin ? true : false
-
-                    }
-                ];
-            })
+        .ofType(AccountActions.LOGIN)
+        .map((action: AccountActions.Login) => { return action.payload })
+        .mergeMap((loginResult) => {
+            this.router.navigate(['/home']);
+            return [
+                {
+                    type: AccountActions.SET_TOKEN,
+                    payload: loginResult.tokenString
+                },
+                {
+                    type: AccountActions.SET_APPUSER,
+                    payload: loginResult.appUser
+                },
+                {
+                    type: AccountActions.SET_ACCOUNT,
+                    payload: loginResult.account
+                },
+                {
+                    type: PhotoActions.SET_PHOTOS,
+                    payload: loginResult.photos
+                },
+                {
+                    type: BlogActions.SET_BLOG,
+                    payload: loginResult.blogs
+                },
+                {
+                    type: AccountActions.SET_MEMBER_PROFILE,
+                    payload: loginResult.memberProfile
+                },
+                {
+                    type: AccountActions.SET_BUSINESS_PROFILE,
+                    payload: loginResult.businessProfile
+                },
+                {
+                    type: AccountActions.SET_ADMIN_FLAG,
+                    payload: loginResult.isAdmin ? true : false
+                },
+                {
+                    type: AccountActions.GET_NEWMESSAGES_COUNT,
+                    payload: loginResult.appUser.id
+                }
+            ];
+        })
 
 
     // @Effect()
@@ -151,16 +191,16 @@ export class AccountEffects {
         .map((action: AccountActions.GetMemberProfile) => { return action.payload })
         .switchMap((id) => {
             return this.httpClient.get<MemberProfile>(this.baseUrl + 'memberprofile/' + id)
-            .map((member) => {
-                return {
-                    type: AccountActions.SET_MEMBER_PROFILE,
-                    payload: member
-                }
-            ;
-            })
-            .catch((error) => {
-                return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
-            })
+                .map((member) => {
+                    return {
+                        type: AccountActions.SET_MEMBER_PROFILE,
+                        payload: member
+                    }
+                        ;
+                })
+                .catch((error) => {
+                    return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
+                })
         })
 
     @Effect()
@@ -169,23 +209,23 @@ export class AccountEffects {
         .map((action: AccountActions.GetBusinessProfile) => { return action.payload })
         .switchMap((id) => {
             return this.httpClient.get<BusinessProfile>(this.baseUrl + 'businessprofile/' + id)
-            .map((bisUser) => {
-                return {
-                    type: AccountActions.SET_BUSINESS_PROFILE,
-                    payload: bisUser
-                }
-            })
-            .catch((error) => {
-                return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
-            })
+                .map((bisUser) => {
+                    return {
+                        type: AccountActions.SET_BUSINESS_PROFILE,
+                        payload: bisUser
+                    }
+                })
+                .catch((error) => {
+                    return of({ type: GlobalActions.FAILED, payload: "メンバー情報の取得に失敗しました: " + error })
+                })
         })
 
-        @Effect()
-        getAccount = this.actions$
-            .ofType(AccountActions.GET_ACCOUNT)
-            .map((action: AccountActions.GetAccount) => { return action.payload })
-            .switchMap((id) => {
-                return this.httpClient.get<Account>(this.baseUrl + 'account/' + id)
+    @Effect()
+    getAccount = this.actions$
+        .ofType(AccountActions.GET_ACCOUNT)
+        .map((action: AccountActions.GetAccount) => { return action.payload })
+        .switchMap((id) => {
+            return this.httpClient.get<Account>(this.baseUrl + 'account/' + id)
                 .map((account) => {
                     return {
                         type: AccountActions.SET_ACCOUNT,
@@ -195,23 +235,23 @@ export class AccountEffects {
                 .catch((error) => {
                     return of({ type: GlobalActions.FAILED, payload: "アカウント情報の取得に失敗しました: " + error })
                 })
-            })
-            @Effect()
-            getAppUser = this.actions$
-                .ofType(AccountActions.GET_APPUSER)
-                .map((action: AccountActions.GetAppUser) => { return action.payload })
-                .switchMap((id) => {
-                    return this.httpClient.get<AppUser>(this.baseUrl + 'appuser/' + id)
-                    .map((appUser) => {
-                        return {
-                            type: AccountActions.SET_APPUSER,
-                            payload: appUser
-                        }
-                    })
-                    .catch((error) => {
-                        return of({ type: GlobalActions.FAILED, payload: "ユーザー情報の更新に失敗しました: " + error })
-                    })
+        })
+    @Effect()
+    getAppUser = this.actions$
+        .ofType(AccountActions.GET_APPUSER)
+        .map((action: AccountActions.GetAppUser) => { return action.payload })
+        .switchMap((id) => {
+            return this.httpClient.get<AppUser>(this.baseUrl + 'appuser/' + id)
+                .map((appUser) => {
+                    return {
+                        type: AccountActions.SET_APPUSER,
+                        payload: appUser
+                    }
                 })
+                .catch((error) => {
+                    return of({ type: GlobalActions.FAILED, payload: "ユーザー情報の更新に失敗しました: " + error })
+                })
+        })
     //============== Update user information =================
     @Effect()
     updateAccount = this.actions$
@@ -221,20 +261,20 @@ export class AccountEffects {
         })
         .switchMap((userAccount) => {
             return this.httpClient.put(this.baseUrl + 'account/' + userAccount.id,
-            userAccount,
-            {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            })
-            .map((account:UserAccount) => {
-                this.alertify.success("更新しました");
-                return {
-                    // type: AccountActions.SET_ACCOUNT, payload: userAccount
-                     type: AccountActions.GET_ACCOUNT, payload: userAccount.id
-                };
-            })
-            .catch((error: string) => {
-                return of({ type: GlobalActions.FAILED, payload: error })
-            });
+                userAccount,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map((account: UserAccount) => {
+                    this.alertify.success("更新しました");
+                    return {
+                        // type: AccountActions.SET_ACCOUNT, payload: userAccount
+                        type: AccountActions.GET_ACCOUNT, payload: userAccount.id
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
         })
 
 
@@ -278,7 +318,7 @@ export class AccountEffects {
                     this.alertify.success("更新しました");
                     return {
                         type: AccountActions.GET_MEMBER_PROFILE, payload: member.id
-                       // type: AccountActions.SET_MEMBER_PROFILE, payload: member
+                        // type: AccountActions.SET_MEMBER_PROFILE, payload: member
                     };
                 })
                 .catch((error: string) => {
@@ -311,6 +351,23 @@ export class AccountEffects {
         })
 
     @Effect()
+    getNewMessagesCount = this.actions$
+        .ofType(AccountActions.GET_NEWMESSAGES_COUNT)
+        .map((action: AccountActions.GetNewMessagesCount) => { return action.payload })
+        .switchMap((userId) => {
+            return this.httpClient.get<number>(this.baseUrl + 'message/' + userId + '/new')
+                .map((count) => {
+                    return {
+                        type: AccountActions.SET_NEWMESSAGES_COUNT,
+                        payload: count
+                    };
+                })
+                .catch((error) => {
+                    return of({ type: AccountActions.SET_NEWMESSAGES_COUNT, payload: 0 })
+                })
+        })
+
+    @Effect()
     authLogout = this.actions$
         .ofType(AccountActions.LOGOUT)
         .mergeMap(() => {
@@ -318,9 +375,9 @@ export class AccountEffects {
 
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
-                { type: PhotoActions.CLEAR_PHOTO},
-                { type: BlogActions.CLEAR_BLOG},
-                { type: MessageActions.CLEAR_MESSAGE},
+                { type: PhotoActions.CLEAR_PHOTO },
+                { type: BlogActions.CLEAR_BLOG },
+                { type: MessageActions.CLEAR_MESSAGE },
             ]
         })
 
@@ -330,8 +387,8 @@ export class AccountEffects {
         .mergeMap(() => {
             this.router.navigate(['/home'])
             return [
-                { type: PhotoActions.CLEAR_PHOTO},
-                { type: BlogActions.CLEAR_BLOG}
+                { type: PhotoActions.CLEAR_PHOTO },
+                { type: BlogActions.CLEAR_BLOG }
             ]
         })
 }

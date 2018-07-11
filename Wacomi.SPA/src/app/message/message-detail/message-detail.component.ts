@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from '../../_models/Message';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../../store/app.reducer';
+import * as MessageAction from '../../message/store/message.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from '../../_services/message.service';
 
@@ -34,6 +35,9 @@ export class MessageDetailComponent implements OnInit {
             this.imageUrl = this.message.senderPhotoUrl;
             this.displayName = this.message.senderDisplayName;
             this.userId = this.message.senderId;
+            if(!this.message.isRead){
+              this.store.dispatch(new MessageAction.SetIsReadFlag(this.message.id));
+            }
           }
         })
     });

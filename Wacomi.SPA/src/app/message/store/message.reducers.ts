@@ -64,6 +64,14 @@ export function messageReducer(state = initialState, action: MessageActions.Mess
                 ...state,
                 selectedMessage: action.payload
             }
+        case MessageActions.SET_ISREAD_FLAG:
+            const tempMessages = [...state.messages];
+            var index = tempMessages.findIndex(m => m.id == action.payload);
+            tempMessages[index].isRead = true;
+            return {
+                ...state,
+                messages: tempMessages
+            }
         default:
             return state;
     }

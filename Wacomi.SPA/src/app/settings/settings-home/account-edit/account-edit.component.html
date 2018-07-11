@@ -7,7 +7,7 @@
       ユーザーネームは必須項目です
     </span>
   </div>
-  <div class="form-group" [ngClass]="{'has-error': email.errors && email.touched}">
+  <!-- <div class="form-group" [ngClass]="{'has-error': email.errors && email.touched}">
     <label class="required" for="email">Eメール</label>
     <input class="form-control" type="text" name="email" [(ngModel)]="account.email" required email #email="ngModel" />
     <span class="help-block" *ngIf="email?.errors?.required && email.touched">
@@ -16,7 +16,7 @@
     <span class="help-block" *ngIf="email?.errors?.email && email.touched">
       Eメールが正しくありません
     </span>
-  </div>
+  </div> -->
   <hr>
   <button class="btn btn-success" [disabled]="!accountEditForm.valid || accountEditForm.pristine" type="submit">更新</button>
 </form>

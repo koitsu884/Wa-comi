@@ -47,7 +47,7 @@ namespace Wacomi.API
             {
                 //NLog: catch setup errors
                 logger.Error(ex, "Stopped program because of exception");
-                throw;
+                throw ex;
             }
             finally
             {
@@ -71,6 +71,8 @@ namespace Wacomi.API
                     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 })
                 .UseNLog()
+                // .UseSetting("detailedErrors", "true")
+                // .CaptureStartupErrors(true)
                 .Build();
     }
 }

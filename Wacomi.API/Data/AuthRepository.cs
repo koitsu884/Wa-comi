@@ -8,6 +8,7 @@ using Wacomi.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Wacomi.API.Data
 {
@@ -53,6 +54,10 @@ namespace Wacomi.API.Data
             // Credentials are invalid, or account doesn't exist
             return null;
         }
+
+         public async Task<bool> EmailConfirmed(Account user){
+             return await _userManager.IsEmailConfirmedAsync(user);
+         }
 
 
         public async Task<AppUser> AddAppUser(Account account, string userType)
@@ -194,6 +199,10 @@ namespace Wacomi.API.Data
         public async Task<Account> GetAccount(string id)
         {
             return await _userManager.FindByIdAsync(id);
+        }
+
+        public async Task<Account> GetAccountByEmail(string email){
+            return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<Account> UpdateAccount(Account user)
