@@ -6,13 +6,17 @@ export class AlertifyService {
 
 constructor() { }
     confirm(message: string, okCallback: () => any) {
-        alertify.confirm(message, function(e) {
-            if (e) {
+        alertify.confirm( 
+            "確認",
+            message,
+            function() {
                 okCallback();
-            } else {
-
-            }
-        });
+            },
+            null
+        )
+        .set(
+            {transition:'fade'}
+        )
     }
 
     success(message: string) {

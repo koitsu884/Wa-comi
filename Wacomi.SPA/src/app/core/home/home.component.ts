@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.authState = this.store.select('account');
-        this.globalService.getBlogFeeds()
+        this.globalService.getLatestBlogFeeds()
             .subscribe((result) => {
                 this.blogFeedList = result;
             }, (error) => {

@@ -278,6 +278,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("ImageUrl");
 
+                    b.Property<bool>("IsActive");
+
                     b.Property<DateTime?>("PublishingDate");
 
                     b.Property<string>("Title");
@@ -288,7 +290,55 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("BlogId");
 
+                    b.HasIndex("PublishingDate");
+
                     b.ToTable("BlogFeeds");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeedComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int?>("BlogFeedId");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000);
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("DisplayName");
+
+                    b.Property<string>("MainPhotoUrl");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("BlogFeedId");
+
+                    b.ToTable("BlogFeedComments");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeedLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("BlogFeedId");
+
+                    b.Property<int?>("SupportAppUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogFeedId");
+
+                    b.HasIndex("SupportAppUserId");
+
+                    b.ToTable("BlogFeedLikes");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BusinessProfile", b =>
@@ -676,7 +726,7 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("Created");
+                    b.Property<DateTime>("DateCreated");
 
                     b.Property<string>("DisplayName");
 
@@ -770,6 +820,28 @@ namespace Wacomi.API.Migrations
                         .WithMany()
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeedComment", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.BlogFeed", "BlogFeed")
+                        .WithMany("FeedComments")
+                        .HasForeignKey("BlogFeedId");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.BlogFeedLike", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.BlogFeed", "BlogFeed")
+                        .WithMany("FeedLikes")
+                        .HasForeignKey("BlogFeedId");
+
+                    b.HasOne("Wacomi.API.Models.AppUser", "SupportAppUser")
+                        .WithMany()
+                        .HasForeignKey("SupportAppUserId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BusinessProfile", b =>

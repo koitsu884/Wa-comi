@@ -51,7 +51,10 @@ export class MessageDetailComponent implements OnInit {
         recipientId: this.message.senderId,
         senderId: this.message.recipientId
       },
-      this.message.content
+      "<p class='text-info'>以下のメッセージに対して返信します</p>"
+       + "<h5>送信者：" + this.message.senderDisplayName + "</h5>"
+       + this.message.content
+      
     );
     this.router.navigate(['/message/send']);
 

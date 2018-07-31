@@ -8,22 +8,32 @@ using Hangfire;
 using Wacomi.API.Data;
 using Wacomi.API.Models;
 using Microsoft.SyndicationFeed;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using System.Net;
+using Microsoft.Extensions.Logging;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Wacomi.API.Helper
 {
     public class CronTask
     {
-        readonly IDataRepository _repo;
-        public CronTask(IDataRepository repo)
+        private readonly IDataRepository _repo;
+        private readonly ILogger<CronTask> _logger;
+        private readonly IStaticFileManager _staitcFileManager;
+        public CronTask(IDataRepository repo, ILogger<CronTask> logger, IStaticFileManager staticFileManager)
         {
             this._repo = repo;
+            this._logger = logger;
+            this._staitcFileManager = staticFileManager;
         }
 
         public void StartRssReader()
         {
             RecurringJob.AddOrUpdate(
                     () => AddRssFeeds(),
-                    Cron.Hourly);
+                    Cron.MinuteInterval(30));
         }
 
         public void StartTopicManager()
@@ -31,6 +41,14 @@ namespace Wacomi.API.Helper
             RecurringJob.AddOrUpdate(
                     () => ChangeTopic(),
                     Cron.Daily);
+        }
+
+        public void StartOldFeedsChecker()
+        {
+            RecurringJob.AddOrUpdate(
+                () => DeleteOldFeeds(),
+                Cron.Daily
+            );
         }
 
         //Test
@@ -43,6 +61,11 @@ namespace Wacomi.API.Helper
         {
             var jobId = BackgroundJob.Enqueue(
                  () => AddRssFeeds());
+        }
+
+        public void RunFeedDelete(){
+            var jobId = BackgroundJob.Enqueue(
+                 () => DeleteAllFeeds());
         }
 
         public async Task ChangeTopic()
@@ -81,6 +104,7 @@ namespace Wacomi.API.Helper
         public async Task<int> AddRssFeeds()
         {
             Console.WriteLine("AddRssFeeds");
+
             var blogs = await _repo.GetBlogsForRssFeed();
             foreach (var blog in blogs)
             {
@@ -89,11 +113,38 @@ namespace Wacomi.API.Helper
                 var blogFeed = await readRss(blog);
                 if (blogFeed != null)
                 {
+                    var fileName = Path.GetFileName(blogFeed.ImageUrl);
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        try
+                        {
+                            saveFeedImage(blogFeed);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex.Message);
+                            blogFeed.ImageUrl = null;
+                        }
+                    }
+                    // }
+
                     this._repo.Add(blogFeed);
                 }
                 blog.DateRssRead = DateTime.Now;
             }
             return await this._repo.SaveAll();
+        }
+
+        public async Task DeleteOldFeeds()
+        {
+            var targetDate = DateTime.Now.AddMonths(-6);
+           await _repo.DeleteFeeds(targetDate);
+           await _repo.SaveAll();
+        }
+
+        public async Task DeleteAllFeeds(){
+           await _repo.DeleteFeeds();
+           await _repo.SaveAll();
         }
 
         // private async Task<BlogFeed> readRss(Blog blog){
@@ -126,13 +177,14 @@ namespace Wacomi.API.Helper
             // result += "Feed Image: " + feed.ImageUrl + "\n";
             if (feed.Items.Count > 0)
             {
-                var latestFeed = await _repo.GetLatestBlogFeed(blog);
+                var latestFeed = await _repo.GetLatestBlogFeed(blog.Id);
                 var firstItem = feed.Items.First();
 
                 if (latestFeed == null || latestFeed.PublishingDate < firstItem.PublishingDate)
                 {
                     bool jpgOnly = blog.RSS.Contains("yahoo.co.jp");
                     var firstImageUrl = extractFeedImage(feed.Type, firstItem, jpgOnly);
+                    DateTime PublishingDate = firstItem.PublishingDate == null ? System.DateTime.Now : (DateTime)firstItem.PublishingDate;
 
                     var blogFeed = new BlogFeed()
                     {
@@ -140,7 +192,7 @@ namespace Wacomi.API.Helper
                         Blog = blog,
                         Title = System.Net.WebUtility.HtmlDecode(firstItem.Title),
                         ImageUrl = firstImageUrl,
-                        PublishingDate = firstItem.PublishingDate == null ? System.DateTime.Now : firstItem.PublishingDate,
+                        PublishingDate = PublishingDate,
                         Url = firstItem.Link
                     };
                     return blogFeed;
@@ -149,10 +201,41 @@ namespace Wacomi.API.Helper
             return null;
         }
 
+        private void saveFeedImage(BlogFeed blogFeed)
+        {
+            using (WebClient client = new WebClient())
+            {
+                using (Stream stream = client.OpenRead(blogFeed.ImageUrl))
+                {
+                    var bitmap = new Bitmap(stream);
+
+                    if (bitmap != null)
+                    {
+                        int resizeWidth = 400;
+                        int resizeHeight = (int)(bitmap.Height * ((double)resizeWidth / (double)bitmap.Width));
+                        Bitmap resizeBmp = new Bitmap(bitmap, resizeWidth, resizeHeight);
+
+                        var fileName = Path.Combine("feedimages", blogFeed.BlogId.ToString(), DateTime.Now.ToString("yyyy_MM_dd_hh_mm")) + ".jpg";
+                        //may throw exception
+                        this._staitcFileManager.SaveImageFile(fileName, resizeBmp, ImageFormat.Jpeg);
+                        blogFeed.ImageUrl = fileName;
+
+                        // var targetFileName = Path.Combine(feedImageFolderPath, blog.Id.ToString(), fileName);
+                        // var filePath = Path.Combine("feedimages", fileName);
+
+                        // var directory = Path.GetDirectoryName(physicalFilePath);
+                        // Directory.CreateDirectory(directory);
+                        // resizeBmp.Save(physicalFilePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+
+                    stream.Flush();
+                }
+            }
+        }
         private string extractFeedImage(FeedType feedType, FeedItem feedItem, bool yahoo = false)
         {
             string firstImageUrl = null;
-            string search = yahoo ? "img.+?src=[\"'](.+?)[\"']" : "<img.+?src=[\"']([^\"\']*jpe?g).*[\"'].*?>" ;
+            string search = yahoo ? "img.+?src=[\"'](.+?)[\"']" : "<img.+?src=[\"']([^\"\']*jpe?g).*[\"'].*?>";
             // if(feedItem.Content != null){
             //     firstImageUrl = Regex.Match(feedItem.Content, search, RegexOptions.IgnoreCase).Groups[1].Value;
             //     if(!string.IsNullOrEmpty(firstImageUrl))

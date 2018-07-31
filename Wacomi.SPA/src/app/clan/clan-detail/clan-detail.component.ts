@@ -18,7 +18,8 @@ export class ClanDetailComponent implements OnInit {
   clanId: number;
   appUser: AppUser;
   memberId: number;
-  clanState: Observable<fromClan.State>;
+  // clanState: Observable<fromClan.State>;
+  editingClan: ClanSeek;
   // accountState: Observable<fromAccount.State>;
 
   constructor(private route: ActivatedRoute, 
@@ -35,13 +36,14 @@ export class ClanDetailComponent implements OnInit {
       return;
     }
     this.store.dispatch(new ClanSeekActions.GetClanSeek(this.clanId));
-    this.clanState = this.store.select('clan');
+    this.store.select('clan').subscribe((clanState) => {this.editingClan = clanState.editingClan});
     // this.accountState = this.store.select('account').take(1);
   }
 
-  // onDelete(){
-  //     this.alertify.confirm("本当に削除しますか？", ()=>{
-  //       this.store.dispatch(new ClanSeekActions.TryDeleteClanSeek(this.clanId));
-  //     });
-  // }
+  onDelete() {
+    this.alertify.confirm("本当に削除しますか？", () => {
+      this.store.dispatch(new ClanSeekActions.ClearClanseekFilters());
+      this.store.dispatch(new ClanSeekActions.TryDeleteClanSeek(this.editingClan.id));
+    });
+  }
 }

@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="filter row bg-info">
+    <label>カテゴリー</label>
+    <select [(ngModel)]="selectedCategory" name="category" (change)="filterChanged()">
+      <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+    </select>
+  </div>
+  <div class="row">
+    <div class="col-sm-10">
+        <app-loading *ngIf="(blogState | async).loading"></app-loading>
+        <div *ngFor="let blogFeed of (blogState | async).blogFeeds">
+          <app-blogfeed-row [blogFeed]="blogFeed" [appUser]="appUser" (sendLike)="sendLike($event)" (toggleDisplayComments)="toggleDisplayComments(blogFeed)"></app-blogfeed-row>
+          <app-short-comment-form 
+            *ngIf="blogFeed.displayComments" 
+            [shortComments]="blogFeed.shortComments" 
+            [currentAppUserId]="appUser.id"
+            (addShortComment)="addBlogFeedComment(blogFeed.id ,$event)" 
+            (deleteShortComment)="deleteFeedComment($event)" ></app-short-comment-form>
+        </div>
+        <!-- <app-blogfeed-list *ngIf="!(blogState | async).loading" [blogFeedList]="(blogState | async).blogFeeds"></app-blogfeed-list> -->
+        <div *ngIf="(blogState | async).pagination && (blogState | async).pagination.totalPages > 1" class="text-center">
+          <pagination 
+            [boundaryLinks]="true" 
+            [totalItems]="(blogState | async).pagination.totalItems" 
+            [ngModel]="(blogState | async).pagination.currentPage"
+            [itemsPerPage]="(blogState | async).pagination.itemsPerPage" 
+            (pageChanged)="pageChanged($event)" 
+            class="pagination-sm"
+            previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+          </pagination>
+        </div>
+    </div>
+    <div class="col-sm-2">
+      <h4>広告</h4>
+    </div>
+  </div>
+
+</div>

@@ -8,7 +8,6 @@ import 'rxjs/add/operator/mergeMap';
 
 import * as AccountActions from './account.actions';
 import * as PhotoActions from '../../photo/store/photos.action';
-import * as BlogActions from '../../blog/store/blogs.actions';
 import * as MessageActions from '../../message/store/message.actions';
 import * as GlobalActions from '../../store/global.actions';
 import { Router } from "@angular/router";
@@ -21,7 +20,6 @@ import { Observable } from "rxjs/Observable";
 import { Action } from "@ngrx/store";
 import { of } from "rxjs/observable/of";
 import { AppUser } from "../../_models/AppUser";
-import { Blog } from "../../_models/Blog";
 import { MemberProfile } from "../../_models/MemberProfile";
 import { BusinessProfile } from "../../_models/BusinessProfile";
 import { UserAccount } from "../../_models/UserAccount";
@@ -145,10 +143,6 @@ export class AccountEffects {
                     payload: loginResult.photos
                 },
                 {
-                    type: BlogActions.SET_BLOG,
-                    payload: loginResult.blogs
-                },
-                {
                     type: AccountActions.SET_MEMBER_PROFILE,
                     payload: loginResult.memberProfile
                 },
@@ -158,11 +152,11 @@ export class AccountEffects {
                 },
                 {
                     type: AccountActions.SET_ADMIN_FLAG,
-                    payload: loginResult.isAdmin ? true : false
+                    payload: loginResult.appUser.userType == "Admin" ? true : false
                 },
                 {
                     type: AccountActions.GET_NEWMESSAGES_COUNT,
-                    payload: loginResult.appUser.id
+                    payload: loginResult.appUser
                 }
             ];
         })
@@ -354,8 +348,11 @@ export class AccountEffects {
     getNewMessagesCount = this.actions$
         .ofType(AccountActions.GET_NEWMESSAGES_COUNT)
         .map((action: AccountActions.GetNewMessagesCount) => { return action.payload })
-        .switchMap((userId) => {
-            return this.httpClient.get<number>(this.baseUrl + 'message/' + userId + '/new')
+        .switchMap((appUser) => {
+            if(!appUser){
+                return of({ type: AccountActions.SET_NEWMESSAGES_COUNT, payload: 0 })
+            }
+            return this.httpClient.get<number>(this.baseUrl + 'message/' + appUser.id + '/new')
                 .map((count) => {
                     return {
                         type: AccountActions.SET_NEWMESSAGES_COUNT,
@@ -376,7 +373,6 @@ export class AccountEffects {
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
                 { type: PhotoActions.CLEAR_PHOTO },
-                { type: BlogActions.CLEAR_BLOG },
                 { type: MessageActions.CLEAR_MESSAGE },
             ]
         })
@@ -388,7 +384,6 @@ export class AccountEffects {
             this.router.navigate(['/home'])
             return [
                 { type: PhotoActions.CLEAR_PHOTO },
-                { type: BlogActions.CLEAR_BLOG }
             ]
         })
 }

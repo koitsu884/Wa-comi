@@ -1,0 +1,26 @@
+<div class="commentContainer">
+  <div class="reply" *ngFor="let shortComment of shortComments">
+      <div class="commentImage">
+          <img class="img-circle" 
+          [routerLink]="['/users/detail/', shortComment.appUserId]" 
+           src="{{shortComment.mainPhotoUrl ? shortComment.mainPhotoUrl : 'assets/NoImage_Person.png'}}" 
+           alt="{{shortComment.displayName}}" 
+           title="{{shortComment.displayName}}"
+           style="cursor: pointer">
+       </div>
+       <div class="comment">
+          <div class="commentBaloon">
+            <p><b>{{shortComment.displayName}}</b>: {{shortComment.comment}}</p>
+          </div>
+        </div>
+        <a *ngIf="shortComment.appUserId == currentAppUserId" class="btn btn-danger btn-xs" (click)="onDelete(shortComment)">削除</a>
+  </div>
+  <h5>コメントする</h5>
+  <form #ShotCommentForm="ngForm" id="ShotCommentForm" (ngSubmit)="onSubmit(ShotCommentForm)">
+      <div class="form-group">
+          <textarea class="form-control" name="comment" rows="3" ngModel required maxlength="1000"></textarea>
+        </div>
+        <button [disabled]="!ShotCommentForm.valid" class="btn btn-primary" type="submit">送信</button>
+  </form>
+</div>
+<span class="clearfix"></span>

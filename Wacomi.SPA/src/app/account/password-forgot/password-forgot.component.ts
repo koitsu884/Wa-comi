@@ -10,18 +10,21 @@ import { AlertifyService } from '../../_services/alertify.service';
 export class PasswordForgotComponent implements OnInit {
   userId: string;
   email: string;
-  sent: boolean;
+  status:string;
+  //sent: boolean;
 
   constructor(private globalService: GlobalService, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.sent=false;
+    // this.sent=false;
+    this.status="";
   }
 
   submit(){
+    this.status="sending";
     this.globalService.sendPasswordResetCode(this.userId, this.email)
       .subscribe(() => {
-        this.sent = true;
+        this.status = "sent";
       }, (error) => {
         this.alertify.error(error);
       });

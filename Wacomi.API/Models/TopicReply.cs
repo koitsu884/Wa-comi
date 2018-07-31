@@ -17,7 +17,7 @@ namespace Wacomi.API.Models
         [Required]
         [MaxLength(1000)]
         public string Reply{ get; set;}
-        public DateTime Created{ get; set;} = DateTime.Now;
+        public DateTime DateCreated{ get; set;} = DateTime.Now;
 
     }
 }

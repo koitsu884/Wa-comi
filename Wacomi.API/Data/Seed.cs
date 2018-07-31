@@ -16,14 +16,15 @@ namespace Wacomi.API.Data
         )
         {
             SeedRoles(roleManager);
-            SeedUsers(userManager);
+            SeedUsers(userManager, context);
             SeedClanSeekCategories(context);
             SeedPropertySeekCategories(context);
             SeedDailyTopic(context);
             SeedOthers(context);
         }
 
-        public static void SeedDailyTopic(ApplicationDbContext context){
+        public static void SeedDailyTopic(ApplicationDbContext context)
+        {
             string[] initialDailyTopics = {
                 "今食べたい物",
                 "行きたい所",
@@ -49,7 +50,8 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedClanSeekCategories(ApplicationDbContext context){
+        public static void SeedClanSeekCategories(ApplicationDbContext context)
+        {
             string[] clanSeekCategories = {
                 "友達",
                 "サークル",
@@ -72,7 +74,8 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedPropertySeekCategories(ApplicationDbContext context){
+        public static void SeedPropertySeekCategories(ApplicationDbContext context)
+        {
             string[] propertySeekCategories = {
                 "フラット（1人部屋）",
                 "フラット（相部屋）",
@@ -96,14 +99,13 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedUsers(UserManager<Account> userManager)
+        public static void SeedUsers(UserManager<Account> userManager, ApplicationDbContext context)
         {
             string password = "P@ssw0rd!!";
 
             Account user = new Account
             {
                 UserName = "Admin",
-              //  UserType = "Admin",
                 Email = "kazunori.hayashi.nz@gmail.com",
                 EmailConfirmed = true
             };
@@ -113,6 +115,15 @@ namespace Wacomi.API.Data
                 var result = userManager.CreateAsync(user, password).Result;
                 if (result.Succeeded)
                 {
+                    var appUser = new AppUser()
+                    {
+                        AccountId = user.Id,
+                        DisplayName = user.UserName,
+                        UserType = "Admin"
+                    };
+
+                    context.Add(appUser);
+                    context.SaveChanges();
                     userManager.AddToRoleAsync(user, "Administrator").Wait();
                 }
             }

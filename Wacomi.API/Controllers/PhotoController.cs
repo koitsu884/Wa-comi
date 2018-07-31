@@ -136,7 +136,7 @@ namespace Wacomi.API.Controllers
                 }
             }
 
-            photoDto.Url = uploadResult.Uri.ToString();
+            photoDto.Url = uploadResult.SecureUri.ToString();
             photoDto.PublicId = uploadResult.PublicId;
 
             var photo = _mapper.Map<Photo>(photoDto);

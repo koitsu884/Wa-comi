@@ -13,7 +13,8 @@ namespace Wacomi.API.Dto
         public string MainPhotoUrl { get; set;}
         public string TopicTitle{ get; set;}
         public string Comment{ get; set;}
-        public ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
+        public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
+        public virtual ICollection<TopicReply> TopicReplies { get; set;}
         public DateTime Created{ get; set;}
     }
 }

@@ -63,9 +63,9 @@ export class PhotoEditorComponent implements OnInit {
 
   onFileChanged(event) {
     this.selectedFile = event.target.files[0];
-    if(this.selectedFile.size > 1024 * 1024){
+    if(this.selectedFile.size > 1024 * 1024 * 2){
       this.selectedFile = null;
-      this.alertify.error("１MB以下の画像を選択してください");
+      this.alertify.error("2MB以下の画像を選択してください");
       return;
     }
     var reader = new FileReader();

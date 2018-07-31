@@ -1,0 +1,24 @@
+.feedItem{
+    margin: 5px 0;
+    border: 1px solid rgb(211, 229, 250);
+}
+.blogImage{
+    float:left;
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    margin: 0 4px 0 0;
+}
+
+.feedImage{
+    float:left;
+    max-width: 100px;
+    max-height:100px;
+    padding: 4px;
+}
+
+button:disabled,
+button[disabled]{
+  opacity: 0.9;
+  color: #01a9f7;
+}

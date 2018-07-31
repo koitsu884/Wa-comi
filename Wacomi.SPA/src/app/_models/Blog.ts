@@ -1,3 +1,5 @@
+import { BlogFeed } from "./BlogFeed";
+
 export interface Blog {
     id: number;
     ownerId: number;
@@ -14,4 +16,5 @@ export interface Blog {
     rss: string;
     followerCount: number;
     hatedCount: number;
+    blogFeeds?: BlogFeed[];
 }

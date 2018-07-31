@@ -1,7 +1,7 @@
 <div [@topicComment] *ngFor="let topicComment of latestTopicComments">
   <div class="commentContainer">
     <div class="commentImage">
-      <img class="img-circle" src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage.png'}}" alt="{{topicComment.displayName}}" title="{{topicComment.displayName}}">
+      <img class="img-circle" src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage_Person.png'}}" alt="{{topicComment.displayName}}" title="{{topicComment.displayName}}">
     </div>
     <div class="comment">
       <div class="commentBaloon"><p>{{topicComment.comment}}</p></div>

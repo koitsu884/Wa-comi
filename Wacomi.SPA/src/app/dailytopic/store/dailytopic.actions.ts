@@ -4,6 +4,7 @@ import { TopicComment } from "../../_models/TopicComment";
 import { TopicCommentFeel } from "../../_models/TopicCommentFeel";
 import { importExpr } from "@angular/compiler/src/output/output_ast";
 import { TopicReply } from "../../_models/TopicReply";
+import { ShortComment } from "../../_models/ShortComment";
 
 //====================================================
 // Daily Topic Ranking
@@ -84,7 +85,7 @@ export const TOGGLE_REPLY_FORM = "TOGGLE_REPLY_FORM";
 export const GET_TOPIC_REPLIES = 'GET_TOPIC_REPLIES';
 export const SET_TOPIC_REPLIES = 'SET_TOPIC_REPLIES';
 export const TRY_ADD_TOPIC_REPLY = 'TRY_ADD_TOPIC_REPLY';
-export const ADD_TOPIC_REPLY = 'ADD_TOPIC_REPLY';
+// export const ADD_TOPIC_REPLY = 'ADD_TOPIC_REPLY';
 export const TRY_DELETE_TOPIC_REPLY = 'TRY_DELETE_TOPIC_REPLY';
 export const DELETE_TOPIC_REPLY = 'DELETE_TOPIC_REPLY';
 
@@ -155,7 +156,7 @@ export class GetTopicReplies implements Action {
 
 export class SetTopicReplies implements Action {
     readonly type = SET_TOPIC_REPLIES;
-    constructor(public payload:{commentId: number, topicReplies: TopicReply[]}){}
+    constructor(public payload:{commentId: number, topicReplies: ShortComment[]}){}
 }
 
 export class TryAddTopicReply implements Action {
@@ -163,14 +164,14 @@ export class TryAddTopicReply implements Action {
     constructor(public payload:{topicCommentId: number, memberId: number, reply: string }){}
 }
 
-export class AddTopicReply implements Action {
-    readonly type = ADD_TOPIC_REPLY;
-    constructor(public payload:TopicReply){}
-}
+// export class AddTopicReply implements Action {
+//     readonly type = ADD_TOPIC_REPLY;
+//     constructor(public payload:ShortComment){}
+// }
 
 export class TryDeleteTopicReply implements Action {
     readonly type = TRY_DELETE_TOPIC_REPLY;
-    constructor(public payload:TopicReply){}
+    constructor(public payload:{topicReplyId: number, topicCommentId: number}){}
 }
 
 export class DeleteTopicReply implements Action {
@@ -202,7 +203,7 @@ export type DailyTopicActions = GetTopicList
                           | GetTopicReplies
                           | SetTopicReplies
                           | TryAddTopicReply
-                          | AddTopicReply
+                        //   | AddTopicReply
                           | TryDeleteTopicReply
                           | DeleteTopicReply
                           | TopicClear;

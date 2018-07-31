@@ -3,30 +3,31 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '../../_services/global.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertifyService } from '../../_services/alertify.service';
+import { PasswordEditorBase } from '../passwordEditorBase';
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.css']
 })
-export class PasswordResetComponent implements OnInit {
+export class PasswordResetComponent  extends PasswordEditorBase implements OnInit {
   newPasswordForm: FormGroup;
-  passwordMinLength = 6;
-  passwordMaxLength = 20;
+  // passwordMinLength = 6;
+  // passwordMaxLength = 20;
 
   code: string;
   userId: string;
   password:string;
-  passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,20}";
+  // passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,20}";
 
   constructor(private route: ActivatedRoute, 
     private globalService: GlobalService, 
     private alertify: AlertifyService,
     private router: Router,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder) { super()}
 
   ngOnInit() {
     this.createNewPasswordForm();
-    this.route.params.subscribe((params) => {
+    this.route.queryParams.subscribe((params) => {
       this.code = params["code"];
       this.userId = params["id"];
     })
@@ -43,16 +44,13 @@ export class PasswordResetComponent implements OnInit {
     }, {validator: this.passwordMatchValidator})
   }
 
-  passwordMatchValidator(g: FormGroup){
-    return g.get('password').value === g.get('confirmPassword').value ? null : {'mismatch' : true};
-  }
+  // passwordMatchValidator(g: FormGroup){
+  //   return g.get('password').value === g.get('confirmPassword').value ? null : {'mismatch' : true};
+  // }
 
   submit(){
     if(this.newPasswordForm.valid){
       let values = Object.assign({}, this.newPasswordForm.value);
-      console.log(this.userId);
-      console.log(this.code);
-      console.log(values);
       this.globalService.sendResetPasswordRequest(this.userId, this.code, values.password)
         .subscribe(() => {
           this.alertify.success("パスワードを変更しました");

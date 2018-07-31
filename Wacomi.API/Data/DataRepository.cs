@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +14,11 @@ namespace Wacomi.API.Data
     public class DataRepository : IDataRepository
     {
         private readonly ApplicationDbContext _context;
-        public DataRepository(ApplicationDbContext context)
+        private readonly IStaticFileManager _staticFileManager;
+        public DataRepository(ApplicationDbContext context, IStaticFileManager staticFileManager)
         {
             this._context = context;
+            this._staticFileManager = staticFileManager;
 
         }
         public void Add<T>(T entity) where T : class
@@ -220,24 +224,124 @@ namespace Wacomi.API.Data
                                        .ToListAsync();
         }
 
-        public async Task<BlogFeed> GetLatestBlogFeed(Blog blog)
+        public async Task<BlogFeed> GetLatestBlogFeed(int blogId)
         {
-            return await _context.BlogFeeds.Where(bf => bf.BlogId == blog.Id).OrderByDescending(bf => bf.Id).FirstOrDefaultAsync();
+            return await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).OrderByDescending(bf => bf.PublishingDate).FirstOrDefaultAsync();
         }
 
         public async Task<BlogFeed> GetBlogFeed(int id)
         {
-            return await _context.BlogFeeds.FirstOrDefaultAsync(bf => bf.Id == id);
+            return await _context.BlogFeeds.Include(bf => bf.Blog).Include(bf => bf.FeedLikes).FirstOrDefaultAsync(bf => bf.Id == id);
         }
 
+        public async Task<bool> BlogFeedExist(int id)
+         {
+            return await _context.BlogFeeds.AnyAsync(bf => bf.Id == id);
+        }
+
+        public async Task<bool> BlogFeedLiked(int appUserId, int blogFeedId){
+            return await _context.BlogFeedLikes.AnyAsync(bfl => bfl.SupportAppUserId == appUserId && bfl.BlogFeedId == blogFeedId);
+        }
+
+        public async Task<BlogFeedLike> GetBlogFeedLike(int id){
+            return await _context.BlogFeedLikes.FirstOrDefaultAsync(bfl => bfl.Id == id);
+        }
+
+        public async Task<IEnumerable<BlogFeedLike>> GetBlogFeedLikesForUser(int userId){
+            return await _context.BlogFeedLikes.Where(bfl => bfl.SupportAppUserId == userId).ToListAsync();
+        }
+
+        public async Task<BlogFeedComment> GetBlogFeedComment(int id){
+            return await _context.BlogFeedComments.FirstOrDefaultAsync(bfc => bfc.Id == id);
+        }
+
+        public async Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId){
+            return await _context.BlogFeedComments.Where(bfc => bfc.BlogFeedId == feedId).ToListAsync();
+        }
         public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds()
         {
             return await _context.BlogFeeds.Include(bf => bf.Blog)
-                                            .Where(bf => bf.Blog.IsActive == true)
+                                            .Where(bf => bf.Blog.IsActive == true && bf.IsActive == true)
                                             .OrderByDescending(bf => bf.PublishingDate)
-                                            .Take(50).ToListAsync();
+                                            .Take(12)
+                                            .ToListAsync();
         }
 
+        public async Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category = null){
+            var blogFeeds = _context.BlogFeeds.Include(bf => bf.Blog)
+                                            .ThenInclude(bf => bf.Owner)
+                                            .Include(bf => bf.FeedLikes)
+                                            .Include(bf => bf.FeedComments)
+                                            .OrderByDescending(bf => bf.PublishingDate)
+                                           .AsQueryable();
+
+            blogFeeds = blogFeeds.Where(bf => bf.Blog.IsActive == true && bf.IsActive == true);
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                blogFeeds = blogFeeds.Where(bf => bf.Blog.Category == category 
+                                               || bf.Blog.Category2 == category
+                                               || bf.Blog.Category3 == category);
+            }
+
+            return await PagedList<BlogFeed>.CreateAsync(blogFeeds, paginationParams.PageNumber, paginationParams.PageSize);
+            //return await blogFeeds.ToListAsync();
+        }
+        public async Task<IEnumerable<BlogFeed>> GetBlogFeedsByBlogId(int blogId){
+            return await _context.BlogFeeds.Include(bf => bf.FeedLikes)
+                                            .Include( bf => bf.FeedComments)
+                                            .Where(bf => bf.BlogId == blogId && bf.IsActive == true)
+                                            .OrderByDescending(bf => bf.PublishingDate)
+                                            .Take(20).ToListAsync();
+        }
+
+        // public async Task DeleteOldFeeds(){
+        //     var targetDate = DateTime.Now.AddMonths(-6);
+        //     var deletingFeeds = await _context.BlogFeeds.Where(bf => bf.PublishingDate <= targetDate).ToListAsync();
+        //   //  _context.BlogFeeds.RemoveRange(deletingFeeds);
+        //     foreach(var feed in deletingFeeds){
+        //         await DeleteFeedLikes(feed.Id);
+        //         await DeleteFeedComments(feed.Id);
+        //         _context.BlogFeeds.Remove(feed);
+        //     }
+        // }
+
+        public async Task DeleteFeeds(DateTime? targetDate = null){
+            var query = _context.BlogFeeds.AsQueryable();
+            if(targetDate != null)
+                query = query.Where(bf => bf.PublishingDate <= targetDate);
+            var deletingFeeds = await query.ToListAsync();
+            foreach(var feed in deletingFeeds){
+                await DeleteFeeWithRelatingTablesAndFiles(feed);
+            }
+        }
+
+        private async Task DeleteFeeWithRelatingTablesAndFiles(BlogFeed feed){
+            await DeleteFeedLikes(feed.Id);
+            await DeleteFeedComments(feed.Id);
+            // var fileName = System.IO.Path.GetFileName(feed.ImageUrl);
+            // var physicalImagePath = System.IO.Path.Combine(feedImageFolder, feed.BlogId.ToString(), fileName);
+            // System.IO.File.Delete(physicalImagePath);
+            this._staticFileManager.DeleteFile(feed.ImageUrl);
+            _context.BlogFeeds.Remove(feed);
+        }
+
+        public async Task DeleteFeedLikes(int feedId){
+            var deletingFeedLikes = await _context.BlogFeedLikes.Where(bfl => bfl.BlogFeedId == feedId).ToListAsync();
+            _context.BlogFeedLikes.RemoveRange(deletingFeedLikes);
+        }
+
+        public async Task DeleteFeedComments(int feedId){
+            var deletingFeedComments = await _context.BlogFeedComments.Where(bfl => bfl.BlogFeedId == feedId).ToListAsync();
+            _context.BlogFeedComments.RemoveRange(deletingFeedComments);
+        }
+
+        public async Task DeleteFeedsForBlog(int blogId){
+            var deletingFeeds = await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).ToListAsync();
+            foreach(var feed in deletingFeeds){
+                await DeleteFeeWithRelatingTablesAndFiles(feed);
+            }
+        }
         public async Task<ClanSeek> GetClanSeek(int id)
         {
             return await _context.ClanSeeks.Include(cs => cs.Category)
@@ -268,29 +372,21 @@ namespace Wacomi.API.Data
             {
                 clanSeeks = clanSeeks.Where(cs => cs.LocationId == cityId);
             }
+            clanSeeks = clanSeeks.Where(cs => cs.IsActive == true);
 
             return await PagedList<ClanSeek>.CreateAsync(clanSeeks, paginationParams.PageNumber, paginationParams.PageSize);
-            // var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
-            //                                .Include(cs => cs.AppUser)
-            //                                .Include(cs => cs.Location)
-            //                                .OrderByDescending(cs => cs.LastActive)
-            //                                .AsQueryable();
+        }
 
-            // if (latest != null)
-            // {
-            //     clanSeeks = clanSeeks.Take(6);
-            // }
+        public async Task<IEnumerable<ClanSeek>> GetClanSeeksByUser(int userId)
+        {
+            return await _context.ClanSeeks.Include(cs => cs.Category)
+                                           .Include(cs => cs.Location)
+                                           .Where( cs => cs.AppUserId == userId)
+                                           .OrderByDescending(cs => cs.LastActive).ToListAsync();
+        }
 
-            // if (categoryId != null)
-            // {
-            //     clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
-            // }
-
-            // if (cityId != null)
-            // {
-            //     clanSeeks = clanSeeks.Where(cs => cs.LocationId == cityId);
-            // }
-            // return await clanSeeks.ToListAsync();
+        public async Task<int> GetClanSeeksCountByUser(int userId){
+            return await _context.ClanSeeks.Where(cs => cs.AppUserId == userId).CountAsync();
         }
 
         public async Task<PropertySeek> GetPropertySeek(int id)

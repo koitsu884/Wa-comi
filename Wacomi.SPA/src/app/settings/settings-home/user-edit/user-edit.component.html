@@ -1,7 +1,7 @@
 <form #userEditForm="ngForm" id="userEditForm" (ngSubmit)="submit(userEditForm)">
-  <h4>プロフィール写真選択</h4>
+  <label>プロフィール写真選択</label>
   <div>
-    <img src="{{appUser.mainPhotoUrl ? appUser.mainPhotoUrl : 'assets/NoImage.png'}}">
+    <img class="img-responsive" src="{{appUser.mainPhotoUrl ? appUser.mainPhotoUrl : 'assets/NoImage_Person.png'}}">
   </div>
   <div class="photoSelector" *ngIf="photos.length > 0">
     <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="appUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, userEditForm)"></app-mainphoto-selector>
@@ -16,7 +16,7 @@
       <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
     </select>
   </div>
-  <div class="form-group">
+  <!-- <div class="form-group">
     <h4 for="blogs" class="control-label">ブログ</h4>
     <div *ngIf="blogs" class="row">
       <div class="col-xs-6 col-sm-4" *ngFor="let blog of blogs">
@@ -35,8 +35,6 @@
       </div>
     </div>
     <button *ngIf="canAddBlog" class="btn btn-primary" [routerLink]="['/editblog']">ブログの追加</button>
-    <!-- <app-blog-list [blogs]="blogs"></app-blog-list> -->
-    <!-- <a [routerLink]="['/editblog',  appUser.id]">ブログの追加・削除</a> -->
-  </div>
+  </div> -->
   <button class="btn btn-success" [disabled]="!userEditForm.valid || userEditForm.pristine" type="submit">更新</button>
 </form>

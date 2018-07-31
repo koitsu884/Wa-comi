@@ -9,7 +9,7 @@ export interface AppState {
   global: fromGlobal.State;
   account: fromAccount.State;
   photos: fromPhoto.State;
-  blogs: fromBlog.State;
+  // blogs: fromBlog.State;
   messages: fromMessage.State;
 }
 
@@ -17,6 +17,6 @@ export const reducers: ActionReducerMap<AppState> = {
   global: fromGlobal.globalReducer,
   account: fromAccount.accountReducer,
   photos: fromPhoto.photoReducer,
-  blogs: fromBlog.blogReducer,
+  // blogs: fromBlog.blogReducer,
   messages: fromMessage.messageReducer,
 };

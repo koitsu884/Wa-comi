@@ -1,0 +1,31 @@
+<div class="row feedItem bg-light-blue">
+  <div class="col-sm-6">
+      <img class="feedImage" src="{{blogFeed.imageUrl}}">
+      <h5><strong><a href="{{blogFeed.url}}">{{blogFeed.title}}</a></strong></h5>
+       <span class="clearfix"></span>
+  </div>
+  <div class="col-sm-6">
+    <div class="row">
+        <div class="col-xs-8">
+            <img class="blogImage img-circle" src="{{blogFeed.blogImageUrl ? blogFeed.blogImageUrl : '/assets/NoImage.png'}}">
+            <strong>{{blogFeed.blogTitle}}</strong>
+            <p class="clearfix">ライター：<a [routerLink]="['/users/detail/', blogFeed.ownerId]">{{blogFeed.writerName}}</a></p>
+            <p>投稿日：{{blogFeed.publishingDate | date: 'mediumDate'}}</p>
+          </div>
+          <div class="col-xs-4">
+            <button class="btn btn-primary btn-xs" (click)="onSendLike(blogFeed.id)" [disabled]="blogFeed.isLiked || !appUser">
+                <i class="fa fa-thumbs-up" title="良いね"></i>
+                <span class="badge">{{blogFeed.likedCount}}</span>
+              </button><br/><br/>
+              <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
+              <button class="btn btn-primary btn-xs" (click)="onToggleDisplayComment()" [disabled]="!appUser">
+                  <i class="fa fa-comment" title="返信数"></i>
+                  <span class="badge">{{blogFeed.commentCount}}</span>
+              </button>
+
+            <!-- <button class="btn btn-xs">良いね数</button><br>
+            <button class="btn btn-xs">コメント数</button> -->
+          </div>
+    </div>
+  </div>
+</div>

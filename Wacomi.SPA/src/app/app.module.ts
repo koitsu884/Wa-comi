@@ -33,20 +33,20 @@ import { AuthGuard } from './_guards/auth.guard';
 import { GlobalEffect } from './store/global.effects';
 import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
 import { AppUserResolver } from './_resolvers/appuser.resolver';
-import { UserBlogResolver } from './_resolvers/userblog.resolver';
 import { StaticPageResolver } from './_resolvers/staticpage.resolver';
 import { MemberIdGuard } from './_guards/memberid.guard';
 import { MemberGuard } from './_guards/member.guard';
 import { MessageEffects } from './message/store/message.effects';
 import { MessageService } from './_services/message.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoadingComponent } from './shared/loading/loading.component';
 
 
 defineLocale('ja', jaLocale); 
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
 ],
   imports: [
     BrowserModule,
@@ -59,7 +59,7 @@ defineLocale('ja', jaLocale);
     BlogModule,
     PhotoModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AccountEffects, PhotoEffect, BlogEffects, GlobalEffect, MessageEffects]),
+    EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
@@ -73,7 +73,6 @@ defineLocale('ja', jaLocale);
     CityListResolver,
     HomeTownListResolver,
     UserPhotoResolver,
-    UserBlogResolver,
     AppUserResolver,
     StaticPageResolver,
     ErrorInterceptorProvider,

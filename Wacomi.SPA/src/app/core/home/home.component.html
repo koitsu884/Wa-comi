@@ -1,35 +1,39 @@
 <div class="container">
   <div class="row">
     <div class="col-md-9">
+      <!-- <div>
+        <h2>何か情報とか？</h2>
+      </div> -->
+      <h2>みんなのブログ</h2>
       <div class="row">
-        <h2 class="bg-info">みんなのブログ</h2>
         <app-loading *ngIf="!blogFeedList"></app-loading>
         <app-blogfeed-list [blogFeedList]="blogFeedList"></app-blogfeed-list>
       </div>
+      <p class="text-center">
+        <button class="btn btn-sm btn-success" [routerLink]="['/blog/feed']">ブログ記事検索</button>
+      </p>
+      <h2>仲間募集中！</h2>
       <div class="row">
-        <h2  class="bg-info">仲間募集中！</h2>
         <app-loading *ngIf="!latestClanSeekList"></app-loading>
         <app-latest-clan-list *ngIf="latestClanSeekList" [latestClanSeeklist]="latestClanSeekList"></app-latest-clan-list>
       </div>
-      <a class="btn btn-primary" [routerLink]="['/clan']">仲間募集検索</a>
-      <!-- <a class="btn btn-primary" *ngIf="!(authState | async).authenticated" [routerLink]="['/account/login']">ログイン</a> -->
-      <div [routerLink]="['/dailytopic']">
-        <h2  class="bg-info">皆の一言</h2>
+      <p class="text-center">
+        <button class="btn btn-sm btn-success" [routerLink]="['/clan']">仲間募集検索</button>
+      </p>
+      <h2>一言トピック</h2>
+      <div class="row">
         <h4>本日のお題：{{todaysTopic}}</h4>
         <app-loading *ngIf="!latestTopicComments"></app-loading>
         <app-latest-topiccomment-list [latestTopicComments]="latestTopicComments"></app-latest-topiccomment-list>
+        <p class="text-center">
+          <button class="btn btn-sm btn-success" [routerLink]="['/dailytopic']">自分も一言！</button>
+        </p>
       </div>
       <!-- <a class="btn btn-primary" [routerLink]="['/dailytopic']">全て見る</a> -->
-      <div>
-        <h2  class="bg-info">何か情報とか？</h2>
-      </div>
     </div>
     <div class="col-md-3">
       <div>
-        <h2 >広告</h2>
-      </div>
-      <div>
-        <h2>広告</h2>
+        <h4>広告</h4>
       </div>
     </div>
   </div>

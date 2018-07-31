@@ -20,43 +20,55 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using NLog.Web;
+// using NLog.Web;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Routing;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
+using System.Data.SqlClient;
+using NLog.Extensions.Logging;
 
 namespace Wacomi.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        private IHostingEnvironment CurrentEnvironment { get; }
         public CronTask cronTask;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
             services.AddCors();
             services.AddMvc();
-            // services.AddSingleton<IEmailSender, EmailSender>();
 
-            // services.Configure<AuthMessageSenderOptions>(Configuration);
-            // services.Configure<MvcOptions>(options =>
-            // {
-            //     options.Filters.Add(new RequireHttpsAttribute());
-            // });
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+            if (CurrentEnvironment.IsProduction())
+            {
+                services.Configure<MvcOptions>(options =>
+                {
+                    options.Filters.Add(new RequireHttpsAttribute());
+                });
+            }
+
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
             services.AddAutoMapper();
+            // services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("WacomiDbConnection")));
-            //options.UseSqlServer(@"Server=db;Database=WacomiNZ;User=sa;Password=P@ssw0rd!!;"));
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IStaticFileManager, StaticFileManager>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
 
@@ -103,12 +115,52 @@ namespace Wacomi.API
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
-            services.AddSingleton<IEmailSender, EmailSender>();
+            this.AddLoggingTableAndProcedure(Configuration.GetConnectionString("WacomiDbConnection"));
+        }
+
+        private void AddLoggingTableAndProcedure(string connectionString)
+        {
+            string  createNlogTableCommant = @"
+                    IF NOT EXISTS
+                    (  SELECT [name] 
+                        FROM sys.tables
+                        WHERE [name] = 'NLog' 
+                    )
+                    CREATE TABLE [NLog] (
+                    [Id] [int] IDENTITY(1,1) NOT NULL,
+                    [Application] [nvarchar](50) NOT NULL,
+                    [Logged] [datetime] NOT NULL,
+                    [Level] [nvarchar](50) NOT NULL,
+                    [Message] [nvarchar](max) NOT NULL,
+                    [Logger] [nvarchar](250) NULL,
+                    [Callsite] [nvarchar](max) NULL,
+                    [Exception] [nvarchar](max) NULL,
+                    CONSTRAINT [PK_dbo.Log] PRIMARY KEY CLUSTERED ([Id] ASC)
+                    WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+                ) ON [PRIMARY]";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(createNlogTableCommant, connection))
+                {
+                    command.ExecuteNonQueryAsync().Wait();
+                }
+
+                connection.Close();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IStaticFileManager staticFileManager)
         {
+            loggerFactory.AddNLog();
+            var defaultConnection = Configuration.GetConnectionString("WacomiDbConnection");
+            NLog.GlobalDiagnosticsContext.Set("NLogConnection", defaultConnection);
+            staticFileManager.AddStaticFileFolder("feedimages", Configuration.GetSection("BlogFeedImageFolder").Value);
+            staticFileManager.AddStaticFileFolder("logs", "static\\logs");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -135,24 +187,54 @@ namespace Wacomi.API
             app.UseAuthentication();
             // app.UseHangfireDashboard();
             app.UseHangfireServer();
-            // this.cronTask.StartRssReader();
+            
+            var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
+            // this.cronTask.StartRssReader(Path.Combine(env.ContentRootPath, Configuration.GetSection("BlogFeedImageFolder").Value ));
             // this.cronTask.StartTopicManager();
+            // this.cronTask.StartOldFeedsChecker(feedImageFolder);
 
             // this.cronTask.RunTopicManagerOnce(); //Test
-            // this.cronTask.RunRssReader();
-
-            // var options = new RewriteOptions()
-            // .AddRedirectToHttps();
-            // app.UseRewriter(options);
+            this.cronTask.RunRssReader();
+            //this.cronTask.RunFeedDelete();
 
             if (env.IsDevelopment())
             {
-                app.UseMvc();
+                //app.UseMvc();
+                 app.UseDefaultFiles();
+                app.UseStaticFiles();
+                foreach(var item in staticFileManager.GetFolderList()){
+                    app.UseStaticFiles(new StaticFileOptions
+                    {
+                        RequestPath = "/" + item.Key,
+                        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
+                    });
+                }
+
+                app.UseMvc(routes =>
+                {
+                    routes.MapSpaFallbackRoute(
+                        name: "spa-fallback",
+                        defaults: new { controller = "Fallback", action = "Index" }
+                    );
+                });
             }
             else
             {
+                var options = new RewriteOptions()
+                .AddRedirectToHttpsPermanent();
+                app.UseRewriter(options);
+
+                app.UseLetsEncryptFolder(env);
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
+                 foreach(var item in staticFileManager.GetFolderList()){
+                    app.UseStaticFiles(new StaticFileOptions
+                    {
+                        RequestPath = "/" + item.Key,
+                        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
+                    });
+                }
+
                 app.UseMvc(routes =>
                 {
                     routes.MapSpaFallbackRoute(

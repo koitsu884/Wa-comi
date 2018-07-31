@@ -10,7 +10,7 @@ export class BlogfeedCardComponent implements OnInit {
   @Input() blogFeed: BlogFeed;
   blogImageUrl: string;
   articleImageUrl: string;
-  defaultImageUrl = "assets/NoImage.png";
+  defaultImageUrl = "assets/NoImage_Person.png";
 
   constructor() { }
 

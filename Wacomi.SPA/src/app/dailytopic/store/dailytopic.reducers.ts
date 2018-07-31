@@ -159,21 +159,22 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             tempTopicComments = [...state.topicComments];
             var index = tempTopicComments.findIndex(x => x.id == action.payload.commentId);
             tempTopicComments[index].topicReplies = action.payload.topicReplies;
+            tempTopicComments[index].replyCount = action.payload.topicReplies.length;
 
             return {
                 ...state,
                 topicComments: tempTopicComments
             }
-        case DailyTopicActions.ADD_TOPIC_REPLY:
-            tempTopicComments = [...state.topicComments];
-            var index = tempTopicComments.findIndex(x => x.id == action.payload.topicCommentId);
-            tempTopicComments[index].topicReplies.push(action.payload);
-            tempTopicComments[index].replyCount++;
+        // case DailyTopicActions.ADD_TOPIC_REPLY:
+        //     tempTopicComments = [...state.topicComments];
+        //     var index = tempTopicComments.findIndex(x => x.id == action.payload.topicCommentId);
+        //     tempTopicComments[index].topicReplies.push(action.payload);
+        //     tempTopicComments[index].replyCount++;
 
-            return {
-                ...state,
-                topicComments: tempTopicComments
-            }
+        //     return {
+        //         ...state,
+        //         topicComments: tempTopicComments
+        //     }
         case DailyTopicActions.DELETE_TOPIC_REPLY:
             tempTopicComments = [...state.topicComments];
             var index = tempTopicComments.findIndex(x => x.id == action.payload.topicCommentId);

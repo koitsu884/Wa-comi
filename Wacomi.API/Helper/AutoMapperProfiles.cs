@@ -43,7 +43,13 @@ namespace Wacomi.API.Helper
               .ForMember(bf => bf.OwnerId, opt => opt.MapFrom(src => src.Blog.OwnerId))
               .ForMember(bf => bf.BlogTitle, opt => opt.MapFrom(src => src.Blog.Title))
               .ForMember(bf => bf.BlogImageUrl, opt => opt.MapFrom(src => src.Blog.BlogImageUrl))
-              .ForMember(bf => bf.WriterName, opt => opt.MapFrom(src => src.Blog.WriterName));
+              .ForMember(bf => bf.WriterName, opt => opt.MapFrom(src => src.Blog.Owner.DisplayName))
+              .ForMember(bf => bf.LikedCount, opt => opt.MapFrom(src => src.FeedLikes.Count))
+              .ForMember(bf => bf.CommentCount, opt => opt.MapFrom(src => src.FeedComments.Count));
+
+            CreateMap<BlogFeedComment, CommentForReturnDto>()
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("BlogFeed"))
+              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId));
 
             CreateMap<PhotoForCreationDto, Photo>();
             CreateMap<Photo, PhotoForReturnDto>();
@@ -80,6 +86,12 @@ namespace Wacomi.API.Helper
 
             CreateMap<TopicReply, TopicReplyForReturnDto>()
               .ForMember(tr => tr.AppUserId, opt => opt.MapFrom(src => src.Member.AppUserId));
+
+            CreateMap<TopicReply, CommentForReturnDto>()
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("TopicCommentId"))
+              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.TopicCommentId))
+              .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply))
+              .ForMember(cr => cr.AppUserId, opt => opt.MapFrom(src => src.Member.AppUserId));
 
             CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();
 

@@ -1,5 +1,9 @@
 import { Action } from "@ngrx/store";
 import { Blog } from "../../_models/Blog";
+import { BlogFeed } from "../../_models/BlogFeed";
+import { Pagination } from "../../_models/Pagination";
+import { importExpr } from "@angular/compiler/src/output/output_ast";
+import { ShortComment } from "../../_models/ShortComment";
 
 export const GET_BLOG = 'GET_BLOG';
 export const SET_BLOG = 'SET_BLOG';
@@ -10,6 +14,24 @@ export const UPDATE_BLOG = 'UPDATE_BLOG';
 export const DELETE_BLOG = 'DELETE_BLOG';
 export const CLEAR_BLOG = 'CLEAR_BLOG';
 export const SET_SELECTED_BLOG = 'SET_SELECTED_BLOG';
+
+export const TRY_DELETE_FEED = 'TRY_DELETE_FEED';
+export const DELETE_FEED = 'DELETE_FEED';
+export const SET_FEED_SEARCH_CATEGORY = 'SET_FEED_SEARCH_CATEGORY';
+export const SET_FEED_SEARCH_PAGE = 'SET_FEED_SEARCH_PAGE';
+export const SEARCH_FEEDS = 'SEARCH_FEEDS';
+export const SET_FEED_SEARCH_RESULT = 'SET_FEED_SEARCH_RESULT';
+export const LIKE_FEED = 'LIKE_FEED';
+export const SET_LIKED_FLAG = 'SET_LIKED_FLAG';
+
+export const GET_FEED_COMMENTS = 'GET_FEED_COMMENTS';
+export const SET_FEED_COMMENTS = 'SET_FEED_COMMENTS';
+export const TRY_ADD_FEED_COMMENT = 'TRY_ADD_FEED_COMMENT';
+export const TRY_DELETE_FEED_COMMENT = 'TRY_DELETE_FEED_COMMENT';
+export const TOGGLE_COMMENT_FORM = "TOGGLE_COMMENT_FORM";
+
+// export const GET_LIKED_FEED_NUMBER_LIST = 'GET_LIKED_FEED_NUMBER_LIST';
+// export const SET_LIKED_FEED_NUMBER_LIST = 'SET_LIKED_FEED_NUMBER_LIST';
 
 
 
@@ -63,5 +85,93 @@ export class ClearBlog implements Action {
     constructor() {}
 }
 
+export class TryDeleteFeed implements Action {
+    readonly type = TRY_DELETE_FEED;
 
-export type AccountActions = TryAddBlog | TryDeleteBlog | GetBlog | SetBlog | AddBlog | UpdateBlog | DeleteBlog | ClearBlog;
+    constructor(public payload: BlogFeed){}
+}
+
+export class DeleteFeed implements Action {
+    readonly type = DELETE_FEED;
+
+    constructor(public payload: BlogFeed){}
+}
+
+export class SetFeedSearchCategory implements Action {
+    readonly type = SET_FEED_SEARCH_CATEGORY;
+    constructor(public payload: string){}
+}
+
+export class SetFeedSearchPage implements Action {
+    readonly type = SET_FEED_SEARCH_PAGE;
+    constructor(public payload: number){}
+}
+
+export class SearchFeeds implements Action {
+    readonly type = SEARCH_FEEDS;
+    constructor(){}
+}
+
+export class SetFeedSearchResult implements Action {
+    readonly type = SET_FEED_SEARCH_RESULT;
+    constructor(public payload: {blogFeeds: BlogFeed[], pagination: Pagination}){}
+}
+
+export class LikeFeed implements Action {
+    readonly type = LIKE_FEED;
+    constructor(public payload: {blogFeedId: number, supportAppUserId: number}){};
+}
+
+export class SetLikedFlag implements Action {
+    readonly type = SET_LIKED_FLAG;
+    constructor(public payload: number){}; //blogFeedId
+}
+
+export class GetFeedComments implements Action {
+    readonly type = GET_FEED_COMMENTS;
+    constructor(public payload: number){}; //blogFeedId
+}
+
+export class SetFeedComments implements Action {
+    readonly type = SET_FEED_COMMENTS;
+    constructor(public payload: {blogFeedId: number, comments: ShortComment[]}){};
+}
+
+export class TryAddFeedComment implements Action {
+    readonly type = TRY_ADD_FEED_COMMENT;
+    constructor(public payload: {blogFeedId: number, appUserId: number, comment:string}){};
+}
+
+export class TryDeleteFeedComment implements Action {
+    readonly type = TRY_DELETE_FEED_COMMENT;
+    constructor(public payload: {blogFeedId: number, feedCommentId: number}){};
+}
+
+export class ToggleCommentForm implements Action {
+    readonly type = TOGGLE_COMMENT_FORM;
+    constructor(public payload: number){};
+}
+
+
+
+export type AccountActions = TryAddBlog 
+                           | TryDeleteBlog 
+                           | GetBlog 
+                           | SetBlog 
+                           | AddBlog 
+                           | UpdateBlog 
+                           | DeleteBlog 
+                           | ClearBlog
+                           | TryDeleteFeed
+                           | DeleteFeed
+                           | SearchFeeds
+                           | SetFeedSearchCategory
+                           | SetFeedSearchPage
+                           | SetFeedSearchResult
+                           | LikeFeed
+                           | SetLikedFlag
+                           | GetFeedComments
+                           | SetFeedComments
+                           | TryAddFeedComment
+                           | TryDeleteFeedComment
+                           | ToggleCommentForm;

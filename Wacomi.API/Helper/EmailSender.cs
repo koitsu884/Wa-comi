@@ -28,7 +28,8 @@ namespace Wacomi.API.Helper
             {
                 MailMessage mail = new MailMessage()
                 {
-                    From = new MailAddress("wacomi_test@wacomi.a2hosted.com", "Wacomi")
+                    //From = new MailAddress("wacomi_test@wacomi.a2hosted.com", "Wacomi")
+                    From = new MailAddress("wacomi_test@wacomi.virtuozzo.co.nz", "Wacomi")
                 };
                 mail.To.Add(new MailAddress(email));
 

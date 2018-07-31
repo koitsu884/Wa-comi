@@ -9,76 +9,70 @@ import { CityListResolver } from '../../_resolvers/citylist.resolver';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Observable } from 'rxjs/Observable';
 
-import * as fromAccount from '../../account/store/account.reducers';
-import * as fromApp from '../../store/app.reducer';
+import * as fromClan from '../store/clan.reducers';
+import * as ClanSeekActions from '../store/clan.actions';
 import { Store } from '@ngrx/store';
 import { AppUser } from '../../_models/AppUser';
 import { PaginatedResult, Pagination } from '../../_models/Pagination';
+import { ClanCardComponent } from './clan-list/clan-card/clan-card.component';
 
 @Component({
   selector: 'app-clan-home',
   templateUrl: './clan-home.component.html',
   styleUrls: ['./clan-home.component.css']
 })
+
+
 export class ClanHomeComponent implements OnInit {
-  clanSeeks: ClanSeek[];
+  readonly CLANSEEK_MAX = 5;
   categories: ClanSeekCategory[];
   cities: City[];
+  clanSeeks: ClanSeek[];
   selectedCityId: number;
-  selectedCategoryId : number;
-  baseUrl = environment.apiUrl;
+  selectedCategoryId: number;
+  // baseUrl = environment.apiUrl;
   // authState: Observable<fromAccount.State>;
   appUser: AppUser;
+  reachLimit: boolean;
   loading: boolean;
   pagingParams: any = {};
   pagination: Pagination;
+  clanState: Observable<fromClan.State>;
 
-  constructor( private route: ActivatedRoute, 
-              private httpClient : HttpClient, 
-              private store: Store<fromApp.AppState>,
-              private alertify: AlertifyService) { }
+  constructor(private route: ActivatedRoute,
+    private httpClient: HttpClient,
+    private store: Store<fromClan.FeatureState>,
+    private alertify: AlertifyService) { }
 
   ngOnInit() {
-    const citiesFromStore : City[] = this.route.snapshot.data['cities'];
+    const citiesFromStore: City[] = this.route.snapshot.data['cities'];
     this.cities = citiesFromStore.slice(0, citiesFromStore.length);
-    this.cities.unshift({id:0, name:"全て", region:""});
-    const categoriesFromStore : ClanSeekCategory[] = this.route.snapshot.data['categories'];
+    this.cities.unshift({ id: 0, name: "全て", region: "" });
+    const categoriesFromStore: ClanSeekCategory[] = this.route.snapshot.data['categories'];
     this.categories = categoriesFromStore.slice(0, categoriesFromStore.length);
-    this.categories.unshift({id:0, name:"全て"});
-    this.selectedCategoryId = 0;
-    this.selectedCityId = 0;
-    // this.authState = this.store.select('account');
+    this.categories.unshift({ id: 0, name: "全て" });
     this.appUser = this.route.snapshot.data['appUser'];
-    this.loading = true;
-    this.loadList();
+    this.clanState = this.store.select('clan');
+
+    this.store.select('clan').take(1).subscribe((state) => {
+      this.pagination = state.pagination;
+      this.selectedCityId = state.selectedCityId;
+      this.selectedCategoryId = state.selectedCategoryId;
+      this.store.dispatch(new ClanSeekActions.SearchClanSeeks());
+      this.store.dispatch(new ClanSeekActions.CheckClanseeksCountLimit(this.appUser.id));
+    });
+
   }
 
-  loadList(){
-    let Params = new HttpParams();
-    if(this.selectedCategoryId > 0)
-      Params = Params.append('categoryId', this.selectedCategoryId.toString());
-    if(this.selectedCityId > 0)
-      Params = Params.append('cityId', this.selectedCityId.toString());
-    if(this.pagination)
-    {
-      Params = Params.append('pageNumber', this.pagination.currentPage.toString());
-      Params = Params.append('pageSize', this.pagination.itemsPerPage.toString());
-    }      
-    
-    this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek' , { params: Params, observe: 'response' })
-                    .subscribe((response) => {
-                      this.clanSeeks = response.body;
-                      this.pagination = JSON.parse(response.headers.get("Pagination"));
-                      this.loading = false;
-                    }, (error) => {
-                      this.alertify.error(error);
-                      this.loading = false;
-                    });
+  loadList() {
+   this.store.dispatch(new ClanSeekActions.SearchClanSeeks());
   }
 
-  pageChanged(event){
-    this.pagination.currentPage = event.page;
-    this.loading = true;
-    this.loadList();
+  filterChanged(){
+    this.store.dispatch(new ClanSeekActions.SetClanSeekFilters({cityId: this.selectedCityId, categoryId: this.selectedCategoryId}));
+  }
+
+  pageChanged(event) {
+    this.store.dispatch(new ClanSeekActions.SetClanSeekPage(event.page));
   }
 }

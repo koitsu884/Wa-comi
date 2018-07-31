@@ -6,23 +6,25 @@ import * as fromAccount from '../../account/store/account.reducers';
 import * as AccountActions from '../../account/store/account.actions';
 import { Store } from '@ngrx/store';
 import { RegisterInfo } from '../../_models/RegisterInfo';
+import { PasswordEditorBase } from '../passwordEditorBase';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
-  passwordMinLength = 6;
-  passwordMaxLength = 20;
+export class RegisterComponent extends PasswordEditorBase implements OnInit {
+  // passwordMinLength = 6;
+  // passwordMaxLength = 20;
   registerForm: FormGroup;
   registerInfo: RegisterInfo;
-  passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,20}";
+  sending: boolean;
+  // passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,20}";
 
   constructor(
               private store:Store<fromApp.AppState>,
               private alertify: AlertifyService,
-              private fb: FormBuilder) { }
+              private fb: FormBuilder) { super();}
   ngOnInit(){
     this.createRegistarForm();
   }
@@ -42,12 +44,13 @@ export class RegisterComponent implements OnInit {
     }, {validator: this.passwordMatchValidator})
   }
 
-  passwordMatchValidator(g: FormGroup){
-    return g.get('password').value === g.get('confirmPassword').value ? null : {'mismatch' : true};
-  }
+  // passwordMatchValidator(g: FormGroup){
+  //   return g.get('password').value === g.get('confirmPassword').value ? null : {'mismatch' : true};
+  // }
 
   register() {
     if(this.registerForm.valid){
+      this.registerForm.markAsPristine();
       this.registerInfo = Object.assign({}, this.registerForm.value);
       this.store.dispatch(new AccountActions.TrySignup({registerInfo: this.registerInfo}));
     }

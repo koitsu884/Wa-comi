@@ -13,12 +13,11 @@ import { MemberEditResolver } from "../_resolvers/member-edit.resolver";
 import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { HomeTownListResolver } from "../_resolvers/hometownlist.resolver";
 import { CoreModule } from "../core/core.module";
-import { BlogModule } from "../blog/blog.module";
+// import { BlogModule } from "../blog/blog.module";
 import { PhotoModule } from "../photo/photo.module";
 import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 import { AccountEditResolver } from "../_resolvers/account-edit.resolver";
 import { AccountEditComponent } from "./settings-home/account-edit/account-edit.component";
-import { UserBlogResolver } from "../_resolvers/userblog.resolver";
 
 @NgModule({
     declarations: [
@@ -30,7 +29,7 @@ import { UserBlogResolver } from "../_resolvers/userblog.resolver";
     ],
     imports:[
         SharedModule,
-        BlogModule,
+        // BlogModule,
         PhotoModule,
         TabsModule,
         ReactiveFormsModule,
@@ -43,7 +42,6 @@ import { UserBlogResolver } from "../_resolvers/userblog.resolver";
         CityListResolver,
         HomeTownListResolver,
         UserPhotoResolver,
-        UserBlogResolver,
         AccountEditResolver
     ]
 })

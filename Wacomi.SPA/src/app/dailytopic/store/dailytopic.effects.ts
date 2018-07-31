@@ -10,6 +10,7 @@ import { of } from "rxjs/observable/of";
 import { TopicComment } from "../../_models/TopicComment";
 import { TopicCommentFeel } from "../../_models/TopicCommentFeel";
 import { TopicReply } from "../../_models/TopicReply";
+import { ShortComment } from "../../_models/ShortComment";
 
 @Injectable()
 export class DailyTopicEffects {
@@ -253,7 +254,7 @@ export class DailyTopicEffects {
             return action.payload.commentId;
         })
         .switchMap((commentId) => {
-            return this.httpClient.get<TopicReply[]>(this.baseUrl + 'dailytopicreply/topic/' + commentId)
+            return this.httpClient.get<ShortComment[]>(this.baseUrl + 'dailytopicreply/topic/' + commentId)
                 .map((result) => {
                     return {
                         type: TopicActions.SET_TOPIC_REPLIES,
@@ -272,17 +273,16 @@ export class DailyTopicEffects {
             return action.payload;
         })
         .switchMap((payload) => {
-            console.log(payload);
+            // console.log(payload);
             return this.httpClient.post<TopicReply>(this.baseUrl + 'dailytopicreply',
                 payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .mergeMap((newReply) => {
+                .mergeMap(() => {
                     return [{
-                        type: TopicActions.ADD_TOPIC_REPLY, payload: newReply
-                    }
-                        ,
+                        type: TopicActions.GET_TOPIC_REPLIES, payload: {commentId:payload.topicCommentId}
+                    },
                     {
                         type: GlobalActions.SUCCESS, payload: "コメントを送信しました"
                     }
@@ -299,13 +299,12 @@ export class DailyTopicEffects {
         .map((action: TopicActions.TryDeleteTopicReply) => {
             return action.payload 
         })
-        .switchMap((topicReply) => {
-            console.log(topicReply);
-            return this.httpClient.delete(this.baseUrl + 'dailytopicreply/' + topicReply.id)
+        .switchMap((payload) => {
+            return this.httpClient.delete(this.baseUrl + 'dailytopicreply/' + payload.topicReplyId)
                 .mergeMap(() => {
                     return [
                         {
-                            type: TopicActions.DELETE_TOPIC_REPLY, payload: topicReply
+                            type: TopicActions.GET_TOPIC_REPLIES, payload:{commentId:payload.topicCommentId}
                         },
                         { type: GlobalActions.SUCCESS, payload: "削除しました" }
                     ];

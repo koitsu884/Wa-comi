@@ -9,7 +9,6 @@ import { EffectsModule } from "@ngrx/effects";
 import { DailyTopicEffects } from "./store/dailytopic.effects";
 import { TopicCommentListComponent } from "./topic-comment-list/topic-comment-list.component";
 import { TopicCommentComponent } from "./topic-comment-list/topic-comment/topic-comment.component";
-import { TopicReplyComponent } from "./topic-comment-list/topic-reply/topic-reply.component";
 
 
 @NgModule({
@@ -17,7 +16,6 @@ import { TopicReplyComponent } from "./topic-comment-list/topic-reply/topic-repl
         TopicListComponent,
         TopicCommentListComponent,        
         TopicCommentComponent,
-        TopicReplyComponent
     ],
     imports: [
         SharedModule,

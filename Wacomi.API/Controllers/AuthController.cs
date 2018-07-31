@@ -76,7 +76,7 @@ namespace Wacomi.API.Controllers
             var user = await _authRepo.Register(appUser, model.UserType, model.Password);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var request = Url.ActionContext.HttpContext.Request;
-            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/confirm/" + user.Id + "/" + WebUtility.UrlEncode(code);
+            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/confirm?id=" + user.Id + "&code=" + WebUtility.UrlEncode(code);
             // var callbackUrl = Url.Action("ConfirmEmail", "Account",
             //     new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
 
@@ -126,10 +126,40 @@ namespace Wacomi.API.Controllers
 
             string code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var request = Url.ActionContext.HttpContext.Request;
-            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/password/reset/" + account.Id + "/" + WebUtility.UrlEncode(code);
+            var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/password/reset?id=" + account.Id + "&code=" + WebUtility.UrlEncode(code);
             await _emailSender.SendEmailAsync(model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
             return Ok();
         }
+
+        [HttpPost("password")]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDto model){
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var account = await _authRepo.GetAccount(model.UserId);
+            if (account == null)
+            {
+                return NotFound("ユーザーが見つかりません");
+            }
+
+            if(model.CurrentPassword == model.NewPassword){
+                return BadRequest("入力した新旧パスワードが同じです");
+            }
+
+            var result = await _userManager.ChangePasswordAsync(account, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            else{
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+        }
+
 
         [HttpPost("password/reset")]
         public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDeto model){
@@ -209,7 +239,7 @@ namespace Wacomi.API.Controllers
             if (appUser != null)
             {
                 returnValues.Add("photos", _mapper.Map<IEnumerable<PhotoForReturnDto>>(await _repo.GetPhotosForAppUser(appUser.Id)));
-                returnValues.Add("blogs", _mapper.Map<IEnumerable<BlogForReturnDto>>(await _repo.GetBlogsForUser(appUser.Id)));
+                // returnValues.Add("blogs", _mapper.Map<IEnumerable<BlogForReturnDto>>(await _repo.GetBlogsForUser(appUser.Id)));
                 switch (appUser.UserType)
                 {
                     case "Member":
@@ -225,7 +255,8 @@ namespace Wacomi.API.Controllers
                         break;
                 }
             }
-            else if (roles.Where(r => r == "Administrator").FirstOrDefault() != null)
+            
+            if (roles.Where(r => r == "Administrator").FirstOrDefault() != null)
             {
                 returnValues.Add("isAdmin", true);
             }

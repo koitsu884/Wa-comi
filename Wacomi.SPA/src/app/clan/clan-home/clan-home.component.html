@@ -1,43 +1,30 @@
 <div class="container">
-  <div class="clanHeader row">
-    <div class="col-sm-6 col-md-4">
-      <a class="btn btn-primary" [routerLink]="['edit', appUser.id]">新規投稿</a>
-    </div>
-    <div class="col-sm-6 col-md-4">
-      <table class="table-responsive">
-        <thead>
-          <tr>
-            <th></th>
-            <th>フィルター</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>カテゴリー</th>
-            <td>
-              <select [(ngModel)]="selectedCategoryId" name="category" (change)="loadList()">
-                <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <th>エリア</th>
-            <td>
-              <select [(ngModel)]="selectedCityId" name="city" (change)="loadList()">
-                <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
-              </select>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="row">
+    <button class="btn btn-primary" [disabled]="(clanState | async).reachLimit" [routerLink]="['edit', appUser.id]">新規投稿</button>
+    <p *ngIf="(clanState | async).reachLimit" class="text-danger">仲間募集投稿は1人{{CLANSEEK_MAX}}つまで可能です。新しく投稿するには不要な投稿を削除して下さい。</p>
   </div>
-  <app-loading *ngIf="loading"></app-loading>
-  <app-clan-list *ngIf="!loading" [clanSeeks]="clanSeeks" [appUserId]="appUser.id"></app-clan-list>
-  <div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
-    <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [(ngModel)]="pagination.currentPage" [itemsPerPage]="pagination.itemsPerPage"
-      (pageChanged)="pageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
-      lastText="&raquo;">
+  <hr>
+  <div class="filter row bg-info">
+    <div class="col-xs-6 col-md-4">
+      <label>カテゴリー</label>
+      <select [(ngModel)]="selectedCategoryId" name="category" (change)="filterChanged()">
+        <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+      </select>
+    </div>
+    <div class="col-xs-6 col-md-4">
+      <label>エリア</label>
+      <select [(ngModel)]="selectedCityId" name="city" (change)="filterChanged()">
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+    </div>
+
+  </div>
+  <app-loading *ngIf="(clanState | async).loading"></app-loading>
+  <app-clan-list *ngIf="!(clanState | async).loading" [clanSeeks]="(clanState | async).clanSeeks" [appUserId]="appUser.id"></app-clan-list>
+  <div *ngIf="(clanState | async).pagination && (clanState | async).pagination.totalPages > 1" class="text-center">
+    <pagination [boundaryLinks]="true" [totalItems]="(clanState | async).pagination.totalItems" [ngModel]="(clanState | async).pagination.currentPage"
+      [itemsPerPage]="(clanState | async).pagination.itemsPerPage" (pageChanged)="pageChanged($event)" class="pagination-sm"
+      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
     </pagination>
   </div>
 </div>

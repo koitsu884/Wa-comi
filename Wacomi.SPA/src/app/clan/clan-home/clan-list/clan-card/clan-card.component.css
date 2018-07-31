@@ -13,6 +13,10 @@
     overflow: auto;
 }
 
+.disabled {
+    filter: brightness(70%);
+}
+
 .clanCard:hover  {
     transform : scale(1.02, 1.02);
     transition-duration: 200ms;
@@ -37,7 +41,7 @@
 }
 
 .clanCard .color-study {
-    color: white;
+    color: black;
     background-color: rgb(202, 253, 17);
 }
 

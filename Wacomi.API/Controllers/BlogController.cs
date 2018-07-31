@@ -85,13 +85,20 @@ namespace Wacomi.API.Controllers
 
 
         [HttpGet("user/{appUserId}")]
-        public async Task<ActionResult> GetForUser(int appUserId)
+        public async Task<ActionResult> GetForUser(int appUserId, bool includeFeeds = false)
         {
-            if (!await this.MatchAppUserWithToken(appUserId))
-                return Unauthorized();
-            var blogsFlomRepo = await _repo.GetBlogsForUser(appUserId);
+            // if (!await this.MatchAppUserWithToken(appUserId))
+            //     return Unauthorized();
+            var blogsFromRepo = await _repo.GetBlogsForUser(appUserId);
+            var blogsForReturnDto = _mapper.Map<IEnumerable<BlogForReturnDto>>(blogsFromRepo);
+            if(includeFeeds){
+                foreach(var blogForReturn in blogsForReturnDto){
+                    var feeds = _mapper.Map<IEnumerable<BlogFeedForReturnDto>>(await _repo.GetBlogFeedsByBlogId(blogForReturn.Id));
+                    blogForReturn.BlogFeeds = feeds;
+                }
+            }
 
-            return Ok(_mapper.Map<IEnumerable<BlogForReturnDto>>(blogsFlomRepo));
+            return Ok(blogsForReturnDto);
         }
 
         private async Task<BlogFeed> readRss(Blog blog)
@@ -109,7 +116,7 @@ namespace Wacomi.API.Controllers
             // result += "Feed Image: " + feed.ImageUrl + "\n";
             if (feed.Items.Count > 0)
             {
-                var latestFeed = await _repo.GetLatestBlogFeed(blog);
+                var latestFeed = await _repo.GetLatestBlogFeed(blog.Id);
                 var firstItem = feed.Items.First();
 
                 if (latestFeed == null || latestFeed.PublishingDate < firstItem.PublishingDate)
@@ -134,31 +141,31 @@ namespace Wacomi.API.Controllers
             return null;
         }
 
-        [HttpPost("rss")]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> AddRssFeeds()
-        {
-            var cronTask = new CronTask(_repo);
-            var result = await cronTask.AddRssFeeds();
-            return Ok();
+        // [HttpPost("rss")]
+        // [Authorize(Roles = "Administrator")]
+        // public async Task<IActionResult> AddRssFeeds()
+        // {
+        //     var cronTask = new CronTask(_repo);
+        //     var result = await cronTask.AddRssFeeds();
+        //     return Ok();
 
 
 
-            // var blogs = await _repo.GetBlogs();
-            // foreach (var blog in blogs)
-            // {
-            //     //TODO: Count blog feed for the blog
-            //     //TODO: Delete feed if it's more than 20
-            //     var blogFeed = await readRss(blog);
-            //     if (blogFeed != null)
-            //     {
-            //         this._repo.Add(blogFeed);
-            //     }
-            // }
-            // var cnt = await this._repo.SaveAll();
+        //     // var blogs = await _repo.GetBlogs();
+        //     // foreach (var blog in blogs)
+        //     // {
+        //     //     //TODO: Count blog feed for the blog
+        //     //     //TODO: Delete feed if it's more than 20
+        //     //     var blogFeed = await readRss(blog);
+        //     //     if (blogFeed != null)
+        //     //     {
+        //     //         this._repo.Add(blogFeed);
+        //     //     }
+        //     // }
+        //     // var cnt = await this._repo.SaveAll();
 
-            // return Ok(cnt);
-        }
+        //     // return Ok(cnt);
+        // }
 
         [HttpPost()]
         [Authorize]
@@ -260,6 +267,7 @@ namespace Wacomi.API.Controllers
             if (!await this.MatchAppUserWithToken(blogFromRepo.OwnerId))
                 return Unauthorized();
 
+            await _repo.DeleteFeedsForBlog(blogFromRepo.Id);
             _repo.Delete(blogFromRepo);
 
             if (await _repo.SaveAll() > 0)

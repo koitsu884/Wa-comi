@@ -16,6 +16,8 @@ namespace Wacomi.API.Data
         // public DbSet<BlackList> BlackLists { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogFeed> BlogFeeds { get; set; }
+        public DbSet<BlogFeedLike> BlogFeedLikes { get; set;}
+        public DbSet<BlogFeedComment> BlogFeedComments { get; set;}
         // public DbSet<BlogPreference> BlogPreferences { get; set; }
         public DbSet<BusinessProfile> BusinessProfiles { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }
@@ -57,8 +59,15 @@ namespace Wacomi.API.Data
             builder.Entity<Blog>()
                 .HasIndex(b => b.DateRssRead);
 
+            builder.Entity<BlogFeed>()
+                .HasIndex(bf => bf.PublishingDate);
+
             builder.Entity<ClanSeek>()
                 .HasIndex(c => c.Created);
+            builder.Entity<ClanSeek>()
+                .HasIndex(c => c.CategoryId);
+            builder.Entity<ClanSeek>()
+                .HasIndex(c => c.LocationId);
 
             //---- Friend ----
             builder.Entity<Friend>()

@@ -12,6 +12,7 @@ import { accountReducer } from './store/account.reducers';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { PasswordForgotComponent } from './password-forgot/password-forgot.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { PasswordForgotComponent } from './password-forgot/password-forgot.compo
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule,
     AccountRoutingModule,
   ]
 })

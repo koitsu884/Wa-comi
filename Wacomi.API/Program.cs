@@ -24,7 +24,7 @@ namespace Wacomi.API
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
+                logger.Info("init main");
                 var host = BuildWebHost(args);
                 using (var scope = host.Services.CreateScope())
                 {
@@ -64,11 +64,16 @@ namespace Wacomi.API
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                // .ConfigureLogging(( hostingContext, logging) => {
+                //     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                //     logging.AddConsole();
+                //     logging.AddDebug();
+                // })
                 // .UseUrls("http://*:80") //Docker
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
                 })
                 .UseNLog()
                 // .UseSetting("detailedErrors", "true")

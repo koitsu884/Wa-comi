@@ -2,7 +2,7 @@
   <div class="commentImage">
     <img class="img-circle"
      [routerLink]="['/users/detail/', topicComment.appUserId]" 
-     src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage.png'}}" 
+     src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage_Person.png'}}" 
      alt="{{topicComment.displayName}}" 
      title="{{topicComment.displayName}}" 
      style="cursor: pointer">
@@ -26,4 +26,4 @@
   </div>
 </div>
 <span class="clearfix"></span>
-<a *ngIf="topicComment.memberId == memberId" class="btn btn-danger" (click)="onDelete(topicComment)">削除</a>
+<a *ngIf="topicComment.memberId == memberId" class="btn btn-danger btn-xs" (click)="onDelete(topicComment)">削除</a>

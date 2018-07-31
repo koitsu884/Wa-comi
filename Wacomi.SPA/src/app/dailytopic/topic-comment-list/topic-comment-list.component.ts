@@ -10,6 +10,7 @@ import { GlobalService } from '../../_services/global.service';
 import { TopicCommentFeel } from '../../_models/TopicCommentFeel';
 import { AppUser } from '../../_models/AppUser';
 import { NgForm } from '@angular/forms';
+import { ShortComment } from '../../_models/ShortComment';
 
 @Component({
   selector: 'app-topic-comment-list',
@@ -31,7 +32,6 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.appUser = this.route.snapshot.data['appUser'];
-    console.log(this.appUser);
     this.commentFeelingEnum = this.globalService.getFeelings();
     // console.log(this.commentFeelingEnum);
     this.loading = true;
@@ -57,7 +57,26 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
   }
 
   submit(form: NgForm){
-      console.log(form.value);
       this.store.dispatch(new TopicActions.TryAddTopicComment({memberId: this.appUser.userProfileId, comment: form.value.comment, topicTitle:this.todaysTopic}));
   }
+
+  onAddTopicCommentReply(topicCommentId: number, comment:string){
+    //console.log(form.value);
+    if(this.appUser)
+    {
+      this.store.dispatch(new TopicActions.TryAddTopicReply({
+                          topicCommentId: topicCommentId,
+                          memberId: this.appUser.userProfileId, 
+                          reply:comment}));
+    }
+}
+
+onDeleteTopicCommentReply(shortComment: ShortComment){
+  this.alertify.confirm("本当にこのコメント(" + shortComment.comment + ")を削除しますか？", () => {
+    this.store.dispatch(new TopicActions.TryDeleteTopicReply({
+                          topicReplyId: shortComment.id,
+                          topicCommentId: shortComment.ownerRecordId
+                        }));
+  })
+}
 }

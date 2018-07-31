@@ -26,8 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ClanEditComponent,
         ClanDetailCardComponent,
         ClanDetailInfoComponent,
-        ClanListComponent,
-        ClanCardComponent
+        ClanListComponent
     ],
     imports: [
         ClanRoutingModule,

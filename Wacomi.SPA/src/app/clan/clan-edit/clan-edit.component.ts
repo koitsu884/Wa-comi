@@ -66,14 +66,17 @@ export class ClanEditComponent implements OnInit {
     ngForm.form.markAsDirty();
   }
 
-  submit(){
+  submit(ngForm: NgForm){
+    ngForm.form.markAsDirty();
+  
     if(this.editMode){
+      console.log(this.editingClan);
       this.store.dispatch(new ClanActions.UpdateClanSeek(this.editingClan));
     }
     else
     {
+      this.store.dispatch(new ClanActions.ClearClanseekFilters());
       this.store.dispatch(new ClanActions.TryAddClanSeek(this.editingClan));
     }
-    this.router.navigate(['/clan']);
   }
 }

@@ -24,7 +24,8 @@ namespace Wacomi.API.Controllers
         [HttpGet("topic/{topicCommentId}")]
         public async Task<IActionResult> GetByTopic(int topicCommentId){
             var repliesFromRepo = await _repo.GetTopicRepliesByCommentId(topicCommentId);
-            var repliesForReturn = _mapper.Map<IEnumerable<TopicReplyForReturnDto>>(repliesFromRepo);
+           // var repliesForReturn = _mapper.Map<IEnumerable<TopicReplyForReturnDto>>(repliesFromRepo);
+            var repliesForReturn = _mapper.Map<IEnumerable<CommentForReturnDto>>(repliesFromRepo);
             return Ok(repliesForReturn);
         }
 

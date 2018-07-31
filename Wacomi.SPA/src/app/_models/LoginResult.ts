@@ -11,7 +11,7 @@ export interface LoginResult {
     appUser: AppUser;
     account: Account;
     photos: Photo[];
-    blogs: Blog[];
+    // blogs: Blog[];
     memberProfile: MemberProfile;
     businessProfile: BusinessProfile;
     isAdmin: boolean;

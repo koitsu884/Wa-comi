@@ -15,7 +15,8 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class ClanSeekController : DataController
     {
-        public ClanSeekController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
+        const int CLANSEEK_MAX = 5;
+        public ClanSeekController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
 
         [HttpGet("{id}", Name = "GetClanSeek")]
         public async Task<ActionResult> GetClanSeek(int id)
@@ -26,55 +27,74 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet()]
-//        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
+        //        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
         public async Task<ActionResult> GetClanSeeks(PaginationParams paginationParams, int? categoryId, int? cityId)
         {
             //var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId, latest);
             var clanSeeks = await _repo.GetClanSeeks(paginationParams, categoryId, cityId);
             var clanSeeksForReturn = this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks);
-            
+
             Response.AddPagination(clanSeeks.CurrentPage, clanSeeks.PageSize, clanSeeks.TotalCount, clanSeeks.TotalPages);
             return Ok(clanSeeksForReturn);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> GetByUser(int userId)
+        {
+            var clanSeeks = await _repo.GetClanSeeksByUser(userId);
+            return Ok(this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks));
+        }
+
+        [HttpGet("user/{userId}/count")]
+        public async Task<int> GetCountByUser(int userId){
+            return await this._repo.GetClanSeeksCountByUser(userId);
+        }
+
         [HttpGet("categories")]
-        public async Task<ActionResult> GetClanSeekCategories(){
+        public async Task<ActionResult> GetClanSeekCategories()
+        {
             return Ok(await _repo.GetClanSeekCategories());
         }
 
-
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> AddClanSeek([FromBody]ClanSeekForCreationDto model){
+        public async Task<ActionResult> AddClanSeek([FromBody]ClanSeekForCreationDto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (await _repo.GetClanSeeksCountByUser(model.AppUserId) >= CLANSEEK_MAX)
+                return BadRequest($"仲間募集投稿は1人{CLANSEEK_MAX}つまでです。不要な投稿を削除してから、改めて投稿してください。");
+            
             var newClanSeek = this._mapper.Map<ClanSeek>(model);
             _repo.Add(newClanSeek);
-            if(await _repo.SaveAll() > 0){
-                return CreatedAtRoute("GetClanSeek", new {id = newClanSeek.Id}, newClanSeek); 
+            if (await _repo.SaveAll() > 0)
+            {
+                return CreatedAtRoute("GetClanSeek", new { id = newClanSeek.Id }, newClanSeek);
             }
             return BadRequest("Failed to add clanseek");
         }
 
         [HttpPut()]
         [Authorize]
-        public async Task<ActionResult> UpdateClanSeek([FromBody]ClanSeekUpdateDto model){
+        public async Task<ActionResult> UpdateClanSeek([FromBody]ClanSeekUpdateDto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var clanSeekFromRepo = await this._repo.GetClanSeek(model.Id);
-            if(clanSeekFromRepo == null){
+            if (clanSeekFromRepo == null)
+            {
                 return NotFound();
             }
-            if(!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
+            if (!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
             {
                 return Unauthorized();
             }
 
             model.LastActive = DateTime.Now;
             _mapper.Map(model, clanSeekFromRepo);
-            if(await _repo.SaveAll() > 0)
+            if (await _repo.SaveAll() > 0)
             {
                 return Ok();
             }
@@ -83,12 +103,14 @@ namespace Wacomi.API.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteClanSeek(int id){
+        public async Task<ActionResult> DeleteClanSeek(int id)
+        {
             var clanSeek = await _repo.GetClanSeek(id);
-            if(clanSeek == null){
+            if (clanSeek == null)
+            {
                 return NotFound();
             }
-            if(!await MatchAppUserWithToken(clanSeek.AppUserId))
+            if (!await MatchAppUserWithToken(clanSeek.AppUserId))
             {
                 return Unauthorized();
             }

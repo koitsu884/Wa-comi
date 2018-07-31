@@ -5,32 +5,32 @@ import { PhotoEditorComponent } from './photo/photo-editor/photo-editor.componen
 import { AuthGuard } from './_guards/auth.guard';
 import { BlogEditorComponent } from './blog/blog-editor/blog-editor.component';
 import { UserPhotoResolver } from './_resolvers/userphoto.resolver';
-import { UserBlogResolver } from './_resolvers/userblog.resolver';
 import { StaticpageComponent } from './core/staticpage/staticpage.component';
 import { StaticPageResolver } from './_resolvers/staticpage.resolver';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'editphoto', component: PhotoEditorComponent, canActivate: [AuthGuard]},
-  { 
-    path: 'editblog/:id', 
-    component: BlogEditorComponent, 
-    canActivate: [AuthGuard],
-    resolve: {
-      photos: UserPhotoResolver
-    }
-  },
-  { 
-    path: 'editblog', 
-    component: BlogEditorComponent, 
-    canActivate: [AuthGuard],
-    resolve: {
-      photos: UserPhotoResolver
-    }
-  },
+  // { 
+  //   path: 'editblog/:id', 
+  //   component: BlogEditorComponent, 
+  //   canActivate: [AuthGuard],
+  //   resolve: {
+  //     photos: UserPhotoResolver
+  //   }
+  // },
+  // { 
+  //   path: 'editblog', 
+  //   component: BlogEditorComponent, 
+  //   canActivate: [AuthGuard],
+  //   resolve: {
+  //     photos: UserPhotoResolver
+  //   }
+  // },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
   { path: 'dailytopic', loadChildren: './dailytopic/dailytopic.module#DailyTopicModule'},
   { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
+  { path: 'blog', loadChildren: './blog/blog.module#BlogModule'},
   { path: 'message', loadChildren: './message/message.module#MessageModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},
   // { path: 'member', loadChildren: './users/members/members.module#MembersModule'},

@@ -14,6 +14,10 @@ namespace Wacomi.API.Dto
         public string BlogImageUrl{ get; set;}
         public string WriterName{ get; set;}
         public int OwnerId{ get; set;}
+        public int LikedCount{ get; set;}
+        public int CommentCount{ get; set;}
+
+        public bool IsLiked{ get; set;}
 
     }
 }

@@ -60,12 +60,44 @@ form label.required::after {
     background-color: rgb(228, 250, 237);
 }
 
+/* h2 {
+    padding: .5em;
+    border-top: double #7ED1E6;
+    border-bottom: double #7ED1E6;
+} */
+
 h2 {
-    font-size: 24px;
+    /* color: #444; */
+    font-size: 5vmin; 
+    position: relative;
+    padding: 0 0 2px 32px;
+    /* border-bottom: 1px solid rgb(3, 53, 1); */
+  }
+  h2:before, h2:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgb(4, 173, 252);
+    margin: auto;
+  }
+  h2:before {
+    top: -6px;
+    left: 0px;
+  }
+  h2:after {
+    top: 6px;
+    left: 6px;
+  }
+  
+
+h4 {
+    font-size: 18px;
     color:white;
     padding: .5em .75em;
-    background-color: #18bc9c;
-    border-radius: 6px;
+    background-color: #058be4;
+    border-radius: 4px;
 }
 
 /*-----------------------------------

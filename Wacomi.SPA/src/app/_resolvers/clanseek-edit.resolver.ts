@@ -20,7 +20,7 @@ export class ClanSeekEditResolver implements Resolve<ClanSeek> {
         return this.store.select('clan')
         .take(1)
         .switchMap((state : fromClan.State) => {
-            return Observable.of(state.clan);
+            return Observable.of(state.editingClan);
         })
         .catch((error) => {
             this.alertify.error('Problem retrieving data');

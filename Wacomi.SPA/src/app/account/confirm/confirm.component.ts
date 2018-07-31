@@ -18,7 +18,7 @@ export class ConfirmComponent implements OnInit {
 
   ngOnInit() {
     this.authState = this.store.select('account');
-    this.route.params.subscribe((params) => {
+    this.route.queryParams.subscribe((params) => {
       this.store.dispatch(new AccountActions.TryConfirmEmail({userId: params["id"], code:decodeURI(params["code"])}));
     })
   }

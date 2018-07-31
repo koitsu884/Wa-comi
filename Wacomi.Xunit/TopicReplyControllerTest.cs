@@ -79,7 +79,7 @@ namespace Wacomi.Xunit
                 MemberId = 1,
                 DisplayName = "MemberTest",
                 MainPhotoUrl = "http://aaa.bbb.jpg",
-                Created = this.currentDateTime
+                DateCreated = this.currentDateTime
             });
             replies.Add(new TopicReply()
             {
@@ -88,7 +88,7 @@ namespace Wacomi.Xunit
                 MemberId = 2,
                 DisplayName = "メンバーテスト２",
                 MainPhotoUrl = "http://aaa.bbb.jpg",
-                Created = this.currentDateTime
+                DateCreated = this.currentDateTime
             });
             return replies;
         }

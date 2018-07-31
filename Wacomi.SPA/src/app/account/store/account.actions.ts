@@ -81,7 +81,7 @@ export class SetToken implements Action {
 export class GetNewMessagesCount implements Action {
     readonly type = GET_NEWMESSAGES_COUNT;
 
-    constructor(public payload:number){} //appUserId
+    constructor(public payload:AppUser){}
 }
 
 export class SetNewMessagesCount implements Action {

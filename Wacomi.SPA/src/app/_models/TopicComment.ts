@@ -1,4 +1,5 @@
 import { TopicReply } from "./TopicReply";
+import { ShortComment } from "./ShortComment";
 
 export interface TopicComment {
     id: number;
@@ -14,5 +15,6 @@ export interface TopicComment {
 
     //Client side only
     displayReplies: boolean;
-    topicReplies: TopicReply[];
+    //topicReplies: TopicReply[];
+    topicReplies: ShortComment[];
 }

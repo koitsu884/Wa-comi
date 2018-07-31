@@ -2,8 +2,8 @@
   <div *ngIf="!message">Loading...</div>
   <div *ngIf="message">
     <h4>To: {{message.recipientDisplayName}}</h4>
-    <div *ngIf="messageReplyingTo" class="messageReplyingTo bg-info">
-      <h5>（以下の文に対する返信）</h5>
+    <div *ngIf="messageReplyingTo" class="messageReplyingTo bg-light-green">
+      <!-- <p><b>（以下の文に対する返信）</b></p> -->
       <div [innerHTML]="messageReplyingTo | nl2br"></div>
     </div>
     <form id="shortMessageForm" #shortMessageForm="ngForm" (ngSubmit)="onSubmit()">

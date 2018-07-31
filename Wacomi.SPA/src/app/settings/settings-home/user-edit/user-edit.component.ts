@@ -21,30 +21,30 @@ export class UserEditComponent implements OnInit {
   @Input() cities: City[];
   // @Input() blogs: Blog[];
   @Input() photos: Photo[];
-  blogs: Blog[];
-  canAddBlog: boolean = true;
+  // blogs: Blog[];
+  // canAddBlog: boolean = true;
 
-  private MAX_BLOGCOUNT = 1;
-  private MAX_BLOGCOUNT_PR = 5;
+  // private MAX_BLOGCOUNT = 1;
+  // private MAX_BLOGCOUNT_PR = 5;
 
   constructor(private store: Store<fromApp.AppState>,
     private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.store.select('blogs').subscribe((state) => {
-      this.blogs = state.blogs;
+    // this.store.select('blogs').subscribe((state) => {
+    //   this.blogs = state.blogs;
 
-      if (this.blogs) {
-        this.canAddBlog = true;
-        if (this.appUser.isPremium) {
-          if(this.blogs.length >= this.MAX_BLOGCOUNT_PR)
-            this.canAddBlog = false;
-        }
-        else if (this.blogs.length >= this.MAX_BLOGCOUNT) {
-          this.canAddBlog = false;
-        }
-      }
-    });
+    //   if (this.blogs) {
+    //     this.canAddBlog = true;
+    //     if (this.appUser.isPremium) {
+    //       if(this.blogs.length >= this.MAX_BLOGCOUNT_PR)
+    //         this.canAddBlog = false;
+    //     }
+    //     else if (this.blogs.length >= this.MAX_BLOGCOUNT) {
+    //       this.canAddBlog = false;
+    //     }
+    //   }
+    // });
   }
 
   mainPhotoSelected(event, ngForm: NgForm) {
@@ -57,7 +57,7 @@ export class UserEditComponent implements OnInit {
     userEditForm.form.markAsPristine();
   }
 
-  onBlogDelete(id: number) {
-    this.store.dispatch(new BlogActions.TryDeleteBlog(id));
-  }
+  // onBlogDelete(id: number) {
+  //   this.store.dispatch(new BlogActions.TryDeleteBlog(id));
+  // }
 }

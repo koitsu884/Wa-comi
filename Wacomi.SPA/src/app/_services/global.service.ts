@@ -14,6 +14,7 @@ import * as fromApp from '../store/app.reducer';
 import * as MessageActions from '../message/store/message.actions';
 import { Message } from '../_models/Message';
 import { PaginatedResult } from '../_models/Pagination';
+import { Blog } from '../_models/Blog';
 
 @Injectable()
 export class GlobalService {
@@ -38,8 +39,8 @@ export class GlobalService {
         return array;
     }
 
-    getBlogFeeds() {
-        return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed');
+    getLatestBlogFeeds() {
+        return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed/latest');
     }
 
     getBlogFeedUri(url: string) {
@@ -48,6 +49,18 @@ export class GlobalService {
 
     getLatestClanSeekList() {
         return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?pageSize=10');
+    }
+
+    getClanSeekListByUser(appUserId: number){
+        return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek/user/' + appUserId);
+    }
+
+    getBlogListByUser(appUserId: number){
+        return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/user/' + appUserId + '?includeFeeds=true');
+    }
+
+    getMyClanSeeksCount(appUserId:number){
+        return this.httpClient.get<number>(this.baseUrl + 'clanseek/' + appUserId + '/count');
     }
 
     getTodaysTopic() {
@@ -69,5 +82,9 @@ export class GlobalService {
 
     sendResetPasswordRequest(userId: string, code: string, password: string) {
         return this.httpClient.post(this.baseUrl + 'auth/password/reset', { UserId: userId, Code: code, Password: password });
+    }
+
+    sendChangePasswordRequest(userId: string, currentPassword: string, newPassword: string) {
+        return this.httpClient.post(this.baseUrl + 'auth/password', { UserId: userId, CurrentPassword:currentPassword, NewPassword: newPassword });
     }
 }

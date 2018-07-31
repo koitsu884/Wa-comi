@@ -15,7 +15,7 @@ export class ClanSeekResolver implements Resolve<ClanSeek> {
         return this.store.select('clan')
                 .take(1)
                 .switchMap((state : fromClan.State) => {
-                    return Observable.of<ClanSeek>(state.clan);
+                    return Observable.of<ClanSeek>(state.editingClan);
                 })
                 .catch((error) => {
                     console.log('Failed to resolve clanseek');

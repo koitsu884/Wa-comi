@@ -6,5 +6,5 @@ export interface TopicReply {
     memberId: number;
     appUserId: number;
     reply: string;
-    created: Date;
+    dateCreated: Date;
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import * as fromApp from '../../store/app.reducer';
 import * as fromBlog from '../store/blogs.reducers';
 import * as BlogAction from '../store/blogs.actions';
 import { Store } from '@ngrx/store';
@@ -26,7 +25,7 @@ export class BlogEditorComponent implements OnInit {
   blog: any = {};
   blogCategories: string[];
 
-  constructor(private store: Store<fromApp.AppState>,
+  constructor(private store: Store<fromBlog.FeatureState>,
     private global: GlobalService,
     private route: ActivatedRoute,
     private location: Location,

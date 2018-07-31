@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Wacomi.API.Dto
 {
     public class BlogForReturnDto
@@ -19,5 +21,6 @@ namespace Wacomi.API.Dto
         public int FollowerCount{get; set;}
         public int HatedCount{ get; set;}
         public bool IsActive{ get; set;}
+        public IEnumerable<BlogFeedForReturnDto> BlogFeeds{ get; set;} = null;
     }
 }

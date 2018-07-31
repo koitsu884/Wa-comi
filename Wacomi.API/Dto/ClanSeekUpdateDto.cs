@@ -13,5 +13,6 @@ namespace Wacomi.API.Dto
         public string Description{get; set;}
         public int LocationId {get; set;}
         public DateTime LastActive{get; set;} = DateTime.Now;
+        public bool IsActive = true;
     }
 }

@@ -25,12 +25,6 @@ export class ClanDetailCardComponent implements OnInit {
   ngOnInit() {
   }
 
-  onDelete() {
-    this.alertify.confirm("本当に削除しますか？", () => {
-      this.store.dispatch(new ClanSeekActions.TryDeleteClanSeek(this.clanSeek.id));
-    });
-  }
-
   onSend() {
     this.messageService.preparSendingeMessage(
       {
@@ -39,7 +33,9 @@ export class ClanDetailCardComponent implements OnInit {
         recipientId: this.clanSeek.appUserId,
         senderId: this.appUser.id
       },
-      this.clanSeek.description
+      "<p class='text-info'>以下の仲間募集広告に対して返信します</p>"
+       + "<h5>募集タイトル：" + this.clanSeek.title + "</h5>"
+       + this.clanSeek.description
     );
     this.router.navigate(['/message/send']);
   }

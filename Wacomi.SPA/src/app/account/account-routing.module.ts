@@ -7,6 +7,7 @@ import { HomeTownListResolver } from "../_resolvers/hometownlist.resolver";
 import { ConfirmComponent } from "./confirm/confirm.component";
 import { PasswordResetComponent } from "./password-reset/password-reset.component";
 import { PasswordForgotComponent } from "./password-forgot/password-forgot.component";
+import { PasswordEditComponent } from "./password-edit/password-edit.component";
 
 const accountRoute: Routes = [
     {path: 'login', component: LoginComponent},
@@ -18,9 +19,10 @@ const accountRoute: Routes = [
             hometowns:HomeTownListResolver
         }
     },
+    {path: 'password/edit', component:PasswordEditComponent},
     {path: 'password/forgot', component: PasswordForgotComponent},
-    {path: 'password/reset/:id/:code', component: PasswordResetComponent},
-    {path: 'confirm/:id/:code', component: ConfirmComponent}
+    {path: 'password/reset', component: PasswordResetComponent},
+    {path: 'confirm', component: ConfirmComponent}
 ];
 
 @NgModule({
