@@ -53,20 +53,20 @@ namespace Wacomi.API
             services.AddMvc();
 
             services.Configure<AuthMessageSenderOptions>(Configuration);
-            if (CurrentEnvironment.IsProduction())
-            {
-                services.Configure<MvcOptions>(options =>
-                {
-                    options.Filters.Add(new RequireHttpsAttribute());
-                });
-            }
+            // if (CurrentEnvironment.IsProduction())
+            // {
+            //     services.Configure<MvcOptions>(options =>
+            //     {
+            //         options.Filters.Add(new RequireHttpsAttribute());
+            //     });
+            // }
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
             services.AddAutoMapper();
             // services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("WacomiDbConnection")));
+            options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IStaticFileManager, StaticFileManager>();
             services.AddScoped<IAuthRepository, AuthRepository>();
@@ -109,13 +109,14 @@ namespace Wacomi.API
                     };
                 });
 
-            services.AddHangfire(config =>
-                config.UseSqlServerStorage(Configuration.GetConnectionString("WacomiDbConnection")));
+            // services.AddHangfire(config =>
+            //     config.UseStorage(
+            //         new MySqlStorage(Configuration.GetConnectionString("WacomiDbConnection"))));
 
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-            this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
-            this.AddLoggingTableAndProcedure(Configuration.GetConnectionString("WacomiDbConnection"));
+         //   serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            //this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
+            //this.AddLoggingTableAndProcedure(Configuration.GetConnectionString("WacomiDbConnection"));
         }
 
         private void AddLoggingTableAndProcedure(string connectionString)
@@ -159,7 +160,7 @@ namespace Wacomi.API
             var defaultConnection = Configuration.GetConnectionString("WacomiDbConnection");
             NLog.GlobalDiagnosticsContext.Set("NLogConnection", defaultConnection);
             staticFileManager.AddStaticFileFolder("feedimages", Configuration.GetSection("BlogFeedImageFolder").Value);
-            staticFileManager.AddStaticFileFolder("logs", "static\\logs");
+            staticFileManager.AddStaticFileFolder("logs", "static/logs");
 
             if (env.IsDevelopment())
             {
@@ -186,7 +187,7 @@ namespace Wacomi.API
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
             // app.UseHangfireDashboard();
-            app.UseHangfireServer();
+            // app.UseHangfireServer();
             
             var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
             // this.cronTask.StartRssReader(Path.Combine(env.ContentRootPath, Configuration.GetSection("BlogFeedImageFolder").Value ));
@@ -194,7 +195,7 @@ namespace Wacomi.API
             // this.cronTask.StartOldFeedsChecker(feedImageFolder);
 
             // this.cronTask.RunTopicManagerOnce(); //Test
-            this.cronTask.RunRssReader();
+            //this.cronTask.RunRssReader();
             //this.cronTask.RunFeedDelete();
 
             if (env.IsDevelopment())
@@ -220,9 +221,9 @@ namespace Wacomi.API
             }
             else
             {
-                var options = new RewriteOptions()
-                .AddRedirectToHttpsPermanent();
-                app.UseRewriter(options);
+                // var options = new RewriteOptions()
+                // .AddRedirectToHttpsPermanent();
+                // app.UseRewriter(options);
 
                 app.UseLetsEncryptFolder(env);
                 app.UseDefaultFiles();

@@ -53,7 +53,7 @@ namespace Wacomi.API.Helper
         }
 
         private string convertRequestFileNameToPhysicalPath(string fullFileName){
-            var fileNameParts = fullFileName.Split('\\', 2);
+            var fileNameParts = fullFileName.Split('/', 2);
             var requestPath = fileNameParts[0];
             Console.WriteLine(fullFileName);
             Console.WriteLine(fileNameParts[0]);

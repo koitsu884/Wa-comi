@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.1.1"/>
     <PackageReference Include="HangFire" Version="1.6.19"/>
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2"/>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0"/>
