@@ -1,0 +1,29 @@
+{
+    "deploy": {
+        "packages": [
+            {
+                "name": "Version Beta",
+                "description": "Wa-comi beta",
+                "files": ["Wacomi.API/bin/Release/netcoreapp2.0/publish/**"]
+            }
+        ],
+        "targets": [
+            {
+                "type": "sftp",
+                "name": "Linux",
+                "description": "Remote Linux Server",
+                "dir": "/var/wacomi",
+                "mappings": [
+                    {
+                        "source": "/Wacomi.API/bin/Release/netcoreapp2.0/publish",
+                        "target": "/"
+                    }
+                ],
+                "host": "206.189.144.107",
+                "port": 22,
+                "user":"root", "password": "K@2u884@DO",
+                "checkBeforeDeploy": true
+            }
+        ]
+    }
+}

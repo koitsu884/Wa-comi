@@ -24,7 +24,7 @@ namespace Wacomi.API
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-               // logger.Info("init main");
+                logger.Info("init main");
                 var host = BuildWebHost(args);
                 using (var scope = host.Services.CreateScope())
                 {
@@ -46,7 +46,7 @@ namespace Wacomi.API
             catch (Exception ex)
             {
                 //NLog: catch setup errors
-              //  logger.Error(ex, "Stopped program because of exception");
+                logger.Error(ex, "Stopped program because of exception");
                 throw ex;
             }
             finally
