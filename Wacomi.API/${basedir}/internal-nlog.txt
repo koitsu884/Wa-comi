@@ -1,0 +1,14 @@
+2018-08-07 15:51:18.5766 Error Parsing configuration from C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config failed. Exception: NLog.NLogConfigurationException: Exception when parsing C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config.  ---> NLog.NLogConfigurationException: Target database not found.
+   at NLog.Config.XmlLoggingConfiguration.ParseLoggerElement(NLogXmlElement loggerElement, IList`1 rulesCollection)
+   at NLog.Config.XmlLoggingConfiguration.ParseRulesElement(NLogXmlElement rulesElement, IList`1 rulesCollection)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(NLogXmlElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.Initialize(XmlReader reader, String fileName, Boolean ignoreErrors)
+   --- End of inner exception stack trace ---
+2018-08-07 15:51:18.5766 Warn Failed loading config from C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config. Invalid XML?
+2018-08-07 15:51:18.8034 Error Parsing configuration from C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config failed. Exception: NLog.NLogConfigurationException: Exception when parsing C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config.  ---> NLog.NLogConfigurationException: Target database not found.
+   at NLog.Config.XmlLoggingConfiguration.ParseLoggerElement(NLogXmlElement loggerElement, IList`1 rulesCollection)
+   at NLog.Config.XmlLoggingConfiguration.ParseRulesElement(NLogXmlElement rulesElement, IList`1 rulesCollection)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(NLogXmlElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.Initialize(XmlReader reader, String fileName, Boolean ignoreErrors)
+   --- End of inner exception stack trace ---
+2018-08-07 15:51:18.8034 Warn Failed loading config from C:\Angular_Core\Wacomi\Wacomi.API\bin\Debug\netcoreapp2.0\nlog.config. Invalid XML?

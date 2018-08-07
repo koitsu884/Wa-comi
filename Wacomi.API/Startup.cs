@@ -21,7 +21,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 // using NLog.Web;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Routing;
@@ -29,26 +28,25 @@ using System.IO;
 using Microsoft.Extensions.FileProviders;
 using System.Data.SqlClient;
 using NLog.Extensions.Logging;
+using Wacomi.API.Scheduling;
+using Wacomi.API.Scheduling.CronTasks;
 
 namespace Wacomi.API
 {
     public class Startup
     {
+        
+        public IConfiguration Configuration { get; }
+        private IHostingEnvironment CurrentEnvironment { get; }
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
             CurrentEnvironment = env;
         }
 
-        public IConfiguration Configuration { get; }
-        private IHostingEnvironment CurrentEnvironment { get; }
-        public CronTask cronTask;
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-
             services.AddCors();
             services.AddMvc();
 
@@ -88,8 +86,6 @@ namespace Wacomi.API
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // Configure JwtIssuerOptions
-            //var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
             services.AddAuthentication(options =>
             {
@@ -109,13 +105,18 @@ namespace Wacomi.API
                     };
                 });
 
-            // services.AddHangfire(config =>
-            //     config.UseStorage(
-            //         new MySqlStorage(Configuration.GetConnectionString("WacomiDbConnection"))));
-
             var serviceProvider = services.BuildServiceProvider();
          //   serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-            //this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
+           // this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
+            // Add scheduled tasks & scheduler
+            services.AddSingleton<IScheduledTask, RssReaderTask>();
+            services.AddScheduler((sender, args) =>
+            {
+                //TODO: log error on database or wherever appropriate
+                Console.Write(args.Exception.Message);
+                args.SetObserved();
+            });
+            
             //this.AddLoggingTableAndProcedure(Configuration.GetConnectionString("WacomiDbConnection"));
         }
 
@@ -154,11 +155,11 @@ namespace Wacomi.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IStaticFileManager staticFileManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IStaticFileManager staticFileManager)
         {
-            loggerFactory.AddNLog();
-            var defaultConnection = Configuration.GetConnectionString("WacomiDbConnection");
-            NLog.GlobalDiagnosticsContext.Set("NLogConnection", defaultConnection);
+           // loggerFactory.AddNLog();
+            // var defaultConnection = Configuration.GetConnectionString("WacomiDbConnection");
+            // NLog.GlobalDiagnosticsContext.Set("NLogConnection", defaultConnection);
             staticFileManager.AddStaticFileFolder("feedimages", Configuration.GetSection("BlogFeedImageFolder").Value);
             staticFileManager.AddStaticFileFolder("logs", "static/logs");
 
@@ -186,17 +187,8 @@ namespace Wacomi.API
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
-            // app.UseHangfireDashboard();
-            // app.UseHangfireServer();
             
             var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
-            // this.cronTask.StartRssReader(Path.Combine(env.ContentRootPath, Configuration.GetSection("BlogFeedImageFolder").Value ));
-            // this.cronTask.StartTopicManager();
-            // this.cronTask.StartOldFeedsChecker(feedImageFolder);
-
-            // this.cronTask.RunTopicManagerOnce(); //Test
-            //this.cronTask.RunRssReader();
-            //this.cronTask.RunFeedDelete();
 
             if (env.IsDevelopment())
             {

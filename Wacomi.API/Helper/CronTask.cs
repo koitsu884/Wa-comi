@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeHollow.FeedReader;
-using Hangfire;
 using Wacomi.API.Data;
 using Wacomi.API.Models;
 using Microsoft.SyndicationFeed;
@@ -29,44 +28,44 @@ namespace Wacomi.API.Helper
             this._staitcFileManager = staticFileManager;
         }
 
-        public void StartRssReader()
-        {
-            RecurringJob.AddOrUpdate(
-                    () => AddRssFeeds(),
-                    Cron.MinuteInterval(30));
-        }
+        // public void StartRssReader()
+        // {
+        //     RecurringJob.AddOrUpdate(
+        //             () => AddRssFeeds(),
+        //             Cron.MinuteInterval(30));
+        // }
 
-        public void StartTopicManager()
-        {
-            RecurringJob.AddOrUpdate(
-                    () => ChangeTopic(),
-                    Cron.Daily);
-        }
+        // public void StartTopicManager()
+        // {
+        //     RecurringJob.AddOrUpdate(
+        //             () => ChangeTopic(),
+        //             Cron.Daily);
+        // }
 
-        public void StartOldFeedsChecker()
-        {
-            RecurringJob.AddOrUpdate(
-                () => DeleteOldFeeds(),
-                Cron.Daily
-            );
-        }
+        // public void StartOldFeedsChecker()
+        // {
+        //     RecurringJob.AddOrUpdate(
+        //         () => DeleteOldFeeds(),
+        //         Cron.Daily
+        //     );
+        // }
 
-        //Test
-        public void RunTopicManagerOnce()
-        {
-            var jobId = BackgroundJob.Enqueue(
-                 () => ChangeTopic());
-        }
-        public void RunRssReader()
-        {
-            var jobId = BackgroundJob.Enqueue(
-                 () => AddRssFeeds());
-        }
+        // //Test
+        // public void RunTopicManagerOnce()
+        // {
+        //     var jobId = BackgroundJob.Enqueue(
+        //          () => ChangeTopic());
+        // }
+        // public void RunRssReader()
+        // {
+        //     var jobId = BackgroundJob.Enqueue(
+        //          () => AddRssFeeds());
+        // }
 
-        public void RunFeedDelete(){
-            var jobId = BackgroundJob.Enqueue(
-                 () => DeleteAllFeeds());
-        }
+        // public void RunFeedDelete(){
+        //     var jobId = BackgroundJob.Enqueue(
+        //          () => DeleteAllFeeds());
+        // }
 
         public async Task ChangeTopic()
         {

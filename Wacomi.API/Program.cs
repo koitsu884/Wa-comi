@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
 using Wacomi.API.Models;
 using NLog.Web;
-using Hangfire;
 using System.Net.Http;
 
 namespace Wacomi.API
@@ -21,10 +20,11 @@ namespace Wacomi.API
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Info("init main");
+                // logger.Info("init main");
+                // logger.Error("error log test");
                 var host = BuildWebHost(args);
                 using (var scope = host.Services.CreateScope())
                 {
@@ -53,7 +53,6 @@ namespace Wacomi.API
             {
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 NLog.LogManager.Shutdown();
-                
             }
 
             // var host = new WebHostBuilder()  
