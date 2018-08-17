@@ -60,10 +60,29 @@ namespace Wacomi.API.Controllers
 
             if(updateUserDto.CityId == 0)
                 updateUserDto.CityId = null;
+            if(updateUserDto.MainPhotoId == 0)
+                updateUserDto.MainPhotoId = null;
             _mapper.Map(updateUserDto, appUserFromRepo);
 
             return Ok(await _repo.SaveAll());
         }
 
+        [Authorize]
+        [HttpPut("{id}/{photoId}")]
+        public async Task<IActionResult> ChangeMainPhoto(int id, int photoId){
+            var appUserFromRepo = await _repo.GetAppUser(id);
+            if(appUserFromRepo == null)
+                return NotFound("The user was not found");
+
+            if(!await _repo.RecordExist("Photo", photoId))
+                return NotFound("Photo " + photoId + " was not found");
+
+            if(!MatchUserWithToken(appUserFromRepo.AccountId))
+                return Unauthorized();
+
+            appUserFromRepo.MainPhotoId = photoId;
+
+            return Ok(await _repo.SaveAll());
+        }
     }
 }

@@ -91,11 +91,11 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await _repo.AppUserExist(model.SenderId)){
+            if(!await _repo.RecordExist("AppUser", model.SenderId)){
                 return NotFound("アカウントが見つかりません ID:" + model.SenderId);
             }
 
-            if(!await _repo.AppUserExist(model.RecipientId)){
+            if(!await _repo.RecordExist("AppUser", model.RecipientId)){
                 return NotFound("送信相手のアカウントが見つかりません ID:" + model.RecipientId);
             }
 

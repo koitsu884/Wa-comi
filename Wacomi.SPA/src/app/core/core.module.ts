@@ -10,12 +10,16 @@ import { BlogModule } from '../blog/blog.module';
 import { LatestClanListComponent } from './home/latest-clan-list/latest-clan-list.component';
 import { LatestTopiccommentListComponent } from './home/latest-topiccomment-list/latest-topiccomment-list.component';
 import { StaticpageComponent } from './staticpage/staticpage.component';
+import { ModalComponent } from './modal/modal.component';
+import { UploadingComponent } from './modal/uploading/uploading.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
     HeaderComponent,
     FooterComponent,
+    ModalComponent,
+    UploadingComponent,
     LatestClanListComponent,
     LatestTopiccommentListComponent,
     StaticpageComponent
@@ -32,7 +36,10 @@ import { StaticpageComponent } from './staticpage/staticpage.component';
     HeaderComponent,
     HomeComponent,
     FooterComponent,
-    LatestClanListComponent
-  ]
+    ModalComponent,
+    LatestClanListComponent,
+    UploadingComponent
+  ],
+  entryComponents: [UploadingComponent]
 })
 export class CoreModule {}

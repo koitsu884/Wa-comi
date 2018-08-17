@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using CodeHollow.FeedReader;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Wacomi.API.Data;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
@@ -23,12 +24,12 @@ namespace Wacomi.API.Scheduling.CronTasks
 
         private readonly IDataRepository _repo;
         private readonly ILogger<RssReaderTask> _logger;
-        private readonly IStaticFileManager _staitcFileManager;
+        private readonly ImageFileStorageManager _fileStorageManager;
 
-        public RssReaderTask(IServiceProvider serviceProvider, ILogger<RssReaderTask> logger, IStaticFileManager staticFileManager)
+        public RssReaderTask(IServiceProvider serviceProvider, ILogger<RssReaderTask> logger, ImageFileStorageManager fileStorageManager)
         {
             this._logger = logger;
-            this._staitcFileManager = staticFileManager;
+            this._fileStorageManager = fileStorageManager;
 
             var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
             var scope = serviceScopeFactory.CreateScope();
@@ -102,7 +103,7 @@ namespace Wacomi.API.Scheduling.CronTasks
                         BlogId = blog.Id,
                         Blog = blog,
                         Title = System.Net.WebUtility.HtmlDecode(firstItem.Title),
-                        ImageUrl = firstImageUrl,
+                        // ImageUrl = firstImageUrl,
                         PublishingDate = PublishingDate,
                         Url = firstItem.Link
                     };
@@ -114,33 +115,37 @@ namespace Wacomi.API.Scheduling.CronTasks
 
         private void saveFeedImage(BlogFeed blogFeed, bool saveLocal = false)
         {
-            if (saveLocal)
-            {
-                using (WebClient client = new WebClient())
-                {
-                    using (Stream stream = client.OpenRead(blogFeed.ImageUrl))
-                    {
-                        var bitmap = new Bitmap(stream);
+            this._fileStorageManager.SaveImageFromUrl(blogFeed.Photo.Url, 
+                                        DateTime.Now.ToString("yyyy_MM_dd_hh_mm") + ".jpg", 
+                                        Path.Combine("feedimages", blogFeed.BlogId.ToString()));
 
-                        if (bitmap != null)
-                        {
-                            int resizeWidth = 400;
-                            int resizeHeight = (int)(bitmap.Height * ((double)resizeWidth / (double)bitmap.Width));
-                            Bitmap resizeBmp = new Bitmap(bitmap, resizeWidth, resizeHeight);
+            // if (saveLocal)
+            // {
+            //     var fullFileName = Path.Combine("feedimages", blogFeed.BlogId.ToString(), DateTime.Now.ToString("yyyy_MM_dd_hh_mm")) + ".jpg";
+            //     using (WebClient client = new WebClient())
+            //     {
+            //         using (Stream stream = client.OpenRead(blogFeed.Photo.Url))
+            //         {
+            //            // var bitmap = new Bitmap(stream);
+            //             var image = Image.FromStream(stream);
 
-                            var fileName = Path.Combine("feedimages", blogFeed.BlogId.ToString(), DateTime.Now.ToString("yyyy_MM_dd_hh_mm")) + ".jpg";
-                            //may throw exception
-                            this._staitcFileManager.SaveImageFile(fileName, resizeBmp, ImageFormat.Jpeg);
-                            blogFeed.ImageUrl = fileName;
-                        }
+            //             if (image != null)
+            //             {
+            //                 int resizeWidth = 400;
+            //                 int resizeHeight = (int)(image.Height * ((double)resizeWidth / (double)image.Width));
+            //                 Bitmap resizeBmp = new Bitmap(image, resizeWidth, resizeHeight);
+            //                 //may throw exception
+            //                 this._staitcFileManager.SaveImageFile(fullFileName, resizeBmp, ImageFormat.Jpeg);
+            //                 blogFeed.Photo.Url = fullFileName;
+            //             }
 
-                        stream.Flush();
-                    }
-                }
-            }
-            else{
+            //             stream.Flush();
+            //         }
+            //     }
+            // }
+            // else{
                 
-            }
+            // }
 
         }
         private string extractFeedImage(FeedType feedType, FeedItem feedItem, bool yahoo = false)

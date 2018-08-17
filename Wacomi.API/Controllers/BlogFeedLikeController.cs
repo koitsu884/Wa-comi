@@ -38,10 +38,10 @@ namespace Wacomi.API.Controllers
             if(!await MatchAppUserWithToken((int)model.SupportAppUserId))
                 return Unauthorized();
 
-            if(!await _repo.AppUserExist((int)model.SupportAppUserId))
+            if(!await _repo.RecordExist("AppUser", (int)model.SupportAppUserId))
                 return NotFound();
 
-            if (!await _repo.BlogFeedExist((int)model.BlogFeedId))
+            if (!await _repo.RecordExist("BlogFeed", (int)model.BlogFeedId))
                 return NotFound();
 
             if(await _repo.BlogFeedLiked((int)model.SupportAppUserId, (int)model.BlogFeedId))

@@ -1,12 +1,16 @@
 <form #userEditForm="ngForm" id="userEditForm" (ngSubmit)="submit(userEditForm)">
   <label>プロフィール写真選択</label>
-  <div>
+  <!-- <div>
     <img class="img-responsive" src="{{appUser.mainPhotoUrl ? appUser.mainPhotoUrl : 'assets/NoImage_Person.png'}}">
+  </div> -->
+  <div class="photoSelector" *ngIf="appUser.photos.length > 0">
+    <app-mainphoto-selector 
+    [photos]="appUser.photos" 
+    [mainPhotoId]="appUser.mainPhotoId" 
+    (photoSelected)="mainPhotoSelected($event, userEditForm)">
+  </app-mainphoto-selector>
   </div>
-  <div class="photoSelector" *ngIf="photos.length > 0">
-    <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="appUser.mainPhotoUrl" (photoSelected)="mainPhotoSelected($event, userEditForm)"></app-mainphoto-selector>
-  </div>
-  <button class="btn btn-primary" [routerLink]="['/editphoto']">写真の追加・削除</button>
+  <button class="btn btn-primary" [routerLink]="['/photo/edit', 'AppUser', appUser.id]">写真の追加・削除</button>
   <hr>
   <label for="displayName">表示名</label>
   <input class="form-control form-group " type="text" name="displayName" [(ngModel)]="appUser.displayName" />

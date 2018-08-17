@@ -8,7 +8,7 @@ import * as fromGlobal from './global.reducers';
 export interface AppState {
   global: fromGlobal.State;
   account: fromAccount.State;
-  photos: fromPhoto.State;
+  // photos: fromPhoto.State;
   // blogs: fromBlog.State;
   messages: fromMessage.State;
 }
@@ -16,7 +16,7 @@ export interface AppState {
 export const reducers: ActionReducerMap<AppState> = {
   global: fromGlobal.globalReducer,
   account: fromAccount.accountReducer,
-  photos: fromPhoto.photoReducer,
+  // photos: fromPhoto.photoReducer,
   // blogs: fromBlog.blogReducer,
   messages: fromMessage.messageReducer,
 };

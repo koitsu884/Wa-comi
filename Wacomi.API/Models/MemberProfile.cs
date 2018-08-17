@@ -38,7 +38,6 @@ namespace Wacomi.API.Models
 
         //Dairy Topic
         // public ICollection<TopicLike> LikedTopic { get; set; }
-        public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
         public bool BannedFromTopic{ get; set;}
         public int BannedCount{get; set;}
     }

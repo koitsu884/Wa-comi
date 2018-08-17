@@ -8,16 +8,23 @@ import { Photo } from '../../_models/Photo';
 })
 export class MainphotoSelectorComponent implements OnInit {
   @Input() photos: Photo[];
-  @Input() mainPhotoUrl: string;
-  @Output() photoSelected = new EventEmitter<string>();
+  @Input() mainPhotoId: number;
+  @Output() photoSelected = new EventEmitter<number>();
+  selectedPhoto: Photo;
 
   constructor() { }
 
   ngOnInit() {
+    if(this.mainPhotoId){
+      var index = this.photos.findIndex(x => x.id == this.mainPhotoId);
+      this.selectedPhoto = this.photos[index];
+    }
   }
 
   onSelect(photo){
-    this.mainPhotoUrl=photo.url;
-    this.photoSelected.emit(this.mainPhotoUrl);
+    this.mainPhotoId=photo.id;
+    var index = this.photos.findIndex(x => x.id == this.mainPhotoId);
+    this.selectedPhoto = this.photos[index];
+    this.photoSelected.emit(this.mainPhotoId);
   }
 }

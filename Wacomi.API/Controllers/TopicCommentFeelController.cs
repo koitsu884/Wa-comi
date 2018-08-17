@@ -14,10 +14,10 @@ namespace Wacomi.API.Controllers
     {
         public TopicCommentFeelController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
 
-        [HttpGet("{memberId}/{commentId}", Name = "GetCommentFeel")]
-        public async Task<ActionResult> Get(int memberId, int commentId)
+        [HttpGet("{userId}/{commentId}", Name = "GetCommentFeel")]
+        public async Task<ActionResult> Get(int userId, int commentId)
         {
-            var commentFeelFromRepo = await _repo.GetCommentFeel(memberId, commentId);
+            var commentFeelFromRepo = await _repo.GetCommentFeel(userId, commentId);
             return Ok(_mapper.Map<TopicCommentFeelForReturnDto>(commentFeelFromRepo));
         }
 
@@ -33,15 +33,15 @@ namespace Wacomi.API.Controllers
         public async Task<IActionResult> Post([FromBody]TopicCommentFeel model){ 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var member = await this._repo.GetMemberProfile(model.MemberId);
-            if(member == null)
+            var appUser = await this._repo.GetAppUser(model.AppUserId);
+            if(appUser == null)
                 return NotFound();
             
             var topicComment = await this._repo.GetTopicComment(model.CommentId);
             if(topicComment == null)
                 return NotFound();
 
-            var commentFeel = await this._repo.GetCommentFeel(model.MemberId, model.CommentId);
+            var commentFeel = await this._repo.GetCommentFeel(model.AppUserId, model.CommentId);
 
             if(commentFeel != null)
                 return BadRequest("既にリアクションされています");
@@ -49,7 +49,7 @@ namespace Wacomi.API.Controllers
             _repo.Add(model);
             if(await _repo.SaveAll() > 0)
             {
-                return CreatedAtRoute("GetCommentFeel", new {memberId = model.MemberId, commentId = model.CommentId}, _mapper.Map<TopicCommentFeelForReturnDto>(model));
+                return CreatedAtRoute("GetCommentFeel", new {userId = model.AppUserId, commentId = model.CommentId}, _mapper.Map<TopicCommentFeelForReturnDto>(model));
             }
             return BadRequest("コメントへの反応を追加できませんでした");
         }
@@ -62,7 +62,7 @@ namespace Wacomi.API.Controllers
             if(topicCommentFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchAppUserWithToken(topicCommentFromRepo.Member.AppUserId))
+            if(!await this.MatchAppUserWithToken(topicCommentFromRepo.AppUserId))
                 return Unauthorized();
 
             _repo.Delete(topicCommentFromRepo);

@@ -12,6 +12,8 @@ import { of } from "rxjs/observable/of";
 import 'rxjs/add/operator/withLatestFrom';
 import { Store } from "@ngrx/store";
 import * as fromClan from "./clan.reducers";
+import { ModalService } from "../../_services/modal.service";
+import { UploadingComponent } from "../../core/modal/uploading/uploading.component";
 
 @Injectable()
 export class ClanSeekEffects {
@@ -21,7 +23,8 @@ export class ClanSeekEffects {
         private store$: Store<fromClan.FeatureState>,
         private router: Router,
         private httpClient: HttpClient,
-        private alertify: AlertifyService) { }
+        private alertify: AlertifyService,
+        private modal: ModalService) { }
 
     @Effect()
     setClanSeekFilters = this.actions$
@@ -99,25 +102,61 @@ export class ClanSeekEffects {
         .map((action: ClanSeekActions.TryAddClanSeek) => {
             return action.payload;
         })
-        .switchMap((clanSeek) => {
+        .switchMap((payload) => {
             return this.httpClient.post<ClanSeek>(this.baseUrl + 'clanseek',
-                clanSeek,
+                payload.clanSeek,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .mergeMap((result) => {
-                    this.alertify.success("投稿しました");
-                    this.router.navigate(['/clan']);
-                    return [
+                    // console.log(result);
+                    //  this.router.navigate(['/photo/edit', 'ClanSeek', result.id]);
+                    let returnValues: Array<any> = [
                         {
                             type: ClanSeekActions.SET_EDITING_CLANSEEK, payload: result
                         },
                         {
-                            type: ClanSeekActions.CHECK_CLANSEEKS_COUNTLIMIT, payload: clanSeek.appUserId
+                            type: ClanSeekActions.CHECK_CLANSEEKS_COUNTLIMIT, payload: payload.clanSeek.appUserId
+                        }
+                    ];
+                    if (payload.formData == null) {
+                        this.alertify.success("投稿しました");
+                        this.router.navigate(['/clan']);
+                    }
+                    else{
+                        returnValues.push({ type: ClanSeekActions.TRY_ADD_CLANSEEK_PHOTOS, payload: { clanSeekId: result.id, formData: payload.formData } });
+                    }
+
+                    return returnValues;
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryAddClanSeekPhotos = this.actions$
+        .ofType(ClanSeekActions.TRY_ADD_CLANSEEK_PHOTOS)
+        .map((action: ClanSeekActions.TryAddClanSeekPhotos) => {
+            return action.payload
+        })
+        .switchMap((payload) => {
+            //this.alertify.success("写真をアップロード中…");
+            this.modal.open(UploadingComponent);
+            return this.httpClient.post(this.baseUrl + 'photo/clanseek/' + payload.clanSeekId,
+                payload.formData)
+                .mergeMap((result) => {
+                    this.alertify.success("投稿しました");
+                    this.modal.close();
+                    this.router.navigate(['/clan']);
+                    return [
+                        {
+                            type: ClanSeekActions.GET_CLANSEEK, payload: payload.clanSeekId
                         }
                     ];
                 })
                 .catch((error: string) => {
+                    this.modal.close();
                     return of({ type: GlobalActions.FAILED, payload: error })
                 });
         })

@@ -12,6 +12,5 @@ namespace Wacomi.API.Dto
         public int? HomeTownId {get; set;}
         public string Introduction { get; set;}
         public string Interests{ get; set;}
-        public string MainPhotoUrl{ get; set;}
     }
 }

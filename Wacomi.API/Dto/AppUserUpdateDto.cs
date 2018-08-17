@@ -7,7 +7,7 @@ namespace Wacomi.API.Dto
         public bool IsActive{ get; set;} = true;
         public bool IsPremium{ get; set;} = false;
         //Private Profiles
-        public string MainPhotoUrl { get; set;}
+        public int? MainPhotoId { get; set;}
         public int? CityId{ get; set;}
     }
 }

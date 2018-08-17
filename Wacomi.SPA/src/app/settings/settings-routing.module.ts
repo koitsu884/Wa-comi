@@ -18,18 +18,18 @@ import { AccountEditResolver } from "../_resolvers/account-edit.resolver";
 
 const settingRoute: Routes = [
     {
-        path: '',
+        path: ':userId',
         runGuardsAndResolvers: 'always',
         canActivate: [AuthGuard],
         component:SettingsHomeComponent,
         resolve: {
-            appUser:AppUserResolver,
+            // appUser:AppUserResolver,
             account:AccountEditResolver,
             bisUser:BusinessEditResolver,
             member:MemberEditResolver,
             cities:CityListResolver,
             hometowns:HomeTownListResolver,
-            photos:UserPhotoResolver,
+            //photos:UserPhotoResolver,
             // blogs:UserBlogResolver
         },
        

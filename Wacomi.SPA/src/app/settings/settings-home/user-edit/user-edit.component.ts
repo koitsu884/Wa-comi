@@ -20,7 +20,7 @@ export class UserEditComponent implements OnInit {
   @Input() appUser: AppUser;
   @Input() cities: City[];
   // @Input() blogs: Blog[];
-  @Input() photos: Photo[];
+  // @Input() photos: Photo[];
   // blogs: Blog[];
   // canAddBlog: boolean = true;
 
@@ -48,7 +48,7 @@ export class UserEditComponent implements OnInit {
   }
 
   mainPhotoSelected(event, ngForm: NgForm) {
-    this.appUser.mainPhotoUrl = event;
+    this.appUser.mainPhotoId = event;
     ngForm.form.markAsDirty();
   }
 

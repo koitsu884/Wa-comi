@@ -66,7 +66,8 @@ namespace Wacomi.API
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
             services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddSingleton<IStaticFileManager, StaticFileManager>();
+            services.AddSingleton<ImageFileStorageManager>();
+            //services.AddSingleton<IStaticFileManager, StaticFileManager>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
 
@@ -109,59 +110,19 @@ namespace Wacomi.API
          //   serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
            // this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
             // Add scheduled tasks & scheduler
-            services.AddSingleton<IScheduledTask, RssReaderTask>();
+            //services.AddSingleton<IScheduledTask, RssReaderTask>();
             services.AddScheduler((sender, args) =>
             {
                 //TODO: log error on database or wherever appropriate
                 Console.Write(args.Exception.Message);
                 args.SetObserved();
             });
-            
-            //this.AddLoggingTableAndProcedure(Configuration.GetConnectionString("WacomiDbConnection"));
-        }
-
-        private void AddLoggingTableAndProcedure(string connectionString)
-        {
-            string  createNlogTableCommant = @"
-                    IF NOT EXISTS
-                    (  SELECT [name] 
-                        FROM sys.tables
-                        WHERE [name] = 'NLog' 
-                    )
-                    CREATE TABLE [NLog] (
-                    [Id] [int] IDENTITY(1,1) NOT NULL,
-                    [Application] [nvarchar](50) NOT NULL,
-                    [Logged] [datetime] NOT NULL,
-                    [Level] [nvarchar](50) NOT NULL,
-                    [Message] [nvarchar](max) NOT NULL,
-                    [Logger] [nvarchar](250) NULL,
-                    [Callsite] [nvarchar](max) NULL,
-                    [Exception] [nvarchar](max) NULL,
-                    CONSTRAINT [PK_dbo.Log] PRIMARY KEY CLUSTERED ([Id] ASC)
-                    WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-                ) ON [PRIMARY]";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                using (SqlCommand command = new SqlCommand(createNlogTableCommant, connection))
-                {
-                    command.ExecuteNonQueryAsync().Wait();
-                }
-
-                connection.Close();
-            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IStaticFileManager staticFileManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-           // loggerFactory.AddNLog();
-            // var defaultConnection = Configuration.GetConnectionString("WacomiDbConnection");
-            // NLog.GlobalDiagnosticsContext.Set("NLogConnection", defaultConnection);
-            staticFileManager.AddStaticFileFolder("feedimages", Configuration.GetSection("BlogFeedImageFolder").Value);
-            staticFileManager.AddStaticFileFolder("logs", "static/logs");
+            //staticFileManager.AddStaticFileFolder("static", "static");
 
             if (env.IsDevelopment())
             {
@@ -188,20 +149,24 @@ namespace Wacomi.API
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
             
-            var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
+            //var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
 
             if (env.IsDevelopment())
             {
                 //app.UseMvc();
                  app.UseDefaultFiles();
                 app.UseStaticFiles();
-                foreach(var item in staticFileManager.GetFolderList()){
-                    app.UseStaticFiles(new StaticFileOptions
-                    {
-                        RequestPath = "/" + item.Key,
-                        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
-                    });
-                }
+                app.UseStaticFiles(new StaticFileOptions{
+                    RequestPath = "/static", 
+                    FileProvider = new PhysicalFileProvider(@"C:/Angular_Core/Wacomi/Wacomi.API/static")
+                });
+                // foreach(var item in staticFileManager.GetFolderList()){
+                //     app.UseStaticFiles(new StaticFileOptions
+                //     {
+                //         RequestPath = "/" + item.Key,
+                //         FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
+                //     });
+                // }
 
                 app.UseMvc(routes =>
                 {
@@ -220,13 +185,17 @@ namespace Wacomi.API
                 app.UseLetsEncryptFolder(env);
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
-                 foreach(var item in staticFileManager.GetFolderList()){
-                    app.UseStaticFiles(new StaticFileOptions
-                    {
-                        RequestPath = "/" + item.Key,
-                        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
-                    });
-                }
+                app.UseStaticFiles(new StaticFileOptions{
+                    RequestPath = "/static", 
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"static"))
+                });
+                //  foreach(var item in staticFileManager.GetFolderList()){
+                //     app.UseStaticFiles(new StaticFileOptions
+                //     {
+                //         RequestPath = "/" + item.Key,
+                //         FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),item.Value))
+                //     });
+                //}
 
                 app.UseMvc(routes =>
                 {

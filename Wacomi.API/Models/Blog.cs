@@ -22,7 +22,8 @@ namespace Wacomi.API.Models
         public string Category3{get; set;}
         [Required]
         public string Url{get; set;}
-        public string BlogImageUrl{get; set;}
+        public Photo Photo {get; set;}
+        public int? PhotoId{ get; set;}
         public string RSS{get; set;}
         public DateTime DateRssRead{ get; set;} = DateTime.Now;
         public int FollowerCount{get; set;}

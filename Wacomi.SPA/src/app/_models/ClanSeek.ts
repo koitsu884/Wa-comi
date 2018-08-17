@@ -1,3 +1,5 @@
+import { Photo } from "./Photo";
+
 export interface ClanSeek {
     id: number;
     title: string;
@@ -5,7 +7,9 @@ export interface ClanSeek {
     categoryName: string;
     appUserId: number;
     displayName: string;
+    mainPhotoId: number;
     mainPhotoUrl: string;
+    photos: Photo[];
     websiteUrl: string;
     email: string;
     isActive: boolean;

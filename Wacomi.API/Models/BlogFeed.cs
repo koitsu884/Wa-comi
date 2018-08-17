@@ -12,11 +12,14 @@ namespace Wacomi.API.Models
         public DateTime? PublishingDate { get; set;} = DateTime.Now;
         public string Title{ get; set;}
         public string Url{ get; set;}
-        public string ImageUrl{ get; set;}
+        public Photo Photo{get; set;}
+        public int? PhotoId{get; set;}
         public bool IsActive{ get; set;} = true;
          public virtual ICollection<BlogFeedLike> FeedLikes { get; set;}
          public virtual ICollection<BlogFeedComment> FeedComments { get; set;}
 
+         [NotMapped]
+        public string ImageUrl{ get; set;}
          [NotMapped]
          public bool IsLiked{ get; set;} = false;
     }

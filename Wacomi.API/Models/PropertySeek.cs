@@ -12,8 +12,9 @@ namespace Wacomi.API.Models
         [Required]
         public string OwnerAppUserId{ get; set;}
         public AppUser OwnerAppUser{ get; set;}
-        public ICollection<Photo> Photos { get; set; }
-        public string MainPhotoUrl{ get; set;}
+        public virtual ICollection<Photo> Photos { get; set; }
+        public Photo MainPhoto{ get; set;}
+        public int? MainPhotoId{ get; set;}
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}
         public bool IsActive{get; set;}

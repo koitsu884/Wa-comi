@@ -10,7 +10,7 @@
 .clanCard {
     /* height: 120px; */
     margin: 10px;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .disabled {

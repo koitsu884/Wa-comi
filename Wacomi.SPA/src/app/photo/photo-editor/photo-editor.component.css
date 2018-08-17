@@ -9,6 +9,12 @@ input[type=file] {
     color: transparent;
 }
 
+.row.fix {
+    display: flex;
+    flex-wrap: wrap;
+    width:100%; /*not always necessary*/
+}
+
 .list {
     border-radius: 10px;
     background-color: rgb(216, 238, 252);

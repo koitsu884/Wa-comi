@@ -34,10 +34,10 @@ namespace Wacomi.API.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await this._repo.MemberProfileExist(model.MemberId))
+            if(!await this._repo.RecordExist("MemberProfile", model.MemberId))
                 return NotFound();
 
-            if(!await this._repo.MemberProfileExist(model.FriendMemberid))
+            if(!await this._repo.RecordExist("MemberProfile", model.FriendMemberid))
                 return NotFound();
 
             var friendFromRepo = await _repo.GetFriend(model.MemberId, model.FriendMemberid);

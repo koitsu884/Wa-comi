@@ -4,32 +4,34 @@ import * as fromApp from '../../store/app.reducer';
 import { Pagination } from '../../_models/Pagination';
 
 export interface FeatureState extends fromApp.AppState {
-    clan : State
+    clan: State
 }
 
 export interface State {
     editingClan: ClanSeek;
+    uploading: boolean;
     clanSeeks: ClanSeek[];
-  selectedCityId: number;
-  selectedCategoryId : number;
-  pagination: Pagination,
-  loading: boolean;
-  reachLimit: boolean;
+    selectedCityId: number;
+    selectedCategoryId: number;
+    pagination: Pagination,
+    loading: boolean;
+    reachLimit: boolean;
 }
 
 const initialState: State = {
     editingClan: null,
+    uploading: false,
     clanSeeks: [],
     selectedCityId: 0,
-    selectedCategoryId : 0,
+    selectedCategoryId: 0,
     pagination: null,
     loading: false,
     reachLimit: false
 };
 
-export function clanSeekReducer(state = initialState, action: ClanSeekActions.ClanSeekActions ){
-    let tempPagination : Pagination;
-    switch(action.type){
+export function clanSeekReducer(state = initialState, action: ClanSeekActions.ClanSeekActions) {
+    let tempPagination: Pagination;
+    switch (action.type) {
         case ClanSeekActions.SET_EDITING_CLANSEEK:
             return {
                 ...state,
@@ -37,8 +39,8 @@ export function clanSeekReducer(state = initialState, action: ClanSeekActions.Cl
             }
         case ClanSeekActions.SET_CLANSEEK_FILTERS:
             tempPagination = state.pagination;
-                if(tempPagination)  
-                    tempPagination.currentPage = 1;
+            if (tempPagination)
+                tempPagination.currentPage = 1;
             return {
                 ...state,
                 selectedCityId: action.payload.cityId,
@@ -47,7 +49,7 @@ export function clanSeekReducer(state = initialState, action: ClanSeekActions.Cl
             }
         case ClanSeekActions.CLEAR_CLANSEEK_FILTERS:
             tempPagination = state.pagination;
-            if(tempPagination)  
+            if (tempPagination)
                 tempPagination.currentPage = 1;
             return {
                 ...state,
@@ -71,8 +73,8 @@ export function clanSeekReducer(state = initialState, action: ClanSeekActions.Cl
         case ClanSeekActions.SET_CLANSEEK_SEARCH_RESULT:
             return {
                 ...state,
-                clanSeeks : action.payload.clanSeeks,
-                pagination : action.payload.pagination,
+                clanSeeks: action.payload.clanSeeks,
+                pagination: action.payload.pagination,
                 loading: false,
                 editingClan: null
             }
@@ -80,6 +82,11 @@ export function clanSeekReducer(state = initialState, action: ClanSeekActions.Cl
             return {
                 ...state,
                 reachLimit: action.payload
+            }
+        case ClanSeekActions.TRY_ADD_CLANSEEK_PHOTOS:
+            return {
+                ...state,
+                uploading: true
             }
         default:
             return state;

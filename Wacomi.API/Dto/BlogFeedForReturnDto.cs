@@ -11,7 +11,8 @@ namespace Wacomi.API.Dto
         public string Title{ get; set;}
         public string Url{ get; set;}
         public string ImageUrl{ get; set;}
-        public string BlogImageUrl{ get; set;}
+        //public string BlogImageUrl{ get; set;}
+        public PhotoForReturnDto Photo{ get; set;}
         public string WriterName{ get; set;}
         public int OwnerId{ get; set;}
         public int LikedCount{ get; set;}

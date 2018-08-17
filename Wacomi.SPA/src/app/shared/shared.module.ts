@@ -13,6 +13,7 @@ import { ClanCardComponent } from '../clan/clan-home/clan-list/clan-card/clan-ca
 import { BlogfeedListComponent } from '../blog/blogfeed/blogfeed-list/blogfeed-list.component';
 import { BlogfeedCardComponent } from '../blog/blogfeed/blogfeed-list/blogfeed-card/blogfeed-card.component';
 import { ShortCommentFormComponent } from './short-comment-form/short-comment-form.component';
+import { PhotoSelectorComponent } from './photo-selector/photo-selector.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ShortCommentFormComponent } from './short-comment-form/short-comment-fo
     BlogfeedListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
+    PhotoSelectorComponent,
 ],
   imports:[
     CommonModule,
@@ -43,6 +45,7 @@ import { ShortCommentFormComponent } from './short-comment-form/short-comment-fo
     BlogfeedListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
+    PhotoSelectorComponent
   ]
 })
 export class SharedModule {}

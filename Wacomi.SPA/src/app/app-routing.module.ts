@@ -10,7 +10,8 @@ import { StaticPageResolver } from './_resolvers/staticpage.resolver';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent},
-  { path: 'editphoto', component: PhotoEditorComponent, canActivate: [AuthGuard]},
+//  { path: 'editphoto/:recordType/:recordId', component: PhotoEditorComponent, canActivate: [AuthGuard]},
+
   // { 
   //   path: 'editblog/:id', 
   //   component: BlogEditorComponent, 
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
   { path: 'dailytopic', loadChildren: './dailytopic/dailytopic.module#DailyTopicModule'},
   { path: 'clan', loadChildren: './clan/clan.module#ClanModule'},
   { path: 'blog', loadChildren: './blog/blog.module#BlogModule'},
+  { path: 'photo', loadChildren: './photo/photo.module#PhotoModule'},
   { path: 'message', loadChildren: './message/message.module#MessageModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},
   // { path: 'member', loadChildren: './users/members/members.module#MembersModule'},

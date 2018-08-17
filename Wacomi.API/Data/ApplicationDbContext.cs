@@ -144,12 +144,12 @@ namespace Wacomi.API.Data
 
             //---- Topic Comment Feel ----
             builder.Entity<TopicCommentFeel>()
-                .HasKey(tcl => new { tcl.MemberId, tcl.CommentId });
+                .HasKey(tcl => new { tcl.AppUserId, tcl.CommentId });
 
             builder.Entity<TopicCommentFeel>()
-                .HasOne(tcl => tcl.Member)
-                .WithMany(m => m.TopicCommentFeels)
-                .HasForeignKey(tcl => tcl.MemberId)
+                .HasOne(tcl => tcl.AppUser)
+                .WithMany(u => u.TopicCommentFeels)
+                .HasForeignKey(tcl => tcl.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<TopicCommentFeel>()

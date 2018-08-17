@@ -36,14 +36,14 @@ namespace Wacomi.API.Controllers
             if (appUser == null)
                 return NotFound();
 
-            if(!await this._repo.BlogFeedExist((int)model.BlogFeedId))
+            if(!await this._repo.RecordExist("BlogFeed", (int)model.BlogFeedId))
                 return NotFound();
 
             if(!await MatchAppUserWithToken(appUser.Id)){
                 return Unauthorized();
             }
 
-            model.MainPhotoUrl = appUser.MainPhotoUrl;
+            model.PhotoId = appUser.MainPhotoId;
             model.DisplayName = appUser.DisplayName;
 
             _repo.Add(model);

@@ -14,11 +14,9 @@ namespace Wacomi.API.Data
     public class DataRepository : IDataRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IStaticFileManager _staticFileManager;
-        public DataRepository(ApplicationDbContext context, IStaticFileManager staticFileManager)
+        public DataRepository(ApplicationDbContext context)
         {
             this._context = context;
-            this._staticFileManager = staticFileManager;
 
         }
         public void Add<T>(T entity) where T : class
@@ -34,6 +32,33 @@ namespace Wacomi.API.Data
         public void DeleteAll<T>(T entities) where T : class
         {
             _context.RemoveRange(entities);
+        }
+
+        public async Task<bool> RecordExist(string recordType, int id)
+        {
+            switch (recordType.ToLower())
+            {
+                case "appuser":
+                    return await _context.AppUsers.AnyAsync(r => r.Id == id);
+                case "businessprofile":
+                    return await _context.BusinessProfiles.AnyAsync(r => r.Id == id);
+                case "memberprofile":
+                    return await _context.MemberProfiles.AnyAsync(r => r.Id == id);
+                case "clanseek":
+                    return await _context.ClanSeeks.AnyAsync(r => r.Id == id);
+                case "dailytopic":
+                    return await _context.DailyTopics.AnyAsync(r => r.Id == id);
+                case "blog":
+                    return await _context.Blogs.AnyAsync(r => r.Id == id);
+                case "blogfeed":
+                    return await _context.BlogFeeds.AnyAsync(r => r.Id == id);
+                case "topiccomment":
+                    return await _context.TopicComments.AnyAsync(r => r.Id == id);
+                case "photo":
+                    return await _context.Photos.AnyAsync(r => r.Id == id);
+
+            }
+            return false;
         }
 
         public async Task<IEnumerable<City>> GetCities()
@@ -56,6 +81,32 @@ namespace Wacomi.API.Data
             return await _context.Photos.FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<Photo> GetPhotoByPublicId(string publicId)
+        {
+            return await _context.Photos.FirstOrDefaultAsync(p => p.PublicId == publicId);
+        }
+
+        public async Task<IEnumerable<Photo>> GetPhotosForRecord(string recordType, int recordId)
+        {
+            switch (recordType.ToLower())
+            {
+                case "appuser":
+                    var appUser = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == recordId);
+                    if (appUser != null)
+                    {
+                        return appUser.Photos.ToList();
+                    }
+                    break;
+                case "clanseek":
+                    var clanSeek = await _context.ClanSeeks.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == recordId);
+                    if (clanSeek != null)
+                    {
+                        return clanSeek.Photos.ToList();
+                    }
+                    break;
+            }
+            return null;
+        }
         public async Task<IEnumerable<Photo>> GetPhotosForAppUser(int id)
         {
             var appUser = await _context.AppUsers.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == id);
@@ -64,33 +115,6 @@ namespace Wacomi.API.Data
                 return appUser.Photos.ToList();
             }
             return null;
-        }
-
-        public async Task SetNullToPhotoUrls(string photoUrl){
-            var appUser = await _context.AppUsers.Where(u => u.MainPhotoUrl == photoUrl).FirstOrDefaultAsync();
-            if(appUser != null){
-                appUser.MainPhotoUrl = null;
-            }
-
-            var clanSeek = await _context.ClanSeeks.Where(c => c.MainPhotoUrl == photoUrl).FirstOrDefaultAsync();
-            if(clanSeek != null){
-                clanSeek.MainPhotoUrl = null;
-            }
-
-            var blogs = await _context.Blogs.Where(b => b.BlogImageUrl == photoUrl).ToListAsync();
-            foreach(var blog in blogs){
-                blog.BlogImageUrl = null;
-            }
-
-            var dailyTopicComment = await _context.TopicComments.Where(tc => tc.MainPhotoUrl == photoUrl).ToListAsync();
-            foreach(var dailyTopic in dailyTopicComment){
-                dailyTopic.MainPhotoUrl = null;
-            }
-
-            var dailyTopicReply = await _context.TopicReplies.Where(tc => tc.MainPhotoUrl == photoUrl).ToListAsync();
-            foreach(var topicReply in dailyTopicReply){
-                topicReply.MainPhotoUrl = null;
-            }
         }
 
         // public async Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id)
@@ -126,34 +150,26 @@ namespace Wacomi.API.Data
         public async Task<AppUser> GetAppUser(int id)
         {
             return await _context.AppUsers.Include(au => au.City)
-                                        //     .Include(au => au.Photos)
-                                        //   .Include(au => au.Blogs)
+                                          .Include(au => au.MainPhoto)
+                                          .Include(au => au.Photos)
+                                          //   .Include(au => au.Blogs)
                                           .FirstOrDefaultAsync(au => au.Id == id);
         }
 
 
-         public async Task<AppUser> GetAppUserByAccountId(string accountId)
-         {
-             return await _context.AppUsers.Include(au => au.City)
-                                        //     .Include(au => au.Photos)
-                                        //   .Include(au => au.Blogs)
-                                          .FirstOrDefaultAsync(au => au.AccountId == accountId);
-         }
+        public async Task<AppUser> GetAppUserByAccountId(string accountId)
+        {
+            return await _context.AppUsers.Include(au => au.City)
+                                          .Include(au => au.Photos)
+                                         //   .Include(au => au.Blogs)
+                                         .FirstOrDefaultAsync(au => au.AccountId == accountId);
+        }
 
 
         public async Task<BusinessProfile> GetBusinessProfile(int id)
         {
             return await _context.BusinessProfiles.Include(b => b.AppUser)
                                         .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public async Task<bool> AppUserExist(int appUserId){
-            return await _context.AppUsers.AnyAsync(u => u.Id == appUserId);
-        }
-        
-        public async Task<bool> MemberProfileExist(int memberId)
-        {
-            return await _context.MemberProfiles.AnyAsync(m => m.Id == memberId);
         }
         public async Task<MemberProfile> GetMemberProfile(int id)
         {
@@ -180,11 +196,13 @@ namespace Wacomi.API.Data
             return await _context.Blogs.FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<int> GetBlogCountForUser(int id){
+        public async Task<int> GetBlogCountForUser(int id)
+        {
             return await _context.Blogs.Where(b => b.OwnerId == id).CountAsync();
         }
 
-        public async Task<IEnumerable<Blog>> GetBlogsForUser(int id){
+        public async Task<IEnumerable<Blog>> GetBlogsForUser(int id)
+        {
             return await _context.Blogs.Where(b => b.OwnerId == id).ToListAsync();
         }
 
@@ -218,7 +236,7 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<Blog>> GetBlogsForRssFeed(int count = 100)
         {
-            return await _context.Blogs.Where(b => b.IsActive == true && !string.IsNullOrEmpty(b.RSS))  
+            return await _context.Blogs.Where(b => b.IsActive == true && !string.IsNullOrEmpty(b.RSS))
                                        .OrderBy(b => b.DateRssRead)
                                        .Take(count)
                                        .ToListAsync();
@@ -234,28 +252,28 @@ namespace Wacomi.API.Data
             return await _context.BlogFeeds.Include(bf => bf.Blog).Include(bf => bf.FeedLikes).FirstOrDefaultAsync(bf => bf.Id == id);
         }
 
-        public async Task<bool> BlogFeedExist(int id)
-         {
-            return await _context.BlogFeeds.AnyAsync(bf => bf.Id == id);
-        }
-
-        public async Task<bool> BlogFeedLiked(int appUserId, int blogFeedId){
+        public async Task<bool> BlogFeedLiked(int appUserId, int blogFeedId)
+        {
             return await _context.BlogFeedLikes.AnyAsync(bfl => bfl.SupportAppUserId == appUserId && bfl.BlogFeedId == blogFeedId);
         }
 
-        public async Task<BlogFeedLike> GetBlogFeedLike(int id){
+        public async Task<BlogFeedLike> GetBlogFeedLike(int id)
+        {
             return await _context.BlogFeedLikes.FirstOrDefaultAsync(bfl => bfl.Id == id);
         }
 
-        public async Task<IEnumerable<BlogFeedLike>> GetBlogFeedLikesForUser(int userId){
+        public async Task<IEnumerable<BlogFeedLike>> GetBlogFeedLikesForUser(int userId)
+        {
             return await _context.BlogFeedLikes.Where(bfl => bfl.SupportAppUserId == userId).ToListAsync();
         }
 
-        public async Task<BlogFeedComment> GetBlogFeedComment(int id){
+        public async Task<BlogFeedComment> GetBlogFeedComment(int id)
+        {
             return await _context.BlogFeedComments.FirstOrDefaultAsync(bfc => bfc.Id == id);
         }
 
-        public async Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId){
+        public async Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId)
+        {
             return await _context.BlogFeedComments.Where(bfc => bfc.BlogFeedId == feedId).ToListAsync();
         }
         public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds()
@@ -267,7 +285,8 @@ namespace Wacomi.API.Data
                                             .ToListAsync();
         }
 
-        public async Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category = null){
+        public async Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category = null)
+        {
             var blogFeeds = _context.BlogFeeds.Include(bf => bf.Blog)
                                             .ThenInclude(bf => bf.Owner)
                                             .Include(bf => bf.FeedLikes)
@@ -279,7 +298,7 @@ namespace Wacomi.API.Data
 
             if (!string.IsNullOrEmpty(category))
             {
-                blogFeeds = blogFeeds.Where(bf => bf.Blog.Category == category 
+                blogFeeds = blogFeeds.Where(bf => bf.Blog.Category == category
                                                || bf.Blog.Category2 == category
                                                || bf.Blog.Category3 == category);
             }
@@ -287,12 +306,29 @@ namespace Wacomi.API.Data
             return await PagedList<BlogFeed>.CreateAsync(blogFeeds, paginationParams.PageNumber, paginationParams.PageSize);
             //return await blogFeeds.ToListAsync();
         }
-        public async Task<IEnumerable<BlogFeed>> GetBlogFeedsByBlogId(int blogId){
+        public async Task<IEnumerable<BlogFeed>> GetBlogFeedsByBlogId(int blogId)
+        {
             return await _context.BlogFeeds.Include(bf => bf.FeedLikes)
-                                            .Include( bf => bf.FeedComments)
+                                            .Include(bf => bf.FeedComments)
                                             .Where(bf => bf.BlogId == blogId && bf.IsActive == true)
                                             .OrderByDescending(bf => bf.PublishingDate)
                                             .Take(20).ToListAsync();
+        }
+
+        public async Task<IEnumerable<BlogFeed>> GetBlogFeeds(DateTime? from = null, DateTime? to = null)
+        {
+            var query = _context.BlogFeeds.Include(bf => bf.Photo).OrderByDescending(bf => bf.PublishingDate).AsQueryable();
+            if (from != null && to != null && from > to)
+            {
+                from = null;
+            }
+
+            if (from != null)
+                query = query.Where(bf => bf.PublishingDate >= from);
+            if (to != null)
+                query = query.Where(bf => bf.PublishingDate <= to);
+
+            return await query.ToListAsync();
         }
 
         // public async Task DeleteOldFeeds(){
@@ -306,39 +342,55 @@ namespace Wacomi.API.Data
         //     }
         // }
 
-        public async Task DeleteFeeds(DateTime? targetDate = null){
+        public async Task DeleteFeed(BlogFeed feed)
+        {
+            await DeleteFeedLikes(feed.Id);
+            await DeleteFeedComments(feed.Id);
+            Delete(feed.Photo);
+            Delete(feed);
+        }
+        public async Task DeleteFeeds(DateTime? targetDate = null)
+        {
             var query = _context.BlogFeeds.AsQueryable();
-            if(targetDate != null)
+            if (targetDate != null)
                 query = query.Where(bf => bf.PublishingDate <= targetDate);
             var deletingFeeds = await query.ToListAsync();
-            foreach(var feed in deletingFeeds){
+            foreach (var feed in deletingFeeds)
+            {
                 await DeleteFeeWithRelatingTablesAndFiles(feed);
             }
         }
 
-        private async Task DeleteFeeWithRelatingTablesAndFiles(BlogFeed feed){
+        private async Task DeleteFeeWithRelatingTablesAndFiles(BlogFeed feed)
+        {
             await DeleteFeedLikes(feed.Id);
             await DeleteFeedComments(feed.Id);
             // var fileName = System.IO.Path.GetFileName(feed.ImageUrl);
             // var physicalImagePath = System.IO.Path.Combine(feedImageFolder, feed.BlogId.ToString(), fileName);
             // System.IO.File.Delete(physicalImagePath);
-            this._staticFileManager.DeleteFile(feed.ImageUrl);
+            _context.Photos.Remove(feed.Photo);
             _context.BlogFeeds.Remove(feed);
         }
 
-        public async Task DeleteFeedLikes(int feedId){
+
+
+        public async Task DeleteFeedLikes(int feedId)
+        {
             var deletingFeedLikes = await _context.BlogFeedLikes.Where(bfl => bfl.BlogFeedId == feedId).ToListAsync();
             _context.BlogFeedLikes.RemoveRange(deletingFeedLikes);
         }
 
-        public async Task DeleteFeedComments(int feedId){
+        public async Task DeleteFeedComments(int feedId)
+        {
             var deletingFeedComments = await _context.BlogFeedComments.Where(bfl => bfl.BlogFeedId == feedId).ToListAsync();
             _context.BlogFeedComments.RemoveRange(deletingFeedComments);
         }
 
-        public async Task DeleteFeedsForBlog(int blogId){
+        public async Task DeleteFeedsForBlog(int blogId)
+        {
             var deletingFeeds = await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).ToListAsync();
-            foreach(var feed in deletingFeeds){
+            foreach (var feed in deletingFeeds)
+            {
                 await DeleteFeeWithRelatingTablesAndFiles(feed);
             }
         }
@@ -347,6 +399,8 @@ namespace Wacomi.API.Data
             return await _context.ClanSeeks.Include(cs => cs.Category)
                                            .Include(cs => cs.AppUser)
                                            .Include(cs => cs.Location)
+                                           .Include(cs => cs.MainPhoto)
+                                           .Include(cs => cs.Photos)
                                            .FirstOrDefaultAsync(cs => cs.Id == id);
         }
 
@@ -358,11 +412,13 @@ namespace Wacomi.API.Data
         //public async Task<PagedList<ClanSeek>> GetClanSeeks(int? categoryId = null, int? cityId = null, bool? latest = null)
         public async Task<PagedList<ClanSeek>> GetClanSeeks(PaginationParams paginationParams, int? categoryId = null, int? cityId = null)
         {
-             var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
-                                           .Include(cs => cs.AppUser)
-                                           .Include(cs => cs.Location)
-                                           .OrderByDescending(cs => cs.LastActive)
-                                           .AsQueryable();
+            var clanSeeks = _context.ClanSeeks.Include(cs => cs.Category)
+                                          .Include(cs => cs.AppUser)
+                                            .ThenInclude(u => u.MainPhoto)
+                                          .Include(cs => cs.MainPhoto)
+                                          .Include(cs => cs.Location)
+                                          .OrderByDescending(cs => cs.LastActive)
+                                          .AsQueryable();
             if (categoryId != null)
             {
                 clanSeeks = clanSeeks.Where(cs => cs.CategoryId == categoryId);
@@ -381,11 +437,13 @@ namespace Wacomi.API.Data
         {
             return await _context.ClanSeeks.Include(cs => cs.Category)
                                            .Include(cs => cs.Location)
-                                           .Where( cs => cs.AppUserId == userId)
+                                           .Include(cs => cs.MainPhoto)
+                                           .Where(cs => cs.AppUserId == userId)
                                            .OrderByDescending(cs => cs.LastActive).ToListAsync();
         }
 
-        public async Task<int> GetClanSeeksCountByUser(int userId){
+        public async Task<int> GetClanSeeksCountByUser(int userId)
+        {
             return await _context.ClanSeeks.Where(cs => cs.AppUserId == userId).CountAsync();
         }
 
@@ -411,10 +469,6 @@ namespace Wacomi.API.Data
             return await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.Id == id);
         }
 
-        public async Task<bool> DailyTopicExists(int id)
-        {
-            return await _context.DailyTopics.AnyAsync(dt => dt.Id == id);
-        }
 
         public async Task<DailyTopic> GetActiveDailyTopic()
         {
@@ -438,7 +492,7 @@ namespace Wacomi.API.Data
         public async Task<string> GetTodaysTopic()
         {
             var topic = await _context.DailyTopics.FirstOrDefaultAsync(dt => dt.IsActive == true);
-            if(topic == null)
+            if (topic == null)
             {
                 topic = await _context.DailyTopics.FirstOrDefaultAsync();
                 topic.IsActive = true;
@@ -490,7 +544,8 @@ namespace Wacomi.API.Data
         //=============================================================
         public async Task<TopicComment> GetTopicComment(int id)
         {
-            return await _context.TopicComments.Include(tc => tc.Member)
+            return await _context.TopicComments.Include(tc => tc.AppUser)
+                                                .ThenInclude(u => u.MainPhoto)
                                              .Include(tc => tc.TopicCommentFeels)
                                             .Include(tc => tc.TopicReplies)
                                                //    .Include(tc => tc.Member)
@@ -498,19 +553,21 @@ namespace Wacomi.API.Data
                                                .FirstOrDefaultAsync(tc => tc.Id == id);
         }
 
-        public async Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int memberId)
+        public async Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int userId)
         {
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
                                                 .Include(tc => tc.TopicReplies)
-                                               .Include(tc => tc.Member)
+                                               .Include(tc => tc.AppUser)
+                                                .ThenInclude(u => u.MainPhoto)
                                                //    .Include(tc => tc.Member.Identity)
-                                               .Where(tc => tc.MemberId == memberId)
+                                               .Where(tc => tc.AppUserId == userId)
                                                .ToListAsync();
         }
 
         public async Task<IEnumerable<TopicComment>> GetLatestTopicCommentList()
         {
-            return await _context.TopicComments.Include(tc => tc.Member)
+            return await _context.TopicComments.Include(tc => tc.AppUser)
+                                                    .ThenInclude(u => u.MainPhoto)
                                                 .Include(tc => tc.TopicCommentFeels)
                                                 .Include(tc => tc.TopicReplies)
                                                //    .Include(tc => tc.Member)
@@ -524,7 +581,8 @@ namespace Wacomi.API.Data
         {
             return await _context.TopicComments.Include(tc => tc.TopicCommentFeels)
                                                 .Include(tc => tc.TopicReplies)
-                                                .Include(tc => tc.Member)
+                                                .Include(tc => tc.AppUser)
+                                                    .ThenInclude(u => u.MainPhoto)
                                                //    .Include(tc => tc.Member.Identity)
                                                .OrderByDescending(tc => tc.Id)
                                                .Take(1000)
@@ -545,23 +603,35 @@ namespace Wacomi.API.Data
         }
         public async Task<TopicReply> GetTopicReply(int id)
         {
-            return await _context.TopicReplies.Include(tr => tr.Member).FirstOrDefaultAsync(tr => tr.Id == id);
+            return await _context.TopicReplies
+                            .Include(tr => tr.AppUser)
+                            .ThenInclude(u => u.MainPhoto)
+                            .FirstOrDefaultAsync(tr => tr.Id == id);
         }
 
         public async Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId)
         {
-            return await _context.TopicReplies.Include(tr => tr.Member).Where(tr => tr.TopicCommentId == commentId).ToListAsync();
+            return await _context.TopicReplies
+                        .Include(tr => tr.AppUser)
+                        .ThenInclude(u => u.MainPhoto)
+                        .Where(tr => tr.TopicCommentId == commentId).ToListAsync();
         }
 
-        public async Task<TopicCommentFeel> GetCommentFeel(int memberId, int commentId)
+        public async Task<TopicCommentFeel> GetCommentFeel(int userId, int commentId)
         {
-            return await _context.TopicCommentFeels.Include(tcf => tcf.Member).Where(tcf => tcf.MemberId == memberId && tcf.CommentId == commentId).FirstOrDefaultAsync();
+            return await _context.TopicCommentFeels
+                        .Include(tcf => tcf.AppUser)
+                        .ThenInclude(u => u.MainPhoto)
+                        .Where(tcf => tcf.AppUserId == userId && tcf.CommentId == commentId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int memberId = 0)
+        public async Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int userId = 0)
         {
-            if(memberId > 0)
-               return await _context.TopicCommentFeels.Include(tcf => tcf.Member).Where(tcf => tcf.MemberId == memberId).ToListAsync();
+            if (userId > 0)
+                return await _context.TopicCommentFeels
+                            .Include(tcf => tcf.AppUser)
+                            .ThenInclude(u => u.MainPhoto)
+                            .Where(tcf => tcf.AppUserId == userId).ToListAsync();
             return await _context.TopicCommentFeels.ToListAsync();
         }
 
@@ -609,7 +679,9 @@ namespace Wacomi.API.Data
         public async Task<Message> GetMessage(int id)
         {
             return await _context.Messages.Include(m => m.Recipient)
+                                          .ThenInclude(u => u.MainPhoto)
                                           .Include(m => m.Sender)
+                                          .ThenInclude(u => u.MainPhoto)
                                           .FirstOrDefaultAsync(m => m.Id == id);
         }
 
@@ -635,6 +707,7 @@ namespace Wacomi.API.Data
         {
             var messages = _context.Messages.Include(m => m.Recipient)
                                           .Include(m => m.Sender)
+                                          .ThenInclude(u => u.MainPhoto)
                                           .Where(m => m.RecipientId == userId && m.SenderId == senderId)
                                           .OrderByDescending(m => m.DateCreated);
 
@@ -655,6 +728,7 @@ namespace Wacomi.API.Data
         public async Task<PagedList<Message>> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId)
         {
             var messages = _context.Messages.Include(m => m.Recipient)
+                                            .ThenInclude(u => u.MainPhoto)
                                           .Include(m => m.Sender)
                                           .Where(m => m.SenderId == userId && m.RecipientId == recipientId)
                                           .OrderByDescending(m => m.DateCreated);
@@ -664,21 +738,24 @@ namespace Wacomi.API.Data
         public async Task<PagedList<Message>> GetReceivedMessages(PaginationParams paginationParams, int userId)
         {
             var messages = _context.Messages.Include(m => m.Sender)
+                                            .ThenInclude(u => u.MainPhoto)
                                           .Where(m => m.RecipientId == userId)
                                           .OrderByDescending(m => m.DateCreated);
             return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
         }
 
-        public async Task<PagedList<Message>> GetSentMessages(PaginationParams paginationParams, int userId )
+        public async Task<PagedList<Message>> GetSentMessages(PaginationParams paginationParams, int userId)
         {
             var messages = _context.Messages.Include(m => m.Recipient)
+                                          .ThenInclude(u => u.MainPhoto)
                                           .Where(m => m.SenderId == userId)
                                           .OrderByDescending(m => m.DateCreated);
 
             return await PagedList<Message>.CreateAsync(messages, paginationParams.pageNumber, paginationParams.PageSize);
         }
 
-        public async Task<int> GetNewMessagesCount(int userId){
+        public async Task<int> GetNewMessagesCount(int userId)
+        {
             return await _context.Messages.Where(m => m.RecipientId == userId && m.IsRead == false).CountAsync();
         }
     }

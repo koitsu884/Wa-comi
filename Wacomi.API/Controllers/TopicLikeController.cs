@@ -42,10 +42,10 @@ namespace Wacomi.API.Controllers
             if(!await MatchAppUserWithToken(model.SupportAppUserId))
                 return Unauthorized();
 
-            if(!await _repo.AppUserExist(model.SupportAppUserId))
+            if(!await _repo.RecordExist("AppUser", model.SupportAppUserId))
                 return NotFound();
 
-            if (!await _repo.DailyTopicExists(model.DailyTopicId))
+            if (!await _repo.RecordExist("DailyTopic", model.DailyTopicId))
                 return NotFound();
 
             var topicLike = await this._repo.GetTopicLike(model.SupportAppUserId, model.DailyTopicId);

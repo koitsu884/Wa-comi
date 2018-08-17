@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wacomi.API.Helper;
@@ -11,13 +12,16 @@ namespace Wacomi.API.Data
          void Delete<T>(T entity) where T: class;
          void DeleteAll<T>(T entities) where T: class;
          Task<int> SaveAll();
+         Task<bool> RecordExist(string recordType, int id);
+        // Task<T> GetRecord<T>(string recordType, int id) where T: class;
 
          Task<IEnumerable<City>> GetCities();
          Task<IEnumerable<HomeTown>> GetHomeTowns();
          Task<Photo> GetPhoto(int id);
+         Task<Photo> GetPhotoByPublicId(string publicId);
         //  Task<IEnumerable<Photo>> GetPhotosForClass(string className, int id);
         Task<IEnumerable<Photo>> GetPhotosForAppUser(int id);
-        Task SetNullToPhotoUrls(string photoUrl);
+        Task<IEnumerable<Photo>> GetPhotosForRecord(string recordType, int recordId);
          Task<AppUser> GetAppUser(int id);
          Task<AppUser> GetAppUserByAccountId(string accountId);
 
@@ -25,9 +29,7 @@ namespace Wacomi.API.Data
         Task<BusinessProfile> GetBusinessProfile(int id);
         Task<MemberProfile> GetMemberProfile(int id);
         Task<MemberProfile> GetMemberProfileByAccountId(string id);
-        // Task<IEnumerable<MemberProfile>> GetMemberProfiles(UserParams userParams);
-        Task<bool> AppUserExist(int appUserid);
-        Task<bool> MemberProfileExist(int memberId);
+        // Task<IEnumerable<MemberProfile>> GetMemberProfiles(UserParams userParams)
         Task<Blog> GetBlog(int id);
         Task<IEnumerable<Blog>> GetBlogs();
         Task<IEnumerable<Blog>> GetBlogsForRssFeed(int count = 100);
@@ -36,7 +38,6 @@ namespace Wacomi.API.Data
         // Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id);
         Task<BlogFeed> GetLatestBlogFeed(int blogId);
         Task<BlogFeed> GetBlogFeed(int id);
-        Task<bool> BlogFeedExist(int id);
         Task<bool> BlogFeedLiked(int appUserId, int blogFeedId);
         Task<BlogFeedLike> GetBlogFeedLike(int id);
         Task<IEnumerable<BlogFeedLike>> GetBlogFeedLikesForUser(int userId);
@@ -44,7 +45,9 @@ namespace Wacomi.API.Data
         Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId);
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
         Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category);
+        Task<IEnumerable<BlogFeed>> GetBlogFeeds(DateTime? from, DateTime? to);
         Task<IEnumerable<BlogFeed>> GetBlogFeedsByBlogId(int blogId);
+        Task DeleteFeed(BlogFeed feed);
         Task DeleteFeeds(System.DateTime? targetDate = null);
         Task DeleteFeedLikes(int feedId);
         Task DeleteFeedComments(int feedId);
@@ -61,7 +64,6 @@ namespace Wacomi.API.Data
         Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
 
         Task<DailyTopic> GetDailyTopic(int id); 
-        Task<bool> DailyTopicExists(int id);
 
         Task<DailyTopic> GetActiveDailyTopic();
         Task<DailyTopic> GetTopDailyTopic();
@@ -75,17 +77,16 @@ namespace Wacomi.API.Data
         void ResetTopicLikes(int topicId);
 
         Task<TopicComment> GetTopicComment(int id);
-        Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int memberId);
+        Task<IEnumerable<TopicComment>> GetTopicCommentsForMember(int userId);
         Task<IEnumerable<TopicComment>> GetLatestTopicCommentList();
         Task<IEnumerable<TopicComment>> GetTopicComments();
         void ResetTopicComments();
 
-        Task<bool> TopicCommentExists(int id);
         Task<TopicReply> GetTopicReply(int id);
         Task<IEnumerable<TopicReply>> GetTopicRepliesByCommentId(int commentId);
 
-        Task<TopicCommentFeel> GetCommentFeel(int memberId, int commentId);
-        Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int memberId);
+        Task<TopicCommentFeel> GetCommentFeel(int userId, int commentId);
+        Task<IEnumerable<TopicCommentFeel>> GetCommentFeels(int userId);
 
         Task<Friend> GetFriend(int memberId, int friendId);
         Task<IEnumerable<Friend>> GetFriends(int memberId);

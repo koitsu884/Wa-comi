@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { City } from '../../_models/City';
 import { Hometown } from '../../_models/Hometown';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppUser } from '../../_models/AppUser';
 import { Photo } from '../../_models/Photo';
 import { Observable } from 'rxjs/Observable';
 
 import * as fromApp from '../../store/app.reducer';
-import * as fromPhoto from '../../photo/store/photos.reducers';
+// import * as fromPhoto from '../../photo/store/photos.reducers';
 import * as fromBlog from '../../blog/store/blogs.reducers';
-import * as PhotoActions from '../../photo/store/photos.action';
+import * as AccountAction from '../../account/store/account.actions';
+// import * as PhotoActions from '../../photo/store/photos.action';
 import * as BlogActions from '../../blog/store/blogs.actions';
 import { Store } from '@ngrx/store';
 import { KeyValue } from '../../_models/KeyValue';
@@ -34,19 +35,35 @@ export class SettingsHomeComponent implements OnInit {
   bisUser: BusinessProfile;
   cities: City[];
   hometowns: KeyValue[];
-  photos: Photo[];
   
-  constructor(private store: Store<fromApp.AppState>, private route: ActivatedRoute) { }
+  constructor(private store: Store<fromApp.AppState>, private router:Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.params.subscribe((params) => {
+      if(!params['userId']){
+        console.log("Error: No parameter for app user");
+        this.router.navigate(['/home']);
+      }
+      this.store.dispatch(new AccountAction.GetAppUser(params['userId']));
+    })
+
+    this.store.select('account')
+    .subscribe((appState) => {
+      this.appUser = Object.assign({}, appState.appUser);
+   //   this.photos = Object.assign({}, appState.appUser.photos);
+    })
+
     // this.photoState = this.store.select('photos');
     //this.blogState = this.store.select('blogs');
 
-    this.appUser = this.route.snapshot.data['appUser'];
+
+
+
+    // this.appUser = this.route.snapshot.data['appUser'];
     this.account = this.route.snapshot.data['account'];
     this.cities = this.route.snapshot.data['cities'];
     this.hometowns = this.route.snapshot.data['hometowns'];
-    this.photos = this.route.snapshot.data['photos'];
+   // this.photos = this.route.snapshot.data['photos'];
     // this.blogs = this.route.snapshot.data['blogs'];
     if(this.appUser.userType == "Member"){
       this.member = this.route.snapshot.data['member'];
@@ -56,10 +73,9 @@ export class SettingsHomeComponent implements OnInit {
       this.bisUser = this.route.snapshot.data['bisUser'];
       this.member = null;
     }
-    // this.store.dispatch(new PhotoActions.GetPhotos({type: this.appUser.userType, recordId: recordId}));
+    //this.store.dispatch(new PhotoActions.GetPhotos({recordType: "AppUser", recordId: this.appUser.id}));
     // this.store.dispatch(new BlogActions.GetBlog(this.appUser.id));
     //this.store.dispatch(PhotoActions.SET_PHOTOS)
 
   }
-
 }

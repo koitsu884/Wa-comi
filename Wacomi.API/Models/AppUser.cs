@@ -18,7 +18,8 @@ namespace Wacomi.API.Models
         public bool IsActive{ get; set;} = true;
         public bool IsPremium{ get; set;} = false;
         //Private Profiles
-        public string MainPhotoUrl { get; set;}
+        public Photo MainPhoto { get; set;}
+        public int? MainPhotoId { get; set;}
         public int? CityId { get; set;}
         public City City{ get; set;}
 
@@ -26,7 +27,8 @@ namespace Wacomi.API.Models
         public DateTime LastActive{get; set;} = DateTime.Now;
         public virtual ICollection<Message> MessageReceived{ get; set;}
         public virtual ICollection<Message> MessageSent{ get; set;}
-        public ICollection<Photo> Photos { get; set; }
-        public ICollection<Blog>  Blogs { get; set;}
+        public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Blog>  Blogs { get; set;}
+        public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
     }
 }

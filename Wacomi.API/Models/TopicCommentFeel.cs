@@ -10,10 +10,10 @@ namespace Wacomi.API.Models
     public class TopicCommentFeel
     {
         [Required]
-        public int MemberId { get; set;}
+        public int AppUserId { get; set;}
         [Required]
         public int CommentId{ get; set;}
-        public MemberProfile Member{ get; set;}
+        public AppUser AppUser{ get; set;}
         public TopicComment Comment{ get; set;}
         [Required]
         public FeelingEnum Feeling{ get; set;}

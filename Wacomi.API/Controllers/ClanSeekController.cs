@@ -121,5 +121,23 @@ namespace Wacomi.API.Controllers
 
             return BadRequest("Failed to delete the clan seek");
         }
+
+        [Authorize]
+        [HttpPut("{id}/{photoId}")]
+        public async Task<IActionResult> ChangeMainPhoto(int id, int photoId){
+            var clanSeekFromRepo = await _repo.GetClanSeek(id);
+            if(clanSeekFromRepo == null)
+                return NotFound("The clanseek was not found");
+
+            if(!await _repo.RecordExist("Photo", photoId))
+                return NotFound("Photo " + photoId + " was not found");
+
+            if(!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
+                return Unauthorized();
+
+            clanSeekFromRepo.MainPhotoId = photoId;
+
+            return Ok(await _repo.SaveAll());
+        }
     }
 }

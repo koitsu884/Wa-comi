@@ -10,10 +10,11 @@ namespace Wacomi.API.Models
         public int TopicCommentId{get; set;}
         public TopicComment TopicComment{get; set;}
 
-        public int? MemberId { get; set;}
-        public MemberProfile Member{ get; set;}
+        public int? AppUserId { get; set;}
+        public AppUser AppUser{ get; set;}
         public string DisplayName{ get; set;}
-        public string MainPhotoUrl{ get; set;}
+        public Photo Photo{ get; set;}
+        public int? PhotoId { get; set;}
         [Required]
         [MaxLength(1000)]
         public string Reply{ get; set;}

@@ -198,7 +198,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("LastActive");
 
-                    b.Property<string>("MainPhotoUrl");
+                    b.Property<int?>("MainPhotoId");
 
                     b.Property<int>("UserProfileId");
 
@@ -210,6 +210,8 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("CityId");
 
+                    b.HasIndex("MainPhotoId");
+
                     b.ToTable("AppUsers");
                 });
 
@@ -217,8 +219,6 @@ namespace Wacomi.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BlogImageUrl");
 
                     b.Property<string>("Category");
 
@@ -239,6 +239,8 @@ namespace Wacomi.API.Migrations
                     b.Property<bool>("IsActive");
 
                     b.Property<int>("OwnerId");
+
+                    b.Property<int?>("PhotoId");
 
                     b.Property<string>("RSS");
 
@@ -264,6 +266,8 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("OwnerId");
 
+                    b.HasIndex("PhotoId");
+
                     b.ToTable("Blogs");
                 });
 
@@ -274,9 +278,9 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("BlogId");
 
-                    b.Property<string>("ImageUrl");
-
                     b.Property<bool>("IsActive");
+
+                    b.Property<int?>("PhotoId");
 
                     b.Property<DateTime?>("PublishingDate");
 
@@ -287,6 +291,8 @@ namespace Wacomi.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BlogId");
+
+                    b.HasIndex("PhotoId");
 
                     b.HasIndex("PublishingDate");
 
@@ -310,13 +316,15 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("DisplayName");
 
-                    b.Property<string>("MainPhotoUrl");
+                    b.Property<int?>("PhotoId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("BlogFeedId");
+
+                    b.HasIndex("PhotoId");
 
                     b.ToTable("BlogFeedComments");
                 });
@@ -394,7 +402,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("LocationId");
 
-                    b.Property<string>("MainPhotoUrl");
+                    b.Property<int?>("MainPhotoId");
 
                     b.Property<int?>("MemberProfileId");
 
@@ -412,6 +420,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("Created");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("MainPhotoId");
 
                     b.HasIndex("MemberProfileId");
 
@@ -601,6 +611,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("PublicId");
 
+                    b.Property<int>("StorageType");
+
                     b.Property<string>("Url");
 
                     b.HasKey("Id");
@@ -633,7 +645,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("LocationId");
 
-                    b.Property<string>("MainPhotoUrl");
+                    b.Property<int?>("MainPhotoId");
 
                     b.Property<string>("OwnerAppUserId")
                         .IsRequired();
@@ -647,6 +659,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("LocationId");
+
+                    b.HasIndex("MainPhotoId");
 
                     b.HasIndex("OwnerAppUserId1");
 
@@ -670,6 +684,8 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AppUserId");
+
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -678,28 +694,28 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("DisplayName");
 
-                    b.Property<string>("MainPhotoUrl");
-
-                    b.Property<int?>("MemberId");
+                    b.Property<int?>("PhotoId");
 
                     b.Property<string>("TopicTitle");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("PhotoId");
 
                     b.ToTable("TopicComments");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.TopicCommentFeel", b =>
                 {
-                    b.Property<int>("MemberId");
+                    b.Property<int>("AppUserId");
 
                     b.Property<int>("CommentId");
 
                     b.Property<int>("Feeling");
 
-                    b.HasKey("MemberId", "CommentId");
+                    b.HasKey("AppUserId", "CommentId");
 
                     b.HasIndex("CommentId");
 
@@ -724,13 +740,13 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AppUserId");
+
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<string>("DisplayName");
 
-                    b.Property<string>("MainPhotoUrl");
-
-                    b.Property<int?>("MemberId");
+                    b.Property<int?>("PhotoId");
 
                     b.Property<string>("Reply")
                         .IsRequired()
@@ -740,7 +756,9 @@ namespace Wacomi.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("PhotoId");
 
                     b.HasIndex("TopicCommentId");
 
@@ -802,6 +820,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.Blog", b =>
@@ -810,6 +832,10 @@ namespace Wacomi.API.Migrations
                         .WithMany("Blogs")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogFeed", b =>
@@ -818,6 +844,10 @@ namespace Wacomi.API.Migrations
                         .WithMany()
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogFeedComment", b =>
@@ -829,6 +859,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.BlogFeed", "BlogFeed")
                         .WithMany("FeedComments")
                         .HasForeignKey("BlogFeedId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogFeedLike", b =>
@@ -865,6 +899,10 @@ namespace Wacomi.API.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
 
                     b.HasOne("Wacomi.API.Models.MemberProfile")
                         .WithMany("ClanSeekPosted")
@@ -928,7 +966,7 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.Photo", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                    b.HasOne("Wacomi.API.Models.AppUser")
                         .WithMany("Photos")
                         .HasForeignKey("AppUserId");
 
@@ -952,6 +990,10 @@ namespace Wacomi.API.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
+
                     b.HasOne("Wacomi.API.Models.AppUser", "OwnerAppUser")
                         .WithMany()
                         .HasForeignKey("OwnerAppUserId1");
@@ -959,21 +1001,25 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicComment", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.MemberProfile", "Member")
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.TopicCommentFeel", b =>
                 {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany("TopicCommentFeels")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Wacomi.API.Models.TopicComment", "Comment")
                         .WithMany("TopicCommentFeels")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Wacomi.API.Models.MemberProfile", "Member")
-                        .WithMany("TopicCommentFeels")
-                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -992,9 +1038,13 @@ namespace Wacomi.API.Migrations
 
             modelBuilder.Entity("Wacomi.API.Models.TopicReply", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.MemberProfile", "Member")
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
 
                     b.HasOne("Wacomi.API.Models.TopicComment", "TopicComment")
                         .WithMany("TopicReplies")

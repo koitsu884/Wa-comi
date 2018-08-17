@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Wacomi.API.Dto
 {
@@ -10,7 +11,9 @@ namespace Wacomi.API.Dto
         public string CategoryName{get; set;}
         public int AppUserId{ get; set;}
         public string DisplayName{ get; set;}
+        public int MainPhotoId{ get; set;}
         public string MainPhotoUrl{ get; set;}
+        public ICollection<PhotoForReturnDto> Photos { get; set; } 
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}
         public bool IsActive{get; set;}

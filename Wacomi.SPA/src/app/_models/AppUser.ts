@@ -1,3 +1,5 @@
+import { Photo } from "./Photo";
+
 export interface AppUser {
     id: number;
     userType: string;
@@ -5,7 +7,9 @@ export interface AppUser {
     displayName: string;
     isActive: boolean;
     isPremium : boolean;
-    mainPhotoUrl : string;
+    mainPhotoId : number;
+    mainPhotoUrl: string;
+    photos: Photo[];
     cityId: number;
     city: string;
     dateCreated: Date;

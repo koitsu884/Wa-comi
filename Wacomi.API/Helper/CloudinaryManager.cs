@@ -1,3 +1,5 @@
+using System.Drawing;
+using System.Text;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
@@ -9,44 +11,70 @@ namespace Wacomi.API.Helper
 {
     public class CloudinaryManager : IImageFileManager
     {
-        private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
+        private readonly CloudinarySettings _cloudinaryConfig;
         private Cloudinary _cloudinary;
-        public CloudinaryManager(IOptions<CloudinarySettings> cloudinarySettings){
+        public CloudinaryManager(CloudinarySettings cloudinarySettings){
             this._cloudinaryConfig = cloudinarySettings;
 
             CloudinaryDotNet.Account acc = new CloudinaryDotNet.Account(
-                _cloudinaryConfig.Value.CloudName,
-                _cloudinaryConfig.Value.ApiKey,
-                _cloudinaryConfig.Value.ApiSecret
+                _cloudinaryConfig.CloudName,
+                _cloudinaryConfig.ApiKey,
+                _cloudinaryConfig.ApiSecret
             );
 
             _cloudinary = new Cloudinary(acc);
         }
 
-        public string UploadImage(IFormFile file)
+        public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder)
         {
-            return "";
-            // var uploadResult = new ImageUploadResult();
+            var uploadResult = new ImageUploadResult();
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(url),
+                Transformation = new Transformation().Width(600).Height(600).Crop("fit")
+            };
 
-            // if(file.Length > 0){
-            //     using (var stream = file.OpenReadStream())
-            //     {
-            //         var uploadParams = new ImageUploadParams()
-            //         {
-            //             File = new FileDescription(file.Name, stream),
-            //             Transformation = new Transformation().Width(600).Height(600).Crop("fit")
-            //         };
+            uploadResult = _cloudinary.Upload(uploadParams);
+ 
+            return new ImageFileResult(uploadResult.SecureUri.ToString(), uploadResult.Error?.Message, uploadResult.PublicId);
+        }
 
-            //         uploadResult = _cloudinary.Upload(uploadParams);
-            //     }
-            // }
+        public ImageFileResult SaveImage(IFormFile file, string targetFolder = null)
+        {
+            if(file.Length == 0){
+                return new ImageFileResult(null, "No file data");
+            }
+            var uploadResult = new ImageUploadResult();
+            string error = null;
+
+            using (var stream = file.OpenReadStream())
+            {
+                var uploadParams = new ImageUploadParams()
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Folder = targetFolder.Replace("\\", "/"),
+                   // Transformation = new Transformation().Width(600).Height(600).Crop("fit")
+                };
+
+                uploadResult = _cloudinary.Upload(uploadParams);
+                if(uploadResult.Error != null)
+                    error = uploadResult.Error.Message;
+            }
 
             // photoDto.Url = uploadResult.SecureUri.ToString();
             // photoDto.PublicId = uploadResult.PublicId;
+            return new ImageFileResult(uploadResult.SecureUri.ToString(), error, uploadResult.PublicId);
         }
-                public void DeleteImage(Photo photo)
+        public ImageFileResult DeleteImage(string publicId)
         {
-            
+            var deleteParams = new DeletionParams(publicId);
+            var result = _cloudinary.Destroy(deleteParams);
+            return new ImageFileResult(null, result.Error != null ? result.Error.Message : null);
+        }
+
+        public StorageType GetStorageType()
+        {
+            return StorageType.Cloudinary;
         }
     }
 }

@@ -1,0 +1,7 @@
+<p><strong>＊アップロードできる画像は{{FILE_UPLOAD_LIMIT}}つまでです</strong></p>
+<input #inputFiles 
+      type="file" 
+      class="form-control" 
+      accept="image/*" 
+      multiple 
+      (change)="setUploadingFiles(inputFiles.files)" />

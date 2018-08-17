@@ -7,7 +7,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
 import * as AccountActions from './account.actions';
-import * as PhotoActions from '../../photo/store/photos.action';
+// import * as PhotoActions from '../../photo/store/photos.action';
 import * as MessageActions from '../../message/store/message.actions';
 import * as GlobalActions from '../../store/global.actions';
 import { Router } from "@angular/router";
@@ -138,10 +138,10 @@ export class AccountEffects {
                     type: AccountActions.SET_ACCOUNT,
                     payload: loginResult.account
                 },
-                {
-                    type: PhotoActions.SET_PHOTOS,
-                    payload: loginResult.photos
-                },
+                // {
+                //     type: PhotoActions.SET_PHOTOS,
+                //     payload: loginResult.photos
+                // },
                 {
                     type: AccountActions.SET_MEMBER_PROFILE,
                     payload: loginResult.memberProfile
@@ -372,18 +372,19 @@ export class AccountEffects {
 
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
-                { type: PhotoActions.CLEAR_PHOTO },
+                // { type: PhotoActions.CLEAR_PHOTO },
                 { type: MessageActions.CLEAR_MESSAGE },
             ]
         })
 
-    @Effect()
+    @Effect({dispatch: false})
     tokenExpired = this.actions$
         .ofType(AccountActions.TOKEN_EXPIRED)
         .mergeMap(() => {
             this.router.navigate(['/home'])
-            return [
-                { type: PhotoActions.CLEAR_PHOTO },
-            ]
+            return null;
+            // return [
+            //     { type: PhotoActions.CLEAR_PHOTO },
+            // ]
         })
 }

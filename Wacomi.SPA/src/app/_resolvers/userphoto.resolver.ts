@@ -5,17 +5,16 @@ import 'rxjs/add/observable/of';
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import * as fromPhoto from "../photo/store/photos.reducers";
-import * as fromApp from "../store/app.reducer";
 import { Photo } from "../_models/Photo";
 
 @Injectable()
 export class UserPhotoResolver implements Resolve<Photo[]> {
-    constructor(private store: Store<fromApp.AppState>,
+    constructor(private store: Store<fromPhoto.FeatureState>,
         private router: Router) { }
 
     resolve(route: ActivatedRouteSnapshot): Photo[] {
         let photos = null;
-        this.store.select('photos')
+        this.store.select('photo')
             .take(1)
             .subscribe((state) => {
                 photos = Object.assign([], state.photos);

@@ -40,6 +40,7 @@ import { MessageEffects } from './message/store/message.effects';
 import { MessageService } from './_services/message.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoadingComponent } from './shared/loading/loading.component';
+import { ModalService } from './_services/modal.service';
 
 
 defineLocale('ja', jaLocale); 
@@ -70,6 +71,7 @@ defineLocale('ja', jaLocale);
     GlobalService,
     MessageService,
     AlertifyService,
+    ModalService,
     CityListResolver,
     HomeTownListResolver,
     UserPhotoResolver,

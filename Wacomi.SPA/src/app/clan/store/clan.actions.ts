@@ -1,6 +1,7 @@
 import { Action } from "@ngrx/store";
 import { ClanSeek } from "../../_models/ClanSeek";
 import { Pagination } from "../../_models/Pagination";
+import { Photo } from "../../_models/Photo";
 
 export const GET_CLANSEEK = 'GET_CLANSEEK';
 export const CHECK_CLANSEEKS_COUNTLIMIT = 'CHECK_CLANSEEKS_COUNTLIMIT';
@@ -12,12 +13,18 @@ export const CLEAR_CLANSEEK_FILTERS = 'CLEAR_CLANSEEK_FILTERS';
 export const SEARCH_CLANSEEKS = 'SEARCH_CLANSEEKS';
 export const SET_CLANSEEK_SEARCH_RESULT = 'SET_CLANSEEK_SEARCH_RESULT';
 export const TRY_ADD_CLANSEEK = 'TRY_ADD_CLANSEEK';
+export const TRY_ADD_CLANSEEK_PHOTOS = 'TRY_ADD_CLANSEEK_PHOTOS';
 export const TRY_DELETE_CLANSEEK = 'TRY_DELETE_CLANSEEK';
 export const UPDATE_CLANSEEK = 'UPDATE_CLANSEEK';
 
 export class TryAddClanSeek implements Action {
     readonly type = TRY_ADD_CLANSEEK;
-    constructor(public payload: ClanSeek) {}
+    constructor(public payload: { clanSeek: ClanSeek, formData:FormData}) {}
+}
+
+export class TryAddClanSeekPhotos implements Action {
+    readonly type = TRY_ADD_CLANSEEK_PHOTOS;
+    constructor(public payload: {clanSeekId: number, formData:FormData}){}
 }
 
 export class GetClanSeek implements Action {
@@ -79,6 +86,7 @@ export class TryDeleteClanSeek implements Action {
 
 
 export type ClanSeekActions = TryAddClanSeek 
+                            | TryAddClanSeekPhotos
                             | GetClanSeek 
                             | CheckClanseeksCountLimit
                             | SetCountLimitFlag

@@ -1,7 +1,11 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
-<div  *ngIf="location.path() !== '/home' && location.path() !== '/registered'"  class="container">
+<div  *ngIf="location.path() !== '/home' 
+            && location.path() !== '/registered' 
+            && location.path().indexOf('/photo/edit') < 0
+            && location.path().indexOf('/clan/edit') < 0"  class="container">
 <hr>
 <a class="btn btn-warning" (click)="backClicked()">戻る</a>
 </div>
 <app-footer></app-footer>
+<app-modal></app-modal>

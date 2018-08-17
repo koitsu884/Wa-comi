@@ -48,10 +48,10 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> Post([FromBody]FriendRequest model){
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if(!await this._repo.MemberProfileExist(model.SenderId))
+            if(!await this._repo.RecordExist("MemberProfile", model.SenderId))
                 return NotFound();
 
-            if(!await this._repo.MemberProfileExist(model.RecipientId))
+            if(!await this._repo.RecordExist("MemberProfile", model.RecipientId))
                 return NotFound();
 
             var requestFromRepo = await this._repo.GetFriendRequest(model.SenderId, model.RecipientId);
