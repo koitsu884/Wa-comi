@@ -11,9 +11,11 @@
             <label for="description" class="control-label">ブログ紹介文</label>
             <textarea class="form-control" name="description" rows="5" maxlength="1000" [(ngModel)]="blog.description"></textarea>
         </div>
-        <div class="form-group" *ngIf="photos">
+        <div class="form-group">
             <label for="description" class="control-label">ブログ画像</label>
-            <!-- <app-mainphoto-selector [photos]="photos" [mainPhotoUrl]="blog.blogImageUrl" (photoSelected)="mainPhotoSelected($event, blogEditForm)"></app-mainphoto-selector> -->
+            <img class="img-responsive" src="{{previewUrl}}" />
+            <app-photo-selector (photoSelected)="setSelectedFiles($event, blogEditForm)" [multipleSelect]="false"></app-photo-selector>
+            <button type="button" class="btn btn-primary" (click)="deletePhoto()">取り消し</button>
         </div>
         <div class="form-group">
             <label for="description" class="control-label">カテゴリー1</label>

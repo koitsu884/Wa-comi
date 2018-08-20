@@ -15,7 +15,7 @@ import { AlertifyService } from '../../../_services/alertify.service';
 export class TopicCommentComponent implements OnInit {
   @Input() topicComment : TopicComment;
   // @Input() commentFeelings: TopicCommentFeel[];
-  @Input() memberId: number;
+  @Input() appUserId: number;
   @Input() commentFeelEnum: any[];
 
   constructor(private store: Store<fromDailyTopic.FeatureState>, private alertify: AlertifyService) { }
@@ -24,8 +24,8 @@ export class TopicCommentComponent implements OnInit {
   }
 
   sendLike(topicCommentId: number){
-    if(this.memberId)
-      this.store.dispatch(new DailyTopicActions.TryAddCommentFeeling({memberId: this.memberId, commentId: this.topicComment.id, feeling: this.commentFeelEnum["Like"]}));
+    if(this.appUserId)
+      this.store.dispatch(new DailyTopicActions.TryAddCommentFeeling({appUserId: this.appUserId, commentId: this.topicComment.id, feeling: this.commentFeelEnum["Like"]}));
   }
 
   toggleReplyForm(topicComment: TopicComment){

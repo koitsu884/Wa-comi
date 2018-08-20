@@ -134,16 +134,16 @@ export class DailyTopicEffects {
         .map((action: TopicActions.GetTopicComments) => {
             return action.payload;
         })
-        .switchMap((memberId) => {
+        .switchMap((appUserId) => {
             return this.httpClient.get<TopicComment[]>(this.baseUrl + 'dailytopiccomment/list')
                 .mergeMap((result) => {
                     return [{
                         type: TopicActions.SET_TOPIC_COMMENTS,
-                        payload: { comments: result, memberId: memberId }
+                        payload: { comments: result, appUserId: appUserId }
                     },
                     {
                         type: TopicActions.GET_COMMENT_FEELINGS,
-                        payload: memberId
+                        payload: appUserId
                     }
                     ]
                 })
@@ -158,7 +158,6 @@ export class DailyTopicEffects {
             return action.payload;
         })
         .switchMap((payload) => {
-            console.log(payload);
             return this.httpClient.post<TopicComment>(this.baseUrl + 'dailytopiccomment',
                 payload,
                 {
@@ -168,6 +167,9 @@ export class DailyTopicEffects {
                     return [
                         {
                             type: TopicActions.ADD_TOPIC_COMMENT, payload: newComment
+                        },
+                        {
+                            type: TopicActions.GET_TOPIC_COMMENTS, payload: payload.appUserId
                         },
                         {
                             type: GlobalActions.SUCCESS, payload: "トピックコメントを投稿しました"
@@ -206,14 +208,14 @@ export class DailyTopicEffects {
         .map((action: TopicActions.GetCommentFeelings) => {
             return action.payload;
         })
-        .switchMap((memberId) => {
-            if (!memberId)
+        .switchMap((appUserId) => {
+            if (!appUserId)
                 return of({
                     type: TopicActions.SET_COMMENT_FEELINGS,
                     payload: []
                 });
 
-            return this.httpClient.get<TopicCommentFeel[]>(this.baseUrl + 'topiccommentfeel/' + memberId)
+            return this.httpClient.get<TopicCommentFeel[]>(this.baseUrl + 'topiccommentfeel/' + appUserId)
                 .map((result) => {
                     return {
                         type: TopicActions.SET_COMMENT_FEELINGS,

@@ -27,9 +27,7 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
   photos: Photo[];
   selectedPhoto: Photo;
   baseUrl = environment.apiUrl;
-  //photoState: Observable<fromPhoto.State>;
-  // accountState: Observable<fromAccount.State>;
-  selectedFile: Blob;
+  selectedFile: File;
   previewUrl: string;
 
   constructor(private route: ActivatedRoute,
@@ -41,7 +39,6 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.select('photo')
       .subscribe((state => {
-        console.log(state);
         this.photos = state.photos
       }));
 
@@ -50,7 +47,6 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
       let recordId = +params["recordId"];
       if (!recordType || !recordId) {
         this.alertify.error("パラメーターが未設定です");
-        console.log(params);
         this.router.navigate(['/home']);
         return;
       }
@@ -75,13 +71,12 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
     loadImage(
       event.target.files[0],
       (canvas) => {
-        // console.log(canvas);
         if (canvas.type === "error") {
           console.log("Error loading image " + event.target.files[0].name);
         } else {
           let base64 = canvas.toDataURL();
           this.previewUrl = base64;
-          this.selectedFile = this.dataURItoBlob(base64);
+          this.selectedFile = new File([this.dataURItoBlob(base64)], event.target.files[0].name);
         }
       },
       {

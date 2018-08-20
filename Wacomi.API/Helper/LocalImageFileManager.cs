@@ -29,7 +29,7 @@ namespace Wacomi.API.Helper
             return StorageType.Local;
         }
 
-        public ImageFileResult SaveImage(IFormFile file, string targetFolder = null)
+        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null)
         {
             string savedFilePath = null;
             string error = null;
@@ -41,7 +41,7 @@ namespace Wacomi.API.Helper
                     {
                         // var bitmap = new Bitmap(stream);
                         var image = Image.FromStream(stream);
-                        savedFilePath = this.SaveImageToLocalStorage(image, file.FileName, targetFolder);
+                        savedFilePath = this.SaveImageToLocalStorage(image, prefix + file.FileName, targetFolder);
                         savedFilePath = savedFilePath.Replace("\\", "/");
                         //stream.Flush();
                     }
@@ -89,7 +89,7 @@ namespace Wacomi.API.Helper
             var fullFileName = Path.Combine(actualTargetFolderPath, fileName);
             //may throw exception
             Directory.CreateDirectory(actualTargetFolderPath);
-            resizeBmp.Save(fullFileName, ImageFormat.Jpeg);
+            resizeBmp.Save(fullFileName);
             return fullFileName;
         }
     }

@@ -1,5 +1,5 @@
 export interface TopicCommentFeel {
-    memberId: number,
+    appUserId: number,
     commentId: number,
     feeling: number
 }

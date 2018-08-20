@@ -5,7 +5,7 @@
     <div class="col-sm-4">
       <h4>ブログ情報</h4>
       <div>
-        <img class="blogImage pull-left" src="{{blog.blogImageUrl}}" />
+        <img class="blogImage pull-left" src="{{blog.photo ? blog.photo.url : 'assets/NoImage.png'}}" />
         <p>
           <strong>
             <a href="{{blog.url}}">{{blog.title}}</a>

@@ -96,17 +96,17 @@ export const ADD_COMMENT_FEELING = 'ADD_COMMENT_FEELING';
 
 export class GetTopicComments implements Action {
     readonly type = GET_TOPIC_COMMENTS;
-    constructor(public payload: number) {}// memberId
+    constructor(public payload: number) {}// appUserId
 }
 
 export class SetTopicComments implements Action {
     readonly type = SET_TOPIC_COMMENTS;
-    constructor(public payload: {comments: TopicComment[], memberId: number}) {}
+    constructor(public payload: {comments: TopicComment[], appUserId: number}) {}
 }
 
 export class TryAddTopicComment implements Action {
     readonly type = TRY_ADD_TOPIC_COMMENT;
-    constructor(public payload: {memberId: number, topicTitle: string, comment: string}){}
+    constructor(public payload: {appUserId: number, topicTitle: string, comment: string}){}
 }
 
 export class AddTopicComment implements Action {
@@ -126,7 +126,7 @@ export class DeleteTopicComment implements Action {
 
 export class GetCommentFeelings implements Action {
     readonly type = GET_COMMENT_FEELINGS;
-    constructor(public payload: number){} //memberId
+    constructor(public payload: number){} //appUserId
 }
 
 export class SetCommentFeelings implements Action {
@@ -161,7 +161,7 @@ export class SetTopicReplies implements Action {
 
 export class TryAddTopicReply implements Action {
     readonly type = TRY_ADD_TOPIC_REPLY;
-    constructor(public payload:{topicCommentId: number, memberId: number, reply: string }){}
+    constructor(public payload:{topicCommentId: number, appUserId: number, reply: string }){}
 }
 
 // export class AddTopicReply implements Action {

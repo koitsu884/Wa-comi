@@ -24,6 +24,7 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
   test : TopicCommentFeel[];
   appUser: AppUser;
   commentFeelingEnum: any[];
+  alreadyTweeted: boolean;
 
   constructor(private route: ActivatedRoute,
     private alertify: AlertifyService,
@@ -38,10 +39,9 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
     this.dailyTopicState = this.store.select('dailytopic');
     this.dailyTopicState.subscribe((result) => {
       this.loading = false;
+      this.alreadyTweeted = result.todaysComment ? true : false;
     });
-    // console.log("memberId?" + this.appUser.relatedUserClassId);
-    let memberId = this.appUser ? this.appUser.userProfileId : null;
-    this.store.dispatch(new TopicActions.GetTopicComments(memberId));
+    this.store.dispatch(new TopicActions.GetTopicComments(this.appUser ? this.appUser.id : null));
     
     // this.store.dispatch(new TopicActions.GetCommentFeelings(this.appUser.relatedUserClassId));
     this.globalService.getTodaysTopic()
@@ -57,7 +57,7 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
   }
 
   submit(form: NgForm){
-      this.store.dispatch(new TopicActions.TryAddTopicComment({memberId: this.appUser.userProfileId, comment: form.value.comment, topicTitle:this.todaysTopic}));
+      this.store.dispatch(new TopicActions.TryAddTopicComment({appUserId: this.appUser.id, comment: form.value.comment, topicTitle:this.todaysTopic}));
   }
 
   onAddTopicCommentReply(topicCommentId: number, comment:string){
@@ -66,7 +66,7 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
     {
       this.store.dispatch(new TopicActions.TryAddTopicReply({
                           topicCommentId: topicCommentId,
-                          memberId: this.appUser.userProfileId, 
+                          appUserId: this.appUser.id, 
                           reply:comment}));
     }
 }

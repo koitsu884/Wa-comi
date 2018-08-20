@@ -17,7 +17,6 @@ namespace Wacomi.API.Dto
         public string Category3{get; set;}
         [Required]
         public string Url{get; set;}
-        public string BlogImageUrl{get; set;}
         public string RSS{get; set;}
     }
 }

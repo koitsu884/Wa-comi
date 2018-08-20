@@ -13,12 +13,12 @@
     </div>
   </div>
   <div class="commentTools">
-    <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !memberId">
+    <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !appUserId">
       <i class="fa fa-thumbs-up" title="良いね"></i>
       <span class="badge">{{topicComment.likedCount}}</span>
     </button><br/>
     <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
-    <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!memberId">
+    <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!appUserId">
         <i class="fa fa-comment" title="返信数"></i>
         <span class="badge">{{topicComment.replyCount}}</span>
     </button>
@@ -26,4 +26,4 @@
   </div>
 </div>
 <span class="clearfix"></span>
-<a *ngIf="topicComment.memberId == memberId" class="btn btn-danger btn-xs" (click)="onDelete(topicComment)">削除</a>
+<a *ngIf="topicComment.appUserId == appUserId" class="btn btn-danger btn-xs" (click)="onDelete(topicComment)">削除</a>

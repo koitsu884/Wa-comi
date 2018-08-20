@@ -4,14 +4,14 @@
   <a class="btn btn-primary btn-sm" *ngIf="appUser" [routerLink]="['/dailytopic/ranking/', appUser.id]">明日のトピックは？</a>
   <app-loading *ngIf="loading"></app-loading>
   <form *ngIf="!(dailyTopicState | async).todaysComment" #topicCommentForm="ngForm" id="topicCommentForm" (ngSubmit)="submit(topicCommentForm)">
-    <div class="form-group" *ngIf="appUser">
+    <div class="form-group" *ngIf="appUser && !alreadyTweeted">
       <label for="title" class="control-label">一言を追加する（1日1回のみ, 最大100文字）</label>
       <input class="form-control" name="comment" type="text" ngModel required maxlength="100">
       <button [disabled]="!topicCommentForm.valid" class="btn btn-primary" type="submit">一言追加</button>
     </div>
   </form>
   <div *ngFor="let topicComment of (dailyTopicState | async).topicComments">
-    <app-topic-comment *ngIf="(dailyTopicState | async).commentFeelings" [topicComment]="topicComment" [memberId]="appUser? appUser.userProfileId : null"
+    <app-topic-comment *ngIf="(dailyTopicState | async).commentFeelings" [topicComment]="topicComment" [appUserId]="appUser? appUser.id : null"
       [commentFeelEnum]="commentFeelingEnum"></app-topic-comment>
     <!-- <app-topic-reply *ngIf="topicComment.displayReplies" [topicCommentId]="topicComment.id" [currentMemberId]="appUser? appUser.userProfileId : null"  [topicReplies]="topicComment.topicReplies" ></app-topic-reply> -->
     <app-short-comment-form 

@@ -193,7 +193,7 @@ namespace Wacomi.API.Data
 
         public async Task<Blog> GetBlog(int id)
         {
-            return await _context.Blogs.FirstOrDefaultAsync(b => b.Id == id);
+            return await _context.Blogs.Include(b => b.Photo).FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<int> GetBlogCountForUser(int id)
@@ -203,7 +203,7 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<Blog>> GetBlogsForUser(int id)
         {
-            return await _context.Blogs.Where(b => b.OwnerId == id).ToListAsync();
+            return await _context.Blogs.Include(b => b.Photo).Where(b => b.OwnerId == id).ToListAsync();
         }
 
         // public async Task<IEnumerable<Blog>> GetBlogsForClass(string className, int id)
@@ -231,7 +231,7 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<Blog>> GetBlogs()
         {
-            return await _context.Blogs.Where(b => b.IsActive == true).ToListAsync();
+            return await _context.Blogs.Include(b => b.Photo).Where(b => b.IsActive == true).ToListAsync();
         }
 
         public async Task<IEnumerable<Blog>> GetBlogsForRssFeed(int count = 100)

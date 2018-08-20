@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
 using Wacomi.API.Helper;
@@ -15,8 +16,13 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class ClanSeekController : DataController
     {
+        private readonly ImageFileStorageManager _imageFileStorageManager;
+        private readonly ILogger<ClanSeekController> _logger;
         const int CLANSEEK_MAX = 5;
-        public ClanSeekController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
+        public ClanSeekController(IDataRepository repo, IMapper mapper, ILogger<ClanSeekController> logger,  ImageFileStorageManager imageFileStorageManager) : base(repo, mapper) {
+            this._imageFileStorageManager = imageFileStorageManager;
+            this._logger = logger;
+         }
 
         [HttpGet("{id}", Name = "GetClanSeek")]
         public async Task<ActionResult> GetClanSeek(int id)
@@ -115,11 +121,17 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
             }
             _repo.Delete(clanSeek);
+            await _repo.SaveAll();
 
-            if (await _repo.SaveAll() > 0)
-                return Ok();
+            foreach(var photo in clanSeek.Photos){
+                _repo.Delete(photo);
+                var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
+                if (!string.IsNullOrEmpty(deletingResult.Error))
+                    this._logger.LogError(deletingResult.Error);
+            }
 
-            return BadRequest("Failed to delete the clan seek");
+            await _repo.SaveAll();
+            return Ok();
         }
 
         [Authorize]

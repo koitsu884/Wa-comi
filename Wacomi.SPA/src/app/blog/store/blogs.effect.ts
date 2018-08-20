@@ -21,6 +21,9 @@ import { of } from "rxjs/observable/of";
 import { Blog } from "../../_models/Blog";
 import { BlogFeed } from "../../_models/BlogFeed";
 import { ShortComment } from "../../_models/ShortComment";
+import { ModalService } from "../../_services/modal.service";
+import { UploadingComponent } from "../../core/modal/uploading/uploading.component";
+import { Location } from "@angular/common";
 
 @Injectable()
 export class BlogEffects {
@@ -29,6 +32,8 @@ export class BlogEffects {
         private store$: Store<fromBlog.FeatureState>,
         private router: Router,
         private httpClient: HttpClient,
+        private modal: ModalService,
+        private location: Location,
         private alertify: AlertifyService) { }
 
     @Effect()
@@ -56,17 +61,23 @@ export class BlogEffects {
         .map((action: BlogActions.TryAddBlog) => {
             return action.payload
         })
-        .switchMap((newBlog) => {
+        .switchMap((payload) => {
             return this.httpClient.post<Blog>(this.baseUrl + 'blog',
-                newBlog,
+                payload.blog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .map((result) => {
+                .mergeMap((result) => {
+                    let returnValues: Array<any> = [{type: BlogActions.ADD_BLOG, payload: result}];
+                    if (payload.photo != null) {
+                        returnValues.push({type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: {blogId: result.id, photo: payload.photo}});
+                    }
+                    else{
+                        this.location.back();
+                    }
+
                     this.alertify.success("ブログを追加しました");
-                    return {
-                        type: BlogActions.ADD_BLOG, payload: result
-                    };
+                    return returnValues;
                 })
                 .catch((error: string) => {
                     return of({ type: 'FAILED', payload: error })
@@ -74,22 +85,57 @@ export class BlogEffects {
         })
 
     @Effect()
+    tryAddBlogPhoto = this.actions$
+        .ofType(BlogActions.TRY_ADD_BLOG_PHOTO)
+        .map((action: BlogActions.TryAddBlogPhoto) => {
+            return action.payload
+        })
+        .switchMap((payload) => {
+            this.modal.open(UploadingComponent);
+            var formData = new FormData();
+            formData.append("files", payload.photo);
+
+            return this.httpClient.post(this.baseUrl + 'photo/blog/' + payload.blogId,
+                formData)
+                .mergeMap((result) => {
+                    this.modal.close();
+                    this.location.back();
+                    return [
+                        {
+                            type: GlobalActions.SUCCESS, payload: "写真をアップロードしました"
+                        }
+                    ];
+                })
+                .catch((error: string) => {
+                    this.modal.close();
+                    this.location.back();
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+
+    @Effect()
     updateBlog = this.actions$
         .ofType(BlogActions.UPDATE_BLOG)
         .map((action: BlogActions.UpdateBlog) => {
             return action.payload
         })
-        .switchMap((blog) => {
+        .switchMap((payload) => {
             return this.httpClient.put(this.baseUrl + 'blog/',
-                blog,
+                payload.blog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .map(() => {
-                    this.alertify.success("更新しました");
-                    return {
-                        type: BlogActions.GET_BLOG, payload: blog.ownerId
-                    };
+                    //this.alertify.success("更新しました");
+                    if(payload.photo)
+                    {
+                        this.alertify.success("更新しました");
+                        return {type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: {blogId: payload.blog.id, photo: payload.photo}}
+                    }
+
+                    this.location.back();
+                    return {type: GlobalActions.SUCCESS, payload: "更新しました"};
                 })
                 .catch((error: string) => {
                     return of({ type: 'FAILED', payload: error })

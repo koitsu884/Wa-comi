@@ -11,6 +11,7 @@ using CodeHollow.FeedReader.Feeds;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
 using Wacomi.API.Helper;
@@ -23,8 +24,13 @@ namespace Wacomi.API.Controllers
     {
         private const int MAX_BLOGCOUNT = 1;
         private const int MAX_BLOGCOUNT_PR = 5;
+        private readonly ImageFileStorageManager _imageFileStorageManager;
+        private readonly ILogger<PhotoController> _logger;
 
-        public BlogController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
+        public BlogController(IDataRepository repo, IMapper mapper, ILogger<PhotoController> logger, ImageFileStorageManager imageFileStorageManager) : base(repo, mapper) {
+            this._logger = logger;
+            this._imageFileStorageManager = imageFileStorageManager;
+         }
 
         [HttpGet("{id}", Name = "GetBlog")]
         public async Task<ActionResult> Get(int id)
@@ -247,10 +253,9 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             this._mapper.Map(model, blogFromRepo);
-            if (await _repo.SaveAll() > 0)
-                return Ok();
+            await _repo.SaveAll();
 
-            return BadRequest("ブログ情報の更新に失敗しました");
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -268,6 +273,13 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             await _repo.DeleteFeedsForBlog(blogFromRepo.Id);
+            if(blogFromRepo.Photo != null){
+                _repo.Delete(blogFromRepo.Photo);
+                var deletingResult = this._imageFileStorageManager.DeleteImageFile(blogFromRepo.Photo);
+                if (!string.IsNullOrEmpty(deletingResult.Error))
+                    this._logger.LogError(deletingResult.Error);
+            }
+
             _repo.Delete(blogFromRepo);
 
             if (await _repo.SaveAll() > 0)

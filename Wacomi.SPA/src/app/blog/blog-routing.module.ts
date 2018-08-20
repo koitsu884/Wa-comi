@@ -30,18 +30,12 @@ const blogRoute: Routes = [
         runGuardsAndResolvers: 'always',
         component: BlogEditorComponent, 
         canActivate: [AuthGuard],
-        resolve: {
-          photos: UserPhotoResolver
-        }
     },
     { 
         path: 'add', 
         runGuardsAndResolvers: 'always',
         component: BlogEditorComponent, 
         canActivate: [AuthGuard],
-        resolve: {
-          photos: UserPhotoResolver
-        }
     },
     //   { 
     //     path: 'editblog', 

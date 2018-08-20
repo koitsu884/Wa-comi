@@ -10,7 +10,7 @@ export interface LoginResult {
     // password: string;
     appUser: AppUser;
     account: Account;
-    photos: Photo[];
+    // photos: Photo[];
     // blogs: Blog[];
     memberProfile: MemberProfile;
     businessProfile: BusinessProfile;

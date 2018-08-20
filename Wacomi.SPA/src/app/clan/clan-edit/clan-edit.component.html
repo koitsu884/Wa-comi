@@ -13,7 +13,7 @@
     </div>
     <div *ngIf="!editMode">
       <h4>画像アップロード</h4>
-      <app-photo-selector (photoSelected)="setSelectedFiles($event)" ></app-photo-selector>
+      <app-photo-selector (photoSelected)="setSelectedFiles($event)" [multipleSelect]="true"></app-photo-selector>
       <div class="row" *ngIf="selectedFiles">
         <div class="col-xs-2 col-md-3" *ngFor="let tempImageUrl of previewUrls">
           <img class="img-responsive" [src]="tempImageUrl" />

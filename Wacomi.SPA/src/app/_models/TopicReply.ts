@@ -3,7 +3,6 @@ export interface TopicReply {
     mainPhotoUrl: string;
     displayName: string;
     topicCommentId: number;
-    memberId: number;
     appUserId: number;
     reply: string;
     dateCreated: Date;

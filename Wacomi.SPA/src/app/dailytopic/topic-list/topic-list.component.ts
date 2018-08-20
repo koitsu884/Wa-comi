@@ -38,14 +38,12 @@ export class TopicListComponent implements OnInit, OnDestroy {
   }
 
   sendLike(id: number){
-    console.log(this.userId)
     this.store.dispatch(new TopicActions.LikeTopic({supportAppUserId:this.userId, dailyTopicId:id}));
   }
 
   onCreate(form: NgForm){
     if(this.userId)
     {
-      // console.log(form.value.newTopic + " | " + this.userId);
       this.store.dispatch(new TopicActions.TryAddTopic({title:form.value.newTopic, userId:this.userId}));
       form.reset();
     }

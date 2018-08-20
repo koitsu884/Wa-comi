@@ -39,7 +39,7 @@ namespace Wacomi.API.Helper
             return new ImageFileResult(uploadResult.SecureUri.ToString(), uploadResult.Error?.Message, uploadResult.PublicId);
         }
 
-        public ImageFileResult SaveImage(IFormFile file, string targetFolder = null)
+        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null)
         {
             if(file.Length == 0){
                 return new ImageFileResult(null, "No file data");
@@ -51,7 +51,7 @@ namespace Wacomi.API.Helper
             {
                 var uploadParams = new ImageUploadParams()
                 {
-                    File = new FileDescription(file.FileName, stream),
+                    File = new FileDescription(prefix + file.FileName, stream),
                     Folder = targetFolder.Replace("\\", "/"),
                    // Transformation = new Transformation().Width(600).Height(600).Crop("fit")
                 };
@@ -68,8 +68,14 @@ namespace Wacomi.API.Helper
         public ImageFileResult DeleteImage(string publicId)
         {
             var deleteParams = new DeletionParams(publicId);
-            var result = _cloudinary.Destroy(deleteParams);
-            return new ImageFileResult(null, result.Error != null ? result.Error.Message : null);
+            try{
+                var result = _cloudinary.Destroy(deleteParams);
+                return new ImageFileResult(null, result.Error != null ? result.Error.Message : null);
+            }
+            catch(System.Exception ex){
+                 return new ImageFileResult(null, ex.Message);
+            }
+
         }
 
         public StorageType GetStorageType()

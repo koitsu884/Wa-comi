@@ -1,7 +1,8 @@
-<p><strong>＊アップロードできる画像は{{FILE_UPLOAD_LIMIT}}つまでです</strong></p>
-<input #inputFiles 
-      type="file" 
-      class="form-control" 
-      accept="image/*" 
-      multiple 
-      (change)="setUploadingFiles(inputFiles.files)" />
+<div *ngIf="multipleSelect">
+      <p><strong>＊アップロードできる画像は{{FILE_UPLOAD_LIMIT}}つまでです</strong></p>
+      <input #inputFiles type="file" class="form-control" accept="image/*" multiple (change)="setUploadingFiles(inputFiles.files)"
+      />
+</div>
+<div *ngIf="!multipleSelect">
+      <input  #inputFiles type="file" class="form-control" accept="image/*" (change)="setUploadingFiles(inputFiles.files)"/>
+</div>

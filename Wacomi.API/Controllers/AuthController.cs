@@ -87,7 +87,7 @@ namespace Wacomi.API.Controllers
             }
 
             await _authRepo.AddRoles(appUser, model.UserType == "Business" ? new string[] { "Business" } : new string[] { "Member" });
-            await _emailSender.SendEmailAsync(model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
+      //      await _emailSender.SendEmailAsync(model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
 
             return CreatedAtRoute("GetUser", new { id = appUser.Id }, new { });
         }
@@ -238,7 +238,7 @@ namespace Wacomi.API.Controllers
             returnValues.Add("appUser", _mapper.Map<AppUserForReturnDto>(appUser));
             if (appUser != null)
             {
-                returnValues.Add("photos", _mapper.Map<IEnumerable<PhotoForReturnDto>>(await _repo.GetPhotosForAppUser(appUser.Id)));
+               // returnValues.Add("photos", _mapper.Map<IEnumerable<PhotoForReturnDto>>(await _repo.GetPhotosForAppUser(appUser.Id)));
                 // returnValues.Add("blogs", _mapper.Map<IEnumerable<BlogForReturnDto>>(await _repo.GetBlogsForUser(appUser.Id)));
                 switch (appUser.UserType)
                 {

@@ -24,7 +24,7 @@ export class SetPhotos implements Action{
 export class TryAddPhoto implements Action{
     readonly type = TRY_ADD_PHOTO;
 
-    constructor(public payload: Blob){}
+    constructor(public payload: File){}
 }
 
 export class TryDeletePhoto implements Action{

@@ -94,7 +94,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
         // Topic Comment
         //====================================================
         case DailyTopicActions.SET_TOPIC_COMMENTS:
-        var myComment = action.payload.comments.find(c => c.memberId == action.payload.memberId);
+        var myComment = action.payload.comments.find(c => c.appUserId == action.payload.appUserId);
             return {
                 ...state,
                 topicComments: action.payload.comments,

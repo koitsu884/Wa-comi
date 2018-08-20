@@ -22,7 +22,7 @@ namespace Wacomi.API.Helper
     {
         StorageType GetStorageType();
         ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder = null);
-        ImageFileResult SaveImage(IFormFile file, string targetFolder = null);
+        ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null);
         ImageFileResult DeleteImage(string publicId);
     }
 }

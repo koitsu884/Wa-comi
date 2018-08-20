@@ -26,7 +26,7 @@ namespace Wacomi.API.Helper
                     case "clanseek":
                         return StorageType.Cloudinary;
                     case "blog":
-                        return StorageType.Local;
+                        return StorageType.Cloudinary;
                     case "blogfeed":
                         return StorageType.Local;
                 }
@@ -55,16 +55,17 @@ namespace Wacomi.API.Helper
 
             return new ImageFileResult(null, "Failed to getting imge file manager");
         }
-        public ImageFileResult SaveImage(string recordType, IFormFile file, string targetFolder = null){
+        public ImageFileResult SaveImage(string recordType, int recordId, IFormFile file, string targetFolder = null){
             try{
                 using (var image = System.Drawing.Image.FromStream(file.OpenReadStream())) //For validation
                 {
+                    string prefix = recordType + "_" + recordId + "_";
                     var storageType = GetStorageType(recordType);
                     IImageFileManager imageFileManager = GetImageFileManager(storageType);
                     if(imageFileManager == null)
                         return new ImageFileResult(null, "Failed to getting imge file manager");
 
-                    return imageFileManager.SaveImage(file, targetFolder);
+                    return imageFileManager.SaveImage(file, prefix, targetFolder);
                 }
             }
             catch(System.Exception ex){

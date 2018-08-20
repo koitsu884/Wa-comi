@@ -35,13 +35,13 @@ export class AppComponent implements OnInit{
         const memberProfile = localStorage.getItem('memberProfile');
         const businessProfile = localStorage.getItem('businessProfile');
         const isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
-        const photos = JSON.parse(localStorage.getItem('photos'));
+        // const photos = JSON.parse(localStorage.getItem('photos'));
         // const blogs = JSON.parse(localStorage.getItem('blogs'));
         this.store.dispatch(new AccountActions.Login({
                 tokenString: token,
                 appUser: appUser,
                 account: account,
-                photos: photos == null ? [] : photos,
+                // photos: photos == null ? [] : photos,
                 // blogs: blogs == null ? [] : blogs,
                 memberProfile: memberProfile == null ? null : JSON.parse(memberProfile),
                 businessProfile: businessProfile == null ? null : JSON.parse(businessProfile),

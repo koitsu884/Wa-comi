@@ -1,4 +1,5 @@
 import { BlogFeed } from "./BlogFeed";
+import { Photo } from "./Photo";
 
 export interface Blog {
     id: number;
@@ -12,7 +13,7 @@ export interface Blog {
     category2: string;
     category3: string;
     url: string;
-    blogImageUrl: string;
+    photo: Photo;
     rss: string;
     followerCount: number;
     hatedCount: number;

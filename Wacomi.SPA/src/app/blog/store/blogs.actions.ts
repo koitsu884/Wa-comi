@@ -8,6 +8,7 @@ import { ShortComment } from "../../_models/ShortComment";
 export const GET_BLOG = 'GET_BLOG';
 export const SET_BLOG = 'SET_BLOG';
 export const TRY_ADDBLOG = 'TRY_ADDBLOG';
+export const TRY_ADD_BLOG_PHOTO = 'TRY_ADD_BLOG_PHOTO';
 export const TRY_DELETEBLOG = 'TRY_DELETEBLOG';
 export const ADD_BLOG = 'ADD_BLOG';
 export const UPDATE_BLOG = 'UPDATE_BLOG';
@@ -38,7 +39,13 @@ export const TOGGLE_COMMENT_FORM = "TOGGLE_COMMENT_FORM";
 export class TryAddBlog implements Action {
     readonly type = TRY_ADDBLOG;
 
-    constructor(public payload:Blog){}
+    constructor(public payload:{blog: Blog, photo:File}){}
+}
+
+export class TryAddBlogPhoto implements Action {
+    readonly type = TRY_ADD_BLOG_PHOTO;
+
+    constructor(public payload:{blogId: number, photo:File}){}
 }
 
 export class TryDeleteBlog implements Action {
@@ -70,7 +77,7 @@ export class AddBlog implements Action {
 export class UpdateBlog implements Action {
     readonly type = UPDATE_BLOG;
 
-    constructor(public payload: Blog) {}
+    constructor(public payload:{blog: Blog, photo:File}) {}
 }
 
 export class DeleteBlog implements Action {
@@ -155,6 +162,7 @@ export class ToggleCommentForm implements Action {
 
 
 export type AccountActions = TryAddBlog 
+                           | TryAddBlogPhoto
                            | TryDeleteBlog 
                            | GetBlog 
                            | SetBlog 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { AlertifyService } from '../../_services/alertify.service';
 import * as loadImage from 'blueimp-load-image';
 
@@ -9,10 +9,11 @@ import * as loadImage from 'blueimp-load-image';
 })
 export class PhotoSelectorComponent implements OnInit {
   @Output() photoSelected = new EventEmitter<any>();
+  @Input() multipleSelect: boolean = true;
 
   readonly FILE_UPLOAD_LIMIT = 5;
   readonly IMAGE_SIZE = 600;
-  selectedFiles: Array<Blob> = [];
+  selectedFiles: Array<File> = [];
   previewUrls: Array<string> = [];
 
   constructor(private alertify: AlertifyService) { }
@@ -42,7 +43,8 @@ export class PhotoSelectorComponent implements OnInit {
           } else {
             let base64 = canvas.toDataURL();
             this.previewUrls.push(base64);
-            this.selectedFiles.push(this.dataURItoBlob(base64));
+            var selectedFile = new File([this.dataURItoBlob(base64)], file.name);
+            this.selectedFiles.push(selectedFile);
           }
         },
         {

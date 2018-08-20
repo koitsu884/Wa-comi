@@ -18,12 +18,13 @@ import { Location } from '@angular/common';
   styleUrls: ['./blog-editor.component.css']
 })
 export class BlogEditorComponent implements OnInit {
-  photos: Photo[];
   editMode: boolean;
   loading: boolean;
   feedUriLoading: boolean;
   blog: any = {};
   blogCategories: string[];
+  selectedFile: File = null;
+  previewUrl: string;
 
   constructor(private store: Store<fromBlog.FeatureState>,
     private global: GlobalService,
@@ -36,9 +37,6 @@ export class BlogEditorComponent implements OnInit {
 
   ngOnInit() {
     this.blogCategories = this.global.getBlogCategories();
-    this.route.data.subscribe(data => {
-      this.photos = data['photos'];
-    })
     this.route.params.subscribe(params => {
       let blogId = +params['id'];
       this.editMode = blogId ? true : false;
@@ -51,6 +49,8 @@ export class BlogEditorComponent implements OnInit {
             if (index >= 0) {
               Object.assign(this.blog, state.blogs[index]);
               this.loading = false;
+              if(this.blog.photo)
+                this.previewUrl = this.blog.photo.url;
             }
           });
       } else {
@@ -63,19 +63,29 @@ export class BlogEditorComponent implements OnInit {
     })
   }
 
+  setSelectedFiles(event: any, ngForm: NgForm){
+    this.selectedFile = event.selectedFiles;
+    this.previewUrl = event.previewUrls;
+    ngForm.form.markAsDirty();
+  }
+
+  deletePhoto(){
+    this.selectedFile = null;
+    this.previewUrl = this.blog.photo ? this.blog.photo.url : null;
+  }
+
   mainPhotoSelected(event, ngForm: NgForm){
     this.blog.blogImageUrl = event;
     ngForm.form.markAsDirty();
   }
 
   onSubmit() {
-    // console.log(this.blog);
     if (this.editMode) {
-      this.store.dispatch(new BlogAction.UpdateBlog(this.blog));
+      this.store.dispatch(new BlogAction.UpdateBlog({blog:this.blog, photo: this.selectedFile ? this.selectedFile[0] : null}));
+     // this.location.back();
     } else {
-      this.store.dispatch(new BlogAction.TryAddBlog(this.blog));
+      this.store.dispatch(new BlogAction.TryAddBlog({blog:this.blog, photo: this.selectedFile ? this.selectedFile[0] : null}));
     }
-    this.location.back();
   }
 
   onGetFeedUri(){

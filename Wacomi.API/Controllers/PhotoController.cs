@@ -16,6 +16,7 @@ using System;
 using AutoMapper.Configuration;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Wacomi.API.Controllers
 {
@@ -24,9 +25,11 @@ namespace Wacomi.API.Controllers
     public class PhotoController : DataController
     {
         private readonly ImageFileStorageManager _imageFileStorageManager;
-        public PhotoController(IDataRepository repo, IMapper mapper, ImageFileStorageManager imageFileStorageManager) : base(repo, mapper)
+        private readonly ILogger<PhotoController> _logger;
+        public PhotoController(IDataRepository repo, IMapper mapper,  ILogger<PhotoController> logger, ImageFileStorageManager imageFileStorageManager) : base(repo, mapper)
         {
             this._imageFileStorageManager = imageFileStorageManager;
+            this._logger = logger;
         }
 
         [HttpGet("{id}", Name = "GetPhoto")]
@@ -87,7 +90,7 @@ namespace Wacomi.API.Controllers
             List<string> errors = new List<string>();
             List<Photo> addingPhotos = new List<Photo>();
             foreach(var file in files){
-                var result = this._imageFileStorageManager.SaveImage(recordType, file, System.IO.Path.Combine("images", recordType.ToLower(), recordId.ToString()));
+                var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
                 if (!string.IsNullOrEmpty(result.Error))
                 {
                     errors.Add(result.Error);
@@ -127,7 +130,7 @@ namespace Wacomi.API.Controllers
             List<string> errors = new List<string>();
             List<Photo> addingPhotos = new List<Photo>();
             foreach(var file in files){
-                var result = this._imageFileStorageManager.SaveImage(recordType, file, System.IO.Path.Combine("images", recordType.ToLower(), recordId.ToString()));
+                var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
                 if (!string.IsNullOrEmpty(result.Error))
                 {
                     errors.Add(result.Error);
@@ -163,10 +166,20 @@ namespace Wacomi.API.Controllers
                 return NotFound();
             if(!await MatchAppUserWithToken(blog.OwnerId))
                 return Unauthorized();
+
+            //Delete current photo
+            if(blog.Photo != null)
+            {
+                var deletingResult = this._imageFileStorageManager.DeleteImageFile(blog.Photo);
+                if (!string.IsNullOrEmpty(deletingResult.Error))
+                    this._logger.LogError(deletingResult.Error);
+                _repo.Delete(blog.Photo);
+                await _repo.SaveAll();
+            }
             
             List<string> errors = new List<string>();
             Photo addingPhoto = null;
-            var result = this._imageFileStorageManager.SaveImage(recordType, files[0], System.IO.Path.Combine("images", recordType.ToLower(), recordId.ToString()));
+            var result = this._imageFileStorageManager.SaveImage(recordType, recordId, files[0], System.IO.Path.Combine("images", recordType.ToLower()));
             if (!string.IsNullOrEmpty(result.Error))
             {
                 errors.Add(result.Error);
@@ -183,156 +196,12 @@ namespace Wacomi.API.Controllers
                 return BadRequest(errors);
             }
 
-            _repo.Delete(blog.Photo);
             blog.Photo = addingPhoto;
 
             await _repo.SaveAll();
 
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
         }
-
-        // private async Task<ActionResult> addPhotoToClanSeek(string recordType, int recordId, PhotoForCreationDto model){
-        //     var clanSeek = await _repo.GetClanSeek(recordId);
-        //     if(clanSeek == null)
-        //         return NotFound();
-        //     if(!await MatchAppUserWithToken(clanSeek.AppUserId))
-        //         return Unauthorized();
-            
-        //     var result = this._imageFileStorageManager.SaveImage(recordType, model.File, System.IO.Path.Combine("images", recordType, recordId.ToString()));
-        //     if (!string.IsNullOrEmpty(result.Error))
-        //         return BadRequest(result.Error);
-        //     model.Url = result.Url;
-        //     model.PublicId = result.PublicId;
-
-        //     var photo = _mapper.Map<Photo>(model);
-        //     clanSeek.Photos.Add(photo);
-        //     await _repo.SaveAll();
-        //     if (clanSeek.MainPhotoId == null)
-        //     {
-        //         clanSeek.MainPhotoId = photo.Id;
-        //         await _repo.SaveAll();
-        //     }
-        //     var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
-        //     return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
-        // }
-
-        // private async Task<ActionResult> addPhotoToBlog(string recordType, int recordId, PhotoForCreationDto model){
-        //     var blog = await _repo.GetBlog(recordId);
-        //     if(blog == null)
-        //         return NotFound();
-        //     if(!await MatchAppUserWithToken(blog.OwnerId))
-        //         return Unauthorized();
-            
-        //     var result = this._imageFileStorageManager.SaveImage(recordType, model.File, System.IO.Path.Combine("images", recordType, recordId.ToString()));
-        //     if (!string.IsNullOrEmpty(result.Error))
-        //         return BadRequest(result.Error);
-        //     model.Url = result.Url;
-        //     model.PublicId = result.PublicId;
-
-        //     var photo = _mapper.Map<Photo>(model);
-        //     if (blog.PhotoId != null)
-        //     {
-        //         this._imageFileStorageManager.DeleteImageFile(blog.Photo);
-        //         this._repo.Delete(blog.Photo);
-        //     }
-        //     blog.Photo = photo;
-        //     await _repo.SaveAll();
-        //     var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
-        //     return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
-        // }
-
-        // [HttpPost("{recordType}/{recordId}")]
-        // public async Task<ActionResult> Post(string recordType, int recordId, [FromForm]PhotoForCreationDto model)
-        // {
-        //     if (!ModelState.IsValid)
-        //         return BadRequest(ModelState);
-        //     model.StorageType = this._imageFileStorageManager.GetStorageType(recordType);
-
-        //     // switch(recordType){
-        //     //     case "AppUser":
-        //     //         return await addPhotoToAppUser(recordType, recordId, model);
-        //     //     case "Blog":
-        //     //         return await addPhotoToBlog(recordType, recordId, model);
-        //     //     case "ClanSeek":
-        //     //         return await addPhotoToClanSeek(recordType, recordId, model);
-        //     // }
-        //     return BadRequest("Invalid Record Type: " + recordType);
-        // }
-
-        // private async Task<ActionResult> addPhotoToAppUser(string recordType, int recordId, PhotoForCreationDto model){
-        //     var appUser = await _repo.GetAppUser(recordId);
-        //     if(appUser == null)
-        //         return NotFound();
-        //     if(!await MatchAppUserWithToken(recordId))
-        //         return Unauthorized();
-            
-        //     var result = this._imageFileStorageManager.SaveImage(recordType, model.File, System.IO.Path.Combine("images", recordType.ToLower(), recordId.ToString()));
-        //     if (!string.IsNullOrEmpty(result.Error))
-        //         return BadRequest(result.Error);
-        //     model.Url = result.Url;
-        //     model.PublicId = result.PublicId;
-
-        //     var photo = _mapper.Map<Photo>(model);
-        //     appUser.Photos.Add(photo);
-        //     await _repo.SaveAll();
-        //     if (appUser.MainPhotoId == null)
-        //     {
-        //         appUser.MainPhotoId = photo.Id;
-        //         await _repo.SaveAll();
-        //     }
-        //     var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
-        //     return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
-        // }
-
-        // private async Task<ActionResult> addPhotoToClanSeek(string recordType, int recordId, PhotoForCreationDto model){
-        //     var clanSeek = await _repo.GetClanSeek(recordId);
-        //     if(clanSeek == null)
-        //         return NotFound();
-        //     if(!await MatchAppUserWithToken(clanSeek.AppUserId))
-        //         return Unauthorized();
-            
-        //     var result = this._imageFileStorageManager.SaveImage(recordType, model.File, System.IO.Path.Combine("images", recordType, recordId.ToString()));
-        //     if (!string.IsNullOrEmpty(result.Error))
-        //         return BadRequest(result.Error);
-        //     model.Url = result.Url;
-        //     model.PublicId = result.PublicId;
-
-        //     var photo = _mapper.Map<Photo>(model);
-        //     clanSeek.Photos.Add(photo);
-        //     await _repo.SaveAll();
-        //     if (clanSeek.MainPhotoId == null)
-        //     {
-        //         clanSeek.MainPhotoId = photo.Id;
-        //         await _repo.SaveAll();
-        //     }
-        //     var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
-        //     return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
-        // }
-
-        // private async Task<ActionResult> addPhotoToBlog(string recordType, int recordId, PhotoForCreationDto model){
-        //     var blog = await _repo.GetBlog(recordId);
-        //     if(blog == null)
-        //         return NotFound();
-        //     if(!await MatchAppUserWithToken(blog.OwnerId))
-        //         return Unauthorized();
-            
-        //     var result = this._imageFileStorageManager.SaveImage(recordType, model.File, System.IO.Path.Combine("images", recordType, recordId.ToString()));
-        //     if (!string.IsNullOrEmpty(result.Error))
-        //         return BadRequest(result.Error);
-        //     model.Url = result.Url;
-        //     model.PublicId = result.PublicId;
-
-        //     var photo = _mapper.Map<Photo>(model);
-        //     if (blog.PhotoId != null)
-        //     {
-        //         this._imageFileStorageManager.DeleteImageFile(blog.Photo);
-        //         this._repo.Delete(blog.Photo);
-        //     }
-        //     blog.Photo = photo;
-        //     await _repo.SaveAll();
-        //     var photoToReturn = _mapper.Map<PhotoForReturnDto>(photo);
-        //     return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
-        // }
 
         [HttpDelete("{recordType}/{recordId}/{id}")]
         public async Task<ActionResult> Delete(string recordType, int recordId, int id)

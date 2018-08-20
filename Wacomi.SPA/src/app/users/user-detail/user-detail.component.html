@@ -58,7 +58,7 @@
         <div class="col-sm-4 bg-light-blue">
           <h4>{{blog.title}}</h4>
           <div>
-              <a href="{{blog.url}}"><img class="blogImage pull-left" src="{{blog.blogImageUrl ? blog.blogImageUrl : '/assets/NoImage_Person.png'}}" /></a>
+              <a href="{{blog.url}}"><img class="blogImage pull-left" src="{{blog.photo ? blog.photo.url : '/assets/NoImage_Person.png'}}" /></a>
             <p>{{blog.description}}</p>
             <span class="clearfix"></span>
           </div>
