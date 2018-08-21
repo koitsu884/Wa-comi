@@ -49,6 +49,7 @@ namespace Wacomi.API
         {
             services.AddCors();
             services.AddMvc();
+            services.AddDataProtection();
 
             services.Configure<AuthMessageSenderOptions>(Configuration);
             // if (CurrentEnvironment.IsProduction())
@@ -60,16 +61,22 @@ namespace Wacomi.API
             // }
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
+//            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSG"));
+            //services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSB"));
             services.AddAutoMapper();
             // services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
-            services.AddSingleton<IEmailSender, EmailSender>();
+            //services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, SendGlidManager>();
+            //services.AddSingleton<IEmailSender, MailGunManager>();
             services.AddSingleton<ImageFileStorageManager>();
             //services.AddSingleton<IStaticFileManager, StaticFileManager>();
+            // services.AddScoped<IRepositoryBase, RepositoryBase>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
+            services.AddScoped<IAdminDataRepository, AdminDataRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>

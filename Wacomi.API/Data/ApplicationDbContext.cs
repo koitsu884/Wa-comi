@@ -25,6 +25,7 @@ namespace Wacomi.API.Data
         public DbSet<PropertySeek> PropertySeeks{ get; set;}
         public DbSet<PropertySeekCategory> PropertySeekCategories { get; set;}
         public DbSet<DailyTopic> DailyTopics { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
         public DbSet<MemberProfile> MemberProfiles { get; set; }

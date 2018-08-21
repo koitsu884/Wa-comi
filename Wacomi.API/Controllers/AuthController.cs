@@ -29,6 +29,7 @@ namespace Wacomi.API.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<Account> _userManager;
+        private readonly string _fromEmail = "wacomi_test@wacomi.virtuozzo.co.nz";
         public AuthController(IAuthRepository authRepo,
                              IDataRepository repo,
                              IConfiguration config,
@@ -87,7 +88,7 @@ namespace Wacomi.API.Controllers
             }
 
             await _authRepo.AddRoles(appUser, model.UserType == "Business" ? new string[] { "Business" } : new string[] { "Member" });
-      //      await _emailSender.SendEmailAsync(model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
+            await _emailSender.SendEmailAsync(this._fromEmail, "Wa-コミ", model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
 
             return CreatedAtRoute("GetUser", new { id = appUser.Id }, new { });
         }
@@ -127,7 +128,7 @@ namespace Wacomi.API.Controllers
             string code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var request = Url.ActionContext.HttpContext.Request;
             var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/password/reset?id=" + account.Id + "&code=" + WebUtility.UrlEncode(code);
-            await _emailSender.SendEmailAsync(model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
+            await _emailSender.SendEmailAsync(this._fromEmail, "Wa-コミ", model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
             return Ok();
         }
 

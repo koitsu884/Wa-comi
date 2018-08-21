@@ -13,15 +13,16 @@ namespace Wacomi.API.Helper
             Options = optionsAccessor.Value;
         }
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string from, string fromName, string to, string subject, string message)
         {
-            return Execute(Options, subject, message, email);
+            return Execute(Options, subject, message, from, fromName, to);
         }
 
-        public async Task Execute(AuthMessageSenderOptions options, string subject, string message, string email)
+        public async Task Execute(AuthMessageSenderOptions options, string subject, string message, string from, string fromName, string to)
         {
             using (SmtpClient smtp = new SmtpClient(options.SMTPServer){
                 EnableSsl = false,
+                Port = 587,
                 Credentials = new NetworkCredential(options.UserName, options.Password)
                 }
             )
@@ -29,9 +30,9 @@ namespace Wacomi.API.Helper
                 MailMessage mail = new MailMessage()
                 {
                     //From = new MailAddress("wacomi_test@wacomi.a2hosted.com", "Wacomi")
-                    From = new MailAddress("wacomi_test@wacomi.virtuozzo.co.nz", "Wacomi")
+                    From = new MailAddress(from, fromName)
                 };
-                mail.To.Add(new MailAddress(email));
+                mail.To.Add(new MailAddress(to));
 
                 mail.Subject = subject;
                 mail.Body = message;

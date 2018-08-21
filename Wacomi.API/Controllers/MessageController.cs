@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
 using Wacomi.API.Helper;
@@ -14,12 +16,17 @@ namespace Wacomi.API.Controllers
     [Authorize]
     public class MessageController : DataController
     {
-        public MessageController(IDataRepository repo, IMapper mapper) : base(repo, mapper) {}
+        private readonly IDataProtector _protector;
+        public MessageController(IDataRepository repo, IMapper mapper, IConfiguration config, IDataProtectionProvider provider) : base(repo, mapper) {
+            this._protector = provider.CreateProtector(config.GetSection("AppSettings:Token").Value);
+        }
         
         [HttpGet("{id}", Name = "GetMessage")]
         public async Task<ActionResult> Get(int id)
         {
-            return Ok(await _repo.GetMessage(id));
+            var message = await _repo.GetMessage(id);
+            message.Content = this._protector.Unprotect(message.Content);
+            return Ok(message);
         }
 
         [HttpGet("{userId}/received")]
@@ -28,6 +35,9 @@ namespace Wacomi.API.Controllers
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
             var messages =  await _repo.GetReceivedMessages(paginationParams, userId);
+            foreach(var message in messages){
+                message.Content = this._protector.Unprotect(message.Content);
+            }
             Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
@@ -38,27 +48,12 @@ namespace Wacomi.API.Controllers
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
             var messages = await _repo.GetSentMessages(paginationParams, userId);
+            foreach(var message in messages){
+                message.Content = this._protector.Unprotect(message.Content);
+            }
             Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
-
-        // [HttpGet("{userId}/received/list")]
-        // public async Task<ActionResult> GetLatestReceivedMessages(int userId)
-        // {
-        //     if(!await this.MatchAppUserWithToken(userId))
-        //         return Unauthorized();
-        //     var messages =  _repo.GetLatestReceivedMessages(userId);
-        //     return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
-        // }
-
-        //  [HttpGet("{userId}/sent/list")]
-        // public async Task<ActionResult> GetLatestSentMessages(int userId)
-        // {
-        //     if(!await this.MatchAppUserWithToken(userId))
-        //         return Unauthorized();
-        //     var messages = await _repo.GetLatestSentMessages(userId);
-        //     return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
-        // }
 
         [HttpGet("{userId}/received/{senderId}")]
         public async Task<ActionResult> GetReceivedMessagesFrom(PaginationParams paginationParams, int userId, int senderId)
@@ -66,6 +61,9 @@ namespace Wacomi.API.Controllers
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
             var messages = await _repo.GetReceivedMessagesFrom(paginationParams, userId, senderId);
+            foreach(var message in messages){
+                message.Content = this._protector.Unprotect(message.Content);
+            }
             Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
@@ -76,6 +74,9 @@ namespace Wacomi.API.Controllers
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
             var messages = await _repo.GetMessagesSentTo(paginationParams, userId, recipientId);
+            foreach(var message in messages){
+                message.Content = this._protector.Unprotect(message.Content);
+            }
             Response.AddPagination(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return Ok(_mapper.Map<IEnumerable<MessageForReturnDto>>(messages));
         }
@@ -103,6 +104,7 @@ namespace Wacomi.API.Controllers
             {
                 return Unauthorized();
             }
+            model.Content = this._protector.Protect(model.Content);
             _repo.Add(model);
             if(await _repo.SaveAll() > 0){
                 return CreatedAtRoute("GetMessage", new {id = model.Id}, new {}); 
