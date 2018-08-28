@@ -1,5 +1,5 @@
 <div class="clanCard" [ngClass]="{isMine: isMine}" [ngSwitch]="clanSeek.categoryName">
-  <div class="panel panel-success" [ngClass]="{disabled: !clanSeek.isActive}">
+  <div class="panel panel-success" [ngClass]="{disabled: !clanSeek.isActive, 'panel-warning': isMine}">
     <div class="panel-heading">
         <span class="categoryName color-friend" *ngSwitchCase="'友達'">友達</span>
         <span class="categoryName color-circle" *ngSwitchCase="'サークル'">サークル</span>
