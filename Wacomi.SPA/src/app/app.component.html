@@ -2,6 +2,7 @@
 <router-outlet></router-outlet>
 <div  *ngIf="location.path() !== '/home' 
             && location.path() !== '/registered' 
+            && location.path().indexOf('/account')
             && location.path().indexOf('/photo/edit') < 0
             && location.path().indexOf('/clan/edit') < 0"  class="container">
 <hr>

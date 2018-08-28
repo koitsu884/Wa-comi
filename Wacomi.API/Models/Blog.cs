@@ -25,7 +25,7 @@ namespace Wacomi.API.Models
         public Photo Photo {get; set;}
         public int? PhotoId{ get; set;}
         public string RSS{get; set;}
-        public DateTime DateRssRead{ get; set;} = DateTime.Now;
+        public DateTime? DateRssRead{ get; set;} = DateTime.Now;
         public int FollowerCount{get; set;}
         public int HatedCount{ get; set;}
         public bool IsActive{ get; set;} = true;

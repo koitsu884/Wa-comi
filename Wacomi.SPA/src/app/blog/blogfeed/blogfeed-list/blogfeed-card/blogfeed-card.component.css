@@ -33,6 +33,7 @@
     float:left;
     width: 30px;
     height: 30px;
+    object-fit: cover;
     border: 2px solid white;
     margin: 0 4px 0 0;
 }

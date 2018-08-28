@@ -4,7 +4,7 @@
   </div>
   <div class="panel-footer">
     <div *ngIf="appUser && clanSeek.appUserId != appUser.id">
-      <a class="btn btn-success" (click)="onSend()">ショートメッセージを送る</a>
+      <button class="btn btn-success" (click)="onSend()" [disabled]="!appUser">ショートメッセージを送る</button>
     </div>
   </div>
 </div>

@@ -16,7 +16,7 @@ export class BlogfeedCardComponent implements OnInit {
 
   ngOnInit() {
     this.blogImageUrl = this.blogFeed.blogImageUrl  ? this.blogFeed.blogImageUrl : this.defaultImageUrl;
-    this.articleImageUrl = this.blogFeed.imageUrl  ? this.blogFeed.imageUrl : this.blogImageUrl;
+    this.articleImageUrl = this.blogFeed.photo  ? this.blogFeed.photo.url : this.blogImageUrl;
   }
 
 }

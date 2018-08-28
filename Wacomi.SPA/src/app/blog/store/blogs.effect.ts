@@ -68,11 +68,11 @@ export class BlogEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .mergeMap((result) => {
-                    let returnValues: Array<any> = [{type: BlogActions.ADD_BLOG, payload: result}];
+                    let returnValues: Array<any> = [{ type: BlogActions.ADD_BLOG, payload: result }];
                     if (payload.photo != null) {
-                        returnValues.push({type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: {blogId: result.id, photo: payload.photo}});
+                        returnValues.push({ type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: result.id, photo: payload.photo } });
                     }
-                    else{
+                    else {
                         this.location.back();
                     }
 
@@ -128,14 +128,13 @@ export class BlogEffects {
                 })
                 .map(() => {
                     //this.alertify.success("更新しました");
-                    if(payload.photo)
-                    {
+                    if (payload.photo) {
                         this.alertify.success("更新しました");
-                        return {type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: {blogId: payload.blog.id, photo: payload.photo}}
+                        return { type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: payload.blog.id, photo: payload.photo } }
                     }
 
                     this.location.back();
-                    return {type: GlobalActions.SUCCESS, payload: "更新しました"};
+                    return { type: GlobalActions.SUCCESS, payload: "更新しました" };
                 })
                 .catch((error: string) => {
                     return of({ type: 'FAILED', payload: error })
@@ -190,6 +189,36 @@ export class BlogEffects {
         })
 
     @Effect()
+    setOnlyMineFlag = this.actions$
+        .ofType(BlogActions.SET_SEARCH_USER_ID)
+        .map(() => {
+            return {
+                type: BlogActions.SEARCH_FEEDS,
+            }
+        })
+
+    @Effect()
+    searchFeedById = this.actions$
+        .ofType(BlogActions.SEARCH_FEED_BY_ID)
+        .map((action: BlogActions.SearchFeedById) => {return action.payload;})
+        .switchMap((feedId) => {
+            return this.httpClient.get<BlogFeed>(this.baseUrl + 'blogfeed/' + feedId)
+                .map((blogFeed) => {
+                    var blogFeeds = [blogFeed];
+                    return {
+                        type: BlogActions.SET_FEED_SEARCH_RESULT,
+                        payload: {
+                            blogFeeds: blogFeeds,
+                            pagination: null
+                        }
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        })
+
+    @Effect()
     setClanSeekPagination = this.actions$
         .ofType(BlogActions.SET_FEED_SEARCH_PAGE)
         .map(() => {
@@ -204,6 +233,8 @@ export class BlogEffects {
         .withLatestFrom(this.store$)
         .switchMap(([actions, blogState]) => {
             let Params = new HttpParams();
+            if (blogState.blogs.searchUserId)
+                Params = Params.append('userId', blogState.blogs.searchUserId.toString());
             if (blogState.blogs.searchCategory)
                 Params = Params.append('category', blogState.blogs.searchCategory);
             if (blogState.blogs.pagination) {
@@ -251,8 +282,6 @@ export class BlogEffects {
     getFeedComments = this.actions$
         .ofType(BlogActions.GET_FEED_COMMENTS)
         .map((action: BlogActions.GetFeedComments) => {
-            // console.log("Hello?");
-            // console.log(action.payload);
             return action.payload;
         })
         .switchMap((blogFeedId) => {

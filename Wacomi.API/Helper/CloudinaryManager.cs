@@ -31,6 +31,7 @@ namespace Wacomi.API.Helper
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(url),
+                Folder = targetFolder.Replace("\\", "/"),
                 Transformation = new Transformation().Width(600).Height(600).Crop("fit")
             };
 

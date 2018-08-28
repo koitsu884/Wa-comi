@@ -20,11 +20,12 @@ namespace Wacomi.API.Helper
 
         public async Task Execute(AuthMessageSenderOptions options, string subject, string message, string from, string fromName, string to)
         {
-            using (SmtpClient smtp = new SmtpClient(options.SMTPServer){
-                EnableSsl = false,
-                Port = 587,
+            using (SmtpClient smtp = new SmtpClient(options.SMTPServer)
+            {
+                EnableSsl = true,
+                Port = options.SMTPPort,
                 Credentials = new NetworkCredential(options.UserName, options.Password)
-                }
+            }
             )
             {
                 MailMessage mail = new MailMessage()
@@ -41,7 +42,6 @@ namespace Wacomi.API.Helper
 
                 await smtp.SendMailAsync(mail);
             }
-
         }
     }
 }

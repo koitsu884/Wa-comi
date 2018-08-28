@@ -12,16 +12,21 @@ namespace Wacomi.API.Controllers
     [Route("api/blogfeed/comment")]
     public class BlogFeedCommentController : DataController
     {
-        public BlogFeedCommentController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
+        private readonly INotificationRepository _notificationRepo;
+        public BlogFeedCommentController(IDataRepository repo, IMapper mapper, INotificationRepository notificationRepo) : base(repo, mapper)
+        {
+            this._notificationRepo = notificationRepo;
+        }
 
         [HttpGet("{id}", Name = "GetBlogFeedComment")]
         public async Task<ActionResult> Get(int id)
         {
-            return Ok(await _repo.GetBlogFeedComment(id));
+            return Ok(this._mapper.Map<CommentForReturnDto>(await _repo.GetBlogFeedComment(id)));
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetByTopic(int blogFeedId){
+        public async Task<IActionResult> GetByTopic(int blogFeedId)
+        {
             var feedCommentsFromRepo = await _repo.GetBlogFeedCommentsForFeed(blogFeedId);
             return Ok(this._mapper.Map<IEnumerable<CommentForReturnDto>>(feedCommentsFromRepo));
         }
@@ -36,20 +41,27 @@ namespace Wacomi.API.Controllers
             if (appUser == null)
                 return NotFound();
 
-            if(!await this._repo.RecordExist("BlogFeed", (int)model.BlogFeedId))
+            var blogFeed = await this._repo.GetBlogFeed((int)model.BlogFeedId);
+
+            if (blogFeed == null)
                 return NotFound();
 
-            if(!await MatchAppUserWithToken(appUser.Id)){
+            if (!await MatchAppUserWithToken(appUser.Id))
+            {
                 return Unauthorized();
             }
 
-            model.PhotoId = appUser.MainPhotoId;
             model.DisplayName = appUser.DisplayName;
 
             _repo.Add(model);
+            if (blogFeed.Blog.OwnerId == model.AppUserId)
+                await this._notificationRepo.AddNotificationRepliedForFeedComment(blogFeed);
+            else
+                await this._notificationRepo.AddNotificationNewPostOnFeedComment(appUser.Id, blogFeed);
+
             if (await _repo.SaveAll() > 0)
             {
-                return CreatedAtRoute("GetBlogFeedComment", new { id = model.Id }, model);
+                return CreatedAtRoute("GetBlogFeedComment", new { id = model.Id }, this._mapper.Map<CommentForReturnDto>(model));
             }
             return BadRequest("投稿に失敗しました");
         }

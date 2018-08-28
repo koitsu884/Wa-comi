@@ -17,6 +17,14 @@ const dailyTopicRoute: Routes = [
         // },
     },
     {
+        path: ':topicCommentId',
+        runGuardsAndResolvers: 'always',
+        component:TopicCommentListComponent,
+        resolve: {
+            appUser: AppUserResolver
+        }
+    },
+    {
         path: '',
         runGuardsAndResolvers: 'always',
         component:TopicCommentListComponent,

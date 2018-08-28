@@ -14,7 +14,11 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class BlogFeedController : DataController
     {
-        public BlogFeedController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
+        private readonly ImageFileStorageManager _fileStorageManager;
+        public BlogFeedController(IDataRepository repo, IMapper mapper, ImageFileStorageManager fileStorageManager) : base(repo, mapper) {
+            this._fileStorageManager = fileStorageManager;
+         }
+            
 
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestBlogFeeds()
@@ -24,10 +28,15 @@ namespace Wacomi.API.Controllers
             return Ok(blogFeedsForReturn);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(int id){
+            return Ok(this._mapper.Map<BlogFeedForReturnDto>(await this._repo.GetBlogFeed(id)));
+        }
+
         [HttpGet()]
-        public async Task<ActionResult> Get(PaginationParams paginationParams, string category)
+        public async Task<ActionResult> Get(PaginationParams paginationParams, string category, int? userId = null)
         {
-            var blogFeeds = await _repo.GetBlogFeeds(paginationParams, category);
+            var blogFeeds = await _repo.GetBlogFeeds(paginationParams, category, userId);
             var userNameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userNameIdentifier != null)
             {
@@ -64,14 +73,11 @@ namespace Wacomi.API.Controllers
             {
                 return NotFound();
             }
-            await _repo.DeleteFeedLikes(feed.Id);
-            await _repo.DeleteFeedComments(feed.Id);
-            _repo.Delete(feed);
+            await this._repo.DeleteFeed(feed);
+            this._fileStorageManager.DeleteImageFile(feed.Photo);
 
-            if (await _repo.SaveAll() > 0)
-                return Ok();
-
-            return BadRequest("Failed to delete the blog feed");
+            await _repo.SaveAll();
+            return Ok();
         }
 
         [Authorize]

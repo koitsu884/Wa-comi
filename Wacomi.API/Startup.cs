@@ -35,7 +35,6 @@ namespace Wacomi.API
 {
     public class Startup
     {
-        
         public IConfiguration Configuration { get; }
         private IHostingEnvironment CurrentEnvironment { get; }
         public Startup(IConfiguration configuration, IHostingEnvironment env)
@@ -61,22 +60,22 @@ namespace Wacomi.API
             // }
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-//            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
-            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSG"));
+           services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
+            //services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSG"));
             //services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSB"));
             services.AddAutoMapper();
             // services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
-            //services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddSingleton<IEmailSender, SendGlidManager>();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            //services.AddSingleton<IEmailSender, SendGlidManager>();
             //services.AddSingleton<IEmailSender, MailGunManager>();
             services.AddSingleton<ImageFileStorageManager>();
-            //services.AddSingleton<IStaticFileManager, StaticFileManager>();
-            // services.AddScoped<IRepositoryBase, RepositoryBase>();
+
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddScoped<IAdminDataRepository, AdminDataRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>
@@ -114,10 +113,13 @@ namespace Wacomi.API
                 });
 
             var serviceProvider = services.BuildServiceProvider();
-         //   serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
            // this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
+
             // Add scheduled tasks & scheduler
-            //services.AddSingleton<IScheduledTask, RssReaderTask>();
+            services.AddSingleton<IScheduledTask, RssReaderTask>();
+            services.AddSingleton<IScheduledTask, DeleteOldFeedTask>();
+          //  services.AddSingleton<IScheduledTask, ChangeTopicTask>();
             services.AddScheduler((sender, args) =>
             {
                 //TODO: log error on database or wherever appropriate

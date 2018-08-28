@@ -12,6 +12,7 @@ export interface AppUser {
     photos: Photo[];
     cityId: number;
     city: string;
+    totalLike: number;
     dateCreated: Date;
     lastActive: Date;
 }

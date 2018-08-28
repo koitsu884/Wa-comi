@@ -10,6 +10,7 @@ import * as AccountActions from './account.actions';
 // import * as PhotoActions from '../../photo/store/photos.action';
 import * as MessageActions from '../../message/store/message.actions';
 import * as GlobalActions from '../../store/global.actions';
+import * as NotificationActions from '../../notification/store/notification.action';
 import { Router } from "@angular/router";
 import { LoginResult } from "../../_models/LoginResult";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -157,6 +158,10 @@ export class AccountEffects {
                 {
                     type: AccountActions.GET_NEWMESSAGES_COUNT,
                     payload: loginResult.appUser
+                },
+                {
+                    type: NotificationActions.GET_NOTIFICATIONS,
+                    payload: loginResult.appUser.id
                 }
             ];
         })
@@ -380,11 +385,7 @@ export class AccountEffects {
     @Effect({dispatch: false})
     tokenExpired = this.actions$
         .ofType(AccountActions.TOKEN_EXPIRED)
-        .mergeMap(() => {
+        .do(() => {
             this.router.navigate(['/home'])
-            return null;
-            // return [
-            //     { type: PhotoActions.CLEAR_PHOTO },
-            // ]
         })
 }

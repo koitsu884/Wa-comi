@@ -1,7 +1,3 @@
-.isMine {
-    border: solid 3px yellow;
-}
-
 .clanImage {
     width:80px;
     margin:5px;
@@ -43,6 +39,16 @@
 .clanCard .color-study {
     color: black;
     background-color: rgb(202, 253, 17);
+}
+
+.clanCard .color-event {
+    color: white;
+    background-color: rgb(70, 5, 145);
+}
+
+.clanCard .color-etc {
+    color: black;
+    background-color: rgb(242, 243, 237);
 }
 
 

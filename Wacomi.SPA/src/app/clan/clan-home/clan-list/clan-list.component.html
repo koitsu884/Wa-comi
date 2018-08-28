@@ -1,5 +1,5 @@
 <div class="row fix">
-  <div class="col-sm-6 col-md-4" *ngFor="let clanSeek of clanSeeks">
+  <div class="col-sm-6 col-md-4" [@clanCard] *ngFor="let clanSeek of clanSeeks">
     <app-clan-card [clanSeek]="clanSeek" [isMine]="appUserId == clanSeek.appUserId" [routerLink]="['detail', clanSeek.id]" ></app-clan-card>
   </div>
   <div class="col-sm-6 col-md-4">

@@ -43,14 +43,15 @@ namespace Wacomi.API.Helper
             CreateMap<BlogFeed, BlogFeedForReturnDto>()
               .ForMember(bf => bf.OwnerId, opt => opt.MapFrom(src => src.Blog.OwnerId))
               .ForMember(bf => bf.BlogTitle, opt => opt.MapFrom(src => src.Blog.Title))
-        //      .ForMember(bf => bf.BlogImageUrl, opt => opt.MapFrom(src => src.Blog.BlogImageUrl))
+              .ForMember(bf => bf.BlogImageUrl, opt => opt.MapFrom(src => src.Blog.Photo.Url))
               .ForMember(bf => bf.WriterName, opt => opt.MapFrom(src => src.Blog.Owner.DisplayName))
               .ForMember(bf => bf.LikedCount, opt => opt.MapFrom(src => src.FeedLikes.Count))
               .ForMember(bf => bf.CommentCount, opt => opt.MapFrom(src => src.FeedComments.Count));
 
             CreateMap<BlogFeedComment, CommentForReturnDto>()
               .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("BlogFeed"))
-              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId));
+              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId))
+              .ForMember(cr => cr.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url));
 
             CreateMap<PhotoForCreationDto, Photo>();
             CreateMap<Photo, PhotoForReturnDto>();

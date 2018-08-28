@@ -59,7 +59,8 @@ export class ClanHomeComponent implements OnInit {
       this.selectedCityId = state.selectedCityId;
       this.selectedCategoryId = state.selectedCategoryId;
       this.store.dispatch(new ClanSeekActions.SearchClanSeeks());
-      this.store.dispatch(new ClanSeekActions.CheckClanseeksCountLimit(this.appUser.id));
+      if(this.appUser)
+        this.store.dispatch(new ClanSeekActions.CheckClanseeksCountLimit(this.appUser.id));
     });
 
   }

@@ -31,6 +31,7 @@ namespace Wacomi.API.Data
         public DbSet<MemberProfile> MemberProfiles { get; set; }
         public DbSet<MemberSetting> MemberSettings { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Photo> Photos { get; set; }
         // public DbSet<PropertySeek> PropertySeeks { get; set;}
         public DbSet<TopicComment> TopicComments { get; set; }
@@ -127,6 +128,13 @@ namespace Wacomi.API.Data
 
             builder.Entity<Message>()
                 .HasIndex(m => m.DateCreated);
+
+            builder.Entity<Notification>()
+                .HasIndex(n => n.AppUserId);
+            builder.Entity<Notification>()
+                .HasIndex(n => n.RecordType);
+            builder.Entity<Notification>()
+                .HasIndex(n => n.RecordId);
             //---- Topic Like ----
             builder.Entity<TopicLike>()
                 .HasKey(tl => new { tl.SupportAppUserId, tl.DailyTopicId });

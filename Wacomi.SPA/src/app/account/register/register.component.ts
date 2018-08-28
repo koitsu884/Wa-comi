@@ -50,6 +50,7 @@ export class RegisterComponent extends PasswordEditorBase implements OnInit {
 
   register() {
     if(this.registerForm.valid){
+      this.sending = true;
       this.registerForm.markAsPristine();
       this.registerInfo = Object.assign({}, this.registerForm.value);
       this.store.dispatch(new AccountActions.TrySignup({registerInfo: this.registerInfo}));

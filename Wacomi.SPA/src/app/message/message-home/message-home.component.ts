@@ -52,7 +52,6 @@ export class MessageHomeComponent implements OnInit {
   }
 
   pageChanged(event) {
-    console.log("Hello??");
     this.loadList(event.page);
   }
 

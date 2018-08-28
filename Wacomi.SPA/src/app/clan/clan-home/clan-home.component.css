@@ -5,3 +5,7 @@ select {
 .filter {
     padding-bottom: 5px;
 }
+
+.container{
+    min-height: 60vh;
+}

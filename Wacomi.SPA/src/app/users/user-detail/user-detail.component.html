@@ -7,7 +7,7 @@
     <div class="col-sm-4">
       <!-- <app-member-card  [member]="member" [appUser]="appUser"></app-member-card> -->
       <app-user-card [imageUrl]="userDetail.appUser.mainPhotoUrl" [created]="userDetail.appUser.dateCreated" [city]="userDetail.appUser.city"
-        [lastActive]="userDetail.appUser.lastActive"></app-user-card>
+        [totalLike]="userDetail.appUser.totalLike" [lastActive]="userDetail.appUser.lastActive"></app-user-card>
       <a *ngIf="appUserId != userDetail.appUser.id" class="btn btn-success" (click)="onSend()">ショートメッセージを送る</a>
     </div>
     <div *ngIf="userDetail.appUser.userType == 'Member'" class="col-sm-6">
@@ -33,7 +33,7 @@
       <p>{{businessProfile.introduction}}</p>
     </div>
     <div class="col-sm-2">
-      <h4>広告…</h4>
+      <h4>広告</h4>
     </div>
   </div>
   <!-- Clan seek -->
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <h4>広告…</h4>
+      <h4>広告</h4>
     </div>
   </div>
   <!-- Blogs  -->
@@ -58,9 +58,10 @@
         <div class="col-sm-4 bg-light-blue">
           <h4>{{blog.title}}</h4>
           <div>
-              <a href="{{blog.url}}"><img class="blogImage pull-left" src="{{blog.photo ? blog.photo.url : '/assets/NoImage_Person.png'}}" /></a>
+            <a href="{{blog.url}}">
+              <img class="img-responsive" src="{{blog.photo ? blog.photo.url : '/assets/NoImage_Person.png'}}" />
+            </a>
             <p>{{blog.description}}</p>
-            <span class="clearfix"></span>
           </div>
         </div>
         <div class="col-sm-8">
@@ -68,7 +69,7 @@
           <p *ngIf="!blog.blogFeeds">このブログのフィード記事はまだありません</p>
           <div class="row" *ngFor="let blogFeed of blog.blogFeeds">
             <div class="col-xs-2">
-              <img class="blogImage" src="{{blogFeed.imageUrl}}">
+              <img class="blogFeedImage" src="{{blogFeed.photo ? blogFeed.photo.url : '/assets/NoImage.png'}}">
             </div>
             <div class="col-xs-10">
               <p>

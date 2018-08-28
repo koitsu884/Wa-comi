@@ -16,7 +16,7 @@ import { ClanDetailInfoComponent } from "./clan-detail/clan-detail-info/clan-det
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { ClanCardComponent } from "./clan-home/clan-list/clan-card/clan-card.component";
-import { PaginationModule } from "ngx-bootstrap";
+import { PaginationModule, CarouselModule } from "ngx-bootstrap";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({

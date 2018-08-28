@@ -29,7 +29,8 @@ namespace Wacomi.API.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<Account> _userManager;
-        private readonly string _fromEmail = "wacomi_test@wacomi.virtuozzo.co.nz";
+        private readonly string _fromEmail = "noreply@wa-comi.com";
+        private readonly string _fromName = "Wa-コミ";
         public AuthController(IAuthRepository authRepo,
                              IDataRepository repo,
                              IConfiguration config,
@@ -61,20 +62,28 @@ namespace Wacomi.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegistrationDto model)
         {
-            if (await _authRepo.AccountExists(model.UserName, model.Email))
-                ModelState.AddModelError("UserName", "The username or the email already exist");
+            if (await _authRepo.EmailExists(model.Email))
+            {
+                var account = await _authRepo.GetAccountByEmail(model.Email);
+                if (!account.EmailConfirmed)
+                    await _authRepo.DelteAccount(account);
+                else
+                    ModelState.AddModelError("Email", "そのEメールアドレスは既に使用されています");
+            }
+            else if( await _authRepo.UserNameExists(model.UserName))
+            {
+                var account = await _authRepo.GetAccountByUserName(model.UserName);
+                if (!account.EmailConfirmed)
+                    await _authRepo.DelteAccount(account);
+                else
+                    ModelState.AddModelError("UserName", "そのユーザーネームは既に使用されています");
+            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var appUser = _mapper.Map<Account>(model);
-
-            // if(string.IsNullOrEmpty(model.DisplayName)){
-            //     member.DisplayName = appUser.UserName;
-            // }
-            // member.Identity = appUser;
-
-            var user = await _authRepo.Register(appUser, model.UserType, model.Password);
+            var newAccount = _mapper.Map<Account>(model);
+            var user = await _authRepo.Register(newAccount, model.UserType, model.Password);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var request = Url.ActionContext.HttpContext.Request;
             var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/confirm?id=" + user.Id + "&code=" + WebUtility.UrlEncode(code);
@@ -83,14 +92,14 @@ namespace Wacomi.API.Controllers
 
             if (await _authRepo.AddAppUser(user, model.UserType) == null)
             {
-                var result = await _authRepo.DelteAccount(appUser);
+                var result = await _authRepo.DelteAccount(newAccount);
                 return BadRequest("アカウントの作成に失敗しました");
             }
 
-            await _authRepo.AddRoles(appUser, model.UserType == "Business" ? new string[] { "Business" } : new string[] { "Member" });
-            await _emailSender.SendEmailAsync(this._fromEmail, "Wa-コミ", model.Email, "アカウントの確認", BuildConfirmEmailContent(appUser.UserName, callbackUrl));
+            await _authRepo.AddRoles(newAccount, model.UserType == "Business" ? new string[] { "Business" } : new string[] { "Member" });
+            await _emailSender.SendEmailAsync(this._fromEmail, this._fromName, model.Email, "アカウントの確認", BuildConfirmEmailContent(newAccount.UserName, callbackUrl));
 
-            return CreatedAtRoute("GetUser", new { id = appUser.Id }, new { });
+            return CreatedAtRoute("GetUser", new { id = newAccount.Id }, new { });
         }
 
         [HttpPut("confirm")]
@@ -116,24 +125,26 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpPost("password/forgot")]
-        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDto model){
+        public async Task<IActionResult> ForgotPassword([FromBody]ForgotPasswordDto model)
+        {
             var account = await _authRepo.GetAccountByEmail(model.Email);
-            if(account == null)
+            if (account == null)
                 return NotFound($"そのEメールアドレス（{model.Email}）は登録されていません");
-            if(account.UserName != model.UserId)
+            if (account.UserName != model.UserId)
                 return BadRequest("ユーザーIDとメールアドレスが一致しません");
-            if(!account.EmailConfirmed)
+            if (!account.EmailConfirmed)
                 return BadRequest("ユーザー認証がされていません。");
 
             string code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var request = Url.ActionContext.HttpContext.Request;
             var callbackUrl = request.Scheme + "://" + request.Host.Value + "/account/password/reset?id=" + account.Id + "&code=" + WebUtility.UrlEncode(code);
-            await _emailSender.SendEmailAsync(this._fromEmail, "Wa-コミ", model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
+            await _emailSender.SendEmailAsync(this._fromEmail, this._fromName, model.Email, "パスワードのリセット", BuildResetPasswordContent(account.UserName, callbackUrl));
             return Ok();
         }
 
         [HttpPost("password")]
-        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDto model){
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -143,7 +154,8 @@ namespace Wacomi.API.Controllers
                 return NotFound("ユーザーが見つかりません");
             }
 
-            if(model.CurrentPassword == model.NewPassword){
+            if (model.CurrentPassword == model.NewPassword)
+            {
                 return BadRequest("入力した新旧パスワードが同じです");
             }
 
@@ -152,7 +164,8 @@ namespace Wacomi.API.Controllers
             {
                 return Ok();
             }
-            else{
+            else
+            {
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(error.Code, error.Description);
@@ -163,7 +176,8 @@ namespace Wacomi.API.Controllers
 
 
         [HttpPost("password/reset")]
-        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDeto model){
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDeto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -201,7 +215,7 @@ namespace Wacomi.API.Controllers
             //            return Ok(new { tokenString, account, appUser});
             return Ok(loginResult);
         }
-        
+
         private async Task<Dictionary<string, object>> loginAndCreateToken(Account userFromRepo)
         {
             var appUser = await _repo.GetAppUserByAccountId(userFromRepo.Id);
@@ -239,7 +253,7 @@ namespace Wacomi.API.Controllers
             returnValues.Add("appUser", _mapper.Map<AppUserForReturnDto>(appUser));
             if (appUser != null)
             {
-               // returnValues.Add("photos", _mapper.Map<IEnumerable<PhotoForReturnDto>>(await _repo.GetPhotosForAppUser(appUser.Id)));
+                // returnValues.Add("photos", _mapper.Map<IEnumerable<PhotoForReturnDto>>(await _repo.GetPhotosForAppUser(appUser.Id)));
                 // returnValues.Add("blogs", _mapper.Map<IEnumerable<BlogForReturnDto>>(await _repo.GetBlogsForUser(appUser.Id)));
                 switch (appUser.UserType)
                 {
@@ -256,7 +270,7 @@ namespace Wacomi.API.Controllers
                         break;
                 }
             }
-            
+
             if (roles.Where(r => r == "Administrator").FirstOrDefault() != null)
             {
                 returnValues.Add("isAdmin", true);

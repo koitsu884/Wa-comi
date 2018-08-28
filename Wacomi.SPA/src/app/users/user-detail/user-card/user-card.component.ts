@@ -9,6 +9,7 @@ export class UserCardComponent implements OnInit {
   @Input() lastActive: Date;
   @Input() created: Date;
   @Input() city: string;
+  @Input() totalLike: number;
 
   constructor() { }
 

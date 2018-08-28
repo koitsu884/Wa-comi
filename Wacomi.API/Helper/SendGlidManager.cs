@@ -20,8 +20,8 @@ namespace Wacomi.API.Helper
         }
         public async Task SendEmailAsync(string from, string fromName, string to, string subject, string message)
         {
-            await sendEmailViaAPI(from, fromName, to, subject, message);
-            //await sendEmailViaSMTP(from, fromName, to, subject, message);
+            //await sendEmailViaAPI(from, fromName, to, subject, message);
+            await sendEmailViaSMTP(from, fromName, to, subject, message);
         }
 
         private async Task sendEmailViaAPI(string from, string fromName, string to, string subject, string message)

@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit {
   isAdmin: boolean;
   authenticated: boolean;
   newMessagesCount: number;
+  notificationCount: number;
 
 
   constructor(private store: Store<fromApp.AppState>,
@@ -35,8 +36,13 @@ export class HeaderComponent implements OnInit {
           this.account = accountState.account;
         this.isAdmin = accountState.isAdmin;
         this.authenticated = accountState.authenticated;
-        this.newMessagesCount = accountState.newMessagesCount;
+        // this.newMessagesCount = accountState.newMessagesCount;
       });
+
+    this.store.select('notification')
+      .subscribe((notificationState) => {
+        this.notificationCount = notificationState.notifications.length;
+      })
   }
 
   logout() {

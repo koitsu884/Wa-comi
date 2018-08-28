@@ -27,13 +27,13 @@ namespace Wacomi.API.Data
         {
             string[] initialDailyTopics = {
                 "今食べたい物",
-                "行きたい所",
+                "今行きたい所",
                 "今何してる？",
-                "マイブーム",
                 "明日の予定",
                 "週末の予定",
+                "新発見",
                 "ボケて",
-                "今日の独り言"};
+                "適当に独り言"};
 
             foreach (var initialDailyTopic in initialDailyTopics)
             {
@@ -55,9 +55,9 @@ namespace Wacomi.API.Data
             string[] clanSeekCategories = {
                 "友達",
                 "サークル",
+                "イベント",
                 "勉強・自己啓発",
-                "旅行",
-                "その他"};
+                "旅行"};
 
             foreach (var clanSeekCategory in clanSeekCategories)
             {

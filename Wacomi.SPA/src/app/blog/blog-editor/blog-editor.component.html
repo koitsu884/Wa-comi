@@ -15,7 +15,7 @@
             <label for="description" class="control-label">ブログ画像</label>
             <img class="img-responsive" src="{{previewUrl}}" />
             <app-photo-selector (photoSelected)="setSelectedFiles($event, blogEditForm)" [multipleSelect]="false"></app-photo-selector>
-            <button type="button" class="btn btn-primary" (click)="deletePhoto()">取り消し</button>
+            <button type="button" class="btn btn-primary btn-sm" (click)="deletePhoto()">取り消し</button>
         </div>
         <div class="form-group">
             <label for="description" class="control-label">カテゴリー1</label>
@@ -43,6 +43,8 @@
             <button class="btn btn-primary btn-sm" (click)="onGetFeedUri()" [disabled]="feedUriLoading">URLから自動取得</button>
             <app-loading *ngIf="feedUriLoading"></app-loading>
             <input *ngIf="!feedUriLoading" class="form-control" name="rss" type="text" [(ngModel)]="blog.rss">
+            <p class="text-danger">※RSSを設定していると自動的に最新記事情報が取得され、当サイト上に一部情報が表示されます。利用者の利便性の為、ニュージーランドの情報を一切含まないブログのRSS登録はお控えください。</p>
+            <p class="text-danger">その他ブログ登録に関する注意事項等、詳細は<a [routerLink]="['/terms']">利用規約</a>第八条をご覧ください。</p>
         </div>
         <!-- <div class="form-group">
             <label for="writerName" class="control-label">ライター名</label>

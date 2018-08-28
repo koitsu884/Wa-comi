@@ -17,6 +17,7 @@ export class TopicCommentComponent implements OnInit {
   // @Input() commentFeelings: TopicCommentFeel[];
   @Input() appUserId: number;
   @Input() commentFeelEnum: any[];
+  @Input() forcused: boolean = false;
 
   constructor(private store: Store<fromDailyTopic.FeatureState>, private alertify: AlertifyService) { }
 
@@ -29,6 +30,7 @@ export class TopicCommentComponent implements OnInit {
   }
 
   toggleReplyForm(topicComment: TopicComment){
+    this.forcused = false;
     if(!topicComment.displayReplies){
       this.store.dispatch(new DailyTopicActions.GetTopicReplies({commentId: topicComment.id}));
     }

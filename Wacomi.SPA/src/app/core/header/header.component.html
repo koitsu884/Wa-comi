@@ -16,7 +16,8 @@
         <li *ngIf="appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>
-        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ <span *ngIf="newMessagesCount > 0" class="badge">{{newMessagesCount}}</span></a></li>
+        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ</a></li>
+        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/notification']" >お知らせ <span *ngIf="notificationCount > 0" class="badge">{{notificationCount}}</span></a></li>
       </ul>
       <ul *ngIf="!authenticated" class="nav navbar-nav navbar-right">
         <li><a  [routerLink]="['/account/login']" >ログイン</a></li>
@@ -29,8 +30,8 @@
         <li class="dropdown" dropdown>
            <a (click)="false" class="dropdown-toggle" dropdownToggle>{{appUser?.displayName}}<span class="caret"></span></a> 
            <ul class="dropdown-menu" *dropdownMenu>
-             <li role="separator" class="divider"></li>
-             <li *ngIf="!isAdmin"><a [routerLink]="['/settings', appUser.id]">登録情報確認</a></li>
+             <!-- <li role="separator" class="divider"></li> -->
+             <li *ngIf="!isAdmin"><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
              <li *ngIf="!isAdmin"><a [routerLink]="['/blog']">ブログ管理</a></li>
              <li *ngIf="isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>

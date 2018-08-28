@@ -17,8 +17,16 @@ namespace Wacomi.API.Controllers
     public class MessageController : DataController
     {
         private readonly IDataProtector _protector;
-        public MessageController(IDataRepository repo, IMapper mapper, IConfiguration config, IDataProtectionProvider provider) : base(repo, mapper) {
+        private readonly INotificationRepository _notificationRepo;
+        public MessageController(
+            IDataRepository repo, 
+            IMapper mapper, 
+            IConfiguration config, 
+            IDataProtectionProvider provider,
+            INotificationRepository notificationRepo
+            ) : base(repo, mapper) {
             this._protector = provider.CreateProtector(config.GetSection("AppSettings:Token").Value);
+            this._notificationRepo = notificationRepo;
         }
         
         [HttpGet("{id}", Name = "GetMessage")]
@@ -107,6 +115,8 @@ namespace Wacomi.API.Controllers
             model.Content = this._protector.Protect(model.Content);
             _repo.Add(model);
             if(await _repo.SaveAll() > 0){
+                await _notificationRepo.AddNotificationNewMessage(model);
+                await _repo.SaveAll();
                 return CreatedAtRoute("GetMessage", new {id = model.Id}, new {}); 
             }
             return BadRequest("Failed to add message");

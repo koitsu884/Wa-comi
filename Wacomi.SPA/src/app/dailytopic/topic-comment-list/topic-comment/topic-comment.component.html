@@ -1,4 +1,4 @@
-<div class="commentContainer">
+<div class="commentContainer" [ngClass]="{hasForcus:forcused}">
   <div class="commentImage">
     <img class="img-circle"
      [routerLink]="['/users/detail/', topicComment.appUserId]" 
@@ -8,7 +8,7 @@
      style="cursor: pointer">
   </div>
   <div class="comment">
-    <div class="commentBaloon">
+    <div class="commentBaloon" [ngClass]="{isMine:appUserId == topicComment.appUserId}">
       <p><b>{{topicComment.displayName}}</b>: {{topicComment.comment}}</p>
     </div>
   </div>
@@ -19,7 +19,7 @@
     </button><br/>
     <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
     <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!appUserId">
-        <i class="fa fa-comment" title="返信数"></i>
+        <i class="fa fa-comment" [ngClass]={blinking:forcused} title="返信数"></i>
         <span class="badge">{{topicComment.replyCount}}</span>
     </button>
     <!-- <span class="replyCount">{{topicComment.replyCount}}</span> -->

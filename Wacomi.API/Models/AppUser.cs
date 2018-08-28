@@ -22,6 +22,9 @@ namespace Wacomi.API.Models
         public int? MainPhotoId { get; set;}
         public int? CityId { get; set;}
         public City City{ get; set;}
+        public int TotalLike {get; set;} = 0;
+        public int TotalLikeM {get; set;} = 0;
+        public int TotalLikeW {get; set;} = 0;
 
         public DateTime DateCreated {get; set;} = DateTime.Now;
         public DateTime LastActive{get; set;} = DateTime.Now;

@@ -1,5 +1,6 @@
 import { BlogFeedComment } from "./BlogFeedComment";
 import { ShortComment } from "./ShortComment";
+import { Photo } from "./Photo";
 
 export interface BlogFeed {
     id: number;
@@ -8,7 +9,7 @@ export interface BlogFeed {
     publishingDate: Date;
     title: string;
     url: string;
-    imageUrl: string;
+    photo: Photo;
     blogImageUrl: string;
     writerName: string;
     ownerId: number;

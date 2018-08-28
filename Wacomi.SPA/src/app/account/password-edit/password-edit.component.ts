@@ -57,7 +57,7 @@ export class PasswordEditComponent extends PasswordEditorBase implements OnInit 
       this.globalService.sendChangePasswordRequest(this.userId, values.currentPassword, values.password)
         .subscribe(() => {
           this.alertify.success("パスワードを変更しました");
-          this.router.navigate(['/settings']);
+          this.router.navigate(['/settings', this.userId]);
         }, (error) => {
           this.alertify.error(error);
         })

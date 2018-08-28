@@ -25,6 +25,7 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
   appUser: AppUser;
   commentFeelingEnum: any[];
   alreadyTweeted: boolean;
+  forcusedRecordId: number = null;
 
   constructor(private route: ActivatedRoute,
     private alertify: AlertifyService,
@@ -33,6 +34,7 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.appUser = this.route.snapshot.data['appUser'];
+    this.forcusedRecordId = this.route.snapshot.params['topicCommentId'];
     this.commentFeelingEnum = this.globalService.getFeelings();
     // console.log(this.commentFeelingEnum);
     this.loading = true;

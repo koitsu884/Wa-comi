@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row">
+  <div class="row" *ngIf="appUser">
     <button class="btn btn-primary" [disabled]="(clanState | async).reachLimit" [routerLink]="['edit', appUser.id]">新規投稿</button>
     <p *ngIf="(clanState | async).reachLimit" class="text-danger">仲間募集投稿は1人{{CLANSEEK_MAX}}つまで可能です。新しく投稿するには不要な投稿を削除して下さい。</p>
   </div>
@@ -20,7 +20,7 @@
 
   </div>
   <app-loading *ngIf="(clanState | async).loading"></app-loading>
-  <app-clan-list *ngIf="!(clanState | async).loading" [clanSeeks]="(clanState | async).clanSeeks" [appUserId]="appUser.id"></app-clan-list>
+  <app-clan-list *ngIf="!(clanState | async).loading" [clanSeeks]="(clanState | async).clanSeeks" [appUserId]="appUser?.id"></app-clan-list>
   <div *ngIf="(clanState | async).pagination && (clanState | async).pagination.totalPages > 1" class="text-center">
     <pagination [boundaryLinks]="true" [totalItems]="(clanState | async).pagination.totalItems" [ngModel]="(clanState | async).pagination.currentPage"
       [itemsPerPage]="(clanState | async).pagination.itemsPerPage" (pageChanged)="pageChanged($event)" class="pagination-sm"

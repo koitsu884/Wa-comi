@@ -1,11 +1,12 @@
 <div class="clanCard" [ngClass]="{isMine: isMine}" [ngSwitch]="clanSeek.categoryName">
   <div class="panel panel-success" [ngClass]="{disabled: !clanSeek.isActive}">
     <div class="panel-heading">
-        <span class="categoryName color-friend" *ngSwitchCase="'友達'">{{clanSeek.categoryName}}</span>
-        <span class="categoryName color-circle" *ngSwitchCase="'サークル'">{{clanSeek.categoryName}}</span>
-        <span class="categoryName color-travel" *ngSwitchCase="'旅行'">{{clanSeek.categoryName}}</span>
-        <span class="categoryName color-study" *ngSwitchCase="'勉強・自己啓発'">{{clanSeek.categoryName}}</span>
-        <span *ngSwitchDefault></span>
+        <span class="categoryName color-friend" *ngSwitchCase="'友達'">友達</span>
+        <span class="categoryName color-circle" *ngSwitchCase="'サークル'">サークル</span>
+        <span class="categoryName color-event" *ngSwitchCase="'イベント'">イベント</span>
+        <span class="categoryName color-travel" *ngSwitchCase="'旅行'">旅行</span>
+        <span class="categoryName color-study" *ngSwitchCase="'勉強・自己啓発'">勉強・自己啓発</span>
+        <span *ngSwitchDefault class="categoryName color-etc">その他</span>
         <span class="h4">{{clanSeek.title}}</span>
     </div>
     <div class="panel-body">

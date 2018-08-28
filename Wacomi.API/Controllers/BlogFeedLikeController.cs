@@ -41,16 +41,18 @@ namespace Wacomi.API.Controllers
             if(!await _repo.RecordExist("AppUser", (int)model.SupportAppUserId))
                 return NotFound();
 
-            if (!await _repo.RecordExist("BlogFeed", (int)model.BlogFeedId))
+            var blogFeedFromRepo = await _repo.GetBlogFeed((int)model.BlogFeedId);
+            if (blogFeedFromRepo == null)
                 return NotFound();
 
             if(await _repo.BlogFeedLiked((int)model.SupportAppUserId, (int)model.BlogFeedId))
                 return BadRequest("既にリアクションされています");
 
             _repo.Add(model);
+            await _repo.AddLikeCountToUser(blogFeedFromRepo.Blog.OwnerId);
             if (await _repo.SaveAll() > 0)
             {
-                return CreatedAtRoute("GetBlogFeedLike", new {id = model.Id}, model);
+                return CreatedAtRoute("GetBlogFeedLike", new {id = model.Id}, null);
             }
             return BadRequest("Failed to post topic like");
         }

@@ -3,7 +3,7 @@ namespace Wacomi.API.Dto
     public class CommentForReturnDto
     {
         public int Id{ get; set;}
-        public int OwnerRecordClass{ get; set;}
+        public string OwnerRecordClass{ get; set;}
         public int OwnerRecordId { get; set;}
         public int AppUserId { get; set;}
         public string DisplayName{ get; set;}

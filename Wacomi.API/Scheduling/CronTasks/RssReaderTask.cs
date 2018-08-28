@@ -20,7 +20,8 @@ namespace Wacomi.API.Scheduling.CronTasks
     public class RssReaderTask : IScheduledTask
     {
         //https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer#cron-expressions
-        public string Schedule => "* * * * *";
+        public string Schedule => "*/20 * * * *";
+        // private readonly int BLOGFEED_MAX = 20;
 
         private readonly IDataRepository _repo;
         private readonly ILogger<RssReaderTask> _logger;
@@ -48,30 +49,33 @@ namespace Wacomi.API.Scheduling.CronTasks
             var blogs = await _repo.GetBlogsForRssFeed();
             foreach (var blog in blogs)
             {
-                //TODO: Count blog feed for the blog
-                //TODO: Delete feed if it's more than 20
                 var blogFeed = await readRss(blog);
-                if (blogFeed != null)
-                {
-                    var fileName = Path.GetFileName(blogFeed.ImageUrl);
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        try
-                        {
-                            saveFeedImage(blogFeed);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex.Message);
-                            blogFeed.ImageUrl = null;
-                        }
-                    }
+                if(blogFeed == null)    continue;
 
-                    this._repo.Add(blogFeed);
-                }
+                this._repo.Add(blogFeed);
                 blog.DateRssRead = DateTime.Now;
+                await this._repo.SaveAll();
+
+                // if(await this._repo.GetBlogFeedsCountForBlog(blog.Id) >= this.BLOGFEED_MAX){
+                //     await this._repo.DeleteOldestFeed(blog.id);
+                // }
+                
+                if(!string.IsNullOrEmpty(blogFeed.ImageUrl))
+                {
+                    try
+                    {
+                        saveFeedImage(blogFeed);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        _logger.LogError(ex.Message);
+                    }
+                }
             }
-            await this._repo.SaveAll();
+
+            Console.WriteLine("End Rss Read");
+            _logger.LogInformation("End Rss Read");
         }
 
         private async Task<BlogFeed> readRss(Blog blog)
@@ -103,7 +107,7 @@ namespace Wacomi.API.Scheduling.CronTasks
                         BlogId = blog.Id,
                         Blog = blog,
                         Title = System.Net.WebUtility.HtmlDecode(firstItem.Title),
-                        // ImageUrl = firstImageUrl,
+                        ImageUrl = firstImageUrl,
                         PublishingDate = PublishingDate,
                         Url = firstItem.Link
                     };
@@ -115,38 +119,22 @@ namespace Wacomi.API.Scheduling.CronTasks
 
         private void saveFeedImage(BlogFeed blogFeed, bool saveLocal = false)
         {
-            this._fileStorageManager.SaveImageFromUrl(blogFeed.Photo.Url, 
+            var targetFolder = Path.Combine("feedimages", blogFeed.BlogId.ToString());
+            var result = this._fileStorageManager.SaveImageFromUrl(
+                                        "blogfeed",
+                                        blogFeed.ImageUrl,
                                         DateTime.Now.ToString("yyyy_MM_dd_hh_mm") + ".jpg", 
-                                        Path.Combine("feedimages", blogFeed.BlogId.ToString()));
+                                        Path.Combine("feedimages", blogFeed.BlogId.ToString())
+                                        );
 
-            // if (saveLocal)
-            // {
-            //     var fullFileName = Path.Combine("feedimages", blogFeed.BlogId.ToString(), DateTime.Now.ToString("yyyy_MM_dd_hh_mm")) + ".jpg";
-            //     using (WebClient client = new WebClient())
-            //     {
-            //         using (Stream stream = client.OpenRead(blogFeed.Photo.Url))
-            //         {
-            //            // var bitmap = new Bitmap(stream);
-            //             var image = Image.FromStream(stream);
-
-            //             if (image != null)
-            //             {
-            //                 int resizeWidth = 400;
-            //                 int resizeHeight = (int)(image.Height * ((double)resizeWidth / (double)image.Width));
-            //                 Bitmap resizeBmp = new Bitmap(image, resizeWidth, resizeHeight);
-            //                 //may throw exception
-            //                 this._staitcFileManager.SaveImageFile(fullFileName, resizeBmp, ImageFormat.Jpeg);
-            //                 blogFeed.Photo.Url = fullFileName;
-            //             }
-
-            //             stream.Flush();
-            //         }
-            //     }
-            // }
-            // else{
-                
-            // }
-
+            if(result.Error == null){
+                blogFeed.Photo = new Photo(){
+                    StorageType = this._fileStorageManager.GetStorageType("blogfeed"),
+                    Url = result.Url,
+                    PublicId = result.PublicId,
+                };
+                _repo.SaveAll();
+            }
         }
         private string extractFeedImage(FeedType feedType, FeedItem feedItem, bool yahoo = false)
         {

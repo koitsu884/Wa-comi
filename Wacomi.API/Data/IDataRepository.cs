@@ -24,6 +24,7 @@ namespace Wacomi.API.Data
         Task<IEnumerable<Photo>> GetPhotosForRecord(string recordType, int recordId);
          Task<AppUser> GetAppUser(int id);
          Task<AppUser> GetAppUserByAccountId(string accountId);
+         Task AddLikeCountToUser(int userId);
 
         // Task<UserBase> GetUser(string type, int id);
         Task<BusinessProfile> GetBusinessProfile(int id);
@@ -44,9 +45,10 @@ namespace Wacomi.API.Data
         Task<BlogFeedComment> GetBlogFeedComment(int id);
         Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId);
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
-        Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category);
+        Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category, int? userId);
         Task<IEnumerable<BlogFeed>> GetBlogFeeds(DateTime? from, DateTime? to);
         Task<IEnumerable<BlogFeed>> GetBlogFeedsByBlogId(int blogId);
+        Task<int> GetBlogFeedsCountForBlog(int blogId);
         Task DeleteFeed(BlogFeed feed);
         Task DeleteFeeds(System.DateTime? targetDate = null);
         Task DeleteFeedLikes(int feedId);
@@ -104,6 +106,12 @@ namespace Wacomi.API.Data
         // Task<IEnumerable<Message>> GetLatestSentMessages(int userId);
         Task<PagedList<Message>> GetMessagesSentTo(PaginationParams paginationParams, int userId, int recipientId);
         Task<int> GetNewMessagesCount(int userId);
+        // Task<Notification> GetNotification(int id);
+        // Task<IEnumerable<Notification>> GetNotifications(int appUserId);
+        // void DeleteAllNotifications(int appUserId);
+        // Task AddNotificationNewMessage(Message message);
+        // Task AddNotificationRepliedForTopicComment(TopicComment topicComment);
+        // Task AddNotificationNewPostOnTopicComment(int appUserId, TopicComment topicComment);
 
     }
 

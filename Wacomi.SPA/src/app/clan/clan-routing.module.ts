@@ -20,7 +20,6 @@ const clanRoute: Routes = [
         path: '',
         runGuardsAndResolvers: 'always',
         component:ClanHomeComponent,
-        canActivate: [AuthGuard],
         resolve: {
             
             appUser:AppUserResolver,            

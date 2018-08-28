@@ -10,7 +10,7 @@ namespace Wacomi.API.Scheduling.CronTasks
 {
     public class DeleteOldFeedTask : IScheduledTask
     {
-        public string Schedule => "* * * * *";
+        public string Schedule => "0 0 * * *";
 
         private readonly IDataRepository _repo;
         private readonly ILogger<DeleteOldFeedTask> _logger;
@@ -29,18 +29,20 @@ namespace Wacomi.API.Scheduling.CronTasks
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Cron Task - Delete Old Feeds");
-            Console.WriteLine(DateTime.UtcNow);
-            Console.WriteLine(DateTime.Now);
             _logger.LogInformation("Cron Task - Delete Old Feeds");
 
             var targetDate = DateTime.Now.AddMonths(-6);
+          //  var targetDate = DateTime.Now; //for test
 
             var deletingFeeds = await _repo.GetBlogFeeds(null, targetDate);
             foreach(var feed in deletingFeeds){
                 await this._repo.DeleteFeed(feed);
-                await this._repo.SaveAll();
                 this._fileStorageManager.DeleteImageFile(feed.Photo);
+                await this._repo.SaveAll();
             }
+
+            Console.WriteLine("Cron Task - Finished DeleteOldFeedTask");
+            _logger.LogInformation("Cron Task - Finished DeleteOldFeedTask");
         }
     }
 }

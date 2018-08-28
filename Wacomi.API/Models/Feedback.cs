@@ -9,6 +9,9 @@ namespace Wacomi.API.Models
         public int? SenderId { get; set;}
         public AppUser Sender { get; set;}
         [Required]
+        [MaxLength(100)]
+        public string SenderName { get; set;}
+        [Required]
         public string Email { get; set;}
         [MaxLength(100)]
         [Required]

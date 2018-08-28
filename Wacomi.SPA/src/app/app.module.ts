@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
+import localeJa from '@angular/common/locales/ja';
 import { AppComponent } from './app.component';
 import { BsDropdownModule, defineLocale, BsLocaleService, jaLocale, TabsModule, PaginationModule } from 'ngx-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,8 +21,8 @@ import { PhotoModule } from './photo/photo.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/app.reducer';
 import { EffectsModule } from '@ngrx/effects';
-import { StoreRouterConnectingModule} from '@ngrx/router-store';
-import { StoreDevtoolsModule} from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AccountEffects } from './account/store/account.effects';
 import { PhotoEffect } from './photo/store/photos.effect';
 import { BlogEffects } from './blog/store/blogs.effect';
@@ -41,14 +42,18 @@ import { MessageService } from './_services/message.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoadingComponent } from './shared/loading/loading.component';
 import { ModalService } from './_services/modal.service';
+import { ContactComponent } from './contact/contact.component';
+import { registerLocaleData } from '@angular/common';
+import { NotificationEffect } from './notification/store/notification.effects';
 
-
-defineLocale('ja', jaLocale); 
+registerLocaleData(localeJa, 'ja');
+//defineLocale('ja', jaLocale);
 
 @NgModule({
   declarations: [
-    AppComponent
-],
+    AppComponent,
+    ContactComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -60,7 +65,7 @@ defineLocale('ja', jaLocale);
     BlogModule,
     PhotoModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects]),
+    EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects, NotificationEffect]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
@@ -68,6 +73,7 @@ defineLocale('ja', jaLocale);
     PaginationModule.forRoot(),
   ],
   providers: [
+    { provide: LOCALE_ID, useValue: 'ja' },
     GlobalService,
     MessageService,
     AlertifyService,

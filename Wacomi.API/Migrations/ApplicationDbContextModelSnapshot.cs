@@ -200,6 +200,12 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("MainPhotoId");
 
+                    b.Property<int>("TotalLike");
+
+                    b.Property<int>("TotalLikeM");
+
+                    b.Property<int>("TotalLikeW");
+
                     b.Property<int>("UserProfileId");
 
                     b.Property<string>("UserType");
@@ -226,7 +232,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Category3");
 
-                    b.Property<DateTime>("DateRssRead");
+                    b.Property<DateTime?>("DateRssRead");
 
                     b.Property<string>("Description");
 
@@ -316,15 +322,11 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("DisplayName");
 
-                    b.Property<int?>("PhotoId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("BlogFeedId");
-
-                    b.HasIndex("PhotoId");
 
                     b.ToTable("BlogFeedComments");
                 });
@@ -477,6 +479,10 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("SenderId");
 
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -618,6 +624,36 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AppUserId");
+
+                    b.Property<string>("Message");
+
+                    b.Property<int>("NotificationType");
+
+                    b.Property<int?>("PhotoId");
+
+                    b.Property<int>("RecordId");
+
+                    b.Property<string>("RecordType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("RecordId");
+
+                    b.HasIndex("RecordType");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.Photo", b =>
@@ -885,10 +921,6 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.BlogFeed", "BlogFeed")
                         .WithMany("FeedComments")
                         .HasForeignKey("BlogFeedId");
-
-                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
-                        .WithMany()
-                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.BlogFeedLike", b =>
@@ -995,6 +1027,13 @@ namespace Wacomi.API.Migrations
                         .WithMany("MessageSent")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.Notification", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.Photo", b =>

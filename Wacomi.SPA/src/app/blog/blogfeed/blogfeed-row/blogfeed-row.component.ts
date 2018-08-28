@@ -12,6 +12,7 @@ export class BlogfeedRowComponent implements OnInit {
   @Input() appUser : AppUser;
   @Output() sendLike: EventEmitter<number> = new EventEmitter();
   @Output() toggleDisplayComments: EventEmitter<void> = new EventEmitter();
+  @Input() hasForcus: boolean;
   
   constructor() { }
 

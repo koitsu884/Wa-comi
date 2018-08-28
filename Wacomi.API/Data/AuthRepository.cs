@@ -172,23 +172,17 @@ namespace Wacomi.API.Data
 
         public async Task<bool> AccountExists(string username, string email)
         {
-            if (await _context.Users.AnyAsync(x => x.UserName == username || x.Email == email))
-                return true;
-            return false;
+            return await _context.Users.AnyAsync(x => x.UserName == username || x.Email == email);
         }
 
         public async Task<bool> UserNameExists(string username, string exceptionId = "")
         {
-            if (await _context.Users.Where(x => x.Id != exceptionId).AnyAsync(x => x.UserName == username))
-                return true;
-            return false;
+           return await _context.Users.Where(x => x.Id != exceptionId).AnyAsync(x => x.UserName == username);
         }
 
         public async Task<bool> EmailExists(string email, string exceptionId = "")
         {
-            if (await _context.Users.Where(x => x.Id != exceptionId).AnyAsync(x => x.Email == email))
-                return true;
-            return false;
+            return await _context.Users.Where(x => x.Id != exceptionId).AnyAsync(x => x.Email == email);
         }
 
         public async Task<bool> RoleExists(string role)
@@ -203,6 +197,10 @@ namespace Wacomi.API.Data
 
         public async Task<Account> GetAccountByEmail(string email){
             return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<Account> GetAccountByUserName(string userName){
+            return await _userManager.FindByNameAsync(userName);
         }
 
         public async Task<Account> UpdateAccount(Account user)
@@ -230,26 +228,6 @@ namespace Wacomi.API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
-        //  public async Task<BusinessUser> GetBusinessUser(int id){
-        //     return await _context.BusinessUsers.Include(m => m.City)
-        //                                 .Include(m=>m.Identity)
-        //                                 .FirstOrDefaultAsync(m => m.Id == id);
-        // }
-        // public async Task<Member> GetMember(int id){
-        //     return await _context.Members.Include(m => m.City)
-        //                                 .Include(m => m.HomeTown)
-        //                                 .Include(m=>m.Identity)
-        //                                 .FirstOrDefaultAsync(m => m.Id == id);
-        // }
-        // public async Task<Member> GetMemberByIdentityId(string id){
-        //     return await _context.Members.Include(m => m.City)
-        //                                 .Include(m => m.HomeTown)
-        //                                 .Include(m => m.Identity)
-        //                                 .FirstOrDefaultAsync(m => m.IdentityId == id);
-        // }
-        // public async Task<IEnumerable<Member>> GetMembers(UserParams userParams){
-        //     return await _context.Members.Where(m => m.IsActive == true).ToListAsync();
-        // }
         public async Task<IdentityResult> AddRoles(Account user, string[] roles)
         {
             await this._userManager.RemoveFromRolesAsync(user, await this._userManager.GetRolesAsync(user));

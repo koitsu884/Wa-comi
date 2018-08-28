@@ -14,6 +14,7 @@ import { BlogfeedListComponent } from '../blog/blogfeed/blogfeed-list/blogfeed-l
 import { BlogfeedCardComponent } from '../blog/blogfeed/blogfeed-list/blogfeed-card/blogfeed-card.component';
 import { ShortCommentFormComponent } from './short-comment-form/short-comment-form.component';
 import { PhotoSelectorComponent } from './photo-selector/photo-selector.component';
+import { NgxGalleryModule } from 'ngx-gallery';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { PhotoSelectorComponent } from './photo-selector/photo-selector.componen
     CommonModule,
     FormsModule,
     Nl2BrPipeModule,
+    NgxGalleryModule,
     RouterModule,
     // AppRoutingModule,
    // AppRoutingModule,
@@ -40,6 +42,7 @@ import { PhotoSelectorComponent } from './photo-selector/photo-selector.componen
     ClanCardComponent,
     FormsModule,
     Nl2BrPipeModule,
+    NgxGalleryModule,
     LoadingComponent,
     MainphotoSelectorComponent,
     BlogfeedListComponent,

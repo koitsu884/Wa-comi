@@ -14,7 +14,11 @@ namespace Wacomi.API.Helper
         public ImageFileResult DeleteImage(string publicId)//= file name
         {
             string error = null;
+            string actualStaticFolderPath = Path.Combine(Directory.GetCurrentDirectory(),this.staticFolderName);
+
             try{
+                System.Console.WriteLine(publicId);
+                System.Console.WriteLine(actualStaticFolderPath);
                 File.Delete(publicId);
             }
             catch(IOException ex){
@@ -32,6 +36,7 @@ namespace Wacomi.API.Helper
         public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null)
         {
             string savedFilePath = null;
+            string fileName = prefix + file.FileName;
             string error = null;
             try
             {
@@ -41,7 +46,7 @@ namespace Wacomi.API.Helper
                     {
                         // var bitmap = new Bitmap(stream);
                         var image = Image.FromStream(stream);
-                        savedFilePath = this.SaveImageToLocalStorage(image, prefix + file.FileName, targetFolder);
+                        savedFilePath = this.SaveImageToLocalStorage(image, fileName, targetFolder);
                         savedFilePath = savedFilePath.Replace("\\", "/");
                         //stream.Flush();
                     }
@@ -51,7 +56,10 @@ namespace Wacomi.API.Helper
             {
                 error = "Save Image Error:" + ex.Message;
             }
-            return new ImageFileResult(savedFilePath, error, savedFilePath);
+            string actualStaticFolderPath = Path.Combine(Directory.GetCurrentDirectory(),this.staticFolderName);
+
+            string publicId = Path.Combine(actualStaticFolderPath, targetFolder, fileName);
+            return new ImageFileResult(savedFilePath, error, publicId);
         }
 
         public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder)
@@ -76,7 +84,9 @@ namespace Wacomi.API.Helper
             {
                 error = "Save Image Error:" + ex.Message;
             }
-            return new ImageFileResult(savedFilePath, error, savedFilePath);
+            string actualStaticFolderPath = Path.Combine(Directory.GetCurrentDirectory(),this.staticFolderName);
+            string publicId = Path.Combine(actualStaticFolderPath, targetFolder, fileName);
+            return new ImageFileResult(savedFilePath, error, publicId);
         }
 
         private string SaveImageToLocalStorage(Image image, string fileName, string targetFolder)

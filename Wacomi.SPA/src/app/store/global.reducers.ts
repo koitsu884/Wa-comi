@@ -28,6 +28,8 @@ export function globalReducer(state = initialState, action: GlobalActions.Global
             homeTownList: action.payload
         }
         case GlobalActions.SET_CLANCATEGORY_LIST:
+        var tempList: any = action.payload;
+        tempList.push({id:null, name:"その他"});
         return {
             ...state,
             clanSeekCategories: action.payload

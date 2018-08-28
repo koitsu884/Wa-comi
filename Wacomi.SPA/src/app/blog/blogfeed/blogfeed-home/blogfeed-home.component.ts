@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, trigger, state, style, transition, animate } from '@angular/core';
 import { Pagination } from '../../../_models/Pagination';
 import { Observable } from 'rxjs/Observable';
 import * as fromBlog from '../../store/blogs.reducers';
@@ -14,6 +14,24 @@ import { AlertifyService } from '../../../_services/alertify.service';
 
 @Component({
   selector: 'app-blogfeed-home',
+  animations: [
+    trigger('feedRow', [
+      state('in', style({ opacity: 1, transform: 'translateX(0)' })),
+      transition('void => *', [
+        style({
+          opacity: 0,
+          transform: 'translateX(-100%)'
+        }),
+        animate('0.2s ease-in')
+      ]),
+      transition('* => void', [
+        animate('0.2s 0.1s ease-out', style({
+          opacity: 0,
+          transform: 'translateX(100%)'
+        }))
+      ])
+    ])
+  ],
   templateUrl: './blogfeed-home.component.html',
   styleUrls: ['./blogfeed-home.component.css']
 })
@@ -22,6 +40,8 @@ export class BlogfeedHomeComponent implements OnInit {
   blogCategories: string[];
   selectedCategory: string;
   appUser: AppUser; //resolve
+  onlyMine: boolean = false;
+  forcusedRecordId: number = null;
   
   constructor(private store : Store<fromBlog.FeatureState>, 
     private alertify: AlertifyService,
@@ -30,13 +50,24 @@ export class BlogfeedHomeComponent implements OnInit {
 
   ngOnInit() {
     this.appUser= this.route.snapshot.data['appUser'];
+    this.forcusedRecordId = this.route.snapshot.params['id'];
     this.blogCategories = this.globalService.getBlogCategories();
     this.blogCategories.unshift("全て");
     this.blogState = this.store.select("blogs");
-    this.store.dispatch(new BlogActions.SearchFeeds());
+    if(this.forcusedRecordId)
+      this.store.dispatch(new BlogActions.SearchFeedById(this.forcusedRecordId));
+    else
+      this.store.dispatch(new BlogActions.SearchFeeds());
+  }
+
+  toggleOnlyMine(){
+    this.onlyMine != this.onlyMine;
+    this.forcusedRecordId = null;
+    this.store.dispatch(new BlogActions.SetSearchUserId(this.onlyMine ? this.appUser.id : null));
   }
 
   filterChanged(){
+    this.forcusedRecordId = null;
     this.store.dispatch(new BlogActions.SetFeedSearchCategory(this.selectedCategory == "全て" ? "" : this.selectedCategory));
   }
 
@@ -49,6 +80,7 @@ export class BlogfeedHomeComponent implements OnInit {
   }
 
   toggleDisplayComments(blogFeed: BlogFeed){
+    this.forcusedRecordId = null;
     if(!blogFeed.displayComments){
       this.store.dispatch(new BlogActions.GetFeedComments(blogFeed.id));
     }

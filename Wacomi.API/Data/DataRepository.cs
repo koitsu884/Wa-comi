@@ -150,9 +150,7 @@ namespace Wacomi.API.Data
         public async Task<AppUser> GetAppUser(int id)
         {
             return await _context.AppUsers.Include(au => au.City)
-                                          .Include(au => au.MainPhoto)
                                           .Include(au => au.Photos)
-                                          //   .Include(au => au.Blogs)
                                           .FirstOrDefaultAsync(au => au.Id == id);
         }
 
@@ -163,6 +161,14 @@ namespace Wacomi.API.Data
                                           .Include(au => au.Photos)
                                          //   .Include(au => au.Blogs)
                                          .FirstOrDefaultAsync(au => au.AccountId == accountId);
+        }
+
+        public async Task AddLikeCountToUser(int userId)
+        {
+            var appUser = await GetAppUser(userId);
+            if (appUser != null)
+                appUser.TotalLike++;
+            //TODO: add for month, week
         }
 
 
@@ -244,12 +250,21 @@ namespace Wacomi.API.Data
 
         public async Task<BlogFeed> GetLatestBlogFeed(int blogId)
         {
-            return await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).OrderByDescending(bf => bf.PublishingDate).FirstOrDefaultAsync();
+            return await _context.BlogFeeds
+                            .Include(bf => bf.Photo)
+                            .Include(bf => bf.Blog)
+                            .ThenInclude(b => b.Photo)
+                            .Where(bf => bf.BlogId == blogId).OrderByDescending(bf => bf.PublishingDate).FirstOrDefaultAsync();
         }
 
         public async Task<BlogFeed> GetBlogFeed(int id)
         {
-            return await _context.BlogFeeds.Include(bf => bf.Blog).Include(bf => bf.FeedLikes).FirstOrDefaultAsync(bf => bf.Id == id);
+            return await _context.BlogFeeds.Include(bf => bf.Photo)
+                                           .Include(bf => bf.Blog)
+                                           .ThenInclude(b => b.Photo)
+                                           .Include(bf => bf.FeedLikes)
+                                           .Include(bf => bf.FeedComments)
+                                           .FirstOrDefaultAsync(bf => bf.Id == id);
         }
 
         public async Task<bool> BlogFeedLiked(int appUserId, int blogFeedId)
@@ -274,21 +289,25 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId)
         {
-            return await _context.BlogFeedComments.Where(bfc => bfc.BlogFeedId == feedId).ToListAsync();
+            return await _context.BlogFeedComments.Include(bf => bf.AppUser).ThenInclude(u => u.MainPhoto)
+                                                  .Where(bfc => bfc.BlogFeedId == feedId).ToListAsync();
         }
         public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds()
         {
-            return await _context.BlogFeeds.Include(bf => bf.Blog)
+            return await _context.BlogFeeds.Include(bf => bf.Photo)
+                                            .Include(bf => bf.Blog)
+                                            .ThenInclude(b => b.Photo)
                                             .Where(bf => bf.Blog.IsActive == true && bf.IsActive == true)
                                             .OrderByDescending(bf => bf.PublishingDate)
                                             .Take(12)
                                             .ToListAsync();
         }
 
-        public async Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category = null)
+        public async Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category = null, int? userId = null)
         {
-            var blogFeeds = _context.BlogFeeds.Include(bf => bf.Blog)
-                                            .ThenInclude(bf => bf.Owner)
+            var blogFeeds = _context.BlogFeeds.Include(bf => bf.Photo)
+                                            .Include(bf => bf.Blog).ThenInclude(b => b.Owner)
+                                            .Include(bf => bf.Blog).ThenInclude(b => b.Photo)
                                             .Include(bf => bf.FeedLikes)
                                             .Include(bf => bf.FeedComments)
                                             .OrderByDescending(bf => bf.PublishingDate)
@@ -303,6 +322,11 @@ namespace Wacomi.API.Data
                                                || bf.Blog.Category3 == category);
             }
 
+            if (userId != null)
+            {
+                blogFeeds = blogFeeds.Where(bf => bf.Blog.OwnerId == userId);
+            }
+
             return await PagedList<BlogFeed>.CreateAsync(blogFeeds, paginationParams.PageNumber, paginationParams.PageSize);
             //return await blogFeeds.ToListAsync();
         }
@@ -310,9 +334,15 @@ namespace Wacomi.API.Data
         {
             return await _context.BlogFeeds.Include(bf => bf.FeedLikes)
                                             .Include(bf => bf.FeedComments)
+                                            .Include(bf => bf.Photo)
                                             .Where(bf => bf.BlogId == blogId && bf.IsActive == true)
                                             .OrderByDescending(bf => bf.PublishingDate)
                                             .Take(20).ToListAsync();
+        }
+
+        public async Task<int> GetBlogFeedsCountForBlog(int blogId)
+        {
+            return await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).CountAsync();
         }
 
         public async Task<IEnumerable<BlogFeed>> GetBlogFeeds(DateTime? from = null, DateTime? to = null)
@@ -758,5 +788,76 @@ namespace Wacomi.API.Data
         {
             return await _context.Messages.Where(m => m.RecipientId == userId && m.IsRead == false).CountAsync();
         }
+
+        // public async Task<Notification> GetNotification(int id){
+        //     return await _context.Notifications.Where(n => n.Id == id).FirstOrDefaultAsync();
+        // }
+
+        // public async Task<IEnumerable<Notification>> GetNotifications(int appUserId){
+        //     return await _context.Notifications.Where(n => n.AppUserId == appUserId).Take(100).ToListAsync();
+        // }
+
+        // public void DeleteAllNotifications(int appUserId){
+        //     var deletingNotifications = _context.Notifications.Where(n => n.AppUserId == appUserId);
+        //     _context.RemoveRange(deletingNotifications);
+        // }
+
+        // private async Task AddNotificationIfNotExist(Notification notification){
+        //     if(await _context.Notifications.Where(n => 
+        //         n.AppUserId == notification.AppUserId
+        //         && n.NotificationType == notification.NotificationType
+        //         && n.RecordId == notification.RecordId).AnyAsync())
+        //         return;
+
+        //     Add(notification);
+        // }
+        // public async Task AddNotificationRepliedForTopicComment(TopicComment topicComment){
+        //     var previousOwnerReply = await _context.TopicReplies.Where(tr => tr.TopicCommentId == topicComment.Id && tr.AppUserId == topicComment.AppUserId)
+        //                                                 .OrderByDescending(tr => tr.DateCreated).FirstOrDefaultAsync();
+        //     List<TopicReply> notifyingReplies = null;
+        //     if (previousOwnerReply == null)
+        //     {
+        //         notifyingReplies = await _context.TopicReplies.Where(tr =>
+        //                                             tr.TopicCommentId == topicComment.Id
+        //                                             ).GroupBy(tr => tr.AppUserId)
+        //                                             .Select(g => g.First())
+        //                                             .ToListAsync();
+        //     }
+        //     else
+        //     {
+        //         notifyingReplies = await _context.TopicReplies.Where(tr =>
+        //                                             tr.TopicCommentId == topicComment.Id
+        //                                             && tr.DateCreated > previousOwnerReply.DateCreated
+        //                                             ).GroupBy(tr => tr.AppUserId)
+        //                                             .Select(g => g.First())
+        //                                             .ToListAsync();
+        //     }
+
+        //     foreach (var reply in notifyingReplies)
+        //     {
+        //         if (reply.AppUserId != null)
+        //             await AddNotificationIfNotExist(new Notification() { 
+        //                 AppUserId = (int)reply.AppUserId, 
+        //                 NotificationType = NotificationEnum.RepliedOnTopicComment, 
+        //                 RecordType = "TopicComment", 
+        //                 RecordId = reply.TopicCommentId });
+        //     }
+        // }
+        // public async Task AddNotificationNewPostOnTopicComment(int appUserId, TopicComment topicComment){
+        //     await AddNotificationIfNotExist(new Notification() { 
+        //         AppUserId = (int)topicComment.AppUserId, 
+        //         NotificationType = NotificationEnum.NewPostOnTopicComment, 
+        //         RecordType = "TopicComment", 
+        //         RecordId = topicComment.Id });
+        // }
+
+        // public async Task AddNotificationNewMessage(Message message){
+        //     await AddNotificationIfNotExist(new Notification() { 
+        //         AppUserId = message.RecipientId, 
+        //         NotificationType = NotificationEnum.NewMessage, 
+        //         RecordType = "Message", 
+        //         RecordId = message.Id });
+        // }
+    
     }
 }

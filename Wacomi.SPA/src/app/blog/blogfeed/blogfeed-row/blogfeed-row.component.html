@@ -1,6 +1,6 @@
-<div class="row feedItem bg-light-blue">
+<div class="row feedItem bg-light-blue" [ngClass]="{isMine: appUser?.id == blogFeed.ownerId}" >
   <div class="col-sm-6">
-      <img class="feedImage" src="{{blogFeed.imageUrl}}">
+      <img class="feedImage" src="{{blogFeed.photo ? blogFeed.photo.url : '/assets/NoImage.png'}}">
       <h5><strong><a href="{{blogFeed.url}}">{{blogFeed.title}}</a></strong></h5>
        <span class="clearfix"></span>
   </div>
@@ -10,7 +10,7 @@
             <img class="blogImage img-circle" src="{{blogFeed.blogImageUrl ? blogFeed.blogImageUrl : '/assets/NoImage.png'}}">
             <strong>{{blogFeed.blogTitle}}</strong>
             <p class="clearfix">ライター：<a [routerLink]="['/users/detail/', blogFeed.ownerId]">{{blogFeed.writerName}}</a></p>
-            <p>投稿日：{{blogFeed.publishingDate | date: 'mediumDate'}}</p>
+            <p>投稿日：{{blogFeed.publishingDate | date}}</p>
           </div>
           <div class="col-xs-4">
             <button class="btn btn-primary btn-xs" (click)="onSendLike(blogFeed.id)" [disabled]="blogFeed.isLiked || !appUser">
@@ -19,7 +19,7 @@
               </button><br/><br/>
               <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
               <button class="btn btn-primary btn-xs" (click)="onToggleDisplayComment()" [disabled]="!appUser">
-                  <i class="fa fa-comment" title="返信数"></i>
+                  <i class="fa fa-comment" [ngClass]="{blinking:hasForcus}" title="返信数"></i>
                   <span class="badge">{{blogFeed.commentCount}}</span>
               </button>
 

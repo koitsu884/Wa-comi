@@ -19,8 +19,10 @@ export const SET_SELECTED_BLOG = 'SET_SELECTED_BLOG';
 export const TRY_DELETE_FEED = 'TRY_DELETE_FEED';
 export const DELETE_FEED = 'DELETE_FEED';
 export const SET_FEED_SEARCH_CATEGORY = 'SET_FEED_SEARCH_CATEGORY';
+export const SET_SEARCH_USER_ID = 'SET_SEARCH_USER_ID';
 export const SET_FEED_SEARCH_PAGE = 'SET_FEED_SEARCH_PAGE';
 export const SEARCH_FEEDS = 'SEARCH_FEEDS';
+export const SEARCH_FEED_BY_ID = 'SEARCH_FEED_BY_ID';
 export const SET_FEED_SEARCH_RESULT = 'SET_FEED_SEARCH_RESULT';
 export const LIKE_FEED = 'LIKE_FEED';
 export const SET_LIKED_FLAG = 'SET_LIKED_FLAG';
@@ -109,6 +111,11 @@ export class SetFeedSearchCategory implements Action {
     constructor(public payload: string){}
 }
 
+export class SetSearchUserId implements Action {
+    readonly type = SET_SEARCH_USER_ID;
+    constructor(public payload: number){}
+}
+
 export class SetFeedSearchPage implements Action {
     readonly type = SET_FEED_SEARCH_PAGE;
     constructor(public payload: number){}
@@ -117,6 +124,11 @@ export class SetFeedSearchPage implements Action {
 export class SearchFeeds implements Action {
     readonly type = SEARCH_FEEDS;
     constructor(){}
+}
+
+export class SearchFeedById implements Action {
+    readonly type = SEARCH_FEED_BY_ID;
+    constructor(public payload: number){}
 }
 
 export class SetFeedSearchResult implements Action {
@@ -173,7 +185,9 @@ export type AccountActions = TryAddBlog
                            | TryDeleteFeed
                            | DeleteFeed
                            | SearchFeeds
+                           | SearchFeedById
                            | SetFeedSearchCategory
+                           | SetSearchUserId
                            | SetFeedSearchPage
                            | SetFeedSearchResult
                            | LikeFeed

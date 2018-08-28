@@ -23,12 +23,8 @@ export class GlobalService {
     constructor(private httpClient: HttpClient, private store: Store<fromApp.AppState>) {
     }
 
-    getClanSeekCategories() {
-        return this.httpClient.get<{ id: number, name: string }>(this.baseUrl + 'clanseek/categories');
-    }
-
     getBlogCategories() {
-        return ["日常", "ニュース", "グルメ", "国際恋愛", "仕事", "オピニオン"];
+        return ["日常", "ワーホリ", "留学", "ニュース", "グルメ", "国際恋愛", "英語", "仕事", "オピニオン"];
     }
 
     getFeelings() {
@@ -36,6 +32,24 @@ export class GlobalService {
         array["Like"] = 1;
         array["Dislike"] = 2;
         array["Hate"] = 3;
+        return array;
+    }
+
+    // public enum NotificationEnum {
+//     NewMessage = 1,
+//     NewPostOnFeedComment,
+//     RepliedOnFeedComment,
+//     NewPostOnTopicComment,
+//     RepliedOnTopicComment,
+// }
+
+    getNotificationTypes() {
+        const array = [];
+        array["NewMessage"] = 1;
+        array["NewPostOnFeedComment"] = 2;
+        array["RepliedOnFeedComment"] = 3;
+        array["NewPostOnTopicComment"] = 4;
+        array["RepliedOnTopicComment"] = 5;
         return array;
     }
 

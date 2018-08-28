@@ -66,6 +66,10 @@ form label.required::after {
     border-bottom: double #7ED1E6;
 } */
 
+h1 {
+    font-size: 7vmin; 
+}
+
 h2 {
     /* color: #444; */
     font-size: 5vmin; 
@@ -99,6 +103,11 @@ h4 {
     background-color: #058be4;
     border-radius: 4px;
 }
+
+/* .row.isMine{
+    padding: 2px;
+    border: 2px solid yellow;
+} */
 
 /*-----------------------------------
  Daily Topic
@@ -139,6 +148,9 @@ h4 {
    background: #e0edff;
    border-radius: 10px;
 }
+.commentBaloon.isMine{
+    background-color: antiquewhite
+}
 
 .commentBaloon:before{
    content: "";
@@ -148,6 +160,10 @@ h4 {
    margin-top: -12px;
    border: 10px solid transparent;
    border-right: 15px solid #e0edff;
+}
+
+.commentBaloon.isMine:before{
+    border-right: 15px solid antiquewhite;
 }
 
 .commentTools{

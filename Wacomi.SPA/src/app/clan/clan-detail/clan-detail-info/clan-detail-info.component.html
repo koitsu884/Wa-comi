@@ -1,7 +1,16 @@
 <div class="clanDetailInfo" *ngIf="clanSeek">
   <div>
     <h2>{{clanSeek.title}}</h2>
-    <img *ngIf="clanSeek.mainPhotoUrl" class="profile-image" src="{{clanSeek.mainPhotoUrl}}" alt="{{clanSeek.title}}">
+    <div class="gallery">
+      <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+    </div>
+    <!-- <carousel *ngIf="clanSeek.photos">
+        <slide *ngFor="let photo of clanSeek.photos">
+          <img src="{{photo.url}}" alt="first slide" style="display: block; width: 100%;">
+        </slide>
+    </carousel> -->
+
+    <!-- <img *ngIf="clanSeek.mainPhotoUrl" class="profile-image" src="{{clanSeek.mainPhotoUrl}}" alt="{{clanSeek.title}}"> -->
     <h4>エリア：{{clanSeek.locationName}}</h4>
     <h5>投稿日:{{clanSeek.created | date: 'mediumDate'}}</h5>
     <h5>最終更新日：{{clanSeek.lastActive | date: 'mediumDate'}}</h5>
@@ -13,6 +22,8 @@
     <br>
   </div>
   <div *ngIf="clanSeek.isActive" [innerHTML]="clanSeek.description | nl2br"></div>
-  <p *ngIf="!clanSeek.isActive" class="text-danger"><strong>この募集は現在行っておりません</strong></p>
-  
+  <p *ngIf="!clanSeek.isActive" class="text-danger">
+    <strong>この募集は現在行っておりません</strong>
+  </p>
+
 </div>

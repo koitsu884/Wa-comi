@@ -1,0 +1,14 @@
+.notification {
+    cursor: pointer; 
+    padding: 2px;
+}
+
+.notification:hover {
+    border: solid 2px blue;
+    padding: 0;
+}
+
+.notification img{
+    width:50px;
+    margin: 5px;
+}

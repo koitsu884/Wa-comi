@@ -19,6 +19,13 @@ const blogRoute: Routes = [
         }
     },
     {
+        path:'feed/:id',
+        component: BlogfeedHomeComponent,
+        resolve: {
+            appUser: AppUserResolver
+        }
+    },
+    {
         path:'feed',
         component: BlogfeedHomeComponent,
         resolve: {

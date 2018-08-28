@@ -22,6 +22,7 @@ namespace Wacomi.API.Data
         Task<IdentityResult> DelteAccount(Account user);
         Task<Account> GetAccount(string id);
         Task<Account> GetAccountByEmail(string email);
+        Task<Account> GetAccountByUserName(string username);
         // Task<BusinessUser> GetBusinessUser(int id);
         // Task<Member> GetMember(int id);
         // Task<Member> GetMemberByIdentityId(string id);

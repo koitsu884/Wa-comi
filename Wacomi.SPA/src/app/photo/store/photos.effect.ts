@@ -70,7 +70,6 @@ export class PhotoEffect{
         .map((actions: PhotoActions.TryAddPhoto) => {return actions.payload})
         .withLatestFrom(this.store$)
         .switchMap(([fileData , photoState]) => {
-            console.log(photoState);
             const formData: FormData = new FormData();
      //       formData.append('File', fileData, fileData.name);
             formData.append('files', fileData);

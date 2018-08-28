@@ -1,6 +1,6 @@
 <form #accountEditForm="ngForm" id="accountEditForm" (ngSubmit)="submit(accountEditForm)">
   <div class="form-group" [ngClass]="{'has-error': username.errors && username.touched}">
-    <label for="userName" class="required">ユーザーネーム</label>
+    <label for="userName" class="required">ログインユーザーネーム</label>
     <input class="form-control form-group " type="text" name="userName" [(ngModel)]="account.userName" required #username="ngModel"
     />
     <span class="help-block" *ngIf="username?.errors?.required && username.touched">

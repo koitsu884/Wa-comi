@@ -24,7 +24,7 @@
       <p *ngIf="!blog.blogFeeds">このブログのフィード記事はまだありません</p>
       <div class="row" *ngFor="let blogFeed of blog.blogFeeds">
         <div class="col-xs-2">
-          <img class="blogImage" src="{{blogFeed.imageUrl}}">
+          <img class="blogImage" src="{{blogFeed.photo?.url}}">
         </div>
         <div class="col-xs-8">
           <p>

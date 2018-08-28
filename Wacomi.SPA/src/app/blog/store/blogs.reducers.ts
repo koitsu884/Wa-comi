@@ -13,6 +13,7 @@ export interface State {
     selectedBlog: Blog;
     //feed search
     searchCategory: string;
+    searchUserId: number;
     pagination: Pagination,
     blogFeeds: BlogFeed[];
     likedBlogFeedList: number[];
@@ -25,6 +26,7 @@ const initialState: State = {
     blogFeeds: null,
     likedBlogFeedList: null,
     searchCategory: null,
+    searchUserId: null,
     pagination: null,
     loading: false
 };
@@ -71,6 +73,11 @@ export function blogReducer(state = initialState, action: BlogActions.AccountAct
                 searchCategory: action.payload,
                 pagination: null
             };
+        case BlogActions.SET_SEARCH_USER_ID:
+            return {
+                ...state,
+                searchUserId: action.payload
+            }
         case BlogActions.SET_FEED_SEARCH_PAGE:
             tempPagination = state.pagination;
             tempPagination.currentPage = action.payload;
