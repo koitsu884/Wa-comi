@@ -119,7 +119,7 @@ namespace Wacomi.API
             // Add scheduled tasks & scheduler
             services.AddSingleton<IScheduledTask, RssReaderTask>();
             services.AddSingleton<IScheduledTask, DeleteOldFeedTask>();
-          //  services.AddSingleton<IScheduledTask, ChangeTopicTask>();
+            services.AddSingleton<IScheduledTask, ChangeTopicTask>();
             services.AddScheduler((sender, args) =>
             {
                 //TODO: log error on database or wherever appropriate

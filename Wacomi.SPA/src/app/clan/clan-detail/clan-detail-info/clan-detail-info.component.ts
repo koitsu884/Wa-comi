@@ -18,11 +18,13 @@ export class ClanDetailInfoComponent implements OnInit {
   ngOnInit() {
     this.galleryOptions = [
       {
-        breakpoint: 800,
+        //breakpoint: 800,
         width: '100%',
-        imagePercent: 100,
+        height: '500px',
+        imageSize:"contain",
+       // imagePercent: 100,
         thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Slide,
+        imageAnimation: NgxGalleryAnimation.Fade,
         preview: false
       }
     ];

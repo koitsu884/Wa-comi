@@ -290,7 +290,9 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId)
         {
             return await _context.BlogFeedComments.Include(bf => bf.AppUser).ThenInclude(u => u.MainPhoto)
-                                                  .Where(bfc => bfc.BlogFeedId == feedId).ToListAsync();
+                                                  .Where(bfc => bfc.BlogFeedId == feedId)
+                                                  .OrderBy(bfc => bfc.DateCreated)
+                                                  .ToListAsync();
         }
         public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds()
         {

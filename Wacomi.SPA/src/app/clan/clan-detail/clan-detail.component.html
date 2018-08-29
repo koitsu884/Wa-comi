@@ -1,18 +1,17 @@
 <div class="container">
   <app-loading *ngIf="!editingClan"></app-loading>
-  <div class="row" *ngIf="editingClan">
-    <div class="col-sm-8">
-        <div *ngIf="editingClan.appUserId == appUser?.id">
-            <a class="btn btn-primary" [routerLink]="['/clan/edit',  appUser.id, editingClan.id]">編集</a>
-            <a class="btn btn-danger" (click)="onDelete()">削除</a>
-        </div>
-      <app-clan-detail-info [clanSeek]="editingClan"></app-clan-detail-info>
-    </div>
-    <div class="col-sm-4">
-      <app-clan-detail-card [clanSeek]="editingClan" [appUser]="appUser"></app-clan-detail-card>
-      <div>
-        <h4>広告…</h4>
+  <div *ngIf="editingClan">
+    <div class="row">
+      <div class="col-sm-8">
+        <app-clan-detail-info [clanSeek]="editingClan"></app-clan-detail-info>
       </div>
+      <div class="col-sm-4">
+        <app-clan-detail-card [clanSeek]="editingClan" [appUser]="appUser"></app-clan-detail-card>
+      </div>
+    </div>
+    <div *ngIf="editingClan.appUserId == appUser?.id">
+      <a class="btn btn-primary" [routerLink]="['/clan/edit',  appUser.id, editingClan.id]">編集</a>
+      <a class="btn btn-danger" (click)="onDelete()">削除</a>
     </div>
   </div>
 </div>

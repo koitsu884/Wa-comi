@@ -31,8 +31,8 @@
            <a (click)="false" class="dropdown-toggle" dropdownToggle>{{appUser?.displayName}}<span class="caret"></span></a> 
            <ul class="dropdown-menu" *dropdownMenu>
              <!-- <li role="separator" class="divider"></li> -->
-             <li *ngIf="!isAdmin"><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
-             <li *ngIf="!isAdmin"><a [routerLink]="['/blog']">ブログ管理</a></li>
+             <li><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
+             <li><a [routerLink]="['/blog']">ブログ管理</a></li>
              <li *ngIf="isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>
            </ul>
