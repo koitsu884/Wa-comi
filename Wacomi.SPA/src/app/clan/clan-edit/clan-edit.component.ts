@@ -2,20 +2,12 @@ import { Component, OnInit, Input, ElementRef, ViewChild, TemplateRef, OnDestroy
 import { ClanSeek } from '../../_models/ClanSeek';
 import { City } from '../../_models/City';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ClanSeekCategoryResolver } from '../../_resolvers/clanseek-categories.resolver';
-import { ClanSeekCategory } from '../../_models/ClanSeekCategory';
-import { Photo } from '../../_models/Photo';
+import { Category } from '../../_models/Category';
 import { NgForm } from '@angular/forms';
 
 import { Store } from '@ngrx/store';
-import * as fromApp from '../../store/app.reducer';
-// import * as fromPhoto from '../../photo/store/photos.reducers';
 import * as fromClan from '../store/clan.reducers';
 import * as ClanActions from '../store/clan.actions';
-// import * as PhotoActions from '../../photo/store/photos.action';
-import { Observable } from 'rxjs/Observable';
-import { HttpRequest } from '@angular/common/http';
-import { AlertifyService } from '../../_services/alertify.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -25,17 +17,17 @@ import { Location } from '@angular/common';
 })
 
 export class ClanEditComponent implements OnInit {
-  @Input() editMode: boolean;
   readonly FILE_UPLOAD_LIMIT = 5;
   readonly IMAGE_SIZE = 600;
-
+  
+  editMode: boolean;
   id: number;
   appUserId: number;
   editingClan: ClanSeek;
   waitingResponse: boolean = false;
   // formData: FormData;
   cities: City[];
-  categories: ClanSeekCategory[];
+  categories: Category[];
   selectedFiles: Array<File> = [];
   previewUrls: Array<string> = [];
   //photos: Photo[];
@@ -44,9 +36,7 @@ export class ClanEditComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private appStore: Store<fromApp.AppState>,
-    private store: Store<fromClan.FeatureState>,
-    private alertify: AlertifyService) { }
+    private store: Store<fromClan.FeatureState>) { }
 
   ngOnInit() {
     this.route.params

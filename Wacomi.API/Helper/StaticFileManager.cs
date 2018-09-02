@@ -55,11 +55,7 @@ namespace Wacomi.API.Helper
         private string convertRequestFileNameToPhysicalPath(string fullFileName){
             var fileNameParts = fullFileName.Split('/', 2);
             var requestPath = fileNameParts[0];
-            Console.WriteLine(fullFileName);
-            Console.WriteLine(fileNameParts[0]);
-            Console.WriteLine(fileNameParts[1]);
             var test = this._staticFileFolders.FirstOrDefault(folder => folder.Key == requestPath);
-            Console.Write(test.ToString());
             string pysicalRootPath = this._staticFileFolders.FirstOrDefault(folder => folder.Key == requestPath).Value;
             if(pysicalRootPath == null){
                 throw new System.Exception("Error: convertRequestFileNameToPhysicalPath - Could not find request path " + requestPath);

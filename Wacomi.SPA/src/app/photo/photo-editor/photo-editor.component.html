@@ -6,8 +6,8 @@
             <p><strong>＊アップロードできる画像は{{FILE_UPLOAD_LIMIT}}つまでです</strong></p>
             <img *ngIf="selectedFile" class="img-responsive" [src]="previewUrl" />
             <input type="file" accept="image/*" style="display: none" (change)="onFileChanged($event)" #fileInput>
-            <button class="btn btn-block btn-primary" (click)="fileInput.click()" [disabled]="photos.length >= FILE_UPLOAD_LIMIT">画像選択</button>
-            <button class="btn btn-block btn-primary" (click)="onUpload()" [disabled]="!selectedFile || photos.length >= FILE_UPLOAD_LIMIT">アップロード</button>
+            <button class="btn btn-block btn-primary" (click)="fileInput.click()" [disabled]="photos?.length >= FILE_UPLOAD_LIMIT">画像選択</button>
+            <button class="btn btn-block btn-primary" (click)="onUpload()" [disabled]="!selectedFile || photos?.length >= FILE_UPLOAD_LIMIT">アップロード</button>
         </div>
         <div class="col-sm-8 col-md-9">
             <h4>写真一覧</h4>

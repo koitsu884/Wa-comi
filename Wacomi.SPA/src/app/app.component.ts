@@ -56,6 +56,7 @@ export class AppComponent implements OnInit{
     this.store.dispatch(new GlobalActions.GetCityList());
     this.store.dispatch(new GlobalActions.GetHometownList());
     this.store.dispatch(new GlobalActions.GetClanCategoryList());
+    this.store.dispatch(new GlobalActions.GetAttractionCategoryList());
 
     // if (token) {
     //   this.authService.userToken = token;

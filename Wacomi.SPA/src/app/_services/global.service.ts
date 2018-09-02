@@ -15,6 +15,7 @@ import * as MessageActions from '../message/store/message.actions';
 import { Message } from '../_models/Message';
 import { PaginatedResult } from '../_models/Pagination';
 import { Blog } from '../_models/Blog';
+import { Attraction } from '../_models/Attraction';
 
 @Injectable()
 export class GlobalService {
@@ -55,6 +56,10 @@ export class GlobalService {
 
     getLatestBlogFeeds() {
         return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed/latest');
+    }
+
+    getLatestAttractionList() {
+        return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction/latest');
     }
 
     getBlogFeedUri(url: string) {

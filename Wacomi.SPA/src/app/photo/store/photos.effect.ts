@@ -6,9 +6,8 @@ import * as PhotoActions from './photos.action';
 import { Store } from "@ngrx/store";
 import { of } from "rxjs/observable/of";
 import { Photo } from "../../_models/Photo";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { PhotoEditorComponent } from "../photo-editor/photo-editor.component";
 
 @Injectable()
 export class PhotoEffect{
@@ -28,7 +27,7 @@ export class PhotoEffect{
                 return [
                     {
                         type: PhotoActions.SET_PHOTOS,
-                        payload: {recordType: payload.recordType, recordId: payload.recordId, photos: photos}
+                        payload: {recordType: payload.recordType, recordId: payload.recordId, photos: photos ? photos: []}
                     }
                 ];
             })

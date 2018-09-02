@@ -1,20 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ClanSeekCategory } from '../../_models/ClanSeekCategory';
+import { Category } from '../../_models/Category';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { ClanSeek } from '../../_models/ClanSeek';
-import { environment } from '../../../environments/environment';
 import { City } from '../../_models/City';
-import { CityListResolver } from '../../_resolvers/citylist.resolver';
-import { AlertifyService } from '../../_services/alertify.service';
 import { Observable } from 'rxjs/Observable';
 
 import * as fromClan from '../store/clan.reducers';
 import * as ClanSeekActions from '../store/clan.actions';
 import { Store } from '@ngrx/store';
 import { AppUser } from '../../_models/AppUser';
-import { PaginatedResult, Pagination } from '../../_models/Pagination';
-import { ClanCardComponent } from './clan-list/clan-card/clan-card.component';
+import { Pagination } from '../../_models/Pagination';
 
 @Component({
   selector: 'app-clan-home',
@@ -25,7 +20,7 @@ import { ClanCardComponent } from './clan-list/clan-card/clan-card.component';
 
 export class ClanHomeComponent implements OnInit {
   readonly CLANSEEK_MAX = 5;
-  categories: ClanSeekCategory[];
+  categories: Category[];
   cities: City[];
   clanSeeks: ClanSeek[];
   selectedCityId: number;
@@ -35,20 +30,19 @@ export class ClanHomeComponent implements OnInit {
   appUser: AppUser;
   reachLimit: boolean;
   loading: boolean;
+  onlyMine: boolean = false;
   pagingParams: any = {};
   pagination: Pagination;
   clanState: Observable<fromClan.State>;
 
   constructor(private route: ActivatedRoute,
-    private httpClient: HttpClient,
-    private store: Store<fromClan.FeatureState>,
-    private alertify: AlertifyService) { }
+    private store: Store<fromClan.FeatureState>) { }
 
   ngOnInit() {
     const citiesFromStore: City[] = this.route.snapshot.data['cities'];
     this.cities = citiesFromStore.slice(0, citiesFromStore.length);
     this.cities.unshift({ id: 0, name: "全て", region: "" });
-    const categoriesFromStore: ClanSeekCategory[] = this.route.snapshot.data['categories'];
+    const categoriesFromStore: Category[] = this.route.snapshot.data['categories'];
     this.categories = categoriesFromStore.slice(0, categoriesFromStore.length);
     this.categories.unshift({ id: 0, name: "全て" });
     this.appUser = this.route.snapshot.data['appUser'];
@@ -75,5 +69,9 @@ export class ClanHomeComponent implements OnInit {
 
   pageChanged(event) {
     this.store.dispatch(new ClanSeekActions.SetClanSeekPage(event.page));
+  }
+
+  toggleOnlyMine(){
+    this.onlyMine != this.onlyMine;
   }
 }

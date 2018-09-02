@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Wacomi.API.Dto;
@@ -11,6 +12,26 @@ namespace Wacomi.API.Helper
         {
             CreateMap<Account, AccountForReturnDto>();
             CreateMap<AccountUpdateDto, Account>();
+
+            CreateMap<AttractionCategory, CategoryForReturnDto>();
+            CreateMap<AttractionUpdateDto, Attraction>();
+            CreateMap<Attraction, AttractionForReturnDto>()
+              .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.City.Name))
+              .ForMember(a => a.Categories, opt => opt.ResolveUsing((src) => {
+                  List<AttractionCategory> categories = new List<AttractionCategory> ();
+                  if(src.Categorizations != null)
+                  {
+                    foreach( var categorization in src.Categorizations){
+                      categories.Add(categorization.AttractionCategory);
+                    }
+                  }
+                  return categories;
+              }
+              ))
+              .ForMember(m => m.LikedCount, opt => opt.MapFrom(src => src.AttractionLikes.Count()))
+              .ForMember(m => m.ReviewedCount, opt => opt.MapFrom(src => src.AttractionReviews.Count()))
+              .ForMember(m => m.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
+
             CreateMap<UserRegistrationDto, Account>();
 
             CreateMap<AppUser, AppUserForReturnDto>()
@@ -62,9 +83,7 @@ namespace Wacomi.API.Helper
               .ForMember(cs => cs.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
               .ForMember(cs => cs.LocationName, opt => opt.MapFrom(src => src.Location.Name))
               .ForMember(cs => cs.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url))
-              .ForMember(cs => cs.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
-            ;
-            ;
+              .ForMember(cs => cs.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName));
 
             CreateMap<PropertySeekForCreationDto, PropertySeek>();
             CreateMap<PropertySeekUpdateDto, PropertySeek>();

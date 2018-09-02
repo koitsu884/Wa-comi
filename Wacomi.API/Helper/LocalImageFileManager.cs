@@ -17,8 +17,6 @@ namespace Wacomi.API.Helper
             string actualStaticFolderPath = Path.Combine(Directory.GetCurrentDirectory(),this.staticFolderName);
 
             try{
-                System.Console.WriteLine(publicId);
-                System.Console.WriteLine(actualStaticFolderPath);
                 File.Delete(publicId);
             }
             catch(IOException ex){

@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BlogFeed } from '../../_models/BlogFeed';
 import { GlobalService } from '../../_services/global.service';
 import { Observable } from 'rxjs/Observable';
@@ -8,6 +8,7 @@ import { TopicComment } from '../../_models/TopicComment';
 import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../../account/store/account.reducers';
 import { Store } from '@ngrx/store';
+import { Attraction } from '../../_models/Attraction';
 
 @Component({
     selector: 'app-home',
@@ -17,6 +18,7 @@ import { Store } from '@ngrx/store';
 export class HomeComponent implements OnInit {
     //blogFeedList : Observable<BlogFeed[]>;
     blogFeedList: BlogFeed[];
+    latestAttractionList: Attraction[];
     // latestClanSeekList : Observable<ClanSeek[]>;
     latestClanSeekList: ClanSeek[];
     //latestTopicComments : Observable<TopicComment[]>;
@@ -43,7 +45,14 @@ export class HomeComponent implements OnInit {
             }, (error) => {
                 this.latestClanSeekList = [];
                 console.log('Error occured when getting latest clan list');
-            })
+            });
+        this.globalService.getLatestAttractionList()
+            .subscribe((result) => {
+                this.latestAttractionList = result;
+            }, (error) => {
+                this.latestAttractionList = [];
+                console.log('Error occured when getting latest attraction list');
+            });
 
         this.globalService.getTodaysTopic()
             .subscribe((result) => {

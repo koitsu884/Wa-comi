@@ -14,6 +14,7 @@
         <!-- <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
         <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
         <li *ngIf="appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
+        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/attraction']" >スポット</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ</a></li>

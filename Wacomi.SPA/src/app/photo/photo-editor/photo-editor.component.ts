@@ -24,7 +24,7 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
   readonly IMAGE_SIZE = 600;
 
   title: string;
-  photos: Photo[];
+  photos: Photo[] = [];
   selectedPhoto: Photo;
   baseUrl = environment.apiUrl;
   selectedFile: File;

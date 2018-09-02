@@ -13,6 +13,11 @@ namespace Wacomi.API.Data
         }
 
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Attraction> Attractions { get; set; }
+        public DbSet<AttractionCategory> AttractionCategories { get; set; }
+        public DbSet<AttractionReview> AttractionReviews { get; set; }
+        public DbSet<AttractionLike> AttractionLikes { get; set; }
+        public DbSet<AttractionReviewLike> AttractionReviewLikes { get; set; }
         // public DbSet<BlackList> BlackLists { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogFeed> BlogFeeds { get; set; }
@@ -51,6 +56,30 @@ namespace Wacomi.API.Data
             //     .HasOne(a => a.AppUser)
             //     .WithOne(u => u.Account)
             //     .HasForeignKey<AppUser>(a => a.AccountId);
+
+            builder.Entity<AttractionCategorization>()
+                .HasKey(ac => new { ac.AttractionId, ac.AttractionCategoryId} );
+            builder.Entity<AttractionCategorization>()
+                .HasOne(ac => ac.Attraction)
+                .WithMany(a => a.Categorizations)
+                .HasForeignKey(ac => ac.AttractionId);
+            builder.Entity<AttractionCategorization>()
+                .HasOne(ac => ac.AttractionCategory)
+                .WithMany(a => a.Categorizations)
+                .HasForeignKey(ac => ac.AttractionCategoryId);
+
+            builder.Entity<TopicCommentFeel>()
+                .HasOne(tcl => tcl.Comment)
+                .WithMany(tcl => tcl.TopicCommentFeels)
+                .HasForeignKey(tcl => tcl.CommentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<AttractionLike>()
+                .HasKey(al => new { al.AppUserId, al.AttractionId });
+            builder.Entity<AttractionReviewLike>()
+                .HasKey(arl => new { arl.AppUserId, arl.AttractionReviewId });
+            builder.Entity<AttractionReview>()
+                .HasIndex(a => a.AttractionId);
 
             builder.Entity<Blog>()
                 .HasIndex(b => b.Category);

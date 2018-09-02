@@ -10,8 +10,7 @@ import * as fromApp from "../store/app.reducer";
 
 @Injectable()
 export class CityListResolver implements Resolve<City[]> {
-    constructor(private store: Store<fromApp.AppState>, 
-         private router: Router ){}
+    constructor(private store: Store<fromApp.AppState> ){}
 
     resolve(route: ActivatedRouteSnapshot) : City[] {
         let cityList = [];

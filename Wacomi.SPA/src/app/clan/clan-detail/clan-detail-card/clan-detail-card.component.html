@@ -1,5 +1,4 @@
 <div *ngIf="clanSeek">
-  <h4>エリア：{{clanSeek.locationName}}</h4>
   <h5>投稿日:{{clanSeek.created | date: 'mediumDate'}}</h5>
   <h5>最終更新日：{{clanSeek.lastActive | date: 'mediumDate'}}</h5>
   <h4>投稿者</h4>
@@ -7,15 +6,7 @@
   <div *ngIf="appUser && clanSeek.appUserId != appUser.id">
       <button class="btn btn-success btn-sm" (click)="onSend()" [disabled]="!appUser">ショートメッセージを送る</button>
   </div>
-  <hr>
-  <h4>広告</h4>
-
-  <!-- <div class="panel-header">
-      <a [routerLink]="['/users/detail/' + clanSeek.appUserId]" style="cursor: pointer">投稿者：{{clanSeek.displayName}}</a>
-  </div> -->
-  <!-- <div class="panel-footer">
-    <div *ngIf="appUser && clanSeek.appUserId != appUser.id">
-      <button class="btn btn-success" (click)="onSend()" [disabled]="!appUser">ショートメッセージを送る</button>
-    </div>
-  </div> -->
+  <p class="text-danger" *ngIf="!appUser">※ショートメッセージを送るにはログインしてください</p>
+  <!-- <hr>
+  <h4>広告</h4> -->
 </div>

@@ -97,6 +97,13 @@ namespace Wacomi.API.Data
                         return appUser.Photos.ToList();
                     }
                     break;
+                case "attraction":
+                    var attraction = await _context.Attractions.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == recordId);
+                    if (attraction != null)
+                    {
+                        return attraction.Photos.ToList();
+                    }
+                    break;
                 case "clanseek":
                     var clanSeek = await _context.ClanSeeks.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == recordId);
                     if (clanSeek != null)

@@ -4,14 +4,6 @@
       <!-- <div>
         <h2>何か情報とか？</h2>
       </div> -->
-      <h2>みんなのブログ</h2>
-      <div class="row">
-        <app-loading *ngIf="!blogFeedList"></app-loading>
-        <app-blogfeed-list [blogFeedList]="blogFeedList"></app-blogfeed-list>
-      </div>
-      <p class="text-center">
-        <button class="btn btn-sm btn-success" [routerLink]="['/blog/feed']">ブログ記事検索</button>
-      </p>
       <h2>仲間募集中！</h2>
       <div class="row">
         <app-loading *ngIf="!latestClanSeekList"></app-loading>
@@ -19,6 +11,23 @@
       </div>
       <p class="text-center">
         <button class="btn btn-sm btn-success" [routerLink]="['/clan']">仲間募集検索</button>
+      </p>
+      <h2>新着おススメスポット</h2>
+      <div class="row">
+          <app-loading *ngIf="!latestAttractionList"></app-loading>
+          <app-latest-attraction-list [latestAttractionList]="latestAttractionList"></app-latest-attraction-list>
+        </div>
+        <br>
+        <p class="text-center">
+          <button class="btn btn-sm btn-success" [routerLink]="['/attraction']">スポット検索</button>
+        </p>
+      <h2>みんなのブログ</h2>
+      <div class="row">
+        <app-loading *ngIf="!blogFeedList"></app-loading>
+        <app-blogfeed-list [blogFeedList]="blogFeedList"></app-blogfeed-list>
+      </div>
+      <p class="text-center">
+        <button class="btn btn-sm btn-success" [routerLink]="['/blog/feed']">ブログ記事検索</button>
       </p>
       <h2>一言トピック</h2>
       <div class="row">

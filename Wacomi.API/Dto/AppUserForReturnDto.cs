@@ -7,6 +7,7 @@ namespace Wacomi.API.Dto
     public class AppUserForReturnDto
     {
         public int Id { get; set;}
+        public AppUserForReturnDto AppUser{ get; set;}
         public string AccountId { get; set;}
         public string UserType {get; set;}
         public int UserProfileId { get; set;}

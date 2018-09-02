@@ -21,6 +21,10 @@ namespace Wacomi.API.Helper
 
         public StorageType GetStorageType(string recordType){
             switch(recordType.ToLower()){
+                    case "attraction":
+                        return StorageType.Cloudinary;
+                    case "attractionreview":
+                        return StorageType.Cloudinary;
                     case "appuser":
                         return StorageType.Cloudinary;
                     case "clanseek":

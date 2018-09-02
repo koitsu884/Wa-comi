@@ -38,7 +38,7 @@ namespace Wacomi.API.Helper
             data.Add("html", message);
 
             Object sendEmail = sendinBlue.send_email(data);
-            Console.WriteLine(sendEmail);
+
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Wacomi.API.Data
             SeedUsers(userManager, context);
             SeedClanSeekCategories(context);
             SeedPropertySeekCategories(context);
+            SeedAttractionCategories(context);
             SeedDailyTopic(context);
             SeedOthers(context);
         }
@@ -67,6 +68,37 @@ namespace Wacomi.API.Data
                     if (result == null)
                     {
                         throw new Exception("Failed to create clan seek category " + clanSeekCategory);
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public static void SeedAttractionCategories(ApplicationDbContext context)
+        {
+            string[] attractionCategories = {
+                "自然",
+                "海",
+                "山",
+                "公園",
+                "アクティビティ",
+                "有名観光地",
+                "芸術",
+                "マーケット",
+                "ショッピング・お土産",
+                "動物",
+                "絶景巡り",
+                "建築物"};
+
+            foreach (var attractionCategory in attractionCategories)
+            {
+                if (!context.AttractionCategories.Any(h => h.Name == attractionCategory))
+                {
+                    var result = context.AttractionCategories.AddAsync(new AttractionCategory() { Name = attractionCategory }).Result;
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create attraction category " + attractionCategory);
                     }
                 }
             }

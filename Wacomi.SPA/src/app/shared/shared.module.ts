@@ -15,6 +15,7 @@ import { BlogfeedCardComponent } from '../blog/blogfeed/blogfeed-list/blogfeed-c
 import { ShortCommentFormComponent } from './short-comment-form/short-comment-form.component';
 import { PhotoSelectorComponent } from './photo-selector/photo-selector.component';
 import { NgxGalleryModule } from 'ngx-gallery';
+import { AttractionCardComponent } from '../attraction/attraction-card/attraction-card.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { NgxGalleryModule } from 'ngx-gallery';
     MainphotoSelectorComponent,
     LoadingComponent,
     ClanCardComponent,
+    AttractionCardComponent,
     BlogfeedListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
@@ -40,6 +42,7 @@ import { NgxGalleryModule } from 'ngx-gallery';
     TimeAgoPipe,
     CommonModule,
     ClanCardComponent,
+    AttractionCardComponent,
     FormsModule,
     Nl2BrPipeModule,
     NgxGalleryModule,

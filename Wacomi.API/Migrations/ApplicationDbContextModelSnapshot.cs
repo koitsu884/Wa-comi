@@ -221,6 +221,121 @@ namespace Wacomi.API.Migrations
                     b.ToTable("AppUsers");
                 });
 
+            modelBuilder.Entity("Wacomi.API.Models.Attraction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AccessInfo");
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int>("CityId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Introduction")
+                        .IsRequired()
+                        .HasMaxLength(1500);
+
+                    b.Property<double>("Latitude");
+
+                    b.Property<double>("Longitude");
+
+                    b.Property<int?>("MainPhotoId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("WebsiteUrl");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("MainPhotoId");
+
+                    b.ToTable("Attractions");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionCategorization", b =>
+                {
+                    b.Property<int>("AttractionId");
+
+                    b.Property<int>("AttractionCategoryId");
+
+                    b.HasKey("AttractionId", "AttractionCategoryId");
+
+                    b.HasIndex("AttractionCategoryId");
+
+                    b.ToTable("AttractionCategorization");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AttractionCategories");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionLike", b =>
+                {
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int?>("AttractionId");
+
+                    b.HasKey("AppUserId", "AttractionId");
+
+                    b.HasIndex("AttractionId");
+
+                    b.ToTable("AttractionLikes");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int>("AttractionId");
+
+                    b.Property<int>("Score")
+                        .HasMaxLength(5);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AttractionId");
+
+                    b.ToTable("AttractionReviews");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionReviewLike", b =>
+                {
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int?>("AttractionReviewId");
+
+                    b.HasKey("AppUserId", "AttractionReviewId");
+
+                    b.HasIndex("AttractionReviewId");
+
+                    b.ToTable("AttractionReviewLikes");
+                });
+
             modelBuilder.Entity("Wacomi.API.Models.Blog", b =>
                 {
                     b.Property<int>("Id")
@@ -663,6 +778,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("AppUserId");
 
+                    b.Property<int?>("AttractionId");
+
                     b.Property<int?>("ClanSeekId");
 
                     b.Property<DateTime>("DateAdded");
@@ -680,6 +797,8 @@ namespace Wacomi.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("AttractionId");
 
                     b.HasIndex("ClanSeekId");
 
@@ -888,6 +1007,73 @@ namespace Wacomi.API.Migrations
                         .HasForeignKey("MainPhotoId");
                 });
 
+            modelBuilder.Entity("Wacomi.API.Models.Attraction", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionCategorization", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AttractionCategory", "AttractionCategory")
+                        .WithMany("Categorizations")
+                        .HasForeignKey("AttractionCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Attraction", "Attraction")
+                        .WithMany("Categorizations")
+                        .HasForeignKey("AttractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionLike", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Attraction", "Attraction")
+                        .WithMany("AttractionLikes")
+                        .HasForeignKey("AttractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionReview", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Attraction", "Attraction")
+                        .WithMany("AttractionReviews")
+                        .HasForeignKey("AttractionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.AttractionReviewLike", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.AttractionReview", "AttractionReview")
+                        .WithMany("AttractionReviewLikes")
+                        .HasForeignKey("AttractionReviewId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Wacomi.API.Models.Blog", b =>
                 {
                     b.HasOne("Wacomi.API.Models.AppUser", "Owner")
@@ -1041,6 +1227,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.AppUser")
                         .WithMany("Photos")
                         .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Attraction")
+                        .WithMany("Photos")
+                        .HasForeignKey("AttractionId");
 
                     b.HasOne("Wacomi.API.Models.ClanSeek")
                         .WithMany("Photos")

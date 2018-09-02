@@ -13,6 +13,7 @@ import { StaticpageComponent } from './staticpage/staticpage.component';
 import { ModalComponent } from './modal/modal.component';
 import { UploadingComponent } from './modal/uploading/uploading.component';
 import { NotificationComponent } from '../notification/notification.component';
+import { LatestAttractionListComponent } from './home/latest-attraction-list/latest-attraction-list.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { NotificationComponent } from '../notification/notification.component';
     UploadingComponent,
     LatestClanListComponent,
     LatestTopiccommentListComponent,
+    LatestAttractionListComponent,
     NotificationComponent,
     StaticpageComponent
 ],

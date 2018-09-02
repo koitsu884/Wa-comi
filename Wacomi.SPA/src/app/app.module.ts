@@ -50,21 +50,21 @@ registerLocaleData(localeJa, 'ja');
 //defineLocale('ja', jaLocale);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ContactComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    CoreModule,
-    ReactiveFormsModule,
-    SharedModule,
-    BlogModule,
-    PhotoModule,
-    StoreModule.forRoot(reducers),
+   declarations: [
+      AppComponent,
+      ContactComponent
+   ],
+   imports: [
+      BrowserModule,
+      BrowserAnimationsModule,
+      HttpClientModule,
+      AppRoutingModule,
+      CoreModule,
+      ReactiveFormsModule,
+      SharedModule,
+      BlogModule,
+      PhotoModule,
+      StoreModule.forRoot(reducers),
     EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects, NotificationEffect]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],

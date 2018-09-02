@@ -2,8 +2,8 @@
   <div class="col-sm-6 col-md-4" [@clanCard] *ngFor="let clanSeek of clanSeeks">
     <app-clan-card [clanSeek]="clanSeek" [isMine]="appUserId == clanSeek.appUserId" [routerLink]="['detail', clanSeek.id]" ></app-clan-card>
   </div>
-  <div class="col-sm-6 col-md-4">
+  <!-- <div class="col-sm-6 col-md-4">
     <h4>広告</h4>
     <p>スペース</p>
-  </div>
+  </div> -->
 </div>

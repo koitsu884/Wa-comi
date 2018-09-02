@@ -76,6 +76,7 @@ namespace Wacomi.API
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddScoped<IAdminDataRepository, AdminDataRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IAttractionRepository, AttractionRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>
