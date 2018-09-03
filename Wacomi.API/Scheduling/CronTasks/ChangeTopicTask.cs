@@ -10,7 +10,7 @@ namespace Wacomi.API.Scheduling.CronTasks
     public class ChangeTopicTask : IScheduledTask
     {
         public string Schedule => "0 0 * * *";
-        private readonly IDataRepository _repo;
+        private readonly IDailyTopicRepository _repo;
         private readonly ILogger<ChangeTopicTask> _logger;
 
         public ChangeTopicTask(IServiceProvider serviceProvider, ILogger<ChangeTopicTask> logger)
@@ -18,7 +18,7 @@ namespace Wacomi.API.Scheduling.CronTasks
             this._logger = logger;
             var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
             var scope = serviceScopeFactory.CreateScope();
-            this._repo = scope.ServiceProvider.GetService<IDataRepository>();
+            this._repo = scope.ServiceProvider.GetService<IDailyTopicRepository>();
         }
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)

@@ -9,35 +9,29 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class PropertySeekController : Controller
+    public class PropertySeekController : DataController
     {
-        private readonly IDataRepository _repo;
-        private readonly IMapper _mapper;
-        public PropertySeekController(IDataRepository repo, IMapper mapper)
+        private readonly IDataRepository _dataRepo;
+        public PropertySeekController(IAppUserRepository appUserRepo, IDataRepository dataRepo, IMapper mapper) : base(appUserRepo, mapper)
         {
-            this._mapper = mapper;
-            this._repo = repo;
+            this._dataRepo = dataRepo;
         }
 
          [HttpGet("{id}", Name = "GetPropertySeek")]
         public async Task<ActionResult> GetPropertySeek(int id)
         {
-            return Ok(await _repo.GetPropertySeek(id));
+            return Ok(await _dataRepo.GetPropertySeek(id));
         }
 
         // [HttpGet()]
         // [HttpGet("category{categoryId}")]
         // public async Task<ActionResult> GetClanSeeks(int? categoryId)
         // {
-        //     var clanSeeks = await _repo.GetClanSeeks(categoryId);
+        //     var clanSeeks = await _dataRepo.GetClanSeeks(categoryId);
         //     return Ok(clanSeeks);
         // }
 
-        [HttpGet("categories")]
-        public async Task<ActionResult> GetClanSeekCategories(){
-            return Ok(await _repo.GetClanSeekCategories());
-        }
-
+    
         [HttpPost]
         //[Authorize]
         public async Task<ActionResult> AddPropertySeek([FromBody]PropertySeekForCreationDto model){
@@ -45,8 +39,8 @@ namespace Wacomi.API.Controllers
                 return BadRequest(ModelState);
 
             var newPropertySeek = this._mapper.Map<PropertySeek>(model);
-            _repo.Add(newPropertySeek);
-            if(await _repo.SaveAll() > 0){
+            _dataRepo.Add(newPropertySeek);
+            if(await _dataRepo.SaveAll() > 0){
                 return CreatedAtRoute("GetPropertySeek", new {id = newPropertySeek.Id}, newPropertySeek); 
             }
             return BadRequest("Failed to add property seek");
@@ -55,13 +49,13 @@ namespace Wacomi.API.Controllers
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePropertySeek(int id){
-            var clanSeek = await _repo.GetPropertySeek(id);
+            var clanSeek = await _dataRepo.GetPropertySeek(id);
             if(clanSeek == null){
                 return NotFound();
             }
-            _repo.Delete(clanSeek);
+            _dataRepo.Delete(clanSeek);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _dataRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the property seek");

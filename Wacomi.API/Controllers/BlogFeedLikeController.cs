@@ -8,24 +8,28 @@ using Wacomi.API.Models;
 
 namespace Wacomi.API.Controllers
 {
-    [Route("api/blogfeed/like")]    
+    [Route("api/blogfeed/like")]
     public class BlogFeedLikeController : DataController
     {
-        public BlogFeedLikeController(IDataRepository repo, IMapper mapper) : base(repo, mapper) { }
+        private readonly IBlogRepository _blogRepo;
+        public BlogFeedLikeController(IAppUserRepository appUserRepo, IBlogRepository blogRepo, IMapper mapper) : base(appUserRepo, mapper) { 
+            this._blogRepo = blogRepo;
+        }
 
         [HttpGet("{id}", Name = "GetBlogFeedLike")]
         public async Task<ActionResult> Get(int id)
         {
-            var blogFeedLike = await _repo.GetBlogFeedLike(id);
+            var blogFeedLike = await _blogRepo.GetBlogFeedLike(id);
             return Ok(blogFeedLike);
         }
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult> GetLikedList(int userId)
         {
-            var listFromRepo = await _repo.GetBlogFeedLikesForUser(userId);
+            var listFromRepo = await _blogRepo.GetBlogFeedLikesForUser(userId);
             List<int> numberList = new List<int>();
-            foreach(var like in listFromRepo){
+            foreach (var like in listFromRepo)
+            {
                 numberList.Add((int)like.BlogFeedId);
             }
             return Ok(numberList);
@@ -35,24 +39,24 @@ namespace Wacomi.API.Controllers
         [Authorize]
         public async Task<IActionResult> Post([FromBody]BlogFeedLike model)
         {
-            if(!await MatchAppUserWithToken((int)model.SupportAppUserId))
+            if (!await MatchAppUserWithToken((int)model.SupportAppUserId))
                 return Unauthorized();
 
-            if(!await _repo.RecordExist("AppUser", (int)model.SupportAppUserId))
+            if (!await _blogRepo.RecordExist("AppUser", (int)model.SupportAppUserId))
                 return NotFound();
 
-            var blogFeedFromRepo = await _repo.GetBlogFeed((int)model.BlogFeedId);
+            var blogFeedFromRepo = await _blogRepo.GetBlogFeed((int)model.BlogFeedId);
             if (blogFeedFromRepo == null)
                 return NotFound();
 
-            if(await _repo.BlogFeedLiked((int)model.SupportAppUserId, (int)model.BlogFeedId))
+            if (await _blogRepo.BlogFeedLiked((int)model.SupportAppUserId, (int)model.BlogFeedId))
                 return BadRequest("既にリアクションされています");
 
-            _repo.Add(model);
-            await _repo.AddLikeCountToUser(blogFeedFromRepo.Blog.OwnerId);
-            if (await _repo.SaveAll() > 0)
+            _blogRepo.Add(model);
+            await _appUserRepo.AddLikeCountToUser(blogFeedFromRepo.Blog.OwnerId);
+            if (await _blogRepo.SaveAll() > 0)
             {
-                return CreatedAtRoute("GetBlogFeedLike", new {id = model.Id}, null);
+                return CreatedAtRoute("GetBlogFeedLike", new { id = model.Id }, null);
             }
             return BadRequest("Failed to post topic like");
         }

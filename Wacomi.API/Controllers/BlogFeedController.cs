@@ -15,32 +15,36 @@ namespace Wacomi.API.Controllers
     public class BlogFeedController : DataController
     {
         private readonly ImageFileStorageManager _fileStorageManager;
-        public BlogFeedController(IDataRepository repo, IMapper mapper, ImageFileStorageManager fileStorageManager) : base(repo, mapper) {
+        private readonly IBlogRepository _blogRepo;
+        public BlogFeedController(IAppUserRepository appUserRepo, IBlogRepository blogRepo, IMapper mapper, ImageFileStorageManager fileStorageManager) : base(appUserRepo, mapper)
+        {
+            this._blogRepo = blogRepo;
             this._fileStorageManager = fileStorageManager;
-         }
-            
+        }
+
 
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestBlogFeeds()
         {
-            var blogFeeds = await _repo.GetLatestBlogFeeds();
+            var blogFeeds = await _blogRepo.GetLatestBlogFeeds();
             var blogFeedsForReturn = this._mapper.Map<IEnumerable<BlogFeedForReturnDto>>(blogFeeds);
             return Ok(blogFeedsForReturn);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id){
-            return Ok(this._mapper.Map<BlogFeedForReturnDto>(await this._repo.GetBlogFeed(id)));
+        public async Task<ActionResult> Get(int id)
+        {
+            return Ok(this._mapper.Map<BlogFeedForReturnDto>(await this._blogRepo.GetBlogFeed(id)));
         }
 
         [HttpGet()]
         public async Task<ActionResult> Get(PaginationParams paginationParams, string category, int? userId = null)
         {
-            var blogFeeds = await _repo.GetBlogFeeds(paginationParams, category, userId);
+            var blogFeeds = await _blogRepo.GetBlogFeeds(paginationParams, category, userId);
             var userNameIdentifier = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userNameIdentifier != null)
             {
-                var appUser = await _repo.GetAppUserByAccountId(userNameIdentifier.Value);
+                var appUser = await _appUserRepo.GetAppUserByAccountId(userNameIdentifier.Value);
 
                 if (appUser != null)
                 {
@@ -68,15 +72,15 @@ namespace Wacomi.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBlogFeed(int id)
         {
-            var feed = await _repo.GetBlogFeed(id);
+            var feed = await _blogRepo.GetBlogFeed(id);
             if (feed == null)
             {
                 return NotFound();
             }
-            await this._repo.DeleteFeed(feed);
+            await this._blogRepo.DeleteFeed(feed);
             this._fileStorageManager.DeleteImageFile(feed.Photo);
 
-            await _repo.SaveAll();
+            await _blogRepo.SaveAll();
             return Ok();
         }
 
@@ -84,7 +88,7 @@ namespace Wacomi.API.Controllers
         [HttpPut("{id}/disable")]
         public async Task<ActionResult> DisableBlogFeed(int id)
         {
-            var feed = await _repo.GetBlogFeed(id);
+            var feed = await _blogRepo.GetBlogFeed(id);
             if (feed == null)
             {
                 return NotFound();
@@ -93,7 +97,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             feed.IsActive = false;
-            if (await _repo.SaveAll() > 0)
+            if (await _blogRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to disable the blog feed");

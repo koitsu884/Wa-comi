@@ -1,0 +1,6 @@
+<div class="attractionCard" [ngClass]="{'isMine':isMine}">
+  <h2>{{attraction.name}}</h2>
+  <img src="{{attraction.mainPhotoUrl != null ? attraction.mainPhotoUrl : 'assets/NoImage.png'}}" alt="{{attraction.name}}">
+  <span class="category" *ngFor="let category of attraction.categories">{{category.name}}</span>
+  <!-- <span class="clearfix"></span> -->
+</div>

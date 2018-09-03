@@ -26,16 +26,23 @@ namespace Wacomi.API.Controllers
         private const int MAX_BLOGCOUNT_PR = 5;
         private readonly ImageFileStorageManager _imageFileStorageManager;
         private readonly ILogger<PhotoController> _logger;
+        private readonly IBlogRepository _blogRepo;
 
-        public BlogController(IDataRepository repo, IMapper mapper, ILogger<PhotoController> logger, ImageFileStorageManager imageFileStorageManager) : base(repo, mapper) {
+        public BlogController(
+         IAppUserRepository appUserRepo,
+         IBlogRepository blogRepo,
+         IMapper mapper, 
+         ILogger<PhotoController> logger, 
+         ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper) {
             this._logger = logger;
+            this._blogRepo = blogRepo;
             this._imageFileStorageManager = imageFileStorageManager;
          }
 
         [HttpGet("{id}", Name = "GetBlog")]
         public async Task<ActionResult> Get(int id)
         {
-            return Ok(_mapper.Map<BlogForReturnDto>(await _repo.GetBlog(id)));
+            return Ok(_mapper.Map<BlogForReturnDto>(await _blogRepo.GetBlog(id)));
         }
 
         [HttpGet("rss")]
@@ -95,11 +102,11 @@ namespace Wacomi.API.Controllers
         {
             // if (!await this.MatchAppUserWithToken(appUserId))
             //     return Unauthorized();
-            var blogsFromRepo = await _repo.GetBlogsForUser(appUserId);
+            var blogsFromRepo = await _blogRepo.GetBlogsForUser(appUserId);
             var blogsForReturnDto = _mapper.Map<IEnumerable<BlogForReturnDto>>(blogsFromRepo);
             if(includeFeeds){
                 foreach(var blogForReturn in blogsForReturnDto){
-                    var feeds = _mapper.Map<IEnumerable<BlogFeedForReturnDto>>(await _repo.GetBlogFeedsByBlogId(blogForReturn.Id));
+                    var feeds = _mapper.Map<IEnumerable<BlogFeedForReturnDto>>(await _blogRepo.GetBlogFeedsByBlogId(blogForReturn.Id));
                     blogForReturn.BlogFeeds = feeds;
                 }
             }
@@ -122,7 +129,7 @@ namespace Wacomi.API.Controllers
             // result += "Feed Image: " + feed.ImageUrl + "\n";
             if (feed.Items.Count > 0)
             {
-                var latestFeed = await _repo.GetLatestBlogFeed(blog.Id);
+                var latestFeed = await _blogRepo.GetLatestBlogFeed(blog.Id);
                 var firstItem = feed.Items.First();
 
                 if (latestFeed == null || latestFeed.PublishingDate < firstItem.PublishingDate)
@@ -183,11 +190,11 @@ namespace Wacomi.API.Controllers
             if (!await this.MatchAppUserWithToken(model.OwnerId))
                 return Unauthorized();
 
-            var user = await this._repo.GetAppUser(model.OwnerId);
+            var user = await this._appUserRepo.GetAppUser(model.OwnerId);
             if (user == null)
                 return NotFound();
 
-            var blogCount = await this._repo.GetBlogCountForUser(user.Id);
+            var blogCount = await this._blogRepo.GetBlogCountForUser(user.Id);
 
             if (blogCount >= MAX_BLOGCOUNT && !user.IsPremium)
             {
@@ -198,8 +205,8 @@ namespace Wacomi.API.Controllers
                 return BadRequest("ブログは" + MAX_BLOGCOUNT_PR + "つまで登録可能です");
             }
 
-            _repo.Add(model);
-            if (await _repo.SaveAll() > 0)
+            _blogRepo.Add(model);
+            if (await _blogRepo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetBlog", new { id = model.Id }, _mapper.Map<BlogForReturnDto>(model));
             }
@@ -213,11 +220,11 @@ namespace Wacomi.API.Controllers
             if (!await this.MatchAppUserWithToken(appUserId))
                 return Unauthorized();
 
-            var user = await this._repo.GetAppUser(appUserId);
+            var user = await this._appUserRepo.GetAppUser(appUserId);
             if (user == null)
                 return NotFound();
 
-            var blogCount = await this._repo.GetBlogCountForUser(user.Id);
+            var blogCount = await this._blogRepo.GetBlogCountForUser(user.Id);
 
             if (blogCount >= MAX_BLOGCOUNT && !user.IsPremium)
             {
@@ -230,8 +237,8 @@ namespace Wacomi.API.Controllers
 
             var blog = new Blog() { Title = "新規ブログ", WriterName = user.DisplayName, OwnerId = user.Id };
             //blogs.Add(blog);
-            _repo.Add(blog);
-            if (await _repo.SaveAll() > 0)
+            _blogRepo.Add(blog);
+            if (await _blogRepo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetBlog", new { id = blog.Id }, _mapper.Map<BlogForReturnDto>(blog));
             }
@@ -245,7 +252,7 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var blogFromRepo = await _repo.GetBlog(model.Id);
+            var blogFromRepo = await _blogRepo.GetBlog(model.Id);
             if (blogFromRepo == null)
                 return NotFound();
 
@@ -253,7 +260,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             this._mapper.Map(model, blogFromRepo);
-            await _repo.SaveAll();
+            await _blogRepo.SaveAll();
 
             return Ok();
         }
@@ -265,24 +272,24 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var blogFromRepo = await _repo.GetBlog(id);
+            var blogFromRepo = await _blogRepo.GetBlog(id);
             if (blogFromRepo == null)
                 return NotFound();
 
             if (!await this.MatchAppUserWithToken(blogFromRepo.OwnerId))
                 return Unauthorized();
 
-            await _repo.DeleteFeedsForBlog(blogFromRepo.Id);
+            await _blogRepo.DeleteFeedsForBlog(blogFromRepo.Id);
             if(blogFromRepo.Photo != null){
-                _repo.Delete(blogFromRepo.Photo);
+                _blogRepo.Delete(blogFromRepo.Photo);
                 var deletingResult = this._imageFileStorageManager.DeleteImageFile(blogFromRepo.Photo);
                 if (!string.IsNullOrEmpty(deletingResult.Error))
                     this._logger.LogError(deletingResult.Error);
             }
 
-            _repo.Delete(blogFromRepo);
+            _blogRepo.Delete(blogFromRepo);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _blogRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("ブログ情報の削除に失敗しました");

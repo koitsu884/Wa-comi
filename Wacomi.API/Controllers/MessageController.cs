@@ -18,21 +18,24 @@ namespace Wacomi.API.Controllers
     {
         private readonly IDataProtector _protector;
         private readonly INotificationRepository _notificationRepo;
+        private readonly IMessageRepository _messageRepo;
         public MessageController(
-            IDataRepository repo, 
+            IAppUserRepository appUserRepo, 
             IMapper mapper, 
             IConfiguration config, 
             IDataProtectionProvider provider,
+            IMessageRepository messageRepo,
             INotificationRepository notificationRepo
-            ) : base(repo, mapper) {
+            ) : base(appUserRepo, mapper) {
             this._protector = provider.CreateProtector(config.GetSection("AppSettings:Token").Value);
             this._notificationRepo = notificationRepo;
+            this._messageRepo = messageRepo;
         }
         
         [HttpGet("{id}", Name = "GetMessage")]
         public async Task<ActionResult> Get(int id)
         {
-            var message = await _repo.GetMessage(id);
+            var message = await _messageRepo.GetMessage(id);
             message.Content = this._protector.Unprotect(message.Content);
             return Ok(message);
         }
@@ -42,7 +45,7 @@ namespace Wacomi.API.Controllers
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages =  await _repo.GetReceivedMessages(paginationParams, userId);
+            var messages =  await _messageRepo.GetReceivedMessages(paginationParams, userId);
             foreach(var message in messages){
                 message.Content = this._protector.Unprotect(message.Content);
             }
@@ -55,7 +58,7 @@ namespace Wacomi.API.Controllers
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetSentMessages(paginationParams, userId);
+            var messages = await _messageRepo.GetSentMessages(paginationParams, userId);
             foreach(var message in messages){
                 message.Content = this._protector.Unprotect(message.Content);
             }
@@ -68,7 +71,7 @@ namespace Wacomi.API.Controllers
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetReceivedMessagesFrom(paginationParams, userId, senderId);
+            var messages = await _messageRepo.GetReceivedMessagesFrom(paginationParams, userId, senderId);
             foreach(var message in messages){
                 message.Content = this._protector.Unprotect(message.Content);
             }
@@ -81,7 +84,7 @@ namespace Wacomi.API.Controllers
         {
             if(!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var messages = await _repo.GetMessagesSentTo(paginationParams, userId, recipientId);
+            var messages = await _messageRepo.GetMessagesSentTo(paginationParams, userId, recipientId);
             foreach(var message in messages){
                 message.Content = this._protector.Unprotect(message.Content);
             }
@@ -92,7 +95,7 @@ namespace Wacomi.API.Controllers
         [HttpGet("{userId}/new")]
         public async Task<ActionResult> GetNewMessagesCount(int userId)
         {
-            return Ok(await _repo.GetNewMessagesCount(userId));
+            return Ok(await _messageRepo.GetNewMessagesCount(userId));
         } 
 
         [HttpPost()]
@@ -100,11 +103,11 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await _repo.RecordExist("AppUser", model.SenderId)){
+            if(!await _messageRepo.RecordExist("AppUser", model.SenderId)){
                 return NotFound("アカウントが見つかりません ID:" + model.SenderId);
             }
 
-            if(!await _repo.RecordExist("AppUser", model.RecipientId)){
+            if(!await _messageRepo.RecordExist("AppUser", model.RecipientId)){
                 return NotFound("送信相手のアカウントが見つかりません ID:" + model.RecipientId);
             }
 
@@ -113,10 +116,10 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
             }
             model.Content = this._protector.Protect(model.Content);
-            _repo.Add(model);
-            if(await _repo.SaveAll() > 0){
+            _messageRepo.Add(model);
+            if(await _messageRepo.SaveAll() > 0){
                 await _notificationRepo.AddNotificationNewMessage(model);
-                await _repo.SaveAll();
+                await _messageRepo.SaveAll();
                 return CreatedAtRoute("GetMessage", new {id = model.Id}, new {}); 
             }
             return BadRequest("Failed to add message");
@@ -124,7 +127,7 @@ namespace Wacomi.API.Controllers
 
         [HttpPut("{id}/read")]
         public async Task<ActionResult> SetReadFlag(int id){
-            var message = await _repo.GetMessage(id);
+            var message = await _messageRepo.GetMessage(id);
             if(message == null){
                 return NotFound();
             }
@@ -134,13 +137,13 @@ namespace Wacomi.API.Controllers
             }
             message.IsRead = true;
 
-            await _repo.SaveAll();
-            return Ok(await _repo.GetNewMessagesCount(message.RecipientId));
+            await _messageRepo.SaveAll();
+            return Ok(await _messageRepo.GetNewMessagesCount(message.RecipientId));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id){
-            var message = await _repo.GetMessage(id);
+            var message = await _messageRepo.GetMessage(id);
             if(message == null){
                 return NotFound();
             }
@@ -148,9 +151,9 @@ namespace Wacomi.API.Controllers
             {
                 return Unauthorized();
             }
-            _repo.Delete(message);
+            _messageRepo.Delete(message);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _messageRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("Failed to delete the message");

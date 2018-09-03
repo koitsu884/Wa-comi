@@ -24,7 +24,7 @@ namespace Wacomi.API.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthRepository _authRepo;
-        private readonly IDataRepository _repo;
+        private readonly IAppUserRepository _repo;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
@@ -32,7 +32,7 @@ namespace Wacomi.API.Controllers
         private readonly string _fromEmail = "noreply@wa-comi.com";
         private readonly string _fromName = "Wa-コミ";
         public AuthController(IAuthRepository authRepo,
-                             IDataRepository repo,
+                             IAppUserRepository appUserRepository,
                              IConfiguration config,
                              UserManager<Account> userManager,
                              IEmailSender emailSender,
@@ -41,7 +41,7 @@ namespace Wacomi.API.Controllers
             this._mapper = mapper;
             this._config = config;
             this._authRepo = authRepo;
-            this._repo = repo;
+            this._repo = appUserRepository;
             this._userManager = userManager;
             this._emailSender = emailSender;
         }

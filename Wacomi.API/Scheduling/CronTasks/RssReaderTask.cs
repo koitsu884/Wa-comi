@@ -23,18 +23,20 @@ namespace Wacomi.API.Scheduling.CronTasks
         public string Schedule => "*/20 * * * *";
         // private readonly int BLOGFEED_MAX = 20;
 
-        private readonly IDataRepository _repo;
+        private readonly IBlogRepository _blogRepo;
         private readonly ILogger<RssReaderTask> _logger;
         private readonly ImageFileStorageManager _fileStorageManager;
 
-        public RssReaderTask(IServiceProvider serviceProvider, ILogger<RssReaderTask> logger, ImageFileStorageManager fileStorageManager)
+        public RssReaderTask(IServiceProvider serviceProvider,
+         ILogger<RssReaderTask> logger,
+          ImageFileStorageManager fileStorageManager)
         {
             this._logger = logger;
             this._fileStorageManager = fileStorageManager;
 
             var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
             var scope = serviceScopeFactory.CreateScope();
-            this._repo = scope.ServiceProvider.GetService<IDataRepository>();
+            this._blogRepo = scope.ServiceProvider.GetService<IBlogRepository>();
 
         }
 
@@ -46,15 +48,15 @@ namespace Wacomi.API.Scheduling.CronTasks
 
             _logger.LogInformation("Cron Task - Rss Read");
 
-            var blogs = await _repo.GetBlogsForRssFeed();
+            var blogs = await _blogRepo.GetBlogsForRssFeed();
             foreach (var blog in blogs)
             {
                 var blogFeed = await readRss(blog);
                 if(blogFeed == null)    continue;
 
-                this._repo.Add(blogFeed);
+                this._blogRepo.Add(blogFeed);
                 blog.DateRssRead = DateTime.Now;
-                await this._repo.SaveAll();
+                await this._blogRepo.SaveAll();
 
                 // if(await this._repo.GetBlogFeedsCountForBlog(blog.Id) >= this.BLOGFEED_MAX){
                 //     await this._repo.DeleteOldestFeed(blog.id);
@@ -93,7 +95,7 @@ namespace Wacomi.API.Scheduling.CronTasks
             // result += "Feed Image: " + feed.ImageUrl + "\n";
             if (feed.Items.Count > 0)
             {
-                var latestFeed = await _repo.GetLatestBlogFeed(blog.Id);
+                var latestFeed = await _blogRepo.GetLatestBlogFeed(blog.Id);
                 var firstItem = feed.Items.First();
 
                 if (latestFeed == null || latestFeed.PublishingDate < firstItem.PublishingDate)
@@ -133,7 +135,7 @@ namespace Wacomi.API.Scheduling.CronTasks
                     Url = result.Url,
                     PublicId = result.PublicId,
                 };
-                _repo.SaveAll();
+                _blogRepo.SaveAll();
             }
         }
         private string extractFeedImage(FeedType feedType, FeedItem feedItem, bool yahoo = false)

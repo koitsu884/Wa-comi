@@ -1,0 +1,8 @@
+<div *ngIf="attraction">
+  <h4>投稿者</h4>
+  <a [routerLink]="['/users/detail/' + attraction.appUser.id]" style="cursor: pointer">{{attraction.appUser.displayName}}</a>
+  <h5>投稿日:{{attraction.dateCreated | date: 'mediumDate'}}</h5>
+  <h5>最終更新日：{{attraction.dateUpdated | date: 'mediumDate'}}</h5>
+  <!-- <hr>
+  <h4>広告</h4> -->
+</div>

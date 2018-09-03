@@ -1,0 +1,10 @@
+<div class="col-lg-3 col-sm-4 col-xs-6" [@attractionCard] *ngFor="let attraction of latestAttractionList index as i">
+    <div class="latestAttractionCard" 
+      [routerLink]="['/attraction/detail', attraction.id]">
+      <img class="latestAttractionImage" src="{{attraction.mainPhotoUrl ? attraction.mainPhotoUrl : 'assets/NoImage.png'}}">
+      <div class="latestAttractionInfo">
+      <h5 class="latestClanTitle">{{attraction.name}}</h5>
+      <span class="latestClanLocation">{{attraction.cityName}}</span>
+     </div>
+    </div>
+  </div>

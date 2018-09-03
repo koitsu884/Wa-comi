@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wacomi.API.Data
 {
-    public abstract class RepositoryBase : IRepositoryBase
+    public abstract class RepositoryBase
     {
         protected readonly ApplicationDbContext _context;
+        private ApplicationDbContext context;
+
         public RepositoryBase(ApplicationDbContext context)
         {
             this._context = context;
-
         }
         public void Add<T>(T entity) where T : class
         {
@@ -25,6 +26,11 @@ namespace Wacomi.API.Data
         public void DeleteAll<T>(T entities) where T : class
         {
             _context.RemoveRange(entities);
+        }
+
+        public async Task<int> SaveAll()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<bool> RecordExist(string recordType, int id)
@@ -54,9 +60,9 @@ namespace Wacomi.API.Data
             return false;
         }
 
-        public async Task<int> SaveAll()
-        {
-            return await _context.SaveChangesAsync();
-        }
+        // public async Task<int> SaveAll()
+        // {
+        //     return await _context.SaveChangesAsync();
+        // }
     }
 }

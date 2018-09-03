@@ -13,11 +13,12 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class BusinessProfileController : DataController
     {
-        public BusinessProfileController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
+        public BusinessProfileController(IAppUserRepository appUserRepo, IMapper mapper) : base(appUserRepo, mapper){
+        }
 
         [HttpGet("{id}" , Name = "GetBusinessProfile")]
         public async Task<IActionResult> Get(int id){
-           var bisuser = await _repo.GetBusinessProfile(id);
+           var bisuser = await _appUserRepo.GetBusinessProfile(id);
            if(bisuser == null)
                 return NotFound();
 
@@ -33,7 +34,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest(ModelState);
             
             // var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var businessFromRepo = await _repo.GetBusinessProfile(id);
+            var businessFromRepo = await _appUserRepo.GetBusinessProfile(id);
             if(businessFromRepo == null)
                 return NotFound($"Could not find business with an ID of {id}");
 
@@ -47,7 +48,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             _mapper.Map(model, businessFromRepo);
-            if(await _repo.SaveAll() > 0)
+            if(await _appUserRepo.SaveAll() > 0)
             {
                 return Ok();
             }

@@ -19,15 +19,18 @@ namespace Wacomi.API.Controllers
         private readonly ImageFileStorageManager _imageFileStorageManager;
         private readonly ILogger<ClanSeekController> _logger;
         const int CLANSEEK_MAX = 5;
-        public ClanSeekController(IDataRepository repo, IMapper mapper, ILogger<ClanSeekController> logger,  ImageFileStorageManager imageFileStorageManager) : base(repo, mapper) {
+        private readonly IClanSeekRepository _clanRepo;
+        public ClanSeekController(IAppUserRepository appUserRepo, IClanSeekRepository clanRepo, IMapper mapper, ILogger<ClanSeekController> logger, ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper)
+        {
+            this._clanRepo = clanRepo;
             this._imageFileStorageManager = imageFileStorageManager;
             this._logger = logger;
-         }
+        }
 
         [HttpGet("{id}", Name = "GetClanSeek")]
         public async Task<ActionResult> GetClanSeek(int id)
         {
-            var clanSeekFromRepo = await _repo.GetClanSeek(id);
+            var clanSeekFromRepo = await _clanRepo.GetClanSeek(id);
             var clanSeekForReturn = _mapper.Map<ClanSeekForReturnDto>(clanSeekFromRepo);
             return Ok(clanSeekForReturn);
         }
@@ -37,7 +40,7 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> GetClanSeeks(PaginationParams paginationParams, int? categoryId, int? cityId)
         {
             //var clanSeeks = await _repo.GetClanSeeks(categoryId, cityId, latest);
-            var clanSeeks = await _repo.GetClanSeeks(paginationParams, categoryId, cityId);
+            var clanSeeks = await _clanRepo.GetClanSeeks(paginationParams, categoryId, cityId);
             var clanSeeksForReturn = this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks);
 
             Response.AddPagination(clanSeeks.CurrentPage, clanSeeks.PageSize, clanSeeks.TotalCount, clanSeeks.TotalPages);
@@ -47,19 +50,20 @@ namespace Wacomi.API.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult> GetByUser(int userId)
         {
-            var clanSeeks = await _repo.GetClanSeeksByUser(userId);
+            var clanSeeks = await _clanRepo.GetClanSeeksByUser(userId);
             return Ok(this._mapper.Map<IEnumerable<ClanSeekForReturnDto>>(clanSeeks));
         }
 
         [HttpGet("user/{userId}/count")]
-        public async Task<int> GetCountByUser(int userId){
-            return await this._repo.GetClanSeeksCountByUser(userId);
+        public async Task<int> GetCountByUser(int userId)
+        {
+            return await this._clanRepo.GetClanSeeksCountByUser(userId);
         }
 
         [HttpGet("categories")]
         public async Task<ActionResult> GetClanSeekCategories()
         {
-            return Ok(await _repo.GetClanSeekCategories());
+            return Ok(await _clanRepo.GetClanSeekCategories());
         }
 
         [HttpPost]
@@ -69,12 +73,12 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (await _repo.GetClanSeeksCountByUser(model.AppUserId) >= CLANSEEK_MAX)
+            if (await _clanRepo.GetClanSeeksCountByUser(model.AppUserId) >= CLANSEEK_MAX)
                 return BadRequest($"仲間募集投稿は1人{CLANSEEK_MAX}つまでです。不要な投稿を削除してから、改めて投稿してください。");
-            
+
             var newClanSeek = this._mapper.Map<ClanSeek>(model);
-            _repo.Add(newClanSeek);
-            if (await _repo.SaveAll() > 0)
+            _clanRepo.Add(newClanSeek);
+            if (await _clanRepo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetClanSeek", new { id = newClanSeek.Id }, newClanSeek);
             }
@@ -88,7 +92,7 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var clanSeekFromRepo = await this._repo.GetClanSeek(model.Id);
+            var clanSeekFromRepo = await this._clanRepo.GetClanSeek(model.Id);
             if (clanSeekFromRepo == null)
             {
                 return NotFound();
@@ -100,7 +104,7 @@ namespace Wacomi.API.Controllers
 
             model.LastActive = DateTime.Now;
             _mapper.Map(model, clanSeekFromRepo);
-            if (await _repo.SaveAll() > 0)
+            if (await _clanRepo.SaveAll() > 0)
             {
                 return Ok();
             }
@@ -111,7 +115,7 @@ namespace Wacomi.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteClanSeek(int id)
         {
-            var clanSeek = await _repo.GetClanSeek(id);
+            var clanSeek = await _clanRepo.GetClanSeek(id);
             if (clanSeek == null)
             {
                 return NotFound();
@@ -120,36 +124,38 @@ namespace Wacomi.API.Controllers
             {
                 return Unauthorized();
             }
-            _repo.Delete(clanSeek);
-            await _repo.SaveAll();
+            _clanRepo.Delete(clanSeek);
+            await _clanRepo.SaveAll();
 
-            foreach(var photo in clanSeek.Photos){
-                _repo.Delete(photo);
+            foreach (var photo in clanSeek.Photos)
+            {
+                _clanRepo.Delete(photo);
                 var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
                 if (!string.IsNullOrEmpty(deletingResult.Error))
                     this._logger.LogError(deletingResult.Error);
             }
 
-            await _repo.SaveAll();
+            await _clanRepo.SaveAll();
             return Ok();
         }
 
         [Authorize]
         [HttpPut("{id}/{photoId}")]
-        public async Task<IActionResult> ChangeMainPhoto(int id, int photoId){
-            var clanSeekFromRepo = await _repo.GetClanSeek(id);
-            if(clanSeekFromRepo == null)
+        public async Task<IActionResult> ChangeMainPhoto(int id, int photoId)
+        {
+            var clanSeekFromRepo = await _clanRepo.GetClanSeek(id);
+            if (clanSeekFromRepo == null)
                 return NotFound("The clanseek was not found");
 
-            if(!await _repo.RecordExist("Photo", photoId))
+            if (!await _clanRepo.RecordExist("Photo", photoId))
                 return NotFound("Photo " + photoId + " was not found");
 
-            if(!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
+            if (!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
                 return Unauthorized();
 
             clanSeekFromRepo.MainPhotoId = photoId;
 
-            return Ok(await _repo.SaveAll());
+            return Ok(await _clanRepo.SaveAll());
         }
     }
 }

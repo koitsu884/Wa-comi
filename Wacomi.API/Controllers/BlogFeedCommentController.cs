@@ -13,21 +13,23 @@ namespace Wacomi.API.Controllers
     public class BlogFeedCommentController : DataController
     {
         private readonly INotificationRepository _notificationRepo;
-        public BlogFeedCommentController(IDataRepository repo, IMapper mapper, INotificationRepository notificationRepo) : base(repo, mapper)
+        private readonly IBlogRepository _blogRepo;
+        public BlogFeedCommentController(IAppUserRepository appUserRepo, IBlogRepository blogRepo, IMapper mapper, INotificationRepository notificationRepo) : base(appUserRepo, mapper)
         {
+            this._blogRepo = blogRepo;
             this._notificationRepo = notificationRepo;
         }
 
         [HttpGet("{id}", Name = "GetBlogFeedComment")]
         public async Task<ActionResult> Get(int id)
         {
-            return Ok(this._mapper.Map<CommentForReturnDto>(await _repo.GetBlogFeedComment(id)));
+            return Ok(this._mapper.Map<CommentForReturnDto>(await _blogRepo.GetBlogFeedComment(id)));
         }
 
         [HttpGet()]
         public async Task<IActionResult> GetByTopic(int blogFeedId)
         {
-            var feedCommentsFromRepo = await _repo.GetBlogFeedCommentsForFeed(blogFeedId);
+            var feedCommentsFromRepo = await _blogRepo.GetBlogFeedCommentsForFeed(blogFeedId);
             return Ok(this._mapper.Map<IEnumerable<CommentForReturnDto>>(feedCommentsFromRepo));
         }
 
@@ -37,11 +39,11 @@ namespace Wacomi.API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var appUser = await this._repo.GetAppUser((int)model.AppUserId);
+            var appUser = await this._appUserRepo.GetAppUser((int)model.AppUserId);
             if (appUser == null)
                 return NotFound();
 
-            var blogFeed = await this._repo.GetBlogFeed((int)model.BlogFeedId);
+            var blogFeed = await this._blogRepo.GetBlogFeed((int)model.BlogFeedId);
 
             if (blogFeed == null)
                 return NotFound();
@@ -53,13 +55,13 @@ namespace Wacomi.API.Controllers
 
             model.DisplayName = appUser.DisplayName;
 
-            _repo.Add(model);
+            _blogRepo.Add(model);
             if (blogFeed.Blog.OwnerId == model.AppUserId)
                 await this._notificationRepo.AddNotificationRepliedForFeedComment(blogFeed);
             else
                 await this._notificationRepo.AddNotificationNewPostOnFeedComment(appUser.Id, blogFeed);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _blogRepo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetBlogFeedComment", new { id = model.Id }, this._mapper.Map<CommentForReturnDto>(model));
             }
@@ -70,16 +72,16 @@ namespace Wacomi.API.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var blogFeedCommentFromRepo = await _repo.GetBlogFeedComment(id);
+            var blogFeedCommentFromRepo = await _blogRepo.GetBlogFeedComment(id);
             if (blogFeedCommentFromRepo == null)
                 return NotFound();
 
             if (!await this.MatchAppUserWithToken((int)blogFeedCommentFromRepo.AppUserId))
                 return Unauthorized();
 
-            _repo.Delete(blogFeedCommentFromRepo);
+            _blogRepo.Delete(blogFeedCommentFromRepo);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _blogRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("コメントの削除に失敗しました");

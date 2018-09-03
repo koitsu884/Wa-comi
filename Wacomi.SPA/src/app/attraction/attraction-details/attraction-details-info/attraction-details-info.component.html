@@ -1,0 +1,16 @@
+<div class="clanDetailInfo" *ngIf="attraction">
+  <h2>{{attraction.name}}</h2>
+  <h4>エリア：{{attraction.cityName}}</h4>
+  <div class="gallery" *ngIf="attraction.photos && attraction.photos.length > 0">
+    <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+  </div>
+  <h4 class="bg-primary">概要</h4>
+  <div *ngIf="attraction.websiteUrl">
+    <a href="{{attraction.websiteUrl}}">ホームページ</a>
+    <br>
+    <br>
+  </div>
+  <div [innerHTML]="attraction.introduction | nl2br"></div>
+  <h4 class="bg-primary">アクセス</h4>
+  <div [innerHTML]="attraction.accessInfo | nl2br"></div>
+</div>

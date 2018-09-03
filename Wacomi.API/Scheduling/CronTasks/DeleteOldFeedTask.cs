@@ -12,7 +12,7 @@ namespace Wacomi.API.Scheduling.CronTasks
     {
         public string Schedule => "0 0 * * *";
 
-        private readonly IDataRepository _repo;
+        private readonly IBlogRepository _blogRepo;
         private readonly ILogger<DeleteOldFeedTask> _logger;
         private readonly ImageFileStorageManager _fileStorageManager;
 
@@ -23,7 +23,7 @@ namespace Wacomi.API.Scheduling.CronTasks
 
             var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
             var scope = serviceScopeFactory.CreateScope();
-            this._repo = scope.ServiceProvider.GetService<IDataRepository>();
+            this._blogRepo = scope.ServiceProvider.GetService<IBlogRepository>();
         }
 
         public async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -34,11 +34,11 @@ namespace Wacomi.API.Scheduling.CronTasks
             var targetDate = DateTime.Now.AddMonths(-6);
           //  var targetDate = DateTime.Now; //for test
 
-            var deletingFeeds = await _repo.GetBlogFeeds(null, targetDate);
+            var deletingFeeds = await _blogRepo.GetBlogFeeds(null, targetDate);
             foreach(var feed in deletingFeeds){
-                await this._repo.DeleteFeed(feed);
+                await this._blogRepo.DeleteFeed(feed);
                 this._fileStorageManager.DeleteImageFile(feed.Photo);
-                await this._repo.SaveAll();
+                await this._blogRepo.SaveAll();
             }
 
             Console.WriteLine("Cron Task - Finished DeleteOldFeedTask");

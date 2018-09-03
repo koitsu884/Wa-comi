@@ -72,11 +72,17 @@ namespace Wacomi.API
             //services.AddSingleton<IEmailSender, MailGunManager>();
             services.AddSingleton<ImageFileStorageManager>();
 
-            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddScoped<IAdminDataRepository, AdminDataRepository>();
-            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IAttractionRepository, AttractionRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<IClanSeekRepository, ClanSeekRepository>();
+            services.AddScoped<IDailyTopicRepository, DailyTopicRepository>();
+            services.AddScoped<IPhotoRepository, PhotoRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>

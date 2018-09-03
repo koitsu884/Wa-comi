@@ -12,8 +12,10 @@ namespace Wacomi.API.Controllers
     public class NotificationController : DataController
     {
         private readonly INotificationRepository _notificationRepo;
-        public NotificationController(IDataRepository repo, IMapper mapper, INotificationRepository notificationRepo) : base(repo, mapper)
+        private readonly IDailyTopicRepository _topicRepo;
+        public NotificationController(IAppUserRepository appUserRepo, IMapper mapper, INotificationRepository notificationRepo, IDailyTopicRepository topicRepo) : base(appUserRepo, mapper)
         {
+            this._topicRepo = topicRepo;
             this._notificationRepo = notificationRepo;
         }
 
@@ -53,13 +55,13 @@ namespace Wacomi.API.Controllers
         public async Task<IActionResult> PostTest([FromBody]Notification model)
         {
             //  await _repo.AddNotification(model.AppUserId, model.RecordType, model.RecordId);
-            var topicComment = await this._repo.GetTopicComment(model.RecordId);
+            var topicComment = await this._topicRepo.GetTopicComment(model.RecordId);
             if (topicComment == null) return NotFound();
             if (topicComment.AppUserId == model.AppUserId)
                 await this._notificationRepo.AddNotificationRepliedForTopicComment(topicComment);
             else
                 await this._notificationRepo.AddNotificationNewPostOnTopicComment(model.AppUserId, topicComment);
-            await _repo.SaveAll();
+            await _appUserRepo.SaveAll();
             return Ok();
         }
 

@@ -1,0 +1,35 @@
+<div class="filter">
+    <div class="row">
+        <label class="col-sm-2">エリア: </label>
+        <div class="col-sm-10">
+                <select [(ngModel)]="selectedCityId" name="city" (change)="cityChanged()" [disabled]="loading">
+                        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+                    </select>
+        </div>
+    </div>
+    <div class="row category">
+        <label class="col-sm-2">カテゴリ</label>
+        <div class="col-sm-10">     <button class="categoryTab" type="button" [disabled]="loading" *ngFor="let categoryFilter of categoryFilters" [ngClass]="{'active':isSelected(categoryFilter.id)}"
+            (click)="toggleCategory(categoryFilter.id)">{{categoryFilter.name}}</button>
+            <br>
+            <button class="btn btn-danger btn-sm" (click)="clearCategory()">クリア</button>
+        </div>
+    </div>
+    <div *ngIf="appUser">
+        <label>自分の投稿のみ表示</label>
+        <input type="checkbox" name="onlyMine" id="onlyMine" [disabled]="loading" [(ngModel)]="onlyMine" [value]="onlyMine" (change)="toggleOnlyMine()">
+    </div>
+    <!-- <p>オーダー設定的な事をこの辺に</p> -->
+    <hr>
+    <button class="btn btn-primary btn-sm" *ngIf="appUser" [routerLink]="['edit']">新規投稿</button>
+</div>
+<div class="container">
+    <!-- <div class="row" *ngIf="appUser">
+      <button class="btn btn-primary" [disabled]="(clanState | async).reachLimit" [routerLink]="['edit', appUser.id]">新規投稿</button>
+    </div>
+    <hr> -->
+
+
+    <app-loading *ngIf="loading"></app-loading>
+    <app-attraction-list *ngIf="!loading" [attractions]="attractions" [appUserId]="appUser?.id"></app-attraction-list>
+</div>

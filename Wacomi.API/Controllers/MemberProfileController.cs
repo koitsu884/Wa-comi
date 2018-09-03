@@ -15,7 +15,7 @@ namespace Wacomi.API.Controllers
     public class MemberProfileController : DataController
     {
 
-        public MemberProfileController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
+        public MemberProfileController(IAppUserRepository appUserRepo, IMapper mapper) : base(appUserRepo, mapper){}
 
         // [HttpGet]
         // [Authorize]
@@ -28,7 +28,7 @@ namespace Wacomi.API.Controllers
 
         [HttpGet("{id}" , Name = "GetMember")]
         public async Task<IActionResult> Get(int id){
-           var member = await _repo.GetMemberProfile(id);
+           var member = await _appUserRepo.GetMemberProfile(id);
            if(member == null)
                 return NotFound("メンバーが見つかりませんでした。ID:" + id);
 
@@ -70,7 +70,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest(ModelState);
             
             // var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memberFromRepo = await _repo.GetMemberProfile(id);
+            var memberFromRepo = await _appUserRepo.GetMemberProfile(id);
             if(memberFromRepo == null)
                 return NotFound($"Could not find member with an ID of {id}");
 
@@ -84,7 +84,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             _mapper.Map(model, memberFromRepo);
-            if(await _repo.SaveAll() > 0)
+            if(await _appUserRepo.SaveAll() > 0)
             {
                 return Ok();
             }

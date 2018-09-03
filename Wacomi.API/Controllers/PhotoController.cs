@@ -26,24 +26,32 @@ namespace Wacomi.API.Controllers
     {
         private readonly ImageFileStorageManager _imageFileStorageManager;
         private readonly IAttractionRepository _attractionRepo;
+        private readonly IBlogRepository _blogRepo;
+        private readonly IClanSeekRepository _clanSeekRepo;
+        private readonly IPhotoRepository _photoRepo;
         private readonly ILogger<PhotoController> _logger;
         public PhotoController(
-            IDataRepository repo, 
+            IAppUserRepository appUserRepo, 
             IAttractionRepository attractionRepo,
+            IBlogRepository blogRepo,
+            IClanSeekRepository clanSeekRepo,
+            IPhotoRepository photoRepo,
             IMapper mapper, 
             ILogger<PhotoController> logger, 
-            ImageFileStorageManager imageFileStorageManager
-            ) : base(repo, mapper)
+            ImageFileStorageManager imageFileStorageManager ) : base(appUserRepo, mapper)
         {
             this._imageFileStorageManager = imageFileStorageManager;
             this._attractionRepo = attractionRepo;
+            this._blogRepo = blogRepo;
+            this._clanSeekRepo = clanSeekRepo;
+            this._photoRepo = photoRepo;
             this._logger = logger;
         }
 
         [HttpGet("{id}", Name = "GetPhoto")]
         public async Task<ActionResult> Get(int id)
         {
-            var photoFromRepo = await _repo.GetPhoto(id);
+            var photoFromRepo = await _photoRepo.GetPhoto(id);
             var photo = _mapper.Map<PhotoForReturnDto>(photoFromRepo);
 
             return Ok(photo);
@@ -52,7 +60,7 @@ namespace Wacomi.API.Controllers
         [HttpGet("{recordType}/{recordId}", Name = "GetPhotos")]
         public async Task<ActionResult> GetPhotosForRecord(string recordType, int recordId)
         {
-            var photoFromRepo = await _repo.GetPhotosForRecord(recordType, recordId);
+            var photoFromRepo = await _photoRepo.GetPhotosForRecord(recordType, recordId);
             var photos = _mapper.Map<IEnumerable<PhotoForReturnDto>>(photoFromRepo);
 
             return Ok(photos);
@@ -64,7 +72,7 @@ namespace Wacomi.API.Controllers
         {
             if (!await this.MatchAppUserWithToken(userId))
                 return Unauthorized();
-            var photosFromRepo = await _repo.GetPhotosForAppUser(userId);
+            var photosFromRepo = await _photoRepo.GetPhotosForAppUser(userId);
             var photosForReturn = _mapper.Map<IEnumerable<PhotoForReturnDto>>(photosFromRepo);
 
             return Ok(photosForReturn);
@@ -141,7 +149,7 @@ namespace Wacomi.API.Controllers
 
         private async Task<ActionResult> addPhotosToAppUser(string recordType, int recordId, List<IFormFile> files)
         {
-            var appUser = await _repo.GetAppUser(recordId);
+            var appUser = await _appUserRepo.GetAppUser(recordId);
             if (appUser == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(recordId))
@@ -176,11 +184,11 @@ namespace Wacomi.API.Controllers
             {
                 appUser.Photos.Add(photo);
             }
-            await _repo.SaveAll();
+            await _photoRepo.SaveAll();
             if (appUser.MainPhotoId == null)
             {
                 appUser.MainPhotoId = addingPhotos[0].Id;
-                await _repo.SaveAll();
+                await _photoRepo.SaveAll();
             }
 
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
@@ -188,7 +196,7 @@ namespace Wacomi.API.Controllers
 
         private async Task<ActionResult> addPhotosToClanSeek(string recordType, int recordId, List<IFormFile> files)
         {
-            var clanSeek = await _repo.GetClanSeek(recordId);
+            var clanSeek = await _clanSeekRepo.GetClanSeek(recordId);
             if (clanSeek == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(clanSeek.AppUserId))
@@ -223,11 +231,11 @@ namespace Wacomi.API.Controllers
             {
                 clanSeek.Photos.Add(photo);
             }
-            await _repo.SaveAll();
+            await _photoRepo.SaveAll();
             if (clanSeek.MainPhotoId == null)
             {
                 clanSeek.MainPhotoId = addingPhotos[0].Id;
-                await _repo.SaveAll();
+                await _photoRepo.SaveAll();
             }
 
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
@@ -235,7 +243,7 @@ namespace Wacomi.API.Controllers
 
         private async Task<ActionResult> addPhotoToBlog(string recordType, int recordId, List<IFormFile> files)
         {
-            var blog = await _repo.GetBlog(recordId);
+            var blog = await _blogRepo.GetBlog(recordId);
             if (blog == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(blog.OwnerId))
@@ -247,8 +255,8 @@ namespace Wacomi.API.Controllers
                 var deletingResult = this._imageFileStorageManager.DeleteImageFile(blog.Photo);
                 if (!string.IsNullOrEmpty(deletingResult.Error))
                     this._logger.LogError(deletingResult.Error);
-                _repo.Delete(blog.Photo);
-                await _repo.SaveAll();
+                _photoRepo.Delete(blog.Photo);
+                await _photoRepo.SaveAll();
             }
 
             List<string> errors = new List<string>();
@@ -275,7 +283,7 @@ namespace Wacomi.API.Controllers
 
             blog.Photo = addingPhoto;
 
-            await _repo.SaveAll();
+            await _photoRepo.SaveAll();
 
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
         }
@@ -283,7 +291,7 @@ namespace Wacomi.API.Controllers
         [HttpDelete("{recordType}/{recordId}/{id}")]
         public async Task<ActionResult> Delete(string recordType, int recordId, int id)
         {
-            var photoFromRepo = await _repo.GetPhoto(id);
+            var photoFromRepo = await _photoRepo.GetPhoto(id);
             if (photoFromRepo == null)
                 return NotFound();
 
@@ -303,7 +311,7 @@ namespace Wacomi.API.Controllers
 
         private async Task<ActionResult> DeleteAppUserPhoto(int recordId, Photo photoFromRepo)
         {
-            var appUser = await _repo.GetAppUser(recordId);
+            var appUser = await _appUserRepo.GetAppUser(recordId);
             if (appUser == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(appUser.Id))
@@ -312,8 +320,8 @@ namespace Wacomi.API.Controllers
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
             if (!string.IsNullOrEmpty(result.Error))
                 return BadRequest(result.Error);
-            _repo.Delete(photoFromRepo);
-            await _repo.SaveAll();
+            _photoRepo.Delete(photoFromRepo);
+            await _photoRepo.SaveAll();
             return Ok();
         }
 
@@ -328,14 +336,14 @@ namespace Wacomi.API.Controllers
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
             if (!string.IsNullOrEmpty(result.Error))
                 return BadRequest(result.Error);
-            _repo.Delete(photoFromRepo);
-            await _repo.SaveAll();
+            _photoRepo.Delete(photoFromRepo);
+            await _photoRepo.SaveAll();
             return Ok();
         }
 
         private async Task<ActionResult> DeleteClanSeekPhoto(int recordId, Photo photoFromRepo)
         {
-            var clanSeek = await _repo.GetClanSeek(recordId);
+            var clanSeek = await _clanSeekRepo.GetClanSeek(recordId);
             if (clanSeek == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(clanSeek.AppUserId))
@@ -344,14 +352,14 @@ namespace Wacomi.API.Controllers
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
             if (!string.IsNullOrEmpty(result.Error))
                 return BadRequest(result.Error);
-            _repo.Delete(photoFromRepo);
-            await _repo.SaveAll();
+            _photoRepo.Delete(photoFromRepo);
+            await _photoRepo.SaveAll();
             return Ok();
         }
 
         private async Task<ActionResult> DeleteBlogPhoto(int recordId, Photo photoFromRepo)
         {
-            var blog = await _repo.GetBlog(recordId);
+            var blog = await _blogRepo.GetBlog(recordId);
             if (blog == null)
                 return NotFound();
             if (!await MatchAppUserWithToken(blog.OwnerId))
@@ -360,8 +368,8 @@ namespace Wacomi.API.Controllers
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
             if (!string.IsNullOrEmpty(result.Error))
                 return BadRequest(result.Error);
-            _repo.Delete(blog.Photo);
-            await _repo.SaveAll();
+            _photoRepo.Delete(blog.Photo);
+            await _photoRepo.SaveAll();
             return Ok();
         }
 

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DailyTopic } from '../../_models/DailyTopic';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Store } from '@ngrx/store';
@@ -7,7 +6,6 @@ import { Store } from '@ngrx/store';
 import * as fromDailyTopic from '../store/dailytopic.reducers';
 import * as TopicActions from '../store/dailytopic.actions';
 import { Observable } from 'rxjs/Observable';
-import { AppUser } from '../../_models/AppUser';
 import { NgForm } from '@angular/forms';
 
 @Component({

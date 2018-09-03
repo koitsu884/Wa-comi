@@ -13,23 +13,28 @@ namespace Wacomi.API.Controllers
     public class DailyTopicReplyController : DataController
     {
         private readonly INotificationRepository _notificationRepo;
-        public DailyTopicReplyController(IDataRepository repo, IMapper mapper, INotificationRepository notificationRepo) : base(repo, mapper)
+        private readonly IDailyTopicRepository _topicRepo;
+
+        public DailyTopicReplyController(IAppUserRepository appUserRepo,
+             IMapper mapper,
+             INotificationRepository notificationRepo,
+             IDailyTopicRepository topicRepo) : base(appUserRepo, mapper)
         {
             this._notificationRepo = notificationRepo;
-
+            this._topicRepo = topicRepo;
         }
 
         [HttpGet("{id}", Name = "GetTopicReply")]
         public async Task<IActionResult> Get(int id)
         {
-            var replyFromRepo = await _repo.GetTopicReply(id);
+            var replyFromRepo = await _topicRepo.GetTopicReply(id);
             return Ok(_mapper.Map<TopicReplyForReturnDto>(replyFromRepo));
         }
 
         [HttpGet("topic/{topicCommentId}")]
         public async Task<IActionResult> GetByTopic(int topicCommentId)
         {
-            var repliesFromRepo = await _repo.GetTopicRepliesByCommentId(topicCommentId);
+            var repliesFromRepo = await _topicRepo.GetTopicRepliesByCommentId(topicCommentId);
             // var repliesForReturn = _mapper.Map<IEnumerable<TopicReplyForReturnDto>>(repliesFromRepo);
             var repliesForReturn = _mapper.Map<IEnumerable<CommentForReturnDto>>(repliesFromRepo);
             return Ok(repliesForReturn);
@@ -42,18 +47,18 @@ namespace Wacomi.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var topicComment = await this._repo.GetTopicComment(model.TopicCommentId);
+            var topicComment = await this._topicRepo.GetTopicComment(model.TopicCommentId);
             if (topicComment == null)
                 return NotFound("トピックコメントが見つかりませんでした。 ID:" + model.TopicCommentId);
 
-            var appUser = await this._repo.GetAppUser(model.AppUserId.GetValueOrDefault());
+            var appUser = await this._appUserRepo.GetAppUser(model.AppUserId.GetValueOrDefault());
             if (appUser == null)
                 return NotFound("メンバーが見つかりませんでした。 ID:" + model.AppUserId);
 
             model.PhotoId = appUser.MainPhotoId;
             model.DisplayName = appUser.DisplayName;
 
-            _repo.Add(model);
+            _notificationRepo.Add(model);
             if (topicComment.AppUserId == model.AppUserId)
                 await this._notificationRepo.AddNotificationRepliedForTopicComment(topicComment);
             else
@@ -71,16 +76,16 @@ namespace Wacomi.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
 
-            var topicReplyFromRepo = await _repo.GetTopicReply(id);
+            var topicReplyFromRepo = await _topicRepo.GetTopicReply(id);
             if (topicReplyFromRepo == null)
                 return NotFound();
 
             if (!await this.MatchAppUserWithToken(topicReplyFromRepo.AppUserId.GetValueOrDefault()))
                 return Unauthorized();
 
-            _repo.Delete(topicReplyFromRepo);
+            _notificationRepo.Delete(topicReplyFromRepo);
 
-            if (await _repo.SaveAll() > 0)
+            if (await _notificationRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("削除に失敗しました");

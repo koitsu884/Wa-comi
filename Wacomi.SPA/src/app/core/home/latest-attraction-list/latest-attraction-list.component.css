@@ -1,0 +1,25 @@
+.latestAttractionCard img{
+    width:100%;
+    padding:5px;
+    height:200px;
+    object-fit: cover;
+}
+
+.latestAttractionCard:hover  {
+    cursor: pointer;
+    transform : scale(1.05, 1.05);
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+    opacity: 0.8;
+}
+
+.latestClanTitle{
+    font-weight: bold;
+    color:rgb(2, 68, 22);
+    font-size: 3.5vmin;
+}
+
+.latestClanLocation {
+    border-radius: 10px;
+    background-color: rgb(158, 242, 253);
+}

@@ -14,11 +14,13 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class AppUserController : DataController
     {
-        public AppUserController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
-        
+        public AppUserController(IAppUserRepository appUserRepository, IMapper mapper) : base(appUserRepository, mapper)
+        {
+        }
+
         [HttpGet("{id}" , Name = "GetAppUser")]
         public async Task<IActionResult> Get(int id){
-           var appUser = await _repo.GetAppUser(id);
+           var appUser = await _appUserRepo.GetAppUser(id);
            if(appUser == null)
                 return NotFound();
 
@@ -29,7 +31,7 @@ namespace Wacomi.API.Controllers
 
         [HttpGet("{id}/detail")]
         public async Task<IActionResult> GetDetails(int id){
-           var appUser = await _repo.GetAppUser(id);
+           var appUser = await _appUserRepo.GetAppUser(id);
            if(appUser == null)
                 return NotFound("ユーザー情報が見つかりませんでした。ID:" + id);
 
@@ -38,10 +40,10 @@ namespace Wacomi.API.Controllers
             
             switch(appUser.UserType){
                 case "Member":
-                    returnValues.Add("memberProfile", _mapper.Map<MemberProfileForReturnDto>(await _repo.GetMemberProfile(appUser.UserProfileId)));
+                    returnValues.Add("memberProfile", _mapper.Map<MemberProfileForReturnDto>(await _appUserRepo.GetMemberProfile(appUser.UserProfileId)));
                     break;
                 case "Business":
-                    returnValues.Add("businessProfile", _mapper.Map<BusinessProfileForReturnDto>(await _repo.GetBusinessProfile(appUser.UserProfileId)));
+                    returnValues.Add("businessProfile", _mapper.Map<BusinessProfileForReturnDto>(await _appUserRepo.GetBusinessProfile(appUser.UserProfileId)));
                     break;
             }
 
@@ -51,7 +53,7 @@ namespace Wacomi.API.Controllers
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody]AppUserUpdateDto updateUserDto){
-            var appUserFromRepo = await _repo.GetAppUser(id);
+            var appUserFromRepo = await _appUserRepo.GetAppUser(id);
             if(appUserFromRepo == null)
                 return NotFound();
 
@@ -64,17 +66,17 @@ namespace Wacomi.API.Controllers
                 updateUserDto.MainPhotoId = null;
             _mapper.Map(updateUserDto, appUserFromRepo);
 
-            return Ok(await _repo.SaveAll());
+            return Ok(await _appUserRepo.SaveAll());
         }
 
         [Authorize]
         [HttpPut("{id}/{photoId}")]
         public async Task<IActionResult> ChangeMainPhoto(int id, int photoId){
-            var appUserFromRepo = await _repo.GetAppUser(id);
+            var appUserFromRepo = await _appUserRepo.GetAppUser(id);
             if(appUserFromRepo == null)
                 return NotFound("The user was not found");
 
-            if(!await _repo.RecordExist("Photo", photoId))
+            if(!await _appUserRepo.RecordExist("Photo", photoId))
                 return NotFound("Photo " + photoId + " was not found");
 
             if(!MatchUserWithToken(appUserFromRepo.AccountId))
@@ -82,7 +84,7 @@ namespace Wacomi.API.Controllers
 
             appUserFromRepo.MainPhotoId = photoId;
 
-            return Ok(await _repo.SaveAll());
+            return Ok(await _appUserRepo.SaveAll());
         }
     }
 }

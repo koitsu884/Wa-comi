@@ -311,6 +311,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("AttractionId");
 
+                    b.Property<int?>("MainPhotoId");
+
                     b.Property<int>("Score")
                         .HasMaxLength(5);
 
@@ -319,6 +321,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("AttractionId");
+
+                    b.HasIndex("MainPhotoId");
 
                     b.ToTable("AttractionReviews");
                 });
@@ -780,6 +784,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("AttractionId");
 
+                    b.Property<int?>("AttractionReviewId");
+
                     b.Property<int?>("ClanSeekId");
 
                     b.Property<DateTime>("DateAdded");
@@ -799,6 +805,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("AttractionId");
+
+                    b.HasIndex("AttractionReviewId");
 
                     b.HasIndex("ClanSeekId");
 
@@ -1059,6 +1067,10 @@ namespace Wacomi.API.Migrations
                         .WithMany("AttractionReviews")
                         .HasForeignKey("AttractionId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.AttractionReviewLike", b =>
@@ -1231,6 +1243,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.Attraction")
                         .WithMany("Photos")
                         .HasForeignKey("AttractionId");
+
+                    b.HasOne("Wacomi.API.Models.AttractionReview")
+                        .WithMany("Photos")
+                        .HasForeignKey("AttractionReviewId");
 
                     b.HasOne("Wacomi.API.Models.ClanSeek")
                         .WithMany("Photos")

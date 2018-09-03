@@ -12,65 +12,72 @@ namespace Wacomi.API.Controllers
     [Route("api/[controller]")]
     public class FriendController : DataController
     {
-        public FriendController(IDataRepository repo, IMapper mapper) : base(repo, mapper){}
+        private readonly IDataRepository _dataRepo;
+        public FriendController(IAppUserRepository appUserRepo, IDataRepository dataRepo, IMapper mapper) : base(appUserRepo, mapper)
+        {
+            this._dataRepo = dataRepo;
+        }
 
         [HttpGet("{memberId}/{friendId}", Name = "GetFriend")]
         public async Task<ActionResult> Get(int meberId, int friendId)
         {
-            var friendFromRepo = await _repo.GetFriend(meberId, friendId);
+            var friendFromRepo = await _dataRepo.GetFriend(meberId, friendId);
             return Ok(_mapper.Map<FriendForReturnDto>(friendFromRepo));
         }
 
         [HttpGet("{memberId}")]
         public async Task<ActionResult> Get(int memberId)
         {
-            var friendsFromRepo = await _repo.GetFriends(memberId);
+            var friendsFromRepo = await _dataRepo.GetFriends(memberId);
             return Ok(_mapper.Map<IEnumerable<FriendForReturnDto>>(friendsFromRepo));
         }
 
         [HttpPost()]
         [Authorize]
-        public async Task<ActionResult> Post([FromBody]Friend model){
-            if(!ModelState.IsValid)
+        public async Task<ActionResult> Post([FromBody]Friend model)
+        {
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await this._repo.RecordExist("MemberProfile", model.MemberId))
+            if (!await this._dataRepo.RecordExist("MemberProfile", model.MemberId))
                 return NotFound();
 
-            if(!await this._repo.RecordExist("MemberProfile", model.FriendMemberid))
+            if (!await this._dataRepo.RecordExist("MemberProfile", model.FriendMemberid))
                 return NotFound();
 
-            var friendFromRepo = await _repo.GetFriend(model.MemberId, model.FriendMemberid);
-            if(friendFromRepo != null){
+            var friendFromRepo = await _dataRepo.GetFriend(model.MemberId, model.FriendMemberid);
+            if (friendFromRepo != null)
+            {
                 return BadRequest("既に友達になっています");
             }
-            
-            if(!await this.MatchAppUserWithToken(model.Member.AppUserId) && !await this.MatchAppUserWithToken(model.FriendMember.AppUserId))
+
+            if (!await this.MatchAppUserWithToken(model.Member.AppUserId) && !await this.MatchAppUserWithToken(model.FriendMember.AppUserId))
                 return Unauthorized();
 
-            _repo.Add(model);
+            _dataRepo.Add(model);
 
-            if(await _repo.SaveAll() > 0)
+            if (await _dataRepo.SaveAll() > 0)
             {
-                return CreatedAtRoute("GetFriend", new {memberId = model.MemberId, friendId = model.FriendMemberid}, _mapper.Map<FriendForReturnDto>(model));
+                return CreatedAtRoute("GetFriend", new { memberId = model.MemberId, friendId = model.FriendMemberid }, _mapper.Map<FriendForReturnDto>(model));
             }
-            return BadRequest("友達の追加に失敗しました");   
+            return BadRequest("友達の追加に失敗しました");
         }
 
         [HttpDelete("{memberId}/{friendId}")]
         [Authorize]
-        public async Task<IActionResult> Delete(int memberId, int friendId){
+        public async Task<IActionResult> Delete(int memberId, int friendId)
+        {
 
-            var friendFromRepo = await _repo.GetFriend(memberId, friendId);
-            if(friendFromRepo == null)
+            var friendFromRepo = await _dataRepo.GetFriend(memberId, friendId);
+            if (friendFromRepo == null)
                 return NotFound();
 
-            if(!await this.MatchMemberWithToken(memberId) && !await this.MatchMemberWithToken(friendId))
+            if (!await this.MatchMemberWithToken(memberId) && !await this.MatchMemberWithToken(friendId))
                 return Unauthorized();
 
-            _repo.Delete(friendFromRepo);
+            _dataRepo.Delete(friendFromRepo);
 
-           if (await _repo.SaveAll() > 0)
+            if (await _dataRepo.SaveAll() > 0)
                 return Ok();
 
             return BadRequest("友達の削除に失敗しました");
