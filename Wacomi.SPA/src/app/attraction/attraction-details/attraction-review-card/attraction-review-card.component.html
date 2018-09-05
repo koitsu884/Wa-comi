@@ -1,0 +1,6 @@
+<div>
+  <h5><img class="userPhoto img-circle" src="{{attractionReview.appUserMainPhotoUrl ? attractionReview.appUserMainPhotoUrl : '/assets/NoImage_Person.png'}}">{{attractionReview.appUserName}} さんのレビュー</h5>
+  <img class="reviewPhoto" *ngIf="attractionReview.mainPhotoUrl" src="{{attractionReview.mainPhotoUrl}}" alt="">
+  <span class="fa fa-star" *ngFor="let starChecked of starCheckedList index as i" [ngClass]="{'checked': starChecked}"></span>
+  <p>{{attractionReview.review}}</p>
+</div>

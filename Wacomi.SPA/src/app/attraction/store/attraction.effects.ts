@@ -7,21 +7,18 @@ import { Actions, Effect } from "@ngrx/effects";
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { AlertifyService } from '../../_services/alertify.service';
-import { ModalService } from '../../_services/modal.service';
 import { Attraction } from '../../_models/Attraction';
 import { of } from 'rxjs/observable/of';
+import { AttractionReview } from '../../_models/AttractionReview';
+import 'rxjs/add/operator/withLatestFrom';
 
 @Injectable()
 export class AttractionEffects {
     baseUrl = environment.apiUrl;
-    readonly CLANSEEK_MAX = 5;
     constructor(private actions$: Actions,
         private store$: Store<fromAttraction.FeatureState>,
         private router: Router,
-        private httpClient: HttpClient,
-        private alertify: AlertifyService,
-        private modal: ModalService) { }
+        private httpClient: HttpClient) { }
 
     @Effect()
     getAttraction = this.actions$
@@ -94,7 +91,15 @@ export class AttractionEffects {
                         return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
                     }
 
-                    return { type: GlobalActions.TRY_ADD_PHOTOS, payload: { recordType: 'attraction', recordId: result.id, formData: payload.formData } };
+                    return {
+                        type: GlobalActions.TRY_ADD_PHOTOS,
+                        payload: {
+                            recordType: 'attraction',
+                            recordId: result.id,
+                            formData: payload.formData,
+                            callbackLocation: '/attraction'
+                        }
+                    };
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
@@ -143,6 +148,139 @@ export class AttractionEffects {
                 });
         })
 
+    @Effect()
+    getAttractionReview = this.actions$
+        .ofType(AttractionActions.GET_ATTRACTION_REVIEW)
+        .map((action: AttractionActions.GetAttractionReview) => {
+            return action.payload;
+        })
+        .switchMap((id) => {
+            return this.httpClient.get<AttractionReview>(this.baseUrl + 'attractionreview/' + id)
+                .map((result) => {
+                    return {
+                        type: AttractionActions.SET_ATTRACTION_REVIEW,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
 
+    @Effect()
+    tryAddAttractionReview = this.actions$
+        .ofType(AttractionActions.TRY_ADD_ATTRACTION_REVIEW)
+        .map((action: AttractionActions.TryAddAttractionReview) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.post<AttractionReview>(this.baseUrl + 'attractionreview',
+                payload.attractionReview,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map((result) => {
+                    if (payload.formData == null) {
+                        this.router.navigate(['/attraction']);
+                        return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
+                    }
+
+                    return {
+                        type: GlobalActions.TRY_ADD_PHOTOS,
+                        payload: {
+                            recordType: 'attractionreview',
+                            recordId: result.id,
+                            formData: payload.formData,
+                            callbackLocation: '/attraction/detail/' + result.attractionId
+                        }
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    updateAttractionReview = this.actions$
+        .ofType(AttractionActions.UPDATE_ATTRACTION_REVIEW)
+        .map((action: AttractionActions.UpdateAttractionReview) => {
+            return action.payload
+        })
+        .withLatestFrom(this.store$)
+        .switchMap(([attractionReview, attractionState]) => {
+            return this.httpClient.put(this.baseUrl + 'attractionreview',
+                attractionReview,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map(() => {
+                    this.router.navigate(['/attraction/detail/' ,attractionState.attraction.selectedAttraction.id]);
+                    return {
+                        type: GlobalActions.SUCCESS, payload: "更新しました"
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        });
+
+    @Effect()
+    tryDeleteAttractionReview = this.actions$
+        .ofType(AttractionActions.TRY_DELETE_ATTRACTION_REVIEW)
+        .map((actions: AttractionActions.TryDeleteAttractionReview) => {return actions.payload})
+        .withLatestFrom(this.store$)
+        .switchMap(([id, attractionState]) => {
+            return this.httpClient.delete(this.baseUrl + 'attractionreview/' + id,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map(() => {
+                    this.router.navigate(['/attraction/detail/' ,attractionState.attraction.selectedAttraction.id]);
+                    return {
+                        type: GlobalActions.SUCCESS, payload: "削除しました"
+                    };
+                })
+                .catch((error:string) => {
+                    return of({type: GlobalActions.FAILED, payload:error});
+                })
+        })
+      //  .switchMap((actions: AttractionActions.TryDeleteAttractionReview) => {
+        //     return this.httpClient.delete(this.baseUrl + 'attractionreview/' + actions.payload,
+        //         {
+        //             headers: new HttpHeaders().set('Content-Type', 'application/json')
+        //         })
+        //         .map(() => {
+        //             this.router.navigate['/attraction/detail/' + result.attractionId]);
+        //             return {
+        //                 type: GlobalActions.SUCCESS, payload: "削除しました"
+        //             };
+        //         })
+        //         .catch((error: string) => {
+        //             return of({ type: GlobalActions.FAILED, payload: error })
+        //         });
+        // })
+
+    @Effect()
+    getAttractionReviewList = this.actions$
+        .ofType(AttractionActions.GET_ATTRACTION_REVIEW_LIST)
+        .map((action: AttractionActions.GetAttractionReviewList) => { return action.payload })
+        .switchMap((payload) => {
+            // let Params = new HttpParams();
+            // Params = Params.append('id', payload.toString());
+            return this.httpClient.get<AttractionReview[]>(this.baseUrl + 'attraction/' + payload + '/review', { observe: 'response' })
+                .map((response) => {
+                    return {
+                        type: AttractionActions.SET_ATTRACTION_REVIEW_LIST,
+                        payload: {
+                            attractionReviewList: response.body,
+                            //   pagination: JSON.parse(response.headers.get("Pagination"))
+                        }
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        }
+        )
 
 }

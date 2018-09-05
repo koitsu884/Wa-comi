@@ -16,7 +16,7 @@ export class TopicListResolver implements Resolve<DailyTopic[]> {
         return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic?userId=' + userId)
         .catch(error => {
             this.alertify.error('Problem getting member data');
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return Observable.of(null);
         })
     }

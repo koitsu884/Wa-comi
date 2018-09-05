@@ -64,12 +64,21 @@ namespace Wacomi.API.Controllers
             return Ok(await _attractionRepo.GetAttractionCategories());
         }
 
+        [HttpGet("{id}/review")]
+        public async Task<ActionResult> GetAttractionReviews(int id)
+        {
+            var attractionReviews = await _attractionRepo.GetAttractionReviewsFor(id);
+            return Ok(_mapper.Map<IEnumerable<AttractionReviewForReturnDto>>(attractionReviews));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult> Post([FromBody]AttractionUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+             if (!await this.MatchAppUserWithToken(model.AppUserId))
+                return Unauthorized();
 
             var newAttraction = this._mapper.Map<Attraction>(model);
             // List<AttractionCategorization> categorizationList = new List<AttractionCategorization>();

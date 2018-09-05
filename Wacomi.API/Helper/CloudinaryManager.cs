@@ -25,14 +25,14 @@ namespace Wacomi.API.Helper
             _cloudinary = new Cloudinary(acc);
         }
 
-        public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder)
+        public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder, int maxWidth = 600)
         {
             var uploadResult = new ImageUploadResult();
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(url),
                 Folder = targetFolder.Replace("\\", "/"),
-                Transformation = new Transformation().Width(600).Height(600).Crop("fit")
+                Transformation = new Transformation().Width(maxWidth).Height(maxWidth).Crop("fit")
             };
 
             uploadResult = _cloudinary.Upload(uploadParams);
@@ -40,7 +40,7 @@ namespace Wacomi.API.Helper
             return new ImageFileResult(uploadResult.SecureUri.ToString(), uploadResult.Error?.Message, uploadResult.PublicId);
         }
 
-        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null)
+        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null, int maxWidth = 600)
         {
             if(file.Length == 0){
                 return new ImageFileResult(null, "No file data");

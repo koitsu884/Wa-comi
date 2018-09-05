@@ -98,7 +98,7 @@ export class GlobalEffect {
                 payload.formData)
                 .map(() => {
                     this.modal.close();
-                    this.router.navigate(['/' + payload.recordType]);
+                    this.router.navigate([payload.callbackLocation]);
                     return { type: GlobalActions.SUCCESS, payload: "投稿しました"};
                 })
                 .catch((error: string) => {

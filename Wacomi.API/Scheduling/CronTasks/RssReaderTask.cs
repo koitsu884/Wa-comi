@@ -122,6 +122,7 @@ namespace Wacomi.API.Scheduling.CronTasks
         private void saveFeedImage(BlogFeed blogFeed, bool saveLocal = false)
         {
             var targetFolder = Path.Combine("feedimages", blogFeed.BlogId.ToString());
+            this._fileStorageManager.MaxWidth = 250;
             var result = this._fileStorageManager.SaveImageFromUrl(
                                         "blogfeed",
                                         blogFeed.ImageUrl,

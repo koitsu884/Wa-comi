@@ -41,9 +41,9 @@ export class PhotoSelectorComponent implements OnInit {
           if (canvas.type === "error") {
             console.log("Error loading image " + file.name);
           } else {
-            let base64 = canvas.toDataURL();
+            let base64 = canvas.toDataURL('image/jpeg');
             this.previewUrls.push(base64);
-            var selectedFile = new File([this.dataURItoBlob(base64)], file.name);
+            var selectedFile = new File([this.dataURItoBlob(base64)], file.name, {type: "image/jpeg"});
             this.selectedFiles.push(selectedFile);
           }
         },

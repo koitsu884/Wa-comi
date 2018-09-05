@@ -22,7 +22,6 @@
   -moz-font-smoothing: antialiased;
   -ms-font-smoothing: antialiased;
   -o-font-smoothing: antialiased;
-  font-smoothing: antialiased;
 }
 .lsf-icon:before {
   content:attr(title);
@@ -42,6 +41,131 @@ form label.required::after {
     font-weight: normal;
     font-size: 90%;
 }
+
+html {
+    font-size:62.5%;
+  }
+  body {
+    font-size: 14px;
+    font-size: 1.4rem;
+  }
+   
+  h1 {
+    font-size: 26px;
+    font-size: 2.6rem;
+  }
+  h2 {
+    font-size: 24px;
+    font-size: 2.4rem;
+  }
+   
+  h3 {
+    font-size: 22px;
+    font-size: 2.2rem;
+  }
+
+  h4 {
+    font-size: 20px;
+    font-size: 2.0rem;
+  }
+
+  h5 {
+    font-size: 18px;
+    font-size: 1.8rem;
+  }
+   
+  @media only screen and (min-width:651px) {
+    html {
+      font-size: 71.4286%;
+    }
+  }
+   
+  @media only screen and (min-width:961px) {
+    html {
+      font-size: 75.8929%;
+    }
+  }
+
+
+h2 {
+    /* color: #444; */
+    /* font-size: 5vmin;  */
+    position: relative;
+    padding: 0 0 5px 20px;
+    padding: 0 0 .5rem 2rem;
+    /* border-bottom: 1px solid rgb(3, 53, 1); */
+  }
+  h2:before, h2:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 14px;
+    width: 1.4rem;
+    height: 14px;
+    height: 1.4rem;
+    border: 2px solid rgb(4, 173, 252);
+    margin: auto;
+  }
+  h2:before {
+    top: -7px;
+    top: -0.7rem;
+    left: 2px;
+    left: -0.2rem;
+  }
+  h2:after {
+    top: 0px;
+    left: 4px;
+    left: .4rem;
+  }
+  
+h3 {
+    color:rgb(6, 6, 100);
+    position: relative;
+    padding: 0 0 5px 10px;
+    padding: 0 0 .5rem 1rem;
+}
+
+h3:before {
+    content:  '';
+    background-color: #fff2cb;
+    display:  block;
+    position:  absolute;
+    left:  0;
+    height: 30px;
+    height: 3rem;
+    width: 30px;
+    width: 3rem;
+    border-radius:  50%;
+    top: -5px; 
+    top: -.5rem; 
+    z-index:  -1;
+}
+
+h4 {
+    /* font-size: 18px; */
+    color:white;
+    padding: .3em .5em;
+    background-color: #058be4;
+    border-radius: 4px;
+}
+
+
+
+::-webkit-scrollbar {
+    width:10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 50, .5);
+    border-radius: 10px;
+    box-shadow:0 0 0 1px rgba(255, 255, 255, .3);
+  }
 
 .rounded-bg-light {
     background-color: aliceblue;
@@ -66,48 +190,6 @@ form label.required::after {
     border-bottom: double #7ED1E6;
 } */
 
-h1 {
-    font-size: 7vmin; 
-}
-
-h2 {
-    /* color: #444; */
-    font-size: 5vmin; 
-    position: relative;
-    padding: 0 0 2px 32px;
-    /* border-bottom: 1px solid rgb(3, 53, 1); */
-  }
-  h2:before, h2:after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgb(4, 173, 252);
-    margin: auto;
-  }
-  h2:before {
-    top: -6px;
-    left: 0px;
-  }
-  h2:after {
-    top: 6px;
-    left: 6px;
-  }
-  
-
-h4 {
-    font-size: 18px;
-    color:white;
-    padding: .5em .75em;
-    background-color: #058be4;
-    border-radius: 4px;
-}
-
-/* .row.isMine{
-    padding: 2px;
-    border: 2px solid yellow;
-} */
 
 /*-----------------------------------
  Daily Topic

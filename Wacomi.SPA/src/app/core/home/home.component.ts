@@ -9,6 +9,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../../account/store/account.reducers';
 import { Store } from '@ngrx/store';
 import { Attraction } from '../../_models/Attraction';
+import { AttractionReview } from '../../_models/AttractionReview';
 
 @Component({
     selector: 'app-home',
@@ -16,16 +17,12 @@ import { Attraction } from '../../_models/Attraction';
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    //blogFeedList : Observable<BlogFeed[]>;
     blogFeedList: BlogFeed[];
     latestAttractionList: Attraction[];
-    // latestClanSeekList : Observable<ClanSeek[]>;
+    latestAttractionReviews: AttractionReview[];
     latestClanSeekList: ClanSeek[];
-    //latestTopicComments : Observable<TopicComment[]>;
     latestTopicComments: TopicComment[];
     authState: Observable<fromAccount.State>;
-
-    //todaysTopic: Observable<string>;
     todaysTopic: string;
     constructor(private store: Store<fromApp.AppState>, private globalService: GlobalService) { }
 
@@ -51,6 +48,14 @@ export class HomeComponent implements OnInit {
                 this.latestAttractionList = result;
             }, (error) => {
                 this.latestAttractionList = [];
+                console.log('Error occured when getting latest attraction list');
+            });
+
+        this.globalService.getLatestAttractionReviews()
+            .subscribe((result) => {
+                this.latestAttractionReviews = result;
+            }, (error) => {
+                this.latestAttractionReviews = [];
                 console.log('Error occured when getting latest attraction list');
             });
 

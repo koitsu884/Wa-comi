@@ -1,7 +1,6 @@
 import { Action } from "@ngrx/store";
 import { ClanSeek } from "../../_models/ClanSeek";
 import { Pagination } from "../../_models/Pagination";
-import { Photo } from "../../_models/Photo";
 
 export const GET_CLANSEEK = 'GET_CLANSEEK';
 export const CHECK_CLANSEEKS_COUNTLIMIT = 'CHECK_CLANSEEKS_COUNTLIMIT';

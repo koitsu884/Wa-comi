@@ -21,7 +21,7 @@ export class AdminGuard implements CanActivate {
             }
             else{
                 this.alertify.error("このページにアクセスするには管理アカウントでログインしてください");
-                this.router.navigate(['/home']);
+                this.router.navigate(['/']);
                 return false;
             }
         })

@@ -21,7 +21,7 @@ import * as loadImage from 'blueimp-load-image';
 })
 export class PhotoEditorComponent implements OnInit, OnDestroy {
   readonly FILE_UPLOAD_LIMIT = 5;
-  readonly IMAGE_SIZE = 600;
+  readonly IMAGE_SIZE = 500;
 
   title: string;
   photos: Photo[] = [];
@@ -47,7 +47,7 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
       let recordId = +params["recordId"];
       if (!recordType || !recordId) {
         this.alertify.error("パラメーターが未設定です");
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
         return;
       }
       switch (recordType) {
@@ -74,9 +74,9 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
         if (canvas.type === "error") {
           console.log("Error loading image " + event.target.files[0].name);
         } else {
-          let base64 = canvas.toDataURL();
+          let base64 = canvas.toDataURL('image/jpeg');
           this.previewUrl = base64;
-          this.selectedFile = new File([this.dataURItoBlob(base64)], event.target.files[0].name);
+          this.selectedFile = new File([this.dataURItoBlob(base64)], event.target.files[0].name, {type: "image/jpeg"});
         }
       },
       {

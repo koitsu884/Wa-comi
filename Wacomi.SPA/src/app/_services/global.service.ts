@@ -16,6 +16,7 @@ import { Message } from '../_models/Message';
 import { PaginatedResult } from '../_models/Pagination';
 import { Blog } from '../_models/Blog';
 import { Attraction } from '../_models/Attraction';
+import { AttractionReview } from '../_models/AttractionReview';
 
 @Injectable()
 export class GlobalService {
@@ -60,6 +61,10 @@ export class GlobalService {
 
     getLatestAttractionList() {
         return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction/latest');
+    }
+
+    getLatestAttractionReviews() {
+        return this.httpClient.get<AttractionReview[]>(this.baseUrl + 'attractionreview/latest');
     }
 
     getBlogFeedUri(url: string) {

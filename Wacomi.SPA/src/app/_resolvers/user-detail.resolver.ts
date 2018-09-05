@@ -15,7 +15,7 @@ export class UserDetailResolver implements Resolve<UserDetails> {
         return this.httpClient.get<UserDetails>(this.baseUrl + 'appuser/' + route.params.id + '/detail') 
         .catch(error => {
             this.alertify.error('Problem getting member data');
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return Observable.of(null);
         })
     }

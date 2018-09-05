@@ -13,6 +13,10 @@ import { AttractionCategoryResolver } from "../_resolvers/attraction-categories.
 import { AttractionListComponent } from "./attraction-home/attraction-list/attraction-list.component";
 import { AttractionDetailsCardComponent } from "./attraction-details/attraction-details-card/attraction-details-card.component";
 import { AttractionDetailsInfoComponent } from "./attraction-details/attraction-details-info/attraction-details-info.component";
+import { AttractionReviewCardComponent } from "./attraction-details/attraction-review-card/attraction-review-card.component";
+import { AttractionReviewEditComponent } from "./attraction-review-edit/attraction-review-edit.component";
+import { AttractionReviewListComponent } from "./attraction-review-list/attraction-review-list.component";
+import { AttractionReviewComponent } from "./attraction-review-list/attraction-review/attraction-review.component";
 
 @NgModule({
     declarations: [
@@ -21,7 +25,11 @@ import { AttractionDetailsInfoComponent } from "./attraction-details/attraction-
         AttractionEditComponent,
         AttractionListComponent,
         AttractionDetailsCardComponent,
-        AttractionDetailsInfoComponent
+        AttractionDetailsInfoComponent,
+        AttractionReviewCardComponent,
+        AttractionReviewEditComponent,
+        AttractionReviewListComponent,
+        AttractionReviewComponent
     ],
     imports: [
         AttractionRoutingModule,

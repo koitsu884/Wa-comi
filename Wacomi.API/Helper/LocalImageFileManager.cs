@@ -31,7 +31,7 @@ namespace Wacomi.API.Helper
             return StorageType.Local;
         }
 
-        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null)
+        public ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null, int maxWidth = 600)
         {
             string savedFilePath = null;
             string fileName = prefix + file.FileName;
@@ -44,7 +44,7 @@ namespace Wacomi.API.Helper
                     {
                         // var bitmap = new Bitmap(stream);
                         var image = Image.FromStream(stream);
-                        savedFilePath = this.SaveImageToLocalStorage(image, fileName, targetFolder);
+                        savedFilePath = this.SaveImageToLocalStorage(image, fileName, targetFolder, maxWidth);
                         savedFilePath = savedFilePath.Replace("\\", "/");
                         //stream.Flush();
                     }
@@ -60,7 +60,7 @@ namespace Wacomi.API.Helper
             return new ImageFileResult(savedFilePath, error, publicId);
         }
 
-        public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder)
+        public ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder, int maxWidth = 600)
         {
             string savedFilePath = null;
             string error = null;
@@ -72,7 +72,7 @@ namespace Wacomi.API.Helper
                     {
                         // var bitmap = new Bitmap(stream);
                         var image = Image.FromStream(stream);
-                        savedFilePath = this.SaveImageToLocalStorage(image, fileName, targetFolder);
+                        savedFilePath = this.SaveImageToLocalStorage(image, fileName, targetFolder, maxWidth);
                         savedFilePath = savedFilePath.Replace("\\", "/");
                        // stream.Flush();
                     }
@@ -87,11 +87,21 @@ namespace Wacomi.API.Helper
             return new ImageFileResult(savedFilePath, error, publicId);
         }
 
-        private string SaveImageToLocalStorage(Image image, string fileName, string targetFolder)
+        private string SaveImageToLocalStorage(Image image, string fileName, string targetFolder, int maxWidth)
         {
             var actualTargetFolderPath = Path.Combine(this.staticFolderName, targetFolder);
-            int resizeWidth = RESIZE_WIDTH;
-            int resizeHeight = (int)(image.Height * ((double)resizeWidth / (double)image.Width));
+            int resizeHeight;
+            int resizeWidth;
+            if(image.Width > image.Height){
+                resizeWidth =  maxWidth;
+                resizeHeight = (int)(image.Height * ((double)resizeWidth / (double)image.Width));
+            }
+            else{
+                resizeHeight =  maxWidth;
+                resizeWidth = (int)(image.Width * ((double)resizeHeight / (double)image.Height));
+            }
+
+
             Bitmap resizeBmp = new Bitmap(image, resizeWidth, resizeHeight);
 
             var fullFileName = Path.Combine(actualTargetFolderPath, fileName);

@@ -15,8 +15,7 @@ namespace Wacomi.API.Controllers
         private readonly IDailyTopicRepository _topicRepo;
         public TopicLikeController(IAppUserRepository appUserRepo, IDailyTopicRepository topicRepo, IMapper mapper) : base(appUserRepo, mapper)
         {
-            this._topicRepo = _topicRepo;
-
+            this._topicRepo = topicRepo;
         }
 
         [HttpGet("{userId}/{recordId}", Name = "GetTopicLike")]

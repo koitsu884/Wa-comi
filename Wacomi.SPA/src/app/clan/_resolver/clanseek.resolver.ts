@@ -19,7 +19,7 @@ export class ClanSeekResolver implements Resolve<ClanSeek> {
                 })
                 .catch((error) => {
                     console.log('Failed to resolve clanseek');
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/']);
                     return Observable.of(null);
                 });
     }

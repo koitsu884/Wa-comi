@@ -24,7 +24,7 @@ export class ClanSeekEditResolver implements Resolve<ClanSeek> {
         })
         .catch((error) => {
             this.alertify.error('Problem retrieving data');
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return Observable.of(null);
         });
     }

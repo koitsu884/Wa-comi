@@ -20,11 +20,12 @@ export class AttractionDetailsInfoComponent implements OnInit {
       {
         //breakpoint: 800,
         width: '100%',
-        height: '500px',
-        imageSize:"contain",
+        height: '400px',
+        // imageSize:"contain",
        // imagePercent: 100,
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Fade,
+        image: true,
         preview: false
       }
     ];

@@ -16,34 +16,6 @@ namespace Wacomi.API.Data
         public DataRepository(ApplicationDbContext context) : base(context)
         {
         }
-
-        public async Task<bool> RecordExist(string recordType, int id)
-        {
-            switch (recordType.ToLower())
-            {
-                case "appuser":
-                    return await _context.AppUsers.AnyAsync(r => r.Id == id);
-                case "businessprofile":
-                    return await _context.BusinessProfiles.AnyAsync(r => r.Id == id);
-                case "memberprofile":
-                    return await _context.MemberProfiles.AnyAsync(r => r.Id == id);
-                case "clanseek":
-                    return await _context.ClanSeeks.AnyAsync(r => r.Id == id);
-                case "dailytopic":
-                    return await _context.DailyTopics.AnyAsync(r => r.Id == id);
-                case "blog":
-                    return await _context.Blogs.AnyAsync(r => r.Id == id);
-                case "blogfeed":
-                    return await _context.BlogFeeds.AnyAsync(r => r.Id == id);
-                case "topiccomment":
-                    return await _context.TopicComments.AnyAsync(r => r.Id == id);
-                case "photo":
-                    return await _context.Photos.AnyAsync(r => r.Id == id);
-
-            }
-            return false;
-        }
-
         public async Task<IEnumerable<City>> GetCities()
         {
             return await _context.Cities.ToListAsync();

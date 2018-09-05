@@ -32,7 +32,7 @@ export class UserPhotoResolver implements Resolve<Photo[]> {
     //     })
     //     .catch((error) => {
     //         console.log('Problem retrieving data');
-    //         // this.router.navigate(['/home']);
+    //         // this.router.navigate(['/']);
     //         return Observable.of(null);
     //     });
     // }

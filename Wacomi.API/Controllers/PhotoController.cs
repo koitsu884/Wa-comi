@@ -90,6 +90,8 @@ namespace Wacomi.API.Controllers
             {
                 case "attraction":
                     return await addPhotosToAttraction(recordType, recordId, files);
+                case "attractionreview":
+                    return await addPhotosToAttractionReview(recordType, recordId, files);
                 case "appuser":
                     return await addPhotosToAppUser(recordType, recordId, files);
                 case "blog":
@@ -109,24 +111,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             List<string> errors = new List<string>();
-            List<Photo> addingPhotos = new List<Photo>();
-            foreach (var file in files)
-            {
-                var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
-                if (!string.IsNullOrEmpty(result.Error))
-                {
-                    errors.Add(result.Error);
-                }
-                else
-                {
-                    addingPhotos.Add(new Photo()
-                    {
-                        StorageType = this._imageFileStorageManager.GetStorageType(recordType),
-                        Url = result.Url,
-                        PublicId = result.PublicId,
-                    });
-                }
-            }
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
 
             if (addingPhotos.Count == 0)
             {
@@ -145,6 +130,58 @@ namespace Wacomi.API.Controllers
             }
 
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
+        }
+
+        private async Task<ActionResult> addPhotosToAttractionReview(string recordType, int recordId, List<IFormFile> files)
+        {
+            var attractionReview = await _attractionRepo.GetAttractionReview(recordId);
+            if (attractionReview == null)
+                return NotFound();
+            if (!await MatchAppUserWithToken((int)attractionReview.AppUserId))
+                return Unauthorized();
+
+            List<string> errors = new List<string>();
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
+
+            if (addingPhotos.Count == 0)
+            {
+                return BadRequest(errors);
+            }
+
+            foreach (var photo in addingPhotos)
+            {
+                attractionReview.Photos.Add(photo);
+            }
+            await _attractionRepo.SaveAll();
+            if (attractionReview.MainPhotoId == null)
+            {
+                attractionReview.MainPhotoId = addingPhotos[0].Id;
+                await _attractionRepo.SaveAll();
+            }
+
+            return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
+        }
+
+        private List<Photo> savePhotosToStorage(string recordType, int recordId, List<IFormFile> files){
+            List<Photo> addingPhotos = new List<Photo>();
+            foreach (var file in files)
+            {
+                var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
+                if (!string.IsNullOrEmpty(result.Error))
+                {
+                    _logger.LogError(result.Error);
+                }
+                else
+                {
+                    addingPhotos.Add(new Photo()
+                    {
+                        StorageType = this._imageFileStorageManager.GetStorageType(recordType),
+                        Url = result.Url,
+                        PublicId = result.PublicId,
+                    });
+                }
+            }
+            return addingPhotos;
         }
 
         private async Task<ActionResult> addPhotosToAppUser(string recordType, int recordId, List<IFormFile> files)
@@ -203,24 +240,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             List<string> errors = new List<string>();
-            List<Photo> addingPhotos = new List<Photo>();
-            foreach (var file in files)
-            {
-                var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
-                if (!string.IsNullOrEmpty(result.Error))
-                {
-                    errors.Add(result.Error);
-                }
-                else
-                {
-                    addingPhotos.Add(new Photo()
-                    {
-                        StorageType = this._imageFileStorageManager.GetStorageType(recordType),
-                        Url = result.Url,
-                        PublicId = result.PublicId,
-                    });
-                }
-            }
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
 
             if (addingPhotos.Count == 0)
             {
@@ -299,6 +319,8 @@ namespace Wacomi.API.Controllers
             {
                 case "attraction":
                     return await this.DeleteAttractionPhoto(recordId, photoFromRepo);
+                case "attractionreview":
+                    return await this.DeleteAttractionReviewPhoto(recordId, photoFromRepo);
                 case "appuser":
                     return await this.DeleteAppUserPhoto(recordId, photoFromRepo);
                 case "blog":
@@ -331,6 +353,22 @@ namespace Wacomi.API.Controllers
             if (attraction == null)
                 return NotFound();
             if (!await MatchAppUserWithToken((int)attraction.AppUserId))
+                return Unauthorized();
+
+            var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
+            if (!string.IsNullOrEmpty(result.Error))
+                return BadRequest(result.Error);
+            _photoRepo.Delete(photoFromRepo);
+            await _photoRepo.SaveAll();
+            return Ok();
+        }
+
+        private async Task<ActionResult> DeleteAttractionReviewPhoto(int recordId, Photo photoFromRepo)
+        {
+            var attractionReview = await _attractionRepo.GetAttractionReview(recordId);
+            if (attractionReview == null)
+                return NotFound();
+            if (!await MatchAppUserWithToken((int)attractionReview.AppUserId))
                 return Unauthorized();
 
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);

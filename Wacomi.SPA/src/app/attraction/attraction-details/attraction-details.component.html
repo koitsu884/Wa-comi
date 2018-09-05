@@ -7,12 +7,23 @@
       </div>
       <div class="col-sm-4">
         <app-attraction-details-card [attraction]="attraction" [appUser]="appUser"></app-attraction-details-card>
-        <!-- この辺にレビュー情報-->
-        <p>レビュー</p>
-        <p>レビュー</p>
-        <p>レビュー</p>
+        <h4>レビュー（{{attraction.reviewedCount}} 件）</h4>
+        <div [routerLink]="['/attraction/reviews']">
+          <div *ngFor="let review of attraction.attractionReviews">
+            <app-attraction-review-card [attractionReview]="review"></app-attraction-review-card>
+          </div>
+        </div>
+        <!-- <h5>平均点 {{average}}</h5> -->
+ 
+        <a *ngIf="appUser" class="btn btn-success btn-sm" [routerLink]="['/attraction/edit', attraction.id, 'review']">レビューを追加する</a>
       </div>
     </div>
+    <!-- <div>多分この辺に広告</div> -->
+    <!-- <h2>みんなの投稿写真</h2>
+    <div class="row">
+
+    </div> -->
+
     <div *ngIf="attraction.appUser.id == appUser?.id">
       <a class="btn btn-primary" [routerLink]="['/attraction/edit',  attraction.id]">編集</a>
       <a class="btn btn-danger" (click)="onDelete(attraction.id)">削除</a>

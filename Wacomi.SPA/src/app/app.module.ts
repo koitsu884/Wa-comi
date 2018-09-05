@@ -25,7 +25,6 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AccountEffects } from './account/store/account.effects';
 import { PhotoEffect } from './photo/store/photos.effect';
-import { BlogEffects } from './blog/store/blogs.effect';
 
 import { environment } from '../environments/environment';
 

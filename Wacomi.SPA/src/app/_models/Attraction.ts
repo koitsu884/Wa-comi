@@ -2,6 +2,7 @@ import { AppUser } from "./AppUser";
 import { Photo } from "./Photo";
 import { KeyValue } from "./KeyValue";
 import { Category } from "./Category";
+import { AttractionReview } from "./AttractionReview";
 
 export interface Attraction {
     id: number;
@@ -17,6 +18,7 @@ export interface Attraction {
     photos: Photo[];
     likedCount: number;
     reviewedCount: boolean;
+    attractionReviews: AttractionReview[];
     categories: Category[];
     mainPhotoId?: number;
     mainPhotoUrl?: string;

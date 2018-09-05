@@ -311,7 +311,15 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("AttractionId");
 
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
                     b.Property<int?>("MainPhotoId");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasMaxLength(1500);
 
                     b.Property<int>("Score")
                         .HasMaxLength(5);

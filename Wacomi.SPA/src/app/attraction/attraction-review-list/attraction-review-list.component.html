@@ -1,0 +1,10 @@
+<div class="container">
+  <h2 *ngIf="attraction">{{attraction.name}} のレビュー</h2>
+  <app-loading *ngIf="!attractionReviews"></app-loading>
+  <div *ngIf="attractionReviews?.length == 0">まだレビューがありません</div>
+  <div *ngIf="attractionReviews?.length > 0">
+    <div *ngFor="let review of attractionReviews">
+      <app-attraction-review [attractionReview]="review" [isMine]="appUser && appUser.id == review.appUserId" (deleteReview)="deleteReview($event)"></app-attraction-review>
+    </div>
+  </div>
+</div>

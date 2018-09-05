@@ -1,0 +1,20 @@
+<div>
+  <div class="reviewCard" *ngFor="let review of latestAttractionReviews index as i" 
+  [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}"
+  [routerLink]="['/attraction/detail', review.attractionId]">
+    <h5 class="attractionName">{{review.attractionName}} </h5>
+    <div class="reviewContainer">
+      <div class="info">
+        <img class="img-thumbnail" *ngIf="review.mainPhotoUrl || review.attractionMainPhotoUrl " src="{{review.mainPhotoUrl ? review.mainPhotoUrl : review.attractionMainPhotoUrl}}" alt="{{review.attractionName}}">
+        <span class="cityName">{{review.cityName}}</span>
+      </div>
+      <div class="review">
+        <label *ngIf="review.score > 0">{{review.appUserName}} さんの評価</label><br>
+        <rating *ngIf="review.score>0" [(ngModel)]="review.score" [max]="5" [readonly]="true"></rating>
+        <app-user-comment [userName]="review.appUserName" [userPhotoUrl]="review.appUserMainPhotoUrl" [comment]="getShorternComment(review.review)"></app-user-comment>
+      </div>
+
+    </div>
+    <!-- <p><span class="attractionName"></span><span class="cityName">{{review.cityName}}</span></p> -->
+  </div>
+</div>

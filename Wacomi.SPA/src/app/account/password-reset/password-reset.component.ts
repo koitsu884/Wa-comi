@@ -54,7 +54,7 @@ export class PasswordResetComponent  extends PasswordEditorBase implements OnIni
       this.globalService.sendResetPasswordRequest(this.userId, this.code, values.password)
         .subscribe(() => {
           this.alertify.success("パスワードを変更しました");
-          this.router.navigate(['/home']);
+          this.router.navigate(['/']);
         }, (error) => {
           this.alertify.error(error);
         })

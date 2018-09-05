@@ -23,6 +23,7 @@ export class AttractionDetailsComponent implements OnInit {
     private store: Store<fromAttraction.FeatureState>) { }
 
   ngOnInit() {
+    this.attraction = null;
     this.attractionId = this.route.snapshot.params['id'];
     this.appUser= this.route.snapshot.data['appUser'];
     // this.memberId = appUser ? appUser.relatedUserClassId : null;

@@ -32,6 +32,16 @@ namespace Wacomi.API.Helper
               .ForMember(m => m.ReviewedCount, opt => opt.MapFrom(src => src.AttractionReviews.Count()))
               .ForMember(m => m.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
 
+            CreateMap<AttractionReview, AttractionReviewForReturnDto>()
+              .ForMember(a => a.AttractionName, opt => opt.MapFrom(src => src.Attraction.Name))
+              .ForMember(a => a.AttractionMainPhotoUrl, opt => opt.MapFrom(src => src.Attraction.MainPhoto.Url))
+              .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.Attraction.City.Name))
+              .ForMember(a => a.AppUserName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
+              .ForMember(a => a.AppUserMainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url))
+              .ForMember(a => a.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
+
+            CreateMap<AttractionReviewUpdateDto, AttractionReview>();
+
             CreateMap<UserRegistrationDto, Account>();
 
             CreateMap<AppUser, AppUserForReturnDto>()

@@ -21,8 +21,8 @@ namespace Wacomi.API.Helper
     public interface IImageFileManager
     {
         StorageType GetStorageType();
-        ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder = null);
-        ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null);
+        ImageFileResult SaveImageFromUrl(string url, string fileName, string targetFolder = null, int maxWidth = 600);
+        ImageFileResult SaveImage(IFormFile file, string prefix, string targetFolder = null, int maxWidth = 600);
         ImageFileResult DeleteImage(string publicId);
     }
 }

@@ -1,5 +1,41 @@
-.latestAttractionCard img{
-    width:100%;
+.wrap {
+    height:250px;
+    overflow: hidden;
+}
+
+.mask {
+    height: 280px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .list {
+    display: inline-table;
+    padding: 0;
+  }
+ .list li {
+    display: table-cell;
+    padding: 10px;
+    /* width: 250px; */
+  }
+
+/* .latestAttractionCard img{
+    width:150px;
+    padding:5px;
+    height:150px;
+    object-fit: cover;
+} */
+
+.latestAttractionImage_mb{
+    width:150px;
+    padding:5px;
+    height:150px;
+    object-fit: cover;
+}
+
+.latestAttractionImage{
+    width:200px;
     padding:5px;
     height:200px;
     object-fit: cover;

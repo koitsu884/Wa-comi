@@ -28,16 +28,18 @@ export class DailyTopicEffects {
         .switchMap((userId) => {
             return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic')
                 .mergeMap((result) => {
-                    return [
-                        {
-                            type: TopicActions.SET_TOPIC_LIST,
-                            payload: result
-                        },
-                        {
+                    let returnValues: Array<any> = [{ 
+                        type: TopicActions.SET_TOPIC_LIST,
+                        payload: result 
+                    }];
+
+                    if(userId){
+                        returnValues.push({
                             type: TopicActions.GET_LIKED_TOPIC_LIST,
                             payload: userId
-                        }
-                    ] 
+                        });
+                    }
+                    return returnValues;
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })

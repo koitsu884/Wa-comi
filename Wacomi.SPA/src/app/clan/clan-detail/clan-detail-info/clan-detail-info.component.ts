@@ -20,12 +20,13 @@ export class ClanDetailInfoComponent implements OnInit {
       {
         //breakpoint: 800,
         width: '100%',
-        height: '500px',
-        imageSize:"contain",
+        height: '100px',
+        // imageSize:"contain",
        // imagePercent: 100,
         thumbnailsColumns: 4,
         imageAnimation: NgxGalleryAnimation.Fade,
-        preview: false
+        image: false,
+        preview: true
       }
     ];
     this.galleryImages = this.getImages();

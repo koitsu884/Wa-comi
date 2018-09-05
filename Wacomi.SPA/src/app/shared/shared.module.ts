@@ -16,6 +16,8 @@ import { ShortCommentFormComponent } from './short-comment-form/short-comment-fo
 import { PhotoSelectorComponent } from './photo-selector/photo-selector.component';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { AttractionCardComponent } from '../attraction/attraction-card/attraction-card.component';
+import { StarRateComponent } from './star-rate/star-rate.component';
+import { UserCommentComponent } from './user-comment/user-comment.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { AttractionCardComponent } from '../attraction/attraction-card/attractio
     BlogfeedCardComponent,
     ShortCommentFormComponent,
     PhotoSelectorComponent,
+    StarRateComponent,
+    UserCommentComponent
 ],
   imports:[
     CommonModule,
@@ -51,7 +55,9 @@ import { AttractionCardComponent } from '../attraction/attraction-card/attractio
     BlogfeedListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
-    PhotoSelectorComponent
+    PhotoSelectorComponent,
+    StarRateComponent,
+    UserCommentComponent
   ]
 })
 export class SharedModule {}

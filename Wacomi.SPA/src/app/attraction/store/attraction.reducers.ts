@@ -2,6 +2,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as AttractionActions from './attraction.actions';
 import { Attraction } from '../../_models/Attraction';
 import { Pagination } from '../../_models/Pagination';
+import { AttractionReview } from '../../_models/AttractionReview';
 
 export interface FeatureState extends fromApp.AppState {
     attraction: State
@@ -9,7 +10,9 @@ export interface FeatureState extends fromApp.AppState {
 
 export interface State {
     selectedAttraction: Attraction;
+    selectedAttractionReview: AttractionReview;
     attractions: Attraction[];
+    attractionReviewList: AttractionReview[];
     selectedCityId: number;
     selectedCategories: number[];
     pagination: Pagination,
@@ -18,7 +21,9 @@ export interface State {
 
 const initialState: State = {
     selectedAttraction: null,
+    selectedAttractionReview: null,
     attractions: [],
+    attractionReviewList: [],
     selectedCityId: null,
     selectedCategories: [],
     pagination: null,
@@ -28,6 +33,11 @@ const initialState: State = {
 export function attractionReducer(state = initialState, action: AttractionActions.AttractionActions) {
     let tempPagination: Pagination;
     switch (action.type) {
+        case AttractionActions.GET_ATTRACTION:
+            return {
+                ...state,
+                selectedAttraction: null,
+            }
         case AttractionActions.SET_ATTRACTION:
             return {
                 ...state,
@@ -64,6 +74,7 @@ export function attractionReducer(state = initialState, action: AttractionAction
             return {
                 ...state,
                 attractions: null,
+                pagination: null,
                 loading: true
             }
         case AttractionActions.SET_ATTRACTION_SEARCH_RESULT:
@@ -73,6 +84,25 @@ export function attractionReducer(state = initialState, action: AttractionAction
                 pagination: action.payload.pagination,
                 loading: false,
                 selectedAttraction: null
+            }
+        case AttractionActions.SET_ATTRACTION_REVIEW:
+            return {
+                ...state,
+                selectedAttractionReview: action.payload,
+            }
+        case AttractionActions.GET_ATTRACTION_REVIEW_LIST:
+            return {
+                ...state,
+                pagination: null,
+                loading: true,
+                attractionReviewList: []
+            }
+        case AttractionActions.SET_ATTRACTION_REVIEW_LIST:
+            return {
+                ...state,
+                pagination: action.payload.pagination,
+                loading: false,
+                attractionReviewList: action.payload.attractionReviewList
             }
         default:
             return state;

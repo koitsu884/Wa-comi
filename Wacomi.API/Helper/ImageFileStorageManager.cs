@@ -12,6 +12,8 @@ namespace Wacomi.API.Helper
     {
         private IDataRepository _repo;
         private IOptions<CloudinarySettings> _cloudinaryConfig;
+        public int MaxWidth{ get; set;}
+
         public ImageFileStorageManager(IServiceProvider serviceProvider,  IOptions<CloudinarySettings> cloudinaryConfig = null){
             _cloudinaryConfig = cloudinaryConfig;
             var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
@@ -55,7 +57,7 @@ namespace Wacomi.API.Helper
             var storageType = GetStorageType(recordType);
             IImageFileManager imageFileManager = GetImageFileManager(storageType);
             if(imageFileManager != null)
-                return imageFileManager.SaveImageFromUrl(url, fileName, targetFolder);
+                return imageFileManager.SaveImageFromUrl(url, fileName, targetFolder, this.MaxWidth);
 
             return new ImageFileResult(null, "Failed to getting imge file manager");
         }

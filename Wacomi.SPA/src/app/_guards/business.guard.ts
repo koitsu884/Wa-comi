@@ -21,7 +21,7 @@ export class BusinessGuard implements CanActivate {
             }
             else{
                 this.alertify.error("このページにアクセスするにはビジネスアカウントでログインしてください");
-                this.router.navigate(['/home']);
+                this.router.navigate(['/']);
                 return false;
             }
         })

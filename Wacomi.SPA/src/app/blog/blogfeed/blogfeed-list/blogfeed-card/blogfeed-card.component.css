@@ -2,6 +2,7 @@
     position:absolute;
     width: 100%;
     filter: brightness(40%);
+    object-fit: cover;
     /* z-index:0; */
     /* height: 60px; */
     /* margin: 5px; */

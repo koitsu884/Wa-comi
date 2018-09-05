@@ -3,10 +3,7 @@ import { Store } from '@ngrx/store';
 import * as jwt_decode from "jwt-decode";
 import * as fromApp from './store/app.reducer';
 import * as AccountActions from './account/store/account.actions';
-import * as PhotoActions from './photo/store/photos.action';
 import * as GlobalActions from './store/global.actions';
-import { decode } from 'punycode';
-import { Route } from '@angular/compiler/src/core';
 import { Location } from '@angular/common';
 
 @Component({

@@ -33,7 +33,7 @@ export class AccountEditResolver implements Resolve<UserAccount> {
     //         })
     //         .catch((error) => {
     //             this.alertify.error('Problem retrieving data');
-    //             this.router.navigate(['/home']);
+    //             this.router.navigate(['/']);
     //             return Observable.of(null);
     //         });
     // }

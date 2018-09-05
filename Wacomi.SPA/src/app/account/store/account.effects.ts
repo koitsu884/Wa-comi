@@ -16,9 +16,7 @@ import { LoginResult } from "../../_models/LoginResult";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { AlertifyService } from "../../_services/alertify.service";
-import { Observable } from "rxjs/Observable";
 
-import { Action } from "@ngrx/store";
 import { of } from "rxjs/observable/of";
 import { AppUser } from "../../_models/AppUser";
 import { MemberProfile } from "../../_models/MemberProfile";
@@ -79,7 +77,7 @@ export class AccountEffects {
                     { headers: new HttpHeaders().set('Content-Type', 'application/json') }
                 )
                 .mergeMap((loginResult : LoginResult) => {
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/']);
                     return [
                         {
                             type: GlobalActions.SUCCESS,
@@ -92,7 +90,7 @@ export class AccountEffects {
                     ];
                 })
                 .catch((error:string) => {
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/']);
                     return of({ type: GlobalActions.FAILED, payload: error })
                 })
         });
@@ -103,7 +101,7 @@ export class AccountEffects {
         .switchMap((action: AccountActions.TryLogin) => {
             return this.httpClient.post<LoginResult>(this.baseUrl + 'auth/login', action.payload, { headers: new HttpHeaders().set('Content-Type', 'application/json') })
                 .mergeMap((loginResult: LoginResult) => {
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/']);
                     return [
                         {
                             type: GlobalActions.SUCCESS,
@@ -125,7 +123,7 @@ export class AccountEffects {
         .ofType(AccountActions.LOGIN)
         .map((action: AccountActions.Login) => { return action.payload })
         .mergeMap((loginResult) => {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return [
                 {
                     type: AccountActions.SET_TOKEN,
@@ -373,7 +371,7 @@ export class AccountEffects {
     authLogout = this.actions$
         .ofType(AccountActions.LOGOUT)
         .mergeMap(() => {
-            this.router.navigate(['/home'])
+            this.router.navigate(['/'])
 
             return [
                 { type: GlobalActions.SUCCESS, payload: "ログアウトしました" },
@@ -386,6 +384,6 @@ export class AccountEffects {
     tokenExpired = this.actions$
         .ofType(AccountActions.TOKEN_EXPIRED)
         .do(() => {
-            this.router.navigate(['/home'])
+            this.router.navigate(['/'])
         })
 }

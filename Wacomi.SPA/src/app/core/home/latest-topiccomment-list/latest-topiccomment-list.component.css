@@ -4,13 +4,13 @@
     position:relative;
     display: table;
 }
-
+/* 
 .commentImage{
-     /* float:left; */
+ 
      display: table-cell;
      vertical-align: middle;
      width: 50px;
-     /* margin:10px; */
+ 
 }
 
 .commentImage img{
@@ -44,6 +44,14 @@
    margin-top: -12px;
    border: 10px solid transparent;
    border-right: 15px solid #e0edff;
+} */
+
+
+.userComment {
+    display: table-cell;
+    width:auto;
+    padding-right: 8px;
+    vertical-align: middle;
 }
 
 .commentTools{

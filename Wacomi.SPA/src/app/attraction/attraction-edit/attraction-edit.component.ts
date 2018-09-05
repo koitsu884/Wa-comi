@@ -42,7 +42,7 @@ export class AttractionEditComponent implements OnInit {
           this.id = +params['id'];
           this.appUser = this.route.snapshot.data['appUser'];
           if (this.appUser == null) {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return;
           }
           this.cities = this.route.snapshot.data['cities'];

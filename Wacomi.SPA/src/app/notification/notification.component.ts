@@ -26,7 +26,7 @@ export class NotificationComponent implements OnInit {
     this.appUser = this.route.snapshot.data["appUser"];
     if (!this.appUser) {
       console.log("AppUser 入ってないで");
-      this.router.navigate(['/home']);
+      this.router.navigate(['/']);
     }
 
     this.store.select('notification')

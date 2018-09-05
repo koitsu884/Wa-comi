@@ -8,6 +8,9 @@ import { AttractionEditComponent } from "./attraction-edit/attraction-edit.compo
 import { AuthGuard } from "../_guards/auth.guard";
 import { MemberGuard } from "../_guards/member.guard";
 import { AttractionCategoryResolver } from "../_resolvers/attraction-categories.resolver";
+import { AttractionReviewEditComponent } from "./attraction-review-edit/attraction-review-edit.component";
+import { AttractionReviewListComponent } from "./attraction-review-list/attraction-review-list.component";
+import { AttractionResolver } from "./_resolver/attraction.resolver";
 
 const attractionRoute: Routes = [
     {
@@ -28,8 +31,16 @@ const attractionRoute: Routes = [
         },
     },
     {
-        path: 'edit', 
+        path: 'reviews', 
         runGuardsAndResolvers: 'always',
+        component: AttractionReviewListComponent, 
+        resolve: {
+            attraction: AttractionResolver,
+            appUser:AppUserResolver
+        },
+    },
+    {
+        path: 'edit', 
         component: AttractionEditComponent, 
         canActivate: [MemberGuard],
         resolve: {
@@ -40,7 +51,6 @@ const attractionRoute: Routes = [
     },
     {
         path: 'edit/:id', 
-        runGuardsAndResolvers: 'always',
         component: AttractionEditComponent, 
         canActivate: [MemberGuard],
         resolve: {
@@ -48,13 +58,32 @@ const attractionRoute: Routes = [
             cities:CityListResolver,
             categories: AttractionCategoryResolver
         },
-    }
+    },
+    {
+        path: 'edit/:id/review', 
+        component: AttractionReviewEditComponent, 
+        canActivate: [AuthGuard],
+        resolve: {
+            appUser:AppUserResolver
+        },
+    },
+    {
+        path: 'edit/:id/review/:reviewId', 
+        component: AttractionReviewEditComponent, 
+        canActivate: [AuthGuard],
+        resolve: {
+            appUser:AppUserResolver
+        },
+    },
 ];
 
 @NgModule({
     imports: [
         RouterModule.forChild(attractionRoute)
     ],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [
+        AttractionResolver
+    ]
 })
 export class AttractionRoutingModule {}

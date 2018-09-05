@@ -42,7 +42,7 @@ export class SettingsHomeComponent implements OnInit {
     this.route.params.subscribe((params) => {
       if(!params['userId']){
         console.log("Error: No parameter for app user");
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       }
       this.store.dispatch(new AccountAction.GetAppUser(params['userId']));
     })

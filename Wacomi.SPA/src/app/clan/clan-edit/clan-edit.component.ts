@@ -46,7 +46,7 @@ export class ClanEditComponent implements OnInit {
           this.appUserId = +params['appUserId'];
           // console.log(params);
           if (this.appUserId == null) {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return;
           }
           this.editMode = params['id'] != null;

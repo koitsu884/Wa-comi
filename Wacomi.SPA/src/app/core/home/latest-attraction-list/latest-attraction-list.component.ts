@@ -24,9 +24,11 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class LatestAttractionListComponent implements OnInit {
   @Input() latestAttractionList: Attraction[];
+  mobile:boolean;
   constructor() { }
 
   ngOnInit() {
+    this.mobile = window.screen.width < 500;
   }
 
 }

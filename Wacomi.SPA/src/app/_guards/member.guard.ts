@@ -21,7 +21,7 @@ export class MemberGuard implements CanActivate {
             }
             else{
                 this.alertify.error("このページにアクセスするには個人アカウントでログインしてください");
-                this.router.navigate(['/home']);
+                this.router.navigate(['/']);
                 return false;
             }
         })

@@ -3,7 +3,6 @@ import { ClanHomeComponent } from "./clan-home/clan-home.component";
 import { SharedModule } from "../shared/shared.module";
 import { ClanDetailComponent } from './clan-detail/clan-detail.component';
 import { ClanEditComponent } from "./clan-edit/clan-edit.component";
-import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { ClanSeekCategoryResolver } from "../_resolvers/clanseek-categories.resolver";
 import { ClanListComponent } from "./clan-home/clan-list/clan-list.component";
 import { ClanRoutingModule } from "./clan-routing.module";
@@ -15,9 +14,7 @@ import { ClanDetailCardComponent } from "./clan-detail/clan-detail-card/clan-det
 import { ClanDetailInfoComponent } from "./clan-detail/clan-detail-info/clan-detail-info.component";
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
-import { ClanCardComponent } from "./clan-home/clan-list/clan-card/clan-card.component";
-import { PaginationModule, CarouselModule } from "ngx-bootstrap";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PaginationModule } from "ngx-bootstrap";
 
 @NgModule({
     declarations: [

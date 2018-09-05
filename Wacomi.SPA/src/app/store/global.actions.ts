@@ -60,7 +60,7 @@ export class SetAttractionCategoryList implements Action {
 
 export class TryAddPhotos implements Action {
     readonly type = TRY_ADD_PHOTOS;
-    constructor(public payload: {recordType:string, recordId: number, formData:FormData}){};
+    constructor(public payload: {recordType:string, recordId: number, formData:FormData, callbackLocation:string}){};
 }
 
 export class Failed implements Action {

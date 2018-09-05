@@ -72,6 +72,7 @@ namespace Wacomi.API
             //services.AddSingleton<IEmailSender, MailGunManager>();
             services.AddSingleton<ImageFileStorageManager>();
 
+            //=============== Repository registoration =================
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddScoped<IAdminDataRepository, AdminDataRepository>();
             services.AddScoped<IAppUserRepository, AppUserRepository>();

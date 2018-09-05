@@ -21,7 +21,7 @@ export interface State {
 const initialState: State = {
     topicList: null,
     likedTopicList: null,
-    topicComments : null,
+    topicComments : [],
     commentFeelings : null,
     topicReplies : null,
     todaysComment : null
@@ -35,7 +35,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             return{
                 ...state,
                 topicList: null,
-                topicComments : null,
+                topicComments : [],
                 commentFeelings : null,
                 topicReplies : null,
                 todaysComment : null,
@@ -93,6 +93,11 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
         //====================================================
         // Topic Comment
         //====================================================
+        case DailyTopicActions.GET_TOPIC_COMMENTS:
+            return{
+                ...state,
+                topicComments: []
+            }
         case DailyTopicActions.SET_TOPIC_COMMENTS:
         var myComment = action.payload.comments.find(c => c.appUserId == action.payload.appUserId);
             return {

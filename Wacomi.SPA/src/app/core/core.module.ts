@@ -4,7 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { CommonModule } from '@angular/common';
 import { FooterComponent } from './footer/footer.component';
-import { BsDropdownModule, CollapseModule } from 'ngx-bootstrap';
+import { BsDropdownModule, CollapseModule, RatingModule } from 'ngx-bootstrap';
 import { SharedModule } from '../shared/shared.module';
 import { BlogModule } from '../blog/blog.module';
 import { LatestClanListComponent } from './home/latest-clan-list/latest-clan-list.component';
@@ -14,6 +14,7 @@ import { ModalComponent } from './modal/modal.component';
 import { UploadingComponent } from './modal/uploading/uploading.component';
 import { NotificationComponent } from '../notification/notification.component';
 import { LatestAttractionListComponent } from './home/latest-attraction-list/latest-attraction-list.component';
+import { LatestAttractionReviewsComponent } from './home/latest-attraction-reviews/latest-attraction-reviews.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { LatestAttractionListComponent } from './home/latest-attraction-list/lat
     LatestClanListComponent,
     LatestTopiccommentListComponent,
     LatestAttractionListComponent,
+    LatestAttractionReviewsComponent,
     NotificationComponent,
     StaticpageComponent
 ],
@@ -34,7 +36,8 @@ import { LatestAttractionListComponent } from './home/latest-attraction-list/lat
     BsDropdownModule,
     AppRoutingModule,
     SharedModule,
-    CollapseModule.forRoot()
+    CollapseModule.forRoot(),
+    RatingModule.forRoot(),
   ],
   exports: [
     HeaderComponent,

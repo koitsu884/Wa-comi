@@ -20,7 +20,7 @@ export class ClanSeekCategoryResolver implements Resolve<KeyValue[]> {
         })
         .catch((error) => {
             console.log('Problem retrieving data');
-            this.router.navigate(['/home']);
+            this.router.navigate(['/']);
             return Observable.of(null);
         });
     }
