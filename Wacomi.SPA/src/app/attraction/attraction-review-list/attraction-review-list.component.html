@@ -5,6 +5,11 @@
   <div *ngIf="attractionReviews?.length > 0">
     <div *ngFor="let review of attractionReviews">
       <app-attraction-review [attractionReview]="review" [isMine]="appUser && appUser.id == review.appUserId" (deleteReview)="deleteReview($event)"></app-attraction-review>
+      <hr>
+      <p>参考になりました！：<button class="btn btn-primary btn-sm" (click)="sendLike(review.id)" [disabled]="review.isLiked || !appUser">
+          <i class="fa fa-thumbs-up" title="良いね"></i>
+          <span class="badge">{{review.likedCount}}</span>
+        </button></p>
     </div>
   </div>
 </div>

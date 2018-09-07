@@ -1,6 +1,5 @@
 import { AppUser } from "./AppUser";
 import { Photo } from "./Photo";
-import { KeyValue } from "./KeyValue";
 import { Category } from "./Category";
 import { AttractionReview } from "./AttractionReview";
 
@@ -16,7 +15,10 @@ export interface Attraction {
     latitude: number;
     longitude: number;
     photos: Photo[];
+    reviewPhotos: Photo[];
+    scoreAverage: number;
     likedCount: number;
+    isLiked : boolean;
     reviewedCount: boolean;
     attractionReviews: AttractionReview[];
     categories: Category[];

@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Attraction } from '../../../_models/Attraction';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
+import { Photo } from '../../../_models/Photo';
 
 @Component({
   selector: 'app-attraction-details-info',
@@ -9,13 +10,21 @@ import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gal
 })
 export class AttractionDetailsInfoComponent implements OnInit {
   @Input() attraction: Attraction;
+  @Output() likeClicked =  new EventEmitter();
+
   description: string;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  reviewerGalleryOptions: NgxGalleryOptions[];
+  reviewerGalleryImages: NgxGalleryImage[];
+  thumbnailsColumns: number;
+  scoreAverage:number;
 
   constructor() { }
 
   ngOnInit() {
+    this.scoreAverage = Math.round( this.attraction.scoreAverage * 10) / 10;
+    this.thumbnailsColumns = window.screen.width < 500 ? 3 : 4;
     this.galleryOptions = [
       {
         //breakpoint: 800,
@@ -23,26 +32,55 @@ export class AttractionDetailsInfoComponent implements OnInit {
         height: '400px',
         // imageSize:"contain",
        // imagePercent: 100,
-        thumbnailsColumns: 4,
+        thumbnailsColumns: this.thumbnailsColumns,
         imageAnimation: NgxGalleryAnimation.Fade,
         image: true,
-        preview: false
+        preview: true
       }
     ];
-    this.galleryImages = this.getImages();
+
+    let thumbnailRows = 1;
+    let reviewPhotoNum = this.attraction.reviewPhotos.length;
+    if(reviewPhotoNum > this.thumbnailsColumns * 2)
+      thumbnailRows = 3;
+    else if( reviewPhotoNum > this.thumbnailsColumns)
+      thumbnailRows = 2;
+
+    this.reviewerGalleryOptions = [
+      {
+        //breakpoint: 800,
+        width: '100%',
+        height: 120 * thumbnailRows + 'px',
+        imageSize:"contain",
+       // imagePercent: 100,
+        thumbnailsColumns: this.thumbnailsColumns,
+        thumbnailsRows: thumbnailRows,
+        thumbnailsOrder: 2,
+        imageAnimation: NgxGalleryAnimation.Fade,
+        image: false,
+        preview: true
+      }
+    ];
+    this.galleryImages = this.getImages(this.attraction.photos);
+    this.reviewerGalleryImages = this.getImages(this.attraction.reviewPhotos);
   }
-  getImages() {
-    if(this.attraction.photos == null)  return [];
+
+  getImages(photos: Photo[]){
+    if(photos == null)  return [];
     const imageUrls = [];
-    for (let i = 0; i < this.attraction.photos.length; i++){
+    for (let i = 0; i < photos.length; i++){
       imageUrls.push({
-        small: this.attraction.photos[i].url,
-        medium: this.attraction.photos[i].url,
-        big: this.attraction.photos[i].url,
-        description: this.attraction.photos[i].description
+        small: photos[i].url,
+        medium: photos[i].url,
+        big: photos[i].url,
+        description: photos[i].description
       });
     }
     return imageUrls;
+  }
+
+  onLike(){
+    this.likeClicked.emit();
   }
 
 }

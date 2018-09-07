@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wacomi.API.Data;
+using Wacomi.API.Models;
 
 namespace Wacomi.API.Controllers
 {
@@ -23,6 +24,13 @@ namespace Wacomi.API.Controllers
                 return true;
             }
             return false;
+        }
+
+        protected async Task<AppUser> GetLoggedInUserAsync(){
+            var loginUserAccountId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if(loginUserAccountId == null)
+                return null;
+            return await _appUserRepo.GetAppUserByAccountId(loginUserAccountId);
         }
 
          protected async Task<bool> MatchMemberWithToken(int memberProfileId){

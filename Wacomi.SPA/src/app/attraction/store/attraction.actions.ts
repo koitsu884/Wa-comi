@@ -6,6 +6,7 @@ import { AttractionReview } from "../../_models/AttractionReview";
 
 export const GET_ATTRACTION = 'GET_ATTRACTION';
 export const SET_ATTRACTION = 'SET_ATTRACTION';
+export const LIKE_ATTRACTION = 'LIKE_ATTRACTION';
 //============= Attraction home & details (search) ======================
 export const SET_ATTRACTION_CITY = 'SET_ATTRACTION_CITY';
 export const SET_ATTRACTION_SEARCH_CATEGORIES = 'SET_SEARCH_CATEGORIES';
@@ -21,6 +22,7 @@ export const TRY_DELETE_ATTRACTION = 'TRY_DELETE_ATTRACTION';
 //============= Attraction review edit =====================
 export const GET_ATTRACTION_REVIEW = 'GET_ATTRACTION_REVIEW';
 export const SET_ATTRACTION_REVIEW = 'SET_ATTRACTION_REVIEW';
+export const LIKE_ATTRACTION_REVIEW = 'LIKE_ATTRACTION_REVIEW';
 export const TRY_ADD_ATTRACTION_REVIEW = 'TRY_ADD_ATTRACTION_REVIEW';
 export const UPDATE_ATTRACTION_REVIEW = 'UPDATE_ATTRACTION_REVIEW';
 export const TRY_DELETE_ATTRACTION_REVIEW = 'TRY_DELETE_ATTRACTION_REVIEW';
@@ -35,6 +37,11 @@ export class GetAttraction implements Action {
 export class SetAttraction implements Action {
     readonly type = SET_ATTRACTION;
     constructor(public payload: Attraction) {}
+}
+
+export class LikeAttraction implements Action {
+    readonly type = LIKE_ATTRACTION;
+    constructor(public payload: {appUserId : number, attractionId: number}) {}
 }
 
 export class SetAttractionCity implements Action {
@@ -88,6 +95,11 @@ export class SetAttractionReview implements Action {
     constructor(public payload: AttractionReview) {}
 }
 
+export class LikeAttractionReview implements Action {
+    readonly type = LIKE_ATTRACTION_REVIEW;
+    constructor(public payload: {appUserId : number, attractionReviewId: number}) {}
+}
+
 export class TryAddAttractionReview implements Action {
     readonly type = TRY_ADD_ATTRACTION_REVIEW;
     constructor(public payload: { attractionReview: AttractionReview, formData:FormData}) {}
@@ -120,6 +132,7 @@ export type AttractionActions = TryAddAttraction
                               | UpdateAttraction
                               | GetAttraction
                               | SetAttraction
+                              | LikeAttraction
                               | SetAttractionCity
                               | ClearAttractionFilter
                               | SetAttractionSearchCategories
@@ -128,6 +141,7 @@ export type AttractionActions = TryAddAttraction
                               | TryDeleteAttraction
                               | GetAttractionReview
                               | SetAttractionReview
+                              | LikeAttractionReview
                               | TryAddAttractionReview
                               | UpdateAttractionReview
                               | TryDeleteAttractionReview

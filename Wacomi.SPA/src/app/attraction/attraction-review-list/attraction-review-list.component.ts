@@ -39,4 +39,9 @@ export class AttractionReviewListComponent implements OnInit {
       this.store.dispatch(new AttractionActions.TryDeleteAttractionReview(id));
     })
   }
+
+  sendLike(id: number){
+    if(this.appUser)
+      this.store.dispatch(new AttractionActions.LikeAttractionReview({appUserId: this.appUser.id, attractionReviewId: id}));
+  }
 }

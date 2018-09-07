@@ -18,6 +18,7 @@ import { NgxGalleryModule } from 'ngx-gallery';
 import { AttractionCardComponent } from '../attraction/attraction-card/attraction-card.component';
 import { StarRateComponent } from './star-rate/star-rate.component';
 import { UserCommentComponent } from './user-comment/user-comment.component';
+import { RateAverageComponent } from './rate-average/rate-average.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { UserCommentComponent } from './user-comment/user-comment.component';
     ShortCommentFormComponent,
     PhotoSelectorComponent,
     StarRateComponent,
-    UserCommentComponent
+    UserCommentComponent,
+    RateAverageComponent
 ],
   imports:[
     CommonModule,
@@ -57,7 +59,8 @@ import { UserCommentComponent } from './user-comment/user-comment.component';
     ShortCommentFormComponent,
     PhotoSelectorComponent,
     StarRateComponent,
-    UserCommentComponent
+    UserCommentComponent,
+    RateAverageComponent
   ]
 })
 export class SharedModule {}

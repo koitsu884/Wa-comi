@@ -28,6 +28,12 @@ namespace Wacomi.API.Helper
                   return categories;
               }
               ))
+              .ForMember(a => a.ScoreAverage, opt => opt.ResolveUsing((src) => {
+                if(src.AttractionReviews.Count() > 0)
+                  return src.AttractionReviews.Where(ar => ar.Score > 0).Average(ar => ar.Score);
+                return 0;
+              }
+              ))
               .ForMember(m => m.LikedCount, opt => opt.MapFrom(src => src.AttractionLikes.Count()))
               .ForMember(m => m.ReviewedCount, opt => opt.MapFrom(src => src.AttractionReviews.Count()))
               .ForMember(m => m.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
@@ -38,6 +44,7 @@ namespace Wacomi.API.Helper
               .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.Attraction.City.Name))
               .ForMember(a => a.AppUserName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
               .ForMember(a => a.AppUserMainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url))
+              .ForMember(a => a.LikedCount, opt => opt.MapFrom(src => src.AttractionReviewLikes.Count()))
               .ForMember(a => a.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
 
             CreateMap<AttractionReviewUpdateDto, AttractionReview>();

@@ -5,6 +5,7 @@ import * as fromApp from './store/app.reducer';
 import * as AccountActions from './account/store/account.actions';
 import * as GlobalActions from './store/global.actions';
 import { Location } from '@angular/common';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,12 @@ import { Location } from '@angular/common';
 })
 export class AppComponent implements OnInit{
 
-  constructor(private store:Store<fromApp.AppState>, public location: Location) {}
+  constructor(private store:Store<fromApp.AppState>, private meta: Meta, private title: Title, public location: Location) {}
 
   ngOnInit() {
+    this.title.setTitle("Wa-コミ | NZ情報検索・コミュニティーサイト");
+    this.meta.addTag({name: 'description', content: 'ニュージーランド在住者、ワーホリメーカーの情報共有・検索・コミュニティーサイトです。'})
+
     const token = localStorage.getItem('token');
     if(token)
     {

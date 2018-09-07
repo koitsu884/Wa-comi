@@ -16,7 +16,8 @@ namespace Wacomi.API.Dto
         public virtual ICollection<PhotoForReturnDto> Photos { get; set; }
         public int? MainPhotoId{ get; set;}
         public string MainPhotoUrl{ get; set;}
-       // public virtual ICollection<AttractionReviewLike> AttractionReviewLikes { get; set;}
+        public int LikedCount { get; set;}
+        public bool IsLiked { get; set;}
         public int Score{get; set;}
         public string Review{ get; set;}
         public DateTime DateCreated{ get; set;} = DateTime.Now;

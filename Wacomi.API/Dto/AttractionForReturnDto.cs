@@ -40,8 +40,12 @@ namespace Wacomi.API.Dto
         public double Longitude{ get; set;}
         public ICollection<PhotoForReturnDto> Photos { get; set; }
         public int LikedCount{ get; set;}
+        public bool isLiked{ get; set;} = false;
         public ICollection<AttractionReviewForReturnDto> AttractionReviews { get; set; }
+        
+        public ICollection<PhotoForReturnDto> ReviewPhotos { get; set; }
         public int ReviewedCount { get; set;}
+        public double ScoreAverage{ get; set;}
         public ICollection<CategoryForReturnDto> Categories { get; set; }
         public string MainPhotoUrl { get; set;}
         public int MainPhotoId { get; set;}

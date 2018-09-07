@@ -43,6 +43,14 @@ export function attractionReducer(state = initialState, action: AttractionAction
                 ...state,
                 selectedAttraction: action.payload,
             }
+        case AttractionActions.LIKE_ATTRACTION:
+            var temp = state.selectedAttraction;
+            temp.isLiked = true;
+            temp.likedCount++;
+            return {
+                ...state,
+                selectedAttraction: temp,
+            }
         case AttractionActions.SET_ATTRACTION_CITY:
             return {
                 ...state,
@@ -103,6 +111,15 @@ export function attractionReducer(state = initialState, action: AttractionAction
                 pagination: action.payload.pagination,
                 loading: false,
                 attractionReviewList: action.payload.attractionReviewList
+            }
+        case AttractionActions.LIKE_ATTRACTION_REVIEW:
+            var tempReviews = [...state.attractionReviewList];
+            var index = tempReviews.findIndex(r => r.id == action.payload.attractionReviewId);
+            tempReviews[index].isLiked = true;
+            tempReviews[index].likedCount++;
+            return {
+                ...state,
+                attractionReviewList: tempReviews,
             }
         default:
             return state;

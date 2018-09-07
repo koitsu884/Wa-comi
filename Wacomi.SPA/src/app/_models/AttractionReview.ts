@@ -12,6 +12,8 @@ export interface AttractionReview {
     photos: Photo[];
     mainPhotoUrl: string;
     mainPhotoId: number;
+    likedCount: number;
+    isLiked: boolean;
     score: number;
     review: string;
 }

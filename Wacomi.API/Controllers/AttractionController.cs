@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,8 +34,14 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> Get(int id)
         {
             var attractionFromRepo = await _attractionRepo.GetAttraction(id);
-            var test = _mapper.Map<AttractionForReturnDto>(attractionFromRepo);
-            return Ok(test);
+            var attraction = _mapper.Map<AttractionForReturnDto>(attractionFromRepo);
+            attraction.ReviewPhotos = _mapper.Map<List<PhotoForReturnDto>>(await _attractionRepo.GetAllReviewPhotosForAttraction(id));
+            var loggedInUser = await GetLoggedInUserAsync();
+            if (loggedInUser != null)
+            {
+                attraction.isLiked = await _attractionRepo.AttractionLiked(loggedInUser.Id, attraction.Id);
+            }
+            return Ok(attraction);
         }
 
         [HttpGet()]
@@ -68,7 +75,16 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> GetAttractionReviews(int id)
         {
             var attractionReviews = await _attractionRepo.GetAttractionReviewsFor(id);
-            return Ok(_mapper.Map<IEnumerable<AttractionReviewForReturnDto>>(attractionReviews));
+            var attractionReviewsForReturn = _mapper.Map<IEnumerable<AttractionReviewForReturnDto>>(attractionReviews);
+            var loggedInUser = await GetLoggedInUserAsync();
+            if (loggedInUser != null)
+            {
+                foreach (var review in attractionReviewsForReturn)
+                {
+                    review.IsLiked = await _attractionRepo.AttractionReviewLiked(loggedInUser.Id, review.Id);
+                }
+            }
+            return Ok(attractionReviewsForReturn);
         }
 
         [HttpPost]
@@ -77,7 +93,7 @@ namespace Wacomi.API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-             if (!await this.MatchAppUserWithToken(model.AppUserId))
+            if (!await this.MatchAppUserWithToken(model.AppUserId))
                 return Unauthorized();
 
             var newAttraction = this._mapper.Map<Attraction>(model);
@@ -142,15 +158,26 @@ namespace Wacomi.API.Controllers
             {
                 return Unauthorized();
             }
+            //Delete reviews first (to delete image files)
+
+            var allReviewPhotos = await _attractionRepo.GetAllReviewPhotosForAttraction(attraction.Id);
             _attractionRepo.Delete(attraction);
             await _attractionRepo.SaveAll();
 
             foreach (var photo in attraction.Photos)
             {
                 _attractionRepo.Delete(photo);
-                var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
-                if (!string.IsNullOrEmpty(deletingResult.Error))
-                    this._logger.LogError(deletingResult.Error);
+                var task = this._imageFileStorageManager.DeleteImageFileAsync(photo);
+
+                // var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
+                // if (!string.IsNullOrEmpty(deletingResult.Error))
+                //     this._logger.LogError(deletingResult.Error);
+            }
+
+            foreach (var reviewPhoto in allReviewPhotos)
+            {
+                _attractionRepo.Delete(reviewPhoto);
+                var task = this._imageFileStorageManager.DeleteImageFileAsync(reviewPhoto);
             }
 
             await _attractionRepo.SaveAll();

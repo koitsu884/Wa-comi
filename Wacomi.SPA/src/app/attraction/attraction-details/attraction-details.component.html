@@ -3,7 +3,7 @@
   <div *ngIf="attraction">
     <div class="row">
       <div class="col-sm-8">
-        <app-attraction-details-info [attraction]="attraction"></app-attraction-details-info>
+        <app-attraction-details-info [attraction]="attraction" (likeClicked)="sendLike()"></app-attraction-details-info>
       </div>
       <div class="col-sm-4">
         <app-attraction-details-card [attraction]="attraction" [appUser]="appUser"></app-attraction-details-card>
@@ -25,8 +25,8 @@
     </div> -->
 
     <div *ngIf="attraction.appUser.id == appUser?.id">
-      <a class="btn btn-primary" [routerLink]="['/attraction/edit',  attraction.id]">編集</a>
-      <a class="btn btn-danger" (click)="onDelete(attraction.id)">削除</a>
+      <button class="btn btn-success" [disabled]="loading"  [routerLink]="['/attraction/edit',  attraction.id]">編集</button>
+      <button class="btn btn-danger" [disabled]="loading" (click)="onDelete(attraction.id)">削除</button>
     </div>
   </div>
 </div>
