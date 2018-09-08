@@ -15,7 +15,8 @@
         </div>
         <!-- <h5>平均点 {{average}}</h5> -->
  
-        <a *ngIf="appUser" class="btn btn-success btn-sm" [routerLink]="['/attraction/edit', attraction.id, 'review']">レビューを追加する</a>
+        <a *ngIf="appUser && !attraction.currentUsersReviewId" class="btn btn-success btn-sm" [routerLink]="['/attraction/edit', attraction.id, 'review']">レビューを追加する</a>
+        <a *ngIf="appUser && attraction.currentUsersReviewId" class="btn btn-success btn-sm" [routerLink]="['/attraction/edit', attraction.id, 'review', attraction.currentUsersReviewId]">自分のレビューを編集する</a>
       </div>
     </div>
     <!-- <div>多分この辺に広告</div> -->

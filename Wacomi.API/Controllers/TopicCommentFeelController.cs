@@ -52,7 +52,7 @@ namespace Wacomi.API.Controllers
                 return BadRequest("既にリアクションされています");
 
             _topicRepo.Add(model);
-            appUser.TotalLike++;
+            await _appUserRepo.AddLikeCountToUser(model.AppUserId);
             if (await _topicRepo.SaveAll() > 0)
             {
                 return CreatedAtRoute("GetCommentFeel", new { userId = model.AppUserId, commentId = model.CommentId }, _mapper.Map<TopicCommentFeelForReturnDto>(model));

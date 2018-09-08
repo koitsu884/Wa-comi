@@ -1,6 +1,6 @@
 export interface TopicReply {
     id: number;
-    mainPhotoUrl: string;
+    iconUrl: string;
     displayName: string;
     topicCommentId: number;
     appUserId: number;

@@ -4,13 +4,13 @@ export interface AttractionReview {
     id: number;
     appUserId: number;
     appUserName: string;
-    appUserMainPhotoUrl: string;
+    appUserIconUrl: string;
     attractionId: number;
     attractionName:string;
-    attractionMainPhotoUrl:string;
+    attractionThumbnailUrl:string;
     cityName:string;
     photos: Photo[];
-    mainPhotoUrl: string;
+    mainPhoto: Photo;
     mainPhotoId: number;
     likedCount: number;
     isLiked: boolean;

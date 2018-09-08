@@ -45,9 +45,11 @@ namespace Wacomi.API.Dto
         
         public ICollection<PhotoForReturnDto> ReviewPhotos { get; set; }
         public int ReviewedCount { get; set;}
+        public int currentUsersReviewId { get; set;}
         public double ScoreAverage{ get; set;}
         public ICollection<CategoryForReturnDto> Categories { get; set; }
-        public string MainPhotoUrl { get; set;}
+        //public string MainPhotoUrl { get; set;}
+        public PhotoForReturnDto MainPhoto { get; set;}
         public int MainPhotoId { get; set;}
         public string WebsiteUrl{ get; set;}
         public DateTime DateCreated{ get; set;}

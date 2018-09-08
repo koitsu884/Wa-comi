@@ -6,12 +6,12 @@
     <span class="cityName">{{review.cityName}}</span>
     <div class="reviewContainer">
       <div class="info">
-        <img class="img-thumbnail" *ngIf="review.mainPhotoUrl || review.attractionMainPhotoUrl " src="{{review.mainPhotoUrl ? review.mainPhotoUrl : review.attractionMainPhotoUrl}}" alt="{{review.attractionName}}">
+        <img class="img-thumbnail" *ngIf="review.mainPhoto || review.attractionThumbnailUrl " src="{{review.mainPhoto ? review.mainPhoto.thumbnailUrl : review.attractionThumbnailUrl}}" alt="{{review.attractionName}}">
       </div>
       <div class="review">
         <label>{{review.appUserName}} さんのレビュー </label><br>
         <rating *ngIf="review.score>0" [(ngModel)]="review.score" [max]="5" [readonly]="true"></rating>
-        <app-user-comment [userName]="review.appUserName" [userPhotoUrl]="review.appUserMainPhotoUrl" [comment]="getShorternComment(review.review)"></app-user-comment>
+        <app-user-comment [userName]="review.appUserName" [userPhotoUrl]="review.appUserIconUrl" [comment]="getShorternComment(review.review)"></app-user-comment>
       </div>
 
     </div>

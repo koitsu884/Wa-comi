@@ -4,9 +4,7 @@
       title="{{userName}}">
   </div>
   <div class="comment">
-    <div class="commentBaloon">
-      <p>{{comment}}</p>
-    </div>
+    <div class="commentBaloon" [ngClass]="{'isMine': isMine}" [innerHTML]="comment | nl2br"></div>
   </div>
 </div>
 <span class="clearfix"></span>

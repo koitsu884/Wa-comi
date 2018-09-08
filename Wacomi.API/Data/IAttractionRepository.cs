@@ -13,6 +13,7 @@ namespace Wacomi.API.Data
         Task<double> GetAttractionRateAverage(int attractionId);
         Task<IEnumerable<AttractionCategory>> GetAttractionCategories();
         Task<AttractionReview> GetAttractionReview(int id);
+        Task<AttractionReview> GetAttractionReviewByUser(int userId, int attractionId);
         Task<IEnumerable<AttractionReview>> GetLatestAttractionReviews();
         Task<List<Photo>> GetAllReviewPhotosForAttraction(int attractionId);
         Task<IEnumerable<AttractionReview>> GetAttractionReviewsFor(int attractionId);
@@ -20,6 +21,7 @@ namespace Wacomi.API.Data
 
         //Attraction like
         Task<bool> AttractionLiked(int appUserId, int attractionId);
+        Task<bool> AttractionReviewed(int appUserId, int attractionId);
         Task<AttractionLike> GetAttractionLike(int appUserId, int attractionId);
         Task<bool> AttractionReviewLiked(int appUserId, int reviewId);
         Task<AttractionReviewLike> GetAttractionReviewLike(int appUserId, int reviewId);

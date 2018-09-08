@@ -17,7 +17,8 @@ namespace Wacomi.API.Dto
         public bool IsPremium{ get; set;}
         //Private Profiles
         public int MainPhotoId { get; set;}
-        public string MainPhotoUrl { get; set;}
+        //public string MainPhotoUrl { get; set;}
+        public PhotoForReturnDto MainPhoto { get; set;}
         public ICollection<PhotoForReturnDto> Photos { get; set; } 
         public int CityId { get; set;}
         public string City { get; set;}

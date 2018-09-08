@@ -69,20 +69,35 @@ namespace Wacomi.API.Helper
 
             return new ImageFileResult(null, "Failed to getting imge file manager");
         }
-        public ImageFileResult SaveImage(string recordType, int recordId, IFormFile file, string targetFolder = null)
+
+        public bool ValidateImage(IFormFile file)
         {
             try
             {
-                using (var image = System.Drawing.Image.FromStream(file.OpenReadStream())) //For validation
-                {
-                    string prefix = recordType + "_" + recordId + "_";
-                    var storageType = GetStorageType(recordType);
-                    IImageFileManager imageFileManager = GetImageFileManager(storageType);
-                    if (imageFileManager == null)
-                        return new ImageFileResult(null, "Failed to getting imge file manager");
+                var image = System.Drawing.Image.FromStream(file.OpenReadStream());
+            }
+            catch (System.Exception ex)
+            {
+                this._logger.LogError(ex.Message);
+                return false;
+            }
+            return true;
+        }
+        public ImageFileResult SaveImage(string recordType, int recordId, IFormFile file, string targetFolder = null, int maxWidth = 600, bool forceLocalSave = false)
+        {
+            try
+            {
+                StorageType storageType;
+                string prefix = recordType + "_" + recordId + "_";
+                if (forceLocalSave)
+                    storageType = StorageType.Local;
+                else
+                    storageType = GetStorageType(recordType);
+                IImageFileManager imageFileManager = GetImageFileManager(storageType);
+                if (imageFileManager == null)
+                    return new ImageFileResult(null, "Failed to getting imge file manager");
 
-                    return imageFileManager.SaveImage(file, prefix, targetFolder);
-                }
+                return imageFileManager.SaveImage(file, prefix, targetFolder, maxWidth);
             }
             catch (System.Exception ex)
             {
@@ -91,15 +106,14 @@ namespace Wacomi.API.Helper
         }
         public ImageFileResult DeleteImageFile(Photo photoFromRepo)
         {
+            DeleteThumbsAndIcons(photoFromRepo);
             IImageFileManager imageFileManager = GetImageFileManager(photoFromRepo.StorageType);
-            if (imageFileManager != null)
-                return imageFileManager.DeleteImage(photoFromRepo.PublicId);
-
-            return new ImageFileResult(null, "Failed to getting imge file manager");
+            return imageFileManager.DeleteImage(photoFromRepo.PublicId);
         }
 
         public async Task DeleteImageFileAsync(Photo photoFromRepo)
         {
+            DeleteThumbsAndIcons(photoFromRepo);
             IImageFileManager imageFileManager = GetImageFileManager(photoFromRepo.StorageType);
             if (imageFileManager != null)
             {
@@ -114,6 +128,15 @@ namespace Wacomi.API.Helper
                     this._logger.LogError(task.Error);
                 }
             }
+        }
+
+        private void DeleteThumbsAndIcons(Photo photoFromRepo)
+        {
+            IImageFileManager imageFileManager = GetImageFileManager(StorageType.Local);
+            if (!string.IsNullOrEmpty(photoFromRepo.ThumbnailUrl))
+                imageFileManager.DeleteImage(photoFromRepo.ThumbnailUrl);
+            if (!string.IsNullOrEmpty(photoFromRepo.IconUrl))
+                imageFileManager.DeleteImage(photoFromRepo.IconUrl);
         }
 
     }

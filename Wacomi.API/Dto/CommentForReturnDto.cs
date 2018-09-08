@@ -7,7 +7,7 @@ namespace Wacomi.API.Dto
         public int OwnerRecordId { get; set;}
         public int AppUserId { get; set;}
         public string DisplayName{ get; set;}
-        public string MainPhotoUrl{ get; set;}
+        public string IconUrl{ get; set;}
         public string Comment{ get; set;}
         public System.DateTime DateCreated { get; set;} = System.DateTime.Now;
     }

@@ -20,10 +20,11 @@ export interface Attraction {
     likedCount: number;
     isLiked : boolean;
     reviewedCount: boolean;
+    currentUsersReviewId: number;
     attractionReviews: AttractionReview[];
     categories: Category[];
     mainPhotoId?: number;
-    mainPhotoUrl?: string;
+    mainPhoto?: Photo;
     websiteUrl?: string;
     dateCreated: Date;
     dateUpdated: Date;

@@ -43,8 +43,8 @@ export class AttractionReviewComponent implements OnInit {
     const imageUrls = [];
     for (let i = 0; i < this.attractionReview.photos.length; i++){
       imageUrls.push({
-        small: this.attractionReview.photos[i].url,
-        medium: this.attractionReview.photos[i].url,
+        small: this.attractionReview.photos[i].iconUrl,
+        medium: this.attractionReview.photos[i].thumbnailUrl,
         big: this.attractionReview.photos[i].url,
         description: this.attractionReview.photos[i].description
       });

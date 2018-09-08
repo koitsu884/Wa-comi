@@ -26,7 +26,7 @@
 }
 
 .commentBaloon {
-    margin-left:30px;
+    margin-left:25px;
      position:relative;
     color: #555;
     padding:4px;
@@ -34,13 +34,19 @@
    background: #e0edff;
    border-radius: 10px;
 }
+.commentBaloon.isMine{
+    background-color: antiquewhite
+}
 
 .commentBaloon:before{
    content: "";
    position: absolute;
    top: 50%;
-   left: -25px;
+   left: -20px;
    margin-top: -12px;
    border: 10px solid transparent;
    border-right: 15px solid #e0edff;
+}
+.commentBaloon.isMine:before{
+    border-right: 15px solid antiquewhite;
 }

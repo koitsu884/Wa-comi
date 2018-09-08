@@ -134,6 +134,8 @@ namespace Wacomi.API.Scheduling.CronTasks
                 blogFeed.Photo = new Photo(){
                     StorageType = this._fileStorageManager.GetStorageType("blogfeed"),
                     Url = result.Url,
+                    ThumbnailUrl = result.Url,
+                    IconUrl = result.Url,
                     PublicId = result.PublicId,
                 };
                 _blogRepo.SaveAll();

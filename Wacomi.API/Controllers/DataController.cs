@@ -27,9 +27,14 @@ namespace Wacomi.API.Controllers
         }
 
         protected async Task<AppUser> GetLoggedInUserAsync(){
-            var loginUserAccountId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if(loginUserAccountId == null)
-                return null;
+            var loggedInUser =  User.FindFirst(ClaimTypes.NameIdentifier);
+            string loginUserAccountId = null;
+            if(loggedInUser != null)
+            {
+                loginUserAccountId = loggedInUser.Value;
+                if(loginUserAccountId == null)
+                    return null;
+            }
             return await _appUserRepo.GetAppUserByAccountId(loginUserAccountId);
         }
 

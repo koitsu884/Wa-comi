@@ -40,6 +40,9 @@ namespace Wacomi.API.Controllers
             if (loggedInUser != null)
             {
                 attraction.isLiked = await _attractionRepo.AttractionLiked(loggedInUser.Id, attraction.Id);
+                var currentUserReview = await _attractionRepo.GetAttractionReviewByUser(loggedInUser.Id, attraction.Id);
+                if(currentUserReview != null)
+                    attraction.currentUsersReviewId = currentUserReview.Id;
             }
             return Ok(attraction);
         }
@@ -62,7 +65,8 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> GetLatestAttractions()
         {
             var attractions = await _attractionRepo.GetLatestAttractions();
-            return Ok(_mapper.Map<IEnumerable<AttractionForReturnDto>>(attractions));
+            var attractionsForReturn = _mapper.Map<IEnumerable<AttractionForReturnDto>>(attractions);
+            return Ok(attractionsForReturn);
         }
 
         [HttpGet("categories")]

@@ -8,14 +8,15 @@ namespace Wacomi.API.Dto
         public int Id { get; set;}
         public int AppUserId{ get; set;}
         public string AppUserName{ get; set;}
-        public string AppUserMainPhotoUrl{ get; set;}
+        public string AppUserIconUrl{ get; set;}
         public int AttractionId { get; set;}
         public string AttractionName { get; set;}
-        public string AttractionMainPhotoUrl { get; set;}
+        public string AttractionThumbnailUrl { get; set;}
         public string CityName { get; set;}
         public virtual ICollection<PhotoForReturnDto> Photos { get; set; }
         public int? MainPhotoId{ get; set;}
-        public string MainPhotoUrl{ get; set;}
+        public PhotoForReturnDto MainPhoto { get; set;}
+    //    public string MainPhotoUrl{ get; set;}
         public int LikedCount { get; set;}
         public bool IsLiked { get; set;}
         public int Score{get; set;}

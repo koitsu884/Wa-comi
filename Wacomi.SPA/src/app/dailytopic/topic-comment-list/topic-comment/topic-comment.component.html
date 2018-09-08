@@ -2,7 +2,7 @@
   <div class="commentImage">
     <img class="img-circle"
      [routerLink]="['/users/detail/', topicComment.appUserId]" 
-     src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage_Person.png'}}" 
+     src="{{topicComment.iconUrl ? topicComment.iconUrl : 'assets/NoImage_Person.png'}}" 
      alt="{{topicComment.displayName}}" 
      title="{{topicComment.displayName}}" 
      style="cursor: pointer">

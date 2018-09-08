@@ -8,7 +8,7 @@ export interface AppUser {
     isActive: boolean;
     isPremium : boolean;
     mainPhotoId : number;
-    mainPhotoUrl: string;
+    mainPhoto: Photo;
     photos: Photo[];
     cityId: number;
     city: string;

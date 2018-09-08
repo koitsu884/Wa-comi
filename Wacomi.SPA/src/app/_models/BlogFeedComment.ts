@@ -3,7 +3,7 @@ export interface BlogFeedComment {
     blogFeedId: number;
     appUserId: number;
     displayName: string;
-    mainPhotoUrl: string;
+    iconUrl: string;
     comment:string;
     dateCreated: Date;
 }

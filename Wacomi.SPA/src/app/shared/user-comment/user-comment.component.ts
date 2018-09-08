@@ -25,6 +25,8 @@ export class UserCommentComponent implements OnInit {
   @Input() userPhotoUrl : string;
   @Input() userName : string;
   @Input() comment: string;
+  @Input() isMine: boolean;
+  
   constructor() { }
 
   ngOnInit() {

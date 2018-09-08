@@ -29,30 +29,30 @@ namespace Wacomi.API.Helper
               }
               ))
               .ForMember(a => a.ScoreAverage, opt => opt.ResolveUsing((src) => {
-                if(src.AttractionReviews.Count() > 0)
+                if(src.AttractionReviews != null && src.AttractionReviews.Count() > 0)
                   return src.AttractionReviews.Where(ar => ar.Score > 0).Average(ar => ar.Score);
                 return 0;
               }
               ))
               .ForMember(m => m.LikedCount, opt => opt.MapFrom(src => src.AttractionLikes.Count()))
               .ForMember(m => m.ReviewedCount, opt => opt.MapFrom(src => src.AttractionReviews.Count()))
-              .ForMember(m => m.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
+              .ForMember(m => m.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto));
 
             CreateMap<AttractionReview, AttractionReviewForReturnDto>()
               .ForMember(a => a.AttractionName, opt => opt.MapFrom(src => src.Attraction.Name))
-              .ForMember(a => a.AttractionMainPhotoUrl, opt => opt.MapFrom(src => src.Attraction.MainPhoto.Url))
+              .ForMember(a => a.AttractionThumbnailUrl, opt => opt.MapFrom(src => src.Attraction.MainPhoto.GetThumbnailUrl()))
               .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.Attraction.City.Name))
               .ForMember(a => a.AppUserName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
-              .ForMember(a => a.AppUserMainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url))
+              .ForMember(a => a.AppUserIconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()))
               .ForMember(a => a.LikedCount, opt => opt.MapFrom(src => src.AttractionReviewLikes.Count()))
-              .ForMember(a => a.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url));
+              .ForMember(a => a.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto));
 
             CreateMap<AttractionReviewUpdateDto, AttractionReview>();
 
             CreateMap<UserRegistrationDto, Account>();
 
             CreateMap<AppUser, AppUserForReturnDto>()
-              .ForMember(m => m.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url))
+              .ForMember(m => m.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto))
               .ForMember(m => m.City, opt => opt.MapFrom(src => src.City.Name));
             CreateMap<AppUserUpdateDto, AppUser>();
 
@@ -89,17 +89,19 @@ namespace Wacomi.API.Helper
             CreateMap<BlogFeedComment, CommentForReturnDto>()
               .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("BlogFeed"))
               .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId))
-              .ForMember(cr => cr.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url));
+              .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<PhotoForCreationDto, Photo>();
-            CreateMap<Photo, PhotoForReturnDto>();
+            CreateMap<Photo, PhotoForReturnDto>()
+              .ForMember(cr => cr.ThumbnailUrl, opt => opt.MapFrom(src => src.GetThumbnailUrl()))
+              .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.GetIconUrl()));
 
             CreateMap<ClanSeekForCreationDto, ClanSeek>();
             CreateMap<ClanSeekUpdateDto, ClanSeek>();
             CreateMap<ClanSeek, ClanSeekForReturnDto>()
               .ForMember(cs => cs.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
               .ForMember(cs => cs.LocationName, opt => opt.MapFrom(src => src.Location.Name))
-              .ForMember(cs => cs.MainPhotoUrl, opt => opt.MapFrom(src => src.MainPhoto.Url))
+              .ForMember(cs => cs.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto))
               .ForMember(cs => cs.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName));
 
             CreateMap<PropertySeekForCreationDto, PropertySeek>();
@@ -110,11 +112,11 @@ namespace Wacomi.API.Helper
               .ForMember(dtr => dtr.LikedCount, opt => opt.MapFrom(src => src.TopicLikes.Count));
 
             CreateMap<TopicComment, TopicCommentForReturnDto>()
-               .ForMember(tc => tc.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url));
+               .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
               // .ForMember(tcl => tcl.DisplayName, opt => opt.MapFrom(src => src.Member.Identity.DisplayName));
 
             CreateMap<TopicComment, TopicCommentListForReturnDto>()
-              .ForMember(tc => tc.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url))
+              .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()))
               .ForMember(tcl => tcl.ReplyCount,
                          opt => opt.MapFrom(src => src.TopicReplies.Count()))
               .ForMember(tcl => tcl.LikedCount,
@@ -122,12 +124,12 @@ namespace Wacomi.API.Helper
 
             CreateMap<TopicLike, TopicLikeForReturnDto>();
             CreateMap<TopicReply, TopicReplyForReturnDto>()
-            .ForMember(tc => tc.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url));
+            .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<TopicReply, CommentForReturnDto>()
               .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("TopicCommentId"))
               .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.TopicCommentId))
-              .ForMember(tc => tc.MainPhotoUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.Url))
+              .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()))
               .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply));
 
             CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();

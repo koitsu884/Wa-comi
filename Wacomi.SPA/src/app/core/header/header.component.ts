@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AlertifyService } from '../../_services/alertify.service';
-import { Observable } from 'rxjs/Observable';
 
 import * as fromApp from '../../store/app.reducer';
+import * as NotificationActions from '../../notification/store/notification.action';
 // import * as fromAccount from '../../account/store/account.reducers';
 import * as AccountActions from '../../account/store/account.actions';
 import { AppUser } from '../../_models/AppUser';
@@ -15,7 +13,7 @@ import { UserAccount } from '../../_models/UserAccount';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   // authState: Observable<fromAccount.State>;
   public isCollapsed = false;
   appUser: AppUser;
@@ -24,10 +22,10 @@ export class HeaderComponent implements OnInit {
   authenticated: boolean;
   newMessagesCount: number;
   notificationCount: number;
+  notificationTimer: any;
 
 
-  constructor(private store: Store<fromApp.AppState>,
-              private alertify: AlertifyService) { }
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
     this.store.select('account')
@@ -43,6 +41,21 @@ export class HeaderComponent implements OnInit {
       .subscribe((notificationState) => {
         this.notificationCount = notificationState.notifications.length;
       })
+
+      this.notificationTimer = setInterval(() => {
+        if(this.appUser)
+          this.store.dispatch(new NotificationActions.GetNotifications(this.appUser.id))
+      },
+       1000 * 60 * 3
+     // 10000
+      );
+
+  }
+
+  ngOnDestroy(){
+    if (this.notificationTimer) {
+      clearInterval(this.notificationTimer);
+    }
   }
 
   logout() {

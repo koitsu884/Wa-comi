@@ -8,7 +8,7 @@ import { Photo } from '../../_models/Photo';
 })
 export class PhotoViewerComponent implements OnInit {
   @Input() photos: Photo[] = null;
-  @Input() mainPhotoUrl: string = null;
+  @Input() mainPhoto: Photo = null;
 
   // constructor(private store: Store<>) { }
 

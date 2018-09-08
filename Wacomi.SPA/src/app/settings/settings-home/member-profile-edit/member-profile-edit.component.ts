@@ -1,20 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BsDatepickerConfig, BsLocaleService, defineLocale} from 'ngx-bootstrap';
-import { City } from '../../../_models/City';
 import { Hometown } from '../../../_models/Hometown';
-import { AlertifyService } from '../../../_services/alertify.service';
 
 import * as fromApp from "../../../store/app.reducer";
-import * as fromAccount from "../../../account/store/account.reducers";
 import * as AccountActions from '../../../account/store/account.actions';
 import { Store } from '@ngrx/store';
-import { Photo } from '../../../_models/Photo';
-import { Observer } from 'rxjs/Observer';
-import { Observable } from 'rxjs/Observable';
 import { NgForm } from '@angular/forms';
-import { Blog } from '../../../_models/Blog';
 import { MemberProfile } from '../../../_models/MemberProfile';
-
+import {jaLocale} from 'ngx-bootstrap/locale';
+defineLocale("ja", jaLocale);
 
 @Component({
   selector: 'app-member-profile-edit',
@@ -24,15 +18,12 @@ import { MemberProfile } from '../../../_models/MemberProfile';
 export class MemberProfileEditComponent implements OnInit {
   @Input() member: MemberProfile; 
   @Input() hometowns: Hometown[];
-  // @Input() photos: Photo[];
-  // @Input() blogs: Blog[];
   
   blogAdding: boolean = false;
 
   bsConfig: Partial<BsDatepickerConfig>;
   
   constructor(private localeService: BsLocaleService,
-             private alertify: AlertifyService,
              private store: Store<fromApp.AppState>) { }
 
   ngOnInit() {
@@ -56,10 +47,5 @@ export class MemberProfileEditComponent implements OnInit {
   onClickDeleteBlog(id:number){
 
   }
-
-  // mainPhotoSelected(event, ngForm: NgForm){
-  //   this.member.mainPhotoUrl = event;
-  //   ngForm.form.markAsDirty();
-  // }
 
 }

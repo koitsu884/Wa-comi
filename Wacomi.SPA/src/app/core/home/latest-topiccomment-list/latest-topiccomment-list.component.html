@@ -1,7 +1,7 @@
 <div [@topicComment] *ngFor="let topicComment of latestTopicComments">
     <div class="commentContainer">
       <div class="userComment">
-    <app-user-comment [userPhotoUrl]="topicComment.mainPhotoUrl" [userName]="topicComment.displayName" [comment]="topicComment.comment" ></app-user-comment>
+    <app-user-comment [userPhotoUrl]="topicComment.iconUrl" [userName]="topicComment.displayName" [comment]="topicComment.comment" ></app-user-comment>
   </div>
   <div class="commentTools">
       <i class="fa fa-thumbs-up" title="良いね"></i>

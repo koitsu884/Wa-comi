@@ -3,7 +3,7 @@
     <ul class="list">
       <li [@attractionCard] *ngFor="let attraction of latestAttractionList index as i">
         <div class="latestAttractionCard" [routerLink]="['/attraction/detail', attraction.id]">
-          <img class="latestAttractionImage_mb" src="{{attraction.mainPhotoUrl ? attraction.mainPhotoUrl : 'assets/NoImage.png'}}">
+          <img class="latestAttractionImage_mb" src="{{attraction.mainPhoto ? attraction.mainPhoto.thumbnailUrl : 'assets/NoImage.png'}}">
           <div class="latestAttractionInfo">
             <h5 class="latestClanTitle">{{attraction.name}}</h5>
             <span class="latestClanLocation">{{attraction.cityName}}</span>
@@ -17,7 +17,7 @@
 <div *ngIf="!mobile" class="row">
   <div class="col-lg-3 col-sm-4 col-xs-6" [@attractionCard] *ngFor="let attraction of latestAttractionList index as i">
     <div class="latestAttractionCard" [routerLink]="['/attraction/detail', attraction.id]">
-      <img class="latestAttractionImage" src="{{attraction.mainPhotoUrl ? attraction.mainPhotoUrl : 'assets/NoImage.png'}}">
+      <img class="latestAttractionImage" src="{{attraction.mainPhoto ? attraction.mainPhoto.thumbnailUrl : 'assets/NoImage.png'}}">
       <div class="latestAttractionInfo">
         <h5 class="latestClanTitle">{{attraction.name}}</h5>
         <span class="latestClanLocation">{{attraction.cityName}}</span>

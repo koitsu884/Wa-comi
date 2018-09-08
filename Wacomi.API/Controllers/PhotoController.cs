@@ -31,14 +31,14 @@ namespace Wacomi.API.Controllers
         private readonly IPhotoRepository _photoRepo;
         private readonly ILogger<PhotoController> _logger;
         public PhotoController(
-            IAppUserRepository appUserRepo, 
+            IAppUserRepository appUserRepo,
             IAttractionRepository attractionRepo,
             IBlogRepository blogRepo,
             IClanSeekRepository clanSeekRepo,
             IPhotoRepository photoRepo,
-            IMapper mapper, 
-            ILogger<PhotoController> logger, 
-            ImageFileStorageManager imageFileStorageManager ) : base(appUserRepo, mapper)
+            IMapper mapper,
+            ILogger<PhotoController> logger,
+            ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper)
         {
             this._imageFileStorageManager = imageFileStorageManager;
             this._attractionRepo = attractionRepo;
@@ -111,7 +111,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             List<string> errors = new List<string>();
-            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files, true);
 
             if (addingPhotos.Count == 0)
             {
@@ -141,7 +141,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             List<string> errors = new List<string>();
-            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files, true);
 
             if (addingPhotos.Count == 0)
             {
@@ -162,7 +162,8 @@ namespace Wacomi.API.Controllers
             return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
         }
 
-        private List<Photo> savePhotosToStorage(string recordType, int recordId, List<IFormFile> files){
+        private List<Photo> savePhotosToStorage(string recordType, int recordId, List<IFormFile> files, bool addThumbnail = false, bool addIcon = false)
+        {
             List<Photo> addingPhotos = new List<Photo>();
             foreach (var file in files)
             {
@@ -173,10 +174,29 @@ namespace Wacomi.API.Controllers
                 }
                 else
                 {
+                    string ThumbnailUrl = null;
+                    string IconUrl = null;
+                    if(addThumbnail)
+                    {
+                        var thumbnailResult = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower(), "thumbs"), 300, true);
+                        if(string.IsNullOrEmpty(thumbnailResult.Error))
+                        {
+                            ThumbnailUrl = thumbnailResult.Url;
+                        }
+                    }
+                    if(addIcon)
+                    {
+                        var iconResult = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower(), "icons"), 100, true);
+                        if(string.IsNullOrEmpty(iconResult.Error))
+                            IconUrl = iconResult.Url;
+                    }
+
                     addingPhotos.Add(new Photo()
                     {
                         StorageType = this._imageFileStorageManager.GetStorageType(recordType),
                         Url = result.Url,
+                        ThumbnailUrl = ThumbnailUrl,
+                        IconUrl = IconUrl,
                         PublicId = result.PublicId,
                     });
                 }
@@ -196,6 +216,11 @@ namespace Wacomi.API.Controllers
             List<Photo> addingPhotos = new List<Photo>();
             foreach (var file in files)
             {
+                if(!this._imageFileStorageManager.ValidateImage(file))
+                {
+                    errors.Add("不正な画像ファイルです " + file.FileName);
+                    continue;
+                }
                 var result = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower()));
                 if (!string.IsNullOrEmpty(result.Error))
                 {
@@ -203,11 +228,15 @@ namespace Wacomi.API.Controllers
                 }
                 else
                 {
+                    var thumbnailResult = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower(), "thumbs"), 300, true);
+                    var iconResult = this._imageFileStorageManager.SaveImage(recordType, recordId, file, System.IO.Path.Combine("images", recordType.ToLower(), "icons"), 100, true);
                     addingPhotos.Add(new Photo()
                     {
                         StorageType = this._imageFileStorageManager.GetStorageType(recordType),
                         Url = result.Url,
                         PublicId = result.PublicId,
+                        ThumbnailUrl = string.IsNullOrEmpty(thumbnailResult.Error) ? thumbnailResult.Url : null,
+                        IconUrl = string.IsNullOrEmpty(iconResult.Error) ? iconResult.Url : null,
                     });
                 }
             }
@@ -240,7 +269,7 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
 
             List<string> errors = new List<string>();
-            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files);
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files, true);
 
             if (addingPhotos.Count == 0)
             {
@@ -288,11 +317,13 @@ namespace Wacomi.API.Controllers
             }
             else
             {
+                var iconResult = this._imageFileStorageManager.SaveImage(recordType, recordId, files[0], System.IO.Path.Combine("images", recordType.ToLower(), "icons"), 100, true);
                 addingPhoto = new Photo()
                 {
                     StorageType = this._imageFileStorageManager.GetStorageType(recordType),
                     Url = result.Url,
                     PublicId = result.PublicId,
+                    IconUrl = string.IsNullOrEmpty(iconResult.Error) ? iconResult.Url : null
                 };
             }
 

@@ -12,7 +12,8 @@ namespace Wacomi.API.Dto
         public int AppUserId{ get; set;}
         public string DisplayName{ get; set;}
         public int MainPhotoId{ get; set;}
-        public string MainPhotoUrl{ get; set;}
+        public PhotoForReturnDto MainPhoto{ get; set;}
+        // public string MainPhotoUrl{ get; set;}
         public ICollection<PhotoForReturnDto> Photos { get; set; } 
         public string WebsiteUrl{ get; set;}
         public string Email { get; set;}

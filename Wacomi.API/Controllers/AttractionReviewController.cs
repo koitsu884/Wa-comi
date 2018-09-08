@@ -48,6 +48,8 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
             if (!await _attractionRepo.AttractionExists(model.AttractionId))
                 return NotFound("Attraction " + model.AttractionId + " is not exist");
+            if(await _attractionRepo.AttractionReviewed(model.AppUserId, model.AttractionId))
+                return BadRequest("既にレビューされています");
 
             var newAttractionReview = this._mapper.Map<AttractionReview>(model);
             _attractionRepo.Add(newAttractionReview);

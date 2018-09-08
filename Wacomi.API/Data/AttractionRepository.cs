@@ -91,6 +91,11 @@ namespace Wacomi.API.Data
                                              .FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public async Task<AttractionReview> GetAttractionReviewByUser(int userId, int attractionId)
+        {
+            return await _context.AttractionReviews.FirstOrDefaultAsync(a => a.AppUserId == userId && a.AttractionId == attractionId);
+        }
+
         public async Task<IEnumerable<AttractionReview>> GetLatestAttractionReviews()
         {
             return await _context.AttractionReviews.Include(a => a.AppUser).ThenInclude(au => au.MainPhoto)
@@ -146,6 +151,11 @@ namespace Wacomi.API.Data
         public async Task<AttractionReviewLike> GetAttractionReviewLike(int appUserId, int reviewId)
         {
             return await _context.AttractionReviewLikes.FirstOrDefaultAsync(al => al.AppUserId == appUserId && al.AttractionReviewId == reviewId);
+        }
+
+        public async Task<bool> AttractionReviewed(int appUserId, int attractionId)
+        {
+            return await _context.AttractionReviews.AnyAsync(ar => ar.AppUserId == appUserId && ar.AttractionId == attractionId);
         }
     }
 }

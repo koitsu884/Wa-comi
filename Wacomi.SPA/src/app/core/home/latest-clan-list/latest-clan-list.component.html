@@ -2,7 +2,7 @@
   <div class="latestClanCard" 
     [ngClass]="{'isMine' : memberId == clanSeek.memberId, 'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}"
     [routerLink]="['/clan/detail', clanSeek.id]">
-    <img class="latestClanImage" src="{{clanSeek.mainPhotoUrl ? clanSeek.mainPhotoUrl : 'assets/NoImage.png'}}">
+    <img class="latestClanImage" src="{{clanSeek.mainPhoto ? clanSeek.mainPhoto.thumbnailUrl : 'assets/NoImage.png'}}">
     <div class="latestClanInfo">
     <h5 class="latestClanTitle">{{clanSeek.title}}</h5>
     <span class="latestClanLocation">{{clanSeek.locationName}}</span>

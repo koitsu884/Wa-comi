@@ -1,7 +1,7 @@
 <div class="attractionCard" [ngClass]="{'isMine':isMine}">
   <h2>{{attraction.name}}</h2>
   <div *ngIf="attraction.scoreAverage > 0">おススメ度: <app-rate-average [scoreAverage]="scoreAverage"></app-rate-average> ({{scoreAverage}})</div>
-  <img src="{{attraction.mainPhotoUrl != null ? attraction.mainPhotoUrl : 'assets/NoImage.png'}}" alt="{{attraction.name}}">
+  <img src="{{attraction.mainPhoto != null ? attraction.mainPhoto.url : 'assets/NoImage.png'}}" alt="{{attraction.name}}">
   <span class="category" *ngFor="let category of attraction.categories">{{category.name}}</span>
   <!-- <span class="clearfix"></span> -->
 </div>

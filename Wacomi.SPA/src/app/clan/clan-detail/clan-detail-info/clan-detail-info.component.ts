@@ -35,8 +35,8 @@ export class ClanDetailInfoComponent implements OnInit {
     const imageUrls = [];
     for (let i = 0; i < this.clanSeek.photos.length; i++){
       imageUrls.push({
-        small: this.clanSeek.photos[i].url,
-        medium: this.clanSeek.photos[i].url,
+        small: this.clanSeek.photos[i].iconUrl,
+        medium: this.clanSeek.photos[i].thumbnailUrl,
         big: this.clanSeek.photos[i].url,
         description: this.clanSeek.photos[i].description
       });

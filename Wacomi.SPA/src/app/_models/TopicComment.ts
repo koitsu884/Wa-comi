@@ -3,7 +3,7 @@ import { ShortComment } from "./ShortComment";
 
 export interface TopicComment {
     id: number;
-    mainPhotoUrl: string;
+    iconUrl: string;
     memberId: number;
     appUserId: number;
     displayName: string;

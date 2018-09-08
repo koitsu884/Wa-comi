@@ -39,13 +39,13 @@ import { MemberGuard } from './_guards/member.guard';
 import { MessageEffects } from './message/store/message.effects';
 import { MessageService } from './_services/message.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoadingComponent } from './shared/loading/loading.component';
 import { ModalService } from './_services/modal.service';
 import { ContactComponent } from './contact/contact.component';
 import { registerLocaleData } from '@angular/common';
 import { NotificationEffect } from './notification/store/notification.effects';
 
 registerLocaleData(localeJa, 'ja');
+
 //defineLocale('ja', jaLocale);
 
 @NgModule({

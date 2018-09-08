@@ -128,7 +128,8 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
 
             action.payload.forEach((feel) => {
                 var index = tempTopicComments.findIndex(x => x.id == feel.commentId);
-                tempTopicComments[index].reactionByUser = feel.feeling;
+                if(index)
+                    tempTopicComments[index].reactionByUser = feel.feeling;
                 // console.log(feel);
                 // console.log("index" + index);
             })

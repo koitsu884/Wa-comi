@@ -8,16 +8,13 @@ import { Observable } from 'rxjs/Observable';
 
 import * as fromApp from '../../store/app.reducer';
 // import * as fromPhoto from '../../photo/store/photos.reducers';
-import * as fromBlog from '../../blog/store/blogs.reducers';
 import * as AccountAction from '../../account/store/account.actions';
 // import * as PhotoActions from '../../photo/store/photos.action';
-import * as BlogActions from '../../blog/store/blogs.actions';
 import { Store } from '@ngrx/store';
 import { KeyValue } from '../../_models/KeyValue';
 import { UserAccount } from '../../_models/UserAccount';
 import { MemberProfile } from '../../_models/MemberProfile';
 import { BusinessProfile } from '../../_models/BusinessProfile';
-import { Blog } from '../../_models/Blog';
 
 @Component({
   selector: 'app-settings-home',

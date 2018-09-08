@@ -70,8 +70,8 @@ export class AttractionDetailsInfoComponent implements OnInit {
     const imageUrls = [];
     for (let i = 0; i < photos.length; i++){
       imageUrls.push({
-        small: photos[i].url,
-        medium: photos[i].url,
+        small: photos[i].iconUrl,
+        medium: photos[i].thumbnailUrl,
         big: photos[i].url,
         description: photos[i].description
       });
@@ -80,7 +80,8 @@ export class AttractionDetailsInfoComponent implements OnInit {
   }
 
   onLike(){
-    this.likeClicked.emit();
+    if(!this.attraction.isLiked)
+      this.likeClicked.emit();
   }
 
 }

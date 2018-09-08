@@ -1,6 +1,6 @@
 <div>
     <h4 [ngClass]="{'isMine':isMine}">
-      <img class="userPhoto img-circle" src="{{attractionReview.appUserMainPhotoUrl ? attractionReview.appUserMainPhotoUrl : '/assets/NoImage_Person.png'}}">
+      <img class="userPhoto img-circle" src="{{attractionReview.appUserIconUrl ? attractionReview.appUserIconUrl : '/assets/NoImage_Person.png'}}">
       {{attractionReview.appUserName}} さんのレビュー
     </h4>
     <div class="gallery" *ngIf="attractionReview.photos && attractionReview.photos.length > 0">

@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180907072041_addIconPhotoOnUser")]
+    partial class addIconPhotoOnUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,6 +193,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("DisplayName");
 
+                    b.Property<int?>("IconPhotoId");
+
                     b.Property<bool>("IsActive");
 
                     b.Property<bool>("IsPremium");
@@ -215,6 +218,8 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("IconPhotoId");
 
                     b.HasIndex("MainPhotoId");
 
@@ -800,15 +805,11 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("IconUrl");
-
                     b.Property<int?>("PropertySeekId");
 
                     b.Property<string>("PublicId");
 
                     b.Property<int>("StorageType");
-
-                    b.Property<string>("ThumbnailUrl");
 
                     b.Property<string>("Url");
 
@@ -1021,6 +1022,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "IconPhoto")
+                        .WithMany()
+                        .HasForeignKey("IconPhotoId");
 
                     b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
                         .WithMany()

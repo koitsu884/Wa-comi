@@ -11,7 +11,7 @@
     </div>
     <div class="panel-body">
       <p *ngIf="!clanSeek.isActive" class="text-danger"><b>募集停止中</b></p>
-      <img *ngIf="clanSeek.mainPhotoUrl" class="clanImage pull-left" src="{{clanSeek.mainPhotoUrl}}">
+      <img *ngIf="clanSeek.mainPhoto" class="clanImage pull-left" src="{{clanSeek.mainPhoto.thumbnailUrl}}">
       <p>{{clanSeek.displayName}}</p>
       <p>{{clanSeek.locationName}}</p>
       <span class="clearfix"></span>
