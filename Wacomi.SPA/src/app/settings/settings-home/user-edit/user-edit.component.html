@@ -16,7 +16,7 @@
   <input class="form-control form-group " type="text" name="displayName" [(ngModel)]="appUser.displayName" />
   <div class="form-group">
     <label for="city" class="control-label">滞在先</label>
-    <select [(ngModel)]="appUser.cityId" name="city">
+    <select [(ngModel)]="appUser.cityId" class="form-control" name="city">
       <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
     </select>
   </div>

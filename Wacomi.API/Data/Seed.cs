@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Wacomi.API.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Wacomi.API.Data
 {
@@ -189,30 +190,31 @@ namespace Wacomi.API.Data
             "徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県",
             "熊本県","大分県","宮崎県","鹿児島県","沖縄県"
             };
+            //-36.844642, 174.766620
             string[] northCities = {
-                "オークランド",
-                "ハミルトン",
-                "ウェリントン",
-                "タウランガ",
-                "ロトルア",
-                "パーマストンノース",
-                "タウポ",
-                "ネイピア",
-                "ファンガレイ",
-                "ワンガヌイ",
-                "ギズボーン",
-                "その他"};
+                "オークランド,-36.844642,174.766620",
+                "ハミルトン,-37.787674,175.283395",
+                "ウェリントン,-41.285848,174.777361",
+                "タウランガ,-37.686854,176.165348",
+                "ロトルア,-38.140,176.240",
+                "パーマストンノース,-40.350,175.610",
+                "タウポ,-38.690,176.080",
+                "ネイピア,-39.490,176.900",
+                "ファンガレイ,-35.720,174.310",
+                "ワンガヌイ,-39.930,175.030",
+                "ギズボーン,-38.660,178.020",
+                "その他,-36.844642,174.766620"};
             string[] southCities = {
-                "クライストチャーチ",
-                "クイーンズタウン",
-                "ダニーデン",
-                "ネルソン",
-                "カイコウラ",
-                "インバーカーギル",
-                "ティマル",
-                "オアマル",
-                "テカポ",
-                "その他"};
+                "クライストチャーチ,-43.530,172.640",
+                "クイーンズタウン,-45.040,168.640",
+                "ダニーデン,-45.880,170.480",
+                "ネルソン,-41.290,173.240",
+                "カイコウラ,-42.401555,173.681829",
+                "インバーカーギル,-46.410,168.370",
+                "ティマル,-44.380,171.220",
+                "オアマル,-45.070,170.980",
+                "テカポ,-44.004915,170.477285",
+                "その他,-43.530,172.640"};
 
             foreach (var prefecture in prefectures)
             {
@@ -228,25 +230,54 @@ namespace Wacomi.API.Data
 
             foreach (var northCity in northCities)
             {
-                if (!context.Cities.Any(c => c.Name == northCity))
+                var data = northCity.Split(',');
+                var city = context.Cities.FirstOrDefault(c => c.Name == data[0]);
+                if (city == null)
                 {
-                    var result = context.Cities.AddAsync(new City() { Region = "北島", Name = northCity }).Result;
+                    var result = context.Cities.AddAsync(new City()
+                    {
+                        Region = "北島",
+                        Name = data[0],
+                        Latitude = Convert.ToDouble(data[1]),
+                        Longitude = Convert.ToDouble(data[2])
+                    }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create city " + northCity);
                     }
                 }
+                else
+                {
+                    city.Name = data[0];
+                    city.Latitude = Convert.ToDouble(data[1]);
+                    city.Longitude = Convert.ToDouble(data[2]);
+                }
             }
 
             foreach (var southCity in southCities)
             {
-                if (!context.Cities.Any(c => c.Name == southCity))
+                var data = southCity.Split(',');
+                var city = context.Cities.FirstOrDefault(c => c.Name == data[0]);
+                if (city == null)
                 {
-                    var result = context.Cities.AddAsync(new City() { Region = "南島", Name = southCity }).Result;
+                    var result = context.Cities.AddAsync(new City()
+                    {
+                        Region = "南島",
+                        Name = data[0],
+                        Latitude = Convert.ToDouble(data[1]),
+                        Longitude = Convert.ToDouble(data[2])
+                    }).Result;
+
                     if (result == null)
                     {
                         throw new Exception("Failed to create city " + southCity);
                     }
+                }
+                else
+                {
+                    city.Name = data[0];
+                    city.Latitude = Convert.ToDouble(data[1]);
+                    city.Longitude = Convert.ToDouble(data[2]);
                 }
             }
             context.SaveChanges();

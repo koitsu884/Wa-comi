@@ -43,6 +43,7 @@ import { ModalService } from './_services/modal.service';
 import { ContactComponent } from './contact/contact.component';
 import { registerLocaleData } from '@angular/common';
 import { NotificationEffect } from './notification/store/notification.effects';
+import { AgmCoreModule } from '@agm/core';
 
 registerLocaleData(localeJa, 'ja');
 
@@ -63,6 +64,9 @@ registerLocaleData(localeJa, 'ja');
       SharedModule,
       BlogModule,
       PhotoModule,
+      AgmCoreModule.forRoot({
+        apiKey: environment.googleMapApiKey
+      }),
       StoreModule.forRoot(reducers),
     EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects, NotificationEffect]),
     StoreRouterConnectingModule,

@@ -19,15 +19,15 @@
         </div>
         <div class="form-group">
             <label for="description" class="control-label">カテゴリー1</label>
-            <select [(ngModel)]="blog.category" name="category1">
+            <select [(ngModel)]="blog.category" name="category1" class="form-control">
                 <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
             </select>
             <label for="description" class="control-label">カテゴリー2</label>
-            <select [(ngModel)]="blog.category2" name="category2">
+            <select [(ngModel)]="blog.category2" name="category2" class="form-control"> 
                 <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
             </select>
             <label for="description" class="control-label">カテゴリー3</label>
-            <select [(ngModel)]="blog.category3" name="category3">
+            <select [(ngModel)]="blog.category3" name="category3" class="form-control">
                 <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
             </select>
         </div>

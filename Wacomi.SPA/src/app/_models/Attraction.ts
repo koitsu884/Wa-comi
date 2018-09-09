@@ -14,6 +14,7 @@ export interface Attraction {
     accessInfo: string;
     latitude: number;
     longitude: number;
+    radius: number;
     photos: Photo[];
     reviewPhotos: Photo[];
     scoreAverage: number;

@@ -3,6 +3,7 @@ import { Attraction } from '../../../_models/Attraction';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { Photo } from '../../../_models/Photo';
 
+
 @Component({
   selector: 'app-attraction-details-info',
   templateUrl: './attraction-details-info.component.html',

@@ -17,6 +17,7 @@ import { AttractionReviewCardComponent } from "./attraction-details/attraction-r
 import { AttractionReviewEditComponent } from "./attraction-review-edit/attraction-review-edit.component";
 import { AttractionReviewListComponent } from "./attraction-review-list/attraction-review-list.component";
 import { AttractionReviewComponent } from "./attraction-review-list/attraction-review/attraction-review.component";
+import { AgmCoreModule } from "@agm/core";
 
 @NgModule({
     declarations: [
@@ -35,6 +36,7 @@ import { AttractionReviewComponent } from "./attraction-review-list/attraction-r
         AttractionRoutingModule,
         SharedModule,
         PaginationModule,
+        AgmCoreModule,
         StoreModule.forFeature('attraction', attractionReducer),
         EffectsModule.forFeature([AttractionEffects])
     ],

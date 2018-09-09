@@ -1,31 +1,30 @@
 <div class="filter">
   <div class="row">
     <div class="col-sm-6">
-      <div class="row">
-        <label class="col-sm-3">エリア: </label>
-        <div class="col-sm-9">
-          <select [(ngModel)]="selectedCityId" name="city" (change)="filterChanged()">
+      <div>
+        <label>エリア</label><br>
+        <div>
+          <select [(ngModel)]="selectedCityId" class="form-control" name="city" (change)="filterChanged()">
             <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
           </select>
         </div>
       </div>
     </div>
     <div class="col-sm-6">
-      <div class="row category">
-        <label class="col-sm-3">カテゴリ</label>
-        <div class="col-sm-9">
-          <select [(ngModel)]="selectedCategoryId" name="category" (change)="filterChanged()">
+      <div class="category">
+        <label>カテゴリ</label><br>
+        <div>
+          <select [(ngModel)]="selectedCategoryId" class="form-control" name="category" (change)="filterChanged()">
             <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
           </select>
         </div>
       </div>
     </div>
   </div>
-
-
   <div *ngIf="appUser">
-    <label>自分の投稿のみ表示</label>
-    <input type="checkbox" name="onlyMine" id="onlyMine" [(ngModel)]="onlyMine" [value]="onlyMine" (change)="toggleOnlyMine()">
+    <br>
+    <input type="checkbox" name="onlyMine" id="onlyMine" [disabled]="loading" [(ngModel)]="onlyMine" [value]="onlyMine" (change)="toggleOnlyMine()">
+    <label for="onlyMine" class="checkbox">自分の投稿のみ表示</label>
   </div>
   <!-- <p>オーダー設定的な事をこの辺に</p> -->
   <hr>

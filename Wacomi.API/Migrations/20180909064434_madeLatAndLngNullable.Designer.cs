@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180909064434_madeLatAndLngNullable")]
+    partial class madeLatAndLngNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -503,10 +504,6 @@ namespace Wacomi.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<double?>("Latitude");
-
-                    b.Property<double?>("Longitude");
 
                     b.Property<string>("Name");
 

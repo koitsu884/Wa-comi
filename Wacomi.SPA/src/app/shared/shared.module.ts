@@ -19,6 +19,8 @@ import { AttractionCardComponent } from '../attraction/attraction-card/attractio
 import { StarRateComponent } from './star-rate/star-rate.component';
 import { UserCommentComponent } from './user-comment/user-comment.component';
 import { RateAverageComponent } from './rate-average/rate-average.component';
+import { GmapSelectorComponent } from './gmap-selector/gmap-selector.component';
+import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { RateAverageComponent } from './rate-average/rate-average.component';
     PhotoSelectorComponent,
     StarRateComponent,
     UserCommentComponent,
-    RateAverageComponent
+    RateAverageComponent,
+    GmapSelectorComponent,
 ],
   imports:[
     CommonModule,
@@ -41,6 +44,7 @@ import { RateAverageComponent } from './rate-average/rate-average.component';
     Nl2BrPipeModule,
     NgxGalleryModule,
     RouterModule,
+    AgmCoreModule
     // AppRoutingModule,
    // AppRoutingModule,
   ],
@@ -60,7 +64,8 @@ import { RateAverageComponent } from './rate-average/rate-average.component';
     PhotoSelectorComponent,
     StarRateComponent,
     UserCommentComponent,
-    RateAverageComponent
+    RateAverageComponent,
+    GmapSelectorComponent
   ]
 })
 export class SharedModule {}

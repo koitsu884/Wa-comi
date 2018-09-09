@@ -10,3 +10,7 @@
     background-color: rgb(19, 135, 243);
     border: solid 2px blue;
 }
+
+.gmapSelector{
+    height:300px;
+}

@@ -19,8 +19,10 @@ namespace Wacomi.API.Models
         [MaxLength(1500)]
         public string Introduction {get; set;}
         public string AccessInfo{ get; set;}
-        public double Latitude{ get; set;}
-        public double Longitude{ get; set;}
+        public double? Latitude{ get; set;}
+        public double? Longitude{ get; set;}
+        [MaxLength(5000)]
+        public int? Radius{ get; set;}
         public virtual ICollection<AttractionLike> AttractionLikes { get; set;}
         public virtual ICollection<AttractionReview> AttractionReviews { get; set;}
         public virtual ICollection<AttractionCategorization> Categorizations  { get; set; }

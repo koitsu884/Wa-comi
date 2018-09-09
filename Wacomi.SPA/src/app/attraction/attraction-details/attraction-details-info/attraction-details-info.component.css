@@ -10,3 +10,7 @@
 .likeButton.isLiked {
     color:rgb(32, 71, 248)
 }
+
+agm-map{
+    height: 300px;
+}

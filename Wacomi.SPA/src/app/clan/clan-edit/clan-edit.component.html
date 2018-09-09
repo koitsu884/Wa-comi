@@ -37,13 +37,13 @@
     </div>
     <label for="category" class="control-label">カテゴリー</label>
     <br>
-    <select [(ngModel)]="editingClan.categoryId" name="category">
+    <select [(ngModel)]="editingClan.categoryId" class="form-control" name="category">
       <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
     </select>
     <div class="form-group" [ngClass]="{'has-error':city.errors && city.touched}">
       <label for="city" class="control-label required">エリア</label>
       <br>
-      <select [(ngModel)]="editingClan.locationId" name="city" #city="ngModel" required>
+      <select [(ngModel)]="editingClan.locationId" class="form-control" name="city" #city="ngModel" required>
         <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
       </select>
       <span class="help-block" *ngIf="city?.errors?.required && city.touched">

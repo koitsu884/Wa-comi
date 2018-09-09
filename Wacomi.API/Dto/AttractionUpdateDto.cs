@@ -18,8 +18,9 @@ namespace Wacomi.API.Dto
         [MaxLength(1500)]
         public string Introduction {get; set;}
         public string AccessInfo{ get; set;}
-        public double Latitude{ get; set;}
-        public double Longitude{ get; set;}
+        public double? Latitude{ get; set;}
+        public double? Longitude{ get; set;}
+        public int? Radius{ get; set;}
         //public ICollection<int> AttractionCategoryId { get; set; }
         public virtual ICollection<AttractionCategorization> Categorizations  { get; set; }
         public int? MainPhotoId{ get; set;}

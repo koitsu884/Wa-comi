@@ -29,6 +29,8 @@ export class AttractionEditComponent implements OnInit {
   // selectedCategoryIds: number[] = [];
   selectedFiles: Array<File> = [];
   previewUrls: Array<string> = [];
+  useGmap: boolean = false;
+  useGmapCircle: boolean = false;
 
   constructor(private route: ActivatedRoute, 
     private router:Router, 
@@ -65,10 +67,11 @@ export class AttractionEditComponent implements OnInit {
           photos: tempAttraction.photos,
           introduction : tempAttraction.introduction,
           accessInfo: tempAttraction.accessInfo,
-          mainPhotoId : tempAttraction.mainPhotoId,
+          mainPhotoId : tempAttraction.mainPhotoId ? tempAttraction.mainPhotoId : null,
           websiteUrl : tempAttraction.websiteUrl,
           latitude : tempAttraction.latitude,
           longitude : tempAttraction.longitude,
+          radius: tempAttraction.radius,
           categorizations: []
         };
         if(tempAttraction.categories)
@@ -77,6 +80,10 @@ export class AttractionEditComponent implements OnInit {
             this.attraction.categorizations.push({attractionCategoryId:category.id});
           }
         }
+        if(tempAttraction.latitude)
+          this.useGmap = true;
+        if(tempAttraction.radius)
+          this.useGmapCircle = true;
         //this.attraction = Object.assign({}, attractionState.selectedAttraction);
       })
     }
@@ -92,12 +99,35 @@ export class AttractionEditComponent implements OnInit {
     ngForm.form.markAsDirty();
   }
 
+  mapSelected(ngForm: NgForm, event:{lat:number, lng:number, radius:number}){
+    this.attraction.radius = event.radius;
+    this.attraction.latitude = event.lat;
+    this.attraction.longitude = event.lng;
+    ngForm.form.markAsDirty();
+  }
+
+  areaChanged(){
+    let selectedCityIndex = this.cities.findIndex(c => c.id == this.attraction.cityId);
+    if(selectedCityIndex)
+    {
+      let selectedCity = this.cities[selectedCityIndex];
+      this.attraction.latitude = selectedCity.latitude;
+      this.attraction.longitude = selectedCity.longitude;
+    }
+  }
+
   setSelectedFiles(event: {selectedFiles:Array<File>, previewUrls:Array<string>}){
     this.selectedFiles = event.selectedFiles;
     this.previewUrls = event.previewUrls;
   }
 
   submit(ngForm: NgForm) {
+    if(!this.useGmap){
+      this.attraction.latitude = null;
+      this.attraction.longitude = null;
+      this.attraction.radius = null;
+    }
+
     this.waitingResponse = true;
     if (this.id) {
       ngForm.form.markAsDirty();
@@ -134,6 +164,17 @@ export class AttractionEditComponent implements OnInit {
 
   onCancel(){
     this.location.back();
+  }
+
+  toggleUseGmap(ngForm: NgForm){
+    this.useGmap != this.useGmap;
+    ngForm.form.markAsDirty();
+  }
+
+  toggleUseCircle(ngForm: NgForm) {
+    this.useGmapCircle != this.useGmapCircle;
+    this.attraction.radius = this.useGmapCircle ? 1000 : null;
+    ngForm.form.markAsDirty();
   }
 
 }

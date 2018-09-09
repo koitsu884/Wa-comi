@@ -10,6 +10,7 @@ export interface AttractionEdit {
     accessInfo: string;
     latitude: number;
     longitude: number;
+    radius: number;
     //attractionCategoryId: number[];
     categorizations: {attractionCategoryId: number}[];
 

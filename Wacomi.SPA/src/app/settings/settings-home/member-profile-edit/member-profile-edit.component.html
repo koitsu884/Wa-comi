@@ -24,7 +24,7 @@
 
   <div class="form-group">
     <label for="hometown" class="control-label">出身地</label>
-    <select [(ngModel)]="member.homeTownId" name="hometown">
+    <select [(ngModel)]="member.homeTownId" class="form-control" name="hometown">
       <option *ngFor="let hometown of hometowns" value="{{hometown.id}}">{{hometown.prefecture}}</option>
     </select>
   </div>

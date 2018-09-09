@@ -100,6 +100,7 @@ export class AttractionEffects {
             return action.payload;
         })
         .switchMap((payload) => {
+            console.log(payload.attraction);
             return this.httpClient.post<Attraction>(this.baseUrl + 'attraction',
                 payload.attraction,
                 {

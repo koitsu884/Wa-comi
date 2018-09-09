@@ -12,9 +12,10 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180909061416_addRadiusOnAttraction")]
+    partial class addRadiusOnAttraction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,9 +241,9 @@ namespace Wacomi.API.Migrations
                         .IsRequired()
                         .HasMaxLength(1500);
 
-                    b.Property<double?>("Latitude");
+                    b.Property<double>("Latitude");
 
-                    b.Property<double?>("Longitude");
+                    b.Property<double>("Longitude");
 
                     b.Property<int?>("MainPhotoId");
 
@@ -250,7 +251,7 @@ namespace Wacomi.API.Migrations
                         .IsRequired()
                         .HasMaxLength(100);
 
-                    b.Property<int?>("Radius")
+                    b.Property<int>("Radius")
                         .HasMaxLength(5000);
 
                     b.Property<string>("WebsiteUrl");
@@ -503,10 +504,6 @@ namespace Wacomi.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<double?>("Latitude");
-
-                    b.Property<double?>("Longitude");
 
                     b.Property<string>("Name");
 
