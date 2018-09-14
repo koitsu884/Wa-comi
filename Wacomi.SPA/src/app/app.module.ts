@@ -2,8 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import localeJa from '@angular/common/locales/ja';
 import { AppComponent } from './app.component';
-import { BsDropdownModule, defineLocale, BsLocaleService, jaLocale, TabsModule, PaginationModule } from 'ngx-bootstrap';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BsDropdownModule, BsLocaleService, TabsModule, PaginationModule } from 'ngx-bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AlertifyService } from './_services/alertify.service';
@@ -44,6 +44,10 @@ import { ContactComponent } from './contact/contact.component';
 import { registerLocaleData } from '@angular/common';
 import { NotificationEffect } from './notification/store/notification.effects';
 import { AgmCoreModule } from '@agm/core';
+import { PropertyEffects } from './property/store/property.effects';
+import { ShortenPipe } from './_pipes/shorten.pipe';
+import { AppUserGuard } from './_guards/appuser.guard';
+import { UserService } from './_services/user.service';
 
 registerLocaleData(localeJa, 'ja');
 
@@ -68,7 +72,14 @@ registerLocaleData(localeJa, 'ja');
         apiKey: environment.googleMapApiKey
       }),
       StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([AccountEffects, PhotoEffect, GlobalEffect, MessageEffects, NotificationEffect]),
+      EffectsModule.forRoot([
+      AccountEffects, 
+      PhotoEffect, 
+      GlobalEffect,
+      MessageEffects, 
+      NotificationEffect,
+      PropertyEffects
+    ]),
     StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
@@ -82,6 +93,7 @@ registerLocaleData(localeJa, 'ja');
     AlertifyService,
     ModalService,
     CityListResolver,
+    UserService,
     HomeTownListResolver,
     UserPhotoResolver,
     AppUserResolver,
@@ -91,6 +103,7 @@ registerLocaleData(localeJa, 'ja');
     AuthGuard,
     MemberGuard,
     MemberIdGuard,
+    AppUserGuard,
     //Third Party
     BsLocaleService,
   ],

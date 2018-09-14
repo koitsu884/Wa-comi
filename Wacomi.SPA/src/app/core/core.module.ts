@@ -44,7 +44,6 @@ import { LatestAttractionReviewsComponent } from './home/latest-attraction-revie
     HomeComponent,
     FooterComponent,
     ModalComponent,
-    LatestClanListComponent,
     UploadingComponent
   ],
   entryComponents: [UploadingComponent]

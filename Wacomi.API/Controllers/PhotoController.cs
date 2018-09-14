@@ -29,10 +29,12 @@ namespace Wacomi.API.Controllers
         private readonly IBlogRepository _blogRepo;
         private readonly IClanSeekRepository _clanSeekRepo;
         private readonly IPhotoRepository _photoRepo;
+        private readonly IPropertySeekRepository _propertyRepo;
         private readonly ILogger<PhotoController> _logger;
         public PhotoController(
             IAppUserRepository appUserRepo,
             IAttractionRepository attractionRepo,
+            IPropertySeekRepository propertyRepo,
             IBlogRepository blogRepo,
             IClanSeekRepository clanSeekRepo,
             IPhotoRepository photoRepo,
@@ -45,6 +47,7 @@ namespace Wacomi.API.Controllers
             this._blogRepo = blogRepo;
             this._clanSeekRepo = clanSeekRepo;
             this._photoRepo = photoRepo;
+            this._propertyRepo = propertyRepo;
             this._logger = logger;
         }
 
@@ -98,10 +101,41 @@ namespace Wacomi.API.Controllers
                     return await addPhotoToBlog(recordType, recordId, files);
                 case "clanseek":
                     return await addPhotosToClanSeek(recordType, recordId, files);
+                case "property":
+                    return await addPhotosToProperty(recordType, recordId, files);
             }
             return BadRequest("Invalid Record Type: " + recordType);
         }
 
+        private async Task<ActionResult> addPhotosToProperty(string recordType, int recordId, List<IFormFile> files)
+        {
+            var property = await _propertyRepo.GetProperty(recordId);
+            if (property == null)
+                return NotFound();
+            if (!await MatchAppUserWithToken((int)property.AppUserId))
+                return Unauthorized();
+
+            List<string> errors = new List<string>();
+            var addingPhotos = this.savePhotosToStorage(recordType, recordId, files, true);
+
+            if (addingPhotos.Count == 0)
+            {
+                return BadRequest(errors);
+            }
+
+            foreach (var photo in addingPhotos)
+            {
+                property.Photos.Add(photo);
+            }
+            await _attractionRepo.SaveAll();
+            if (property.MainPhotoId == null)
+            {
+                property.MainPhotoId = addingPhotos[0].Id;
+                await _attractionRepo.SaveAll();
+            }
+
+            return CreatedAtRoute("GetPhotos", new { recordId = recordId, recordType = recordType }, null);
+        }
         private async Task<ActionResult> addPhotosToAttraction(string recordType, int recordId, List<IFormFile> files)
         {
             var attraction = await _attractionRepo.GetAttraction(recordId);
@@ -358,6 +392,8 @@ namespace Wacomi.API.Controllers
                     return await this.DeleteBlogPhoto(recordId, photoFromRepo);
                 case "clanseek":
                     return await this.DeleteClanSeekPhoto(recordId, photoFromRepo);
+                case "property":
+                    return await this.DeletePropertyPhoto(recordId, photoFromRepo);
             }
             return BadRequest("Unknown Record Type:" + recordType);
         }
@@ -384,6 +420,22 @@ namespace Wacomi.API.Controllers
             if (attraction == null)
                 return NotFound();
             if (!await MatchAppUserWithToken((int)attraction.AppUserId))
+                return Unauthorized();
+
+            var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);
+            if (!string.IsNullOrEmpty(result.Error))
+                return BadRequest(result.Error);
+            _photoRepo.Delete(photoFromRepo);
+            await _photoRepo.SaveAll();
+            return Ok();
+        }
+
+        private async Task<ActionResult> DeletePropertyPhoto(int recordId, Photo photoFromRepo)
+        {
+            var property = await _propertyRepo.GetProperty(recordId);
+            if (property == null)
+                return NotFound();
+            if (!await MatchAppUserWithToken((int)property.AppUserId))
                 return Unauthorized();
 
             var result = this._imageFileStorageManager.DeleteImageFile(photoFromRepo);

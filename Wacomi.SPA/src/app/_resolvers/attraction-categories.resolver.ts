@@ -1,12 +1,12 @@
 import * as fromApp from '../store/app.reducer';
 import { Injectable } from "@angular/core";
-import { Resolve, Router } from "@angular/router";
+import { Resolve} from "@angular/router";
 import { Store } from "@ngrx/store";
 import { Category } from '../_models/Category';
 
 @Injectable()
 export class AttractionCategoryResolver implements Resolve<Category[]> {
-    constructor(private store: Store<fromApp.AppState>, private router: Router ){}
+    constructor(private store: Store<fromApp.AppState>){}
 
     resolve() : Category[] {
         let categories: Category[];

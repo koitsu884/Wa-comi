@@ -32,8 +32,6 @@ export class MessageSendformComponent implements OnInit {
   }
 
   onSubmit() {
-    // console.log("Sending...");
-    // console.log(this.message);
     this.store.dispatch(new MessageActions.SendMessage(this.message));
   }
 

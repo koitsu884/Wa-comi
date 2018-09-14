@@ -1,6 +1,6 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
-<div  *ngIf="location.path() !== '/home' 
+<div  *ngIf="location.path() !== '' 
             && location.path() !== '/registered' 
             && location.path().indexOf('/account')
             && location.path().indexOf('/photo/edit') < 0

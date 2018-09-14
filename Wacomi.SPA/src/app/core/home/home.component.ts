@@ -10,6 +10,7 @@ import * as fromAccount from '../../account/store/account.reducers';
 import { Store } from '@ngrx/store';
 import { Attraction } from '../../_models/Attraction';
 import { AttractionReview } from '../../_models/AttractionReview';
+import { Property } from '../../_models/Property';
 
 @Component({
     selector: 'app-home',
@@ -22,27 +23,21 @@ export class HomeComponent implements OnInit {
     latestAttractionReviews: AttractionReview[];
     latestClanSeekList: ClanSeek[];
     latestTopicComments: TopicComment[];
+    latestPropertyList: Property[];
     authState: Observable<fromAccount.State>;
     todaysTopic: string;
     constructor(private store: Store<fromApp.AppState>, private globalService: GlobalService) { }
 
     ngOnInit() {
         this.authState = this.store.select('account');
-        this.globalService.getLatestBlogFeeds()
-            .subscribe((result) => {
-                this.blogFeedList = result;
-            }, (error) => {
-                console.log('Error occured when getting blog feeds');
-                this.blogFeedList = [];
-            });
-
         this.globalService.getLatestClanSeekList()
-            .subscribe((result) => {
-                this.latestClanSeekList = result;
-            }, (error) => {
-                this.latestClanSeekList = [];
-                console.log('Error occured when getting latest clan list');
-            });
+        .subscribe((result) => {
+            this.latestClanSeekList = result;
+        }, (error) => {
+            this.latestClanSeekList = [];
+            console.log('Error occured when getting latest clan list');
+        });
+
         this.globalService.getLatestAttractionList()
             .subscribe((result) => {
                 this.latestAttractionList = result;
@@ -57,6 +52,21 @@ export class HomeComponent implements OnInit {
             }, (error) => {
                 this.latestAttractionReviews = [];
                 console.log('Error occured when getting latest attraction list');
+            });
+
+        this.globalService.getLatestRecords('property')
+            .subscribe((result) => {
+                this.latestPropertyList = result;
+            }, (error) => {
+                console.log('Error occured when getting blog feeds');
+                this.latestPropertyList = [];
+            });
+        this.globalService.getLatestBlogFeeds()
+            .subscribe((result) => {
+                this.blogFeedList = result;
+            }, (error) => {
+                console.log('Error occured when getting blog feeds');
+                this.blogFeedList = [];
             });
 
         this.globalService.getTodaysTopic()

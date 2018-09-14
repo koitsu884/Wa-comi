@@ -277,7 +277,6 @@ export class DailyTopicEffects {
             return action.payload;
         })
         .switchMap((payload) => {
-            // console.log(payload);
             return this.httpClient.post<TopicReply>(this.baseUrl + 'dailytopicreply',
                 payload,
                 {

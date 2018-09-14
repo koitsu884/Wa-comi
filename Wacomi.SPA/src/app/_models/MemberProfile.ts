@@ -1,9 +1,12 @@
-import { Photo } from "./Photo";
-import { Blog } from "./Blog";
+export enum GenderEnum{
+    SECRET,
+    MALE,
+    FEMALE
+}
 
 export interface MemberProfile {
     id: number;
-    gender: string;
+    gender: GenderEnum;
     dateOfBirth: Date;
     introduction: string;
     interests: string;

@@ -4,7 +4,7 @@
   <div class="senderInfo" [routerLink]="['/users/detail/' + userId]">
     <img src="{{imageUrl ? imageUrl : 'assets/NoImage_Person.png'}}" class="thumbnail pull-left">
     <p>{{displayName}}</p>
-    <p>{{message.dateCreated | timeAgo}}</p>
+    <p>{{message.dateCreated | timeago_jp}}</p>
     <span class="clearfix"></span>
   </div>
   <div [innerHTML]="message.content | nl2br"></div>

@@ -1,9 +1,33 @@
 <div class="row fix">
-  <div class="col-sm-6 col-md-4" [@clanCard] *ngFor="let clanSeek of clanSeeks">
-    <app-clan-card [clanSeek]="clanSeek" [isMine]="appUserId == clanSeek.appUserId" [routerLink]="['detail', clanSeek.id]" ></app-clan-card>
-  </div>
-  <!-- <div class="col-sm-6 col-md-4">
+  <div class="col-sm-6 clanCardContainer" *ngFor="let clanSeek of clanSeeks index as i" >
+    <div class="clanCard" [routerLink]="['/clan/detail', clanSeek.id]" [@clanCard] [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+      <!-- <div class="clanCard"> -->
+      <h5 class="title">{{clanSeek.title}}</h5>
+      <img src="{{clanSeek.mainPhoto | photourl}}" class="clanImage pull-left img-thumbnail">
+      <div class="info">
+        <div [ngSwitch]="clanSeek.categoryName">
+          <span class="categoryName color-friend" *ngSwitchCase="'友達'">友達</span>
+          <span class="categoryName color-circle" *ngSwitchCase="'サークル'">サークル</span>
+          <span class="categoryName color-event" *ngSwitchCase="'イベント'">イベント</span>
+          <span class="categoryName color-travel" *ngSwitchCase="'旅行'">旅行</span>
+          <span class="categoryName color-study" *ngSwitchCase="'勉強・自己啓発'">勉強・自己啓発</span>
+          <span *ngSwitchDefault class="categoryName color-etc">その他</span>
+          <span class="simpleTag">{{clanSeek.locationName}}</span>
+        </div>
+        <div>
+          <p>更新：{{clanSeek.lastActive | timeago_jp}}</p>
+          <app-user-card-small *ngIf="clanSeek.displayName" [appUserDisplayName]="clanSeek.displayName" [appUserIconUrl]="clanSeek.appUserIconUrl" [appUserId]="clanSeek.appUserId"></app-user-card-small>
+        </div>
+      </div>
+      <span class="clearfix"></span>
+
+      <!-- </div> -->
+
+      <!-- <app-clan-card [clanSeek]="clanSeek" [isMine]="appUserId == clanSeek.appUserId" [routerLink]="['detail', clanSeek.id]" ></app-clan-card> -->
+    </div>
+    <!-- <div class="col-sm-6 col-md-4">
     <h4>広告</h4>
     <p>スペース</p>
   </div> -->
+  </div>
 </div>

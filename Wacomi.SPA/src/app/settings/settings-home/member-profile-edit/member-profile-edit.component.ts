@@ -6,7 +6,7 @@ import * as fromApp from "../../../store/app.reducer";
 import * as AccountActions from '../../../account/store/account.actions';
 import { Store } from '@ngrx/store';
 import { NgForm } from '@angular/forms';
-import { MemberProfile } from '../../../_models/MemberProfile';
+import { MemberProfile, GenderEnum } from '../../../_models/MemberProfile';
 import {jaLocale} from 'ngx-bootstrap/locale';
 defineLocale("ja", jaLocale);
 
@@ -18,6 +18,7 @@ defineLocale("ja", jaLocale);
 export class MemberProfileEditComponent implements OnInit {
   @Input() member: MemberProfile; 
   @Input() hometowns: Hometown[];
+  genderEnum = GenderEnum;
   
   blogAdding: boolean = false;
 

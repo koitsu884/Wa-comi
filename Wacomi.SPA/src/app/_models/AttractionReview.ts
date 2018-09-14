@@ -16,6 +16,8 @@ export interface AttractionReview {
     isLiked: boolean;
     score: number;
     review: string;
+    dateCreated: Date;
+    dateUpdated: Date;
 }
 
 // public int Id { get; set;}

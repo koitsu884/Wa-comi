@@ -27,7 +27,7 @@ namespace Wacomi.API.Data
         public DbSet<BusinessProfile> BusinessProfiles { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }
         public DbSet<ClanSeekCategory> ClanSeekCategories { get; set;}
-        public DbSet<PropertySeek> PropertySeeks{ get; set;}
+        public DbSet<Property> Properties{ get; set;}
         public DbSet<PropertySeekCategory> PropertySeekCategories { get; set;}
         public DbSet<DailyTopic> DailyTopics { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
@@ -164,6 +164,40 @@ namespace Wacomi.API.Data
                 .HasIndex(n => n.RecordType);
             builder.Entity<Notification>()
                 .HasIndex(n => n.RecordId);
+
+            builder.Entity<Property>()
+                .HasIndex(p => p.DateAvailable);
+            builder.Entity<Property>()
+                .HasIndex(p => p.HasChild);
+            builder.Entity<Property>()
+                .HasIndex(p => p.HasPet);
+            builder.Entity<Property>()
+                .HasIndex(p => p.Internet);
+            builder.Entity<Property>()
+                .HasIndex(p => p.Gender);
+            builder.Entity<Property>()
+                .HasIndex(p => p.IsActive);
+            builder.Entity<Property>()
+                .HasIndex(p => p.Latitude);
+            builder.Entity<Property>()
+                .HasIndex(p => p.Longitude);
+            builder.Entity<Property>()
+                .HasIndex(p => p.MaxTerm);
+            builder.Entity<Property>()
+                .HasIndex(p => p.MinTerm);
+            builder.Entity<Property>()
+                .HasIndex(p => p.Rent);
+            
+            builder.Entity<PropertyCategorization>()
+                .HasKey(ac => new { ac.PropertyId, ac.PropertySeekCategoryId} );
+            builder.Entity<PropertyCategorization>()
+                .HasOne(ac => ac.Property)
+                .WithMany(a => a.Categorizations)
+                .HasForeignKey(ac => ac.PropertyId);
+            builder.Entity<PropertyCategorization>()
+                .HasOne(ac => ac.PropertySeekCategory)
+                .WithMany(a => a.Categorizations)
+                .HasForeignKey(ac => ac.PropertySeekCategoryId);
             //---- Topic Like ----
             builder.Entity<TopicLike>()
                 .HasKey(tl => new { tl.SupportAppUserId, tl.DailyTopicId });

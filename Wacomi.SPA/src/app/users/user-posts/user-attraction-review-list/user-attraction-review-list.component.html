@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-sm-6 attractionReviewCardContainer" *ngFor="let attractionReview of attractionReviews index as i" >
+    <div class="attractionReviewCard" [@attractionReviewCard] [routerLink]="['/attraction/edit', attractionReview.attractionId, 'review', attractionReview.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+      <!-- <div class="attractionReview"> -->
+      <img src="{{attractionReview.mainPhoto | photourl}}" class="attractionReviewImage pull-left img-thumbnail">
+      <div class="info">
+        <h5>{{attractionReview.attractionName}} に対するレビュー</h5>
+        <span class="simpleTag">{{attractionReview.cityName}}</span>
+        <div>
+          <p>作成: {{attractionReview.dateCreated | date: 'mediumDate'}}</p>
+          <p>更新: {{attractionReview.dateUpdated | date: 'mediumDate'}}</p>
+        </div>
+      </div>
+      <span class="clearfix"></span>
+    </div>
+  </div>
+</div>

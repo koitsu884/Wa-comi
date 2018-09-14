@@ -60,12 +60,10 @@
     </div> -->
     <div class="form-group" *ngIf="editMode">
       <label for="isActive" class="control-label">アクティブ (No にすると検索結果に表示されなくなります)</label>
-      <label class="radio-inline">
-        <input type="radio" value="true" name="isActive" [(ngModel)]="editingClan.isActive">Yes
-      </label>
-      <label class="radio-inline">
-        <input type="radio" value="false" name="isActive" [(ngModel)]="editingClan.isActive">No
-      </label>
+      <input type="radio" id="active_yes" [value]="true" name="active" [(ngModel)]="editingClan.isActive">
+      <label for="active_yes" class="radio">Yes</label>
+      <input type="radio" id="active_no" [value]="false" name="active" [(ngModel)]="editingClan.isActive">
+      <label for="active_no" class="radio">No</label>
     </div>
 
     <button class="btn btn-success" [disabled]="!clanEditForm.valid || clanEditForm.pristine || waitingResponse" type="submit">{{ editMode ? "更新" : "作成" }}</button>

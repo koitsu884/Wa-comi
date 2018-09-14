@@ -56,6 +56,18 @@ namespace Wacomi.API.Data
             return await query.ToListAsync();
         }
 
+        public async Task<IEnumerable<Attraction>> GetAttractionsByUser(int userId)
+        {
+            return await _context.Attractions.Include(a => a.Categorizations)
+                                             .ThenInclude(c => c.AttractionCategory)
+                                             .Include(a => a.MainPhoto)
+                                             .Include(a => a.City)
+                                             .Include(a => a.AttractionReviews).ThenInclude(ar => ar.AppUser).ThenInclude(au => au.MainPhoto)
+                                             .OrderByDescending(a => a.DateCreated)
+                                             .Where(a => a.AppUserId == userId)
+                                             .ToListAsync();
+        }
+
         public async Task<IEnumerable<Attraction>> GetLatestAttractions()
         {
             return await _context.Attractions.Include(a => a.Categorizations)
@@ -104,6 +116,16 @@ namespace Wacomi.API.Data
                                             .Include(a => a.Attraction).ThenInclude(a => a.MainPhoto)
                                             .OrderByDescending(r => r.DateCreated)
                                             .Take(12)
+                                            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<AttractionReview>> GetAttractionReviewsByUser(int userId)
+        {
+            return await _context.AttractionReviews.Include(a => a.MainPhoto)
+                                            .Include(a => a.Attraction).ThenInclude(a => a.City)
+                                            .Include(a => a.Attraction).ThenInclude(a => a.MainPhoto)
+                                            .OrderByDescending(r => r.DateCreated)
+                                            .Where(ar => ar.AppUserId == userId)
                                             .ToListAsync();
         }
 
@@ -157,5 +179,6 @@ namespace Wacomi.API.Data
         {
             return await _context.AttractionReviews.AnyAsync(ar => ar.AppUserId == appUserId && ar.AttractionId == attractionId);
         }
+
     }
 }

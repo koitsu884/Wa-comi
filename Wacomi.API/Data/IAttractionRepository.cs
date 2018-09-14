@@ -10,11 +10,13 @@ namespace Wacomi.API.Data
         Task<bool> AttractionExists(int id);
         Task<IEnumerable<Attraction>> GetAttractions(int[] categoryIds, int cityId = 0, int appUserId = 0);
         Task<IEnumerable<Attraction>> GetLatestAttractions();
+        Task<IEnumerable<Attraction>> GetAttractionsByUser(int userId);
         Task<double> GetAttractionRateAverage(int attractionId);
         Task<IEnumerable<AttractionCategory>> GetAttractionCategories();
         Task<AttractionReview> GetAttractionReview(int id);
         Task<AttractionReview> GetAttractionReviewByUser(int userId, int attractionId);
         Task<IEnumerable<AttractionReview>> GetLatestAttractionReviews();
+        Task<IEnumerable<AttractionReview>> GetAttractionReviewsByUser(int userId);
         Task<List<Photo>> GetAllReviewPhotosForAttraction(int attractionId);
         Task<IEnumerable<AttractionReview>> GetAttractionReviewsFor(int attractionId);
         void DeleteReviewsForAttraction(int attractionId);

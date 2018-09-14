@@ -1,0 +1,19 @@
+<div class="container">
+  <h1>マイ投稿管理</h1>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>仲間募集</h2>
+      <app-loading *ngIf="!clanList"></app-loading>
+      <app-clan-list [clanSeeks]="clanList"></app-clan-list>
+      <h2>おススメスポット</h2>
+      <app-loading *ngIf="!attractionList"></app-loading>
+      <app-user-attraction-list *ngIf="attractionList" [attractionList]="attractionList"></app-user-attraction-list>
+      <h2>スポットレビュー</h2>
+      <app-loading *ngIf="!attractionReviewList"></app-loading>
+      <app-user-attraction-review-list [attractionReviews]="attractionReviewList"></app-user-attraction-review-list>
+      <h2>住まい情報</h2>
+      <app-loading *ngIf="!propertyList"></app-loading>
+      <app-property-list [propertyList]="propertyList"></app-property-list>
+    </div>
+  </div>
+</div>

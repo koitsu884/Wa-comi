@@ -15,6 +15,7 @@ import { ClanDetailInfoComponent } from "./clan-detail/clan-detail-info/clan-det
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { PaginationModule } from "ngx-bootstrap";
+import { LatestClanListComponent } from "../core/home/latest-clan-list/latest-clan-list.component";
 
 @NgModule({
     declarations: [
@@ -22,8 +23,7 @@ import { PaginationModule } from "ngx-bootstrap";
         ClanDetailComponent,
         ClanEditComponent,
         ClanDetailCardComponent,
-        ClanDetailInfoComponent,
-        ClanListComponent
+        ClanDetailInfoComponent
     ],
     imports: [
         ClanRoutingModule,

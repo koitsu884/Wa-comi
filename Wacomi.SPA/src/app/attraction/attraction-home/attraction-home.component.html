@@ -6,11 +6,11 @@
                 <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
             </select>
         </div>
-        <div class="col-sm-6" *ngIf="appUser">
+        <!-- <div class="col-sm-6" *ngIf="appUser">
             <br>
             <input type="checkbox" name="onlyMine" id="onlyMine" [disabled]="loading" [(ngModel)]="onlyMine" [value]="onlyMine" (change)="toggleOnlyMine()">
             <label for="onlyMine" class="checkbox">自分の投稿のみ表示</label>
-        </div>
+        </div> -->
     </div>
 
     <div class="category">

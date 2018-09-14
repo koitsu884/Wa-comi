@@ -36,21 +36,15 @@ export class AppComponent implements OnInit{
         const memberProfile = localStorage.getItem('memberProfile');
         const businessProfile = localStorage.getItem('businessProfile');
         const isAdmin = JSON.parse(localStorage.getItem('isAdmin'));
-        // const photos = JSON.parse(localStorage.getItem('photos'));
-        // const blogs = JSON.parse(localStorage.getItem('blogs'));
+
         this.store.dispatch(new AccountActions.Login({
                 tokenString: token,
                 appUser: appUser,
                 account: account,
-                // photos: photos == null ? [] : photos,
-                // blogs: blogs == null ? [] : blogs,
                 memberProfile: memberProfile == null ? null : JSON.parse(memberProfile),
                 businessProfile: businessProfile == null ? null : JSON.parse(businessProfile),
                 isAdmin : isAdmin
               }));
-        // this.store.dispatch(new AccountActions.SetToken({token: token, appUser: appUser}));
-        // this.store.dispatch(new AccountActions.SetAppUser(appUser));
-//        this.store.dispatch(new PhotoActions.GetPhotos({type: appUser.userType, recordId:appUser.relatedUserClassId}));   
       }
     }
 
@@ -58,15 +52,7 @@ export class AppComponent implements OnInit{
     this.store.dispatch(new GlobalActions.GetHometownList());
     this.store.dispatch(new GlobalActions.GetClanCategoryList());
     this.store.dispatch(new GlobalActions.GetAttractionCategoryList());
-
-    // if (token) {
-    //   this.authService.userToken = token;
-    //   let appUser = JSON.parse(localStorage.getItem('appUser'));
-    //   this.authService.userType = appUser.userType;
-    //   this.authService.changeCurrentUserDisplayname(appUser.displayName);
-    //   // this.authService.decodedToken = this.jwtHelperService.decodeToken(token);
-    //   // this.authService.appUser = JSON.parse(appUser);
-    // }
+    this.store.dispatch(new GlobalActions.GetPropertyCategoryList());
   }
 
   backClicked() {

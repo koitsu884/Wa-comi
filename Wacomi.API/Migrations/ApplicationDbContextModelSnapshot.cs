@@ -684,7 +684,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime?>("DateOfBirth");
 
-                    b.Property<string>("Gender");
+                    b.Property<int>("Gender");
 
                     b.Property<int?>("HomeTownId");
 
@@ -809,7 +809,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("IconUrl");
 
-                    b.Property<int?>("PropertySeekId");
+                    b.Property<int?>("PropertyId");
 
                     b.Property<string>("PublicId");
 
@@ -829,50 +829,99 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("ClanSeekId");
 
-                    b.HasIndex("PropertySeekId");
+                    b.HasIndex("PropertyId");
 
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("Wacomi.API.Models.PropertySeek", b =>
+            modelBuilder.Entity("Wacomi.API.Models.Property", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CategoryId");
+                    b.Property<int>("AppUserId");
 
-                    b.Property<DateTime>("Created");
+                    b.Property<int>("CityId");
 
-                    b.Property<string>("Description");
+                    b.Property<DateTime?>("DateAvailable");
 
-                    b.Property<string>("Email");
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(5000);
+
+                    b.Property<int>("Gender");
+
+                    b.Property<bool>("HasChild");
+
+                    b.Property<bool>("HasPet");
+
+                    b.Property<int>("Internet");
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<DateTime>("LastActive");
+                    b.Property<double?>("Latitude");
 
-                    b.Property<int>("LocationId");
+                    b.Property<double?>("Longitude");
 
                     b.Property<int?>("MainPhotoId");
 
-                    b.Property<string>("OwnerAppUserId")
-                        .IsRequired();
+                    b.Property<int>("MaxTerm");
 
-                    b.Property<int?>("OwnerAppUserId1");
+                    b.Property<int>("MinTerm");
 
-                    b.Property<string>("WebsiteUrl");
+                    b.Property<int>("Rent");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("AppUserId");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("DateAvailable");
+
+                    b.HasIndex("Gender");
+
+                    b.HasIndex("HasChild");
+
+                    b.HasIndex("HasPet");
+
+                    b.HasIndex("Internet");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Latitude");
+
+                    b.HasIndex("Longitude");
 
                     b.HasIndex("MainPhotoId");
 
-                    b.HasIndex("OwnerAppUserId1");
+                    b.HasIndex("MaxTerm");
 
-                    b.ToTable("PropertySeeks");
+                    b.HasIndex("MinTerm");
+
+                    b.HasIndex("Rent");
+
+                    b.ToTable("Properties");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.PropertyCategorization", b =>
+                {
+                    b.Property<int>("PropertyId");
+
+                    b.Property<int>("PropertySeekCategoryId");
+
+                    b.HasKey("PropertyId", "PropertySeekCategoryId");
+
+                    b.HasIndex("PropertySeekCategoryId");
+
+                    b.ToTable("PropertyCategorization");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.PropertySeekCategory", b =>
@@ -1271,29 +1320,39 @@ namespace Wacomi.API.Migrations
                         .WithMany("Photos")
                         .HasForeignKey("ClanSeekId");
 
-                    b.HasOne("Wacomi.API.Models.PropertySeek")
+                    b.HasOne("Wacomi.API.Models.Property")
                         .WithMany("Photos")
-                        .HasForeignKey("PropertySeekId");
+                        .HasForeignKey("PropertyId");
                 });
 
-            modelBuilder.Entity("Wacomi.API.Models.PropertySeek", b =>
+            modelBuilder.Entity("Wacomi.API.Models.Property", b =>
                 {
-                    b.HasOne("Wacomi.API.Models.PropertySeekCategory", "Category")
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Wacomi.API.Models.City", "Location")
+                    b.HasOne("Wacomi.API.Models.City", "City")
                         .WithMany()
-                        .HasForeignKey("LocationId")
+                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
                         .WithMany()
                         .HasForeignKey("MainPhotoId");
+                });
 
-                    b.HasOne("Wacomi.API.Models.AppUser", "OwnerAppUser")
-                        .WithMany()
-                        .HasForeignKey("OwnerAppUserId1");
+            modelBuilder.Entity("Wacomi.API.Models.PropertyCategorization", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.Property", "Property")
+                        .WithMany("Categorizations")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.PropertySeekCategory", "PropertySeekCategory")
+                        .WithMany("Categorizations")
+                        .HasForeignKey("PropertySeekCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.TopicComment", b =>

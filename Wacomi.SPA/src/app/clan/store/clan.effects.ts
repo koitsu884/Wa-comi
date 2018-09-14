@@ -109,8 +109,6 @@ export class ClanSeekEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .mergeMap((result) => {
-                    // console.log(result);
-                    //  this.router.navigate(['/photo/edit', 'ClanSeek', result.id]);
                     let returnValues: Array<any> = [
                         {
                             type: ClanSeekActions.SET_EDITING_CLANSEEK, payload: result
@@ -175,7 +173,7 @@ export class ClanSeekEffects {
                 })
                 .map(() => {
                     this.alertify.success("更新しました");
-                    this.router.navigate(['/clan']);
+                    this.router.navigate(['/users/posts', clanSeek.appUserId]);
                     return {
                         type: ClanSeekActions.SET_EDITING_CLANSEEK, payload: clanSeek
                     };

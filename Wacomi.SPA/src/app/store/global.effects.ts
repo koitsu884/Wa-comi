@@ -4,9 +4,8 @@ import { environment } from "../../environments/environment";
 import { Router } from "@angular/router";
 import * as GlobalActions from "./global.actions";
 import { City } from "../_models/City";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { of } from "rxjs/observable/of";
-import { Hometown } from "../_models/Hometown";
 import { AlertifyService } from "../_services/alertify.service";
 import { KeyValue } from "../_models/KeyValue";
 import { Category } from "../_models/Category";
@@ -87,7 +86,23 @@ export class GlobalEffect {
         })
 
     @Effect()
-    tryAddClanSeekPhotos = this.actions$
+    getPropertyCategoryList = this.actions$
+        .ofType(GlobalActions.GET_PROPERTY_CATEGORY_LIST)
+        .switchMap(() => {
+            return this.httpClient.get<Category[]>(this.baseUrl + 'property/categories')
+                .map((result) => {
+                    return {
+                        type: GlobalActions.SET_PROPERTY_CATEGORY_LIST,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryAddPhotos = this.actions$
         .ofType(GlobalActions.TRY_ADD_PHOTOS)
         .map((action: GlobalActions.TryAddPhotos) => {
             return action.payload
@@ -99,7 +114,7 @@ export class GlobalEffect {
                 .map(() => {
                     this.modal.close();
                     this.router.navigate([payload.callbackLocation]);
-                    return { type: GlobalActions.SUCCESS, payload: "投稿しました"};
+                    return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
                 })
                 .catch((error: string) => {
                     this.modal.close();
@@ -121,5 +136,51 @@ export class GlobalEffect {
             if (action.payload) {
                 this.alertify.success(action.payload);
             }
+        })
+
+    @Effect()
+    updateRecord = this.actions$
+        .ofType(GlobalActions.UPDATE_RECORD)
+        .map((action: GlobalActions.UpdateRecord) => {
+            return action.payload
+        })
+        .switchMap((payload) => {
+            return this.httpClient.put(this.baseUrl + payload.recordType,
+                payload.record,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .mergeMap(() => {
+                    let returnValues: Array<any> = [{ type: GlobalActions.SUCCESS, payload: "更新しました" }];
+                    if(payload.callbackLocation)
+                        this.router.navigate([payload.callbackLocation]);
+                    if(payload.recordSetActionType)
+                        returnValues.push({type: payload.recordSetActionType, payload: payload.record});
+
+                    return returnValues;
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                })
+        });
+
+    @Effect()
+    tryDeleteRecord = this.actions$
+        .ofType(GlobalActions.DELETE_RECORD)
+        .map((actions: GlobalActions.DeleteRecord) => { return actions.payload })
+        .switchMap((payload) => {
+            return this.httpClient.delete(this.baseUrl + payload.recordType + '/' + payload.recordId,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map(() => {
+                    this.router.navigate([payload.callbackLocation]);
+                    return {
+                        type: GlobalActions.SUCCESS, payload: "削除しました"
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
         })
 }

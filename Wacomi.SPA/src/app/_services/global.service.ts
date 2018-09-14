@@ -7,16 +7,12 @@ import 'rxjs/add/operator/catch';
 import { BlogFeed } from '../_models/BlogFeed';
 import { ClanSeek } from '../_models/ClanSeek';
 import { TopicComment } from '../_models/TopicComment';
-import { TopicCommentFeel } from '../_models/TopicCommentFeel';
-import { TopicCommentComponent } from '../dailytopic/topic-comment-list/topic-comment/topic-comment.component';
 import { Store } from '@ngrx/store';
 import * as fromApp from '../store/app.reducer';
-import * as MessageActions from '../message/store/message.actions';
-import { Message } from '../_models/Message';
-import { PaginatedResult } from '../_models/Pagination';
 import { Blog } from '../_models/Blog';
 import { Attraction } from '../_models/Attraction';
 import { AttractionReview } from '../_models/AttractionReview';
+import { Property } from '../_models/Property';
 
 @Injectable()
 export class GlobalService {
@@ -58,6 +54,11 @@ export class GlobalService {
     getLatestBlogFeeds() {
         return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed/latest');
     }
+
+    getLatestRecords(recordType: string) {
+        return this.httpClient.get<Property[]>(this.baseUrl + recordType + '/latest');
+    }
+
 
     getLatestAttractionList() {
         return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction/latest');

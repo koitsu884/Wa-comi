@@ -10,6 +10,7 @@ namespace Wacomi.API.Dto
         public int? CategoryId{ get; set;}
         public string CategoryName{get; set;}
         public int AppUserId{ get; set;}
+        public string AppUserIconUrl{ get; set;}
         public string DisplayName{ get; set;}
         public int MainPhotoId{ get; set;}
         public PhotoForReturnDto MainPhoto{ get; set;}

@@ -15,11 +15,4 @@ export class LatestAttractionReviewsComponent implements OnInit {
   ngOnInit() {
     this.maxLength = window.screen.width < 500 ? 100 : 300;
   }
-
-  getShorternComment(comment: string){
-    if(comment.length < this.maxLength)
-      return comment;
-    return comment.substr(0, this.maxLength) + '...';
-  }
-
 }

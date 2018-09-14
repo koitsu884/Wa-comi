@@ -1,11 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Wacomi.API.Models;
 
 namespace Wacomi.API.Dto
 {
     public class MemberProfileUpdateDto
     {
-        public string Gender { get; set;}
+        public GenderEnum Gender { get; set;}
         public DateTime? DateOfBirth { get; set; }
         //Public Profiles
         public int? CityId { get; set;}

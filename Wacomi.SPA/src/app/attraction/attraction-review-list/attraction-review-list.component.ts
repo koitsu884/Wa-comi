@@ -24,7 +24,6 @@ export class AttractionReviewListComponent implements OnInit {
   ngOnInit() {
     this.appUser = this.route.snapshot.data['appUser'];
     this.route.data.subscribe((data) => {
-   //   console.log(data);
       this.appUser = data['appUser'];
       this.attraction = data['attraction'];
       this.store.dispatch(new AttractionActions.GetAttractionReviewList(this.attraction.id));

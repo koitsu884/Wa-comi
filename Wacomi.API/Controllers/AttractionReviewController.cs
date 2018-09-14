@@ -38,6 +38,13 @@ namespace Wacomi.API.Controllers
             return Ok(_mapper.Map<IEnumerable<AttractionReviewForReturnDto>>(attractionReviewsFromRepo));
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> GetByUser(int userId)
+        {
+            var attractionReviewsFromRepo = await _attractionRepo.GetAttractionReviewsByUser(userId);
+            return Ok(_mapper.Map<IEnumerable<AttractionReviewForReturnDto>>(attractionReviewsFromRepo));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult> Post([FromBody]AttractionReviewUpdateDto model)

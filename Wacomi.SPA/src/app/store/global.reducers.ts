@@ -9,13 +9,15 @@ export interface State {
     homeTownList: KeyValue[];
     clanSeekCategories: KeyValue[];
     attractionCategories: Category[];
+    propertyCategories: Category[];
 }
 
 const initialState: State = {
-    cityList: null,
-    homeTownList: null,
-    clanSeekCategories : null,
-    attractionCategories: null
+    cityList: [],
+    homeTownList: [],
+    clanSeekCategories : [],
+    attractionCategories: [],
+    propertyCategories: [],
 };
 
 export function globalReducer(state = initialState, action: GlobalActions.GlobalActions ){
@@ -41,6 +43,11 @@ export function globalReducer(state = initialState, action: GlobalActions.Global
         return {
             ...state,
             attractionCategories: action.payload
+        }
+        case GlobalActions.SET_PROPERTY_CATEGORY_LIST:
+        return {
+            ...state,
+            propertyCategories: action.payload
         }
         default:
             return state;

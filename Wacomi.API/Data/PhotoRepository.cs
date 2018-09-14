@@ -53,6 +53,13 @@ namespace Wacomi.API.Data
                         return clanSeek.Photos.ToList();
                     }
                     break;
+                case "property":
+                    var properties = await _context.Properties.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == recordId);
+                    if (properties != null)
+                    {
+                        return properties.Photos.ToList();
+                    }
+                    break;
             }
             return null;
         }

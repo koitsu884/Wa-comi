@@ -102,10 +102,25 @@ namespace Wacomi.API.Helper
               .ForMember(cs => cs.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
               .ForMember(cs => cs.LocationName, opt => opt.MapFrom(src => src.Location.Name))
               .ForMember(cs => cs.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto))
+              .ForMember(cs => cs.AppUserIconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.IconUrl))
               .ForMember(cs => cs.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName));
 
-            CreateMap<PropertySeekForCreationDto, PropertySeek>();
-            CreateMap<PropertySeekUpdateDto, PropertySeek>();
+            CreateMap<PropertyUpdateDto, Property>();
+
+            CreateMap<Property, PropertyForReturnDto>()
+              .ForMember(p => p.CityName, opt => opt.MapFrom(src => src.City.Name))
+              .ForMember(p => p.Categories, opt => opt.ResolveUsing((src) => {
+                  List<PropertySeekCategory> categories = new List<PropertySeekCategory> ();
+                  if(src.Categorizations != null)
+                  {
+                    foreach( var categorization in src.Categorizations){
+                      categories.Add(categorization.PropertySeekCategory);
+                    }
+                  }
+                  return categories;
+              }
+              ));
+            CreateMap<PropertySeekCategory, CategoryForReturnDto>();
 
             CreateMap<DailyTopicCreationDto, DailyTopic>();
             CreateMap<DailyTopic, DailyTopicForReturnDto>()

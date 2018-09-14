@@ -12,10 +12,6 @@ namespace Wacomi.API.Data
          Task<IEnumerable<City>> GetCities();
          Task<IEnumerable<HomeTown>> GetHomeTowns();
 
-        Task<PropertySeek> GetPropertySeek(int id);
-        Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId);
-        Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories();
-
         Task<Friend> GetFriend(int memberId, int friendId);
         Task<IEnumerable<Friend>> GetFriends(int memberId);
         Task<FriendRequest> GetFriendRequestFrom(int memberId, int senderId);

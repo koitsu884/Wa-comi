@@ -30,7 +30,7 @@ export class ClanHomeComponent implements OnInit {
   appUser: AppUser;
   reachLimit: boolean;
   loading: boolean;
-  onlyMine: boolean = false;
+  // hideMine: boolean = false;
   pagingParams: any = {};
   pagination: Pagination;
   clanState: Observable<fromClan.State>;
@@ -71,7 +71,7 @@ export class ClanHomeComponent implements OnInit {
     this.store.dispatch(new ClanSeekActions.SetClanSeekPage(event.page));
   }
 
-  toggleOnlyMine(){
-    this.onlyMine != this.onlyMine;
-  }
+  // toggleHideMine(){
+  //   this.hideMine = !this.hideMine;
+  // }
 }

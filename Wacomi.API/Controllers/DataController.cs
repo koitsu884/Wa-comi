@@ -38,6 +38,18 @@ namespace Wacomi.API.Controllers
             return await _appUserRepo.GetAppUserByAccountId(loginUserAccountId);
         }
 
+        protected async Task<MemberProfile> GetLoggedInMemberProfileAsync(){
+            var loggedInUser =  User.FindFirst(ClaimTypes.NameIdentifier);
+            string loginUserAccountId = null;
+            if(loggedInUser != null)
+            {
+                loginUserAccountId = loggedInUser.Value;
+                if(loginUserAccountId == null)
+                    return null;
+            }
+            return await _appUserRepo.GetMemberProfileByAccountId(loginUserAccountId);
+        }
+
          protected async Task<bool> MatchMemberWithToken(int memberProfileId){
             var member = await _appUserRepo.GetMemberProfile(memberProfileId);
             if(member != null && member.AppUser.AccountId == User.FindFirst(ClaimTypes.NameIdentifier).Value){

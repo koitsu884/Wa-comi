@@ -26,23 +26,6 @@ namespace Wacomi.API.Data
             return await _context.HomeTowns.ToListAsync();
         }
 
-        public async Task<PropertySeek> GetPropertySeek(int id)
-        {
-            return await _context.PropertySeeks.FirstOrDefaultAsync(cs => cs.Id == id);
-        }
-
-        public async Task<IEnumerable<PropertySeek>> GetPropertySeeks(int? categoryId = null)
-        {
-            if (categoryId == null)
-                return await _context.PropertySeeks.ToListAsync();
-            return await _context.PropertySeeks.Where(ps => ps.CategoryId == categoryId).ToListAsync();
-        }
-
-        public async Task<IEnumerable<PropertySeekCategory>> GetPropertySeekCategories()
-        {
-            return await _context.PropertySeekCategories.ToListAsync();
-        }
-
         public async Task<Friend> GetFriend(int memberId, int friendId)
         {
             return await _context.Friends.Include(f => f.Member)

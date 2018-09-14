@@ -36,7 +36,6 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
     this.appUser = this.route.snapshot.data['appUser'];
     this.forcusedRecordId = this.route.snapshot.params['topicCommentId'];
     this.commentFeelingEnum = this.globalService.getFeelings();
-    // console.log(this.commentFeelingEnum);
     this.loading = true;
     this.dailyTopicState = this.store.select('dailytopic');
     this.dailyTopicState.subscribe((result) => {
@@ -63,7 +62,6 @@ export class TopicCommentListComponent implements OnInit, OnDestroy {
   }
 
   onAddTopicCommentReply(topicCommentId: number, comment:string){
-    //console.log(form.value);
     if(this.appUser)
     {
       this.store.dispatch(new TopicActions.TryAddTopicReply({

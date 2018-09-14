@@ -1,5 +1,72 @@
-.row.fix {
-    display: flex;
-    flex-wrap: wrap;
-    width:100%; /*not always necessary*/
+.clanCardContainer{
+    padding:4px;
+}
+
+.clanCard{
+    border-radius: 10px;
+    /* border: 1px solid rgb(209, 204, 204); */
+    /* margin:2px; */
+}
+
+.title{
+    font-size: 18px;
+    font-size: 1.8rem;
+    margin:5px;
+    color: rgb(3, 19, 163);
+}
+
+.clanImage {
+    width: 80px;
+    height:80px;
+    margin:5px;
+    object-fit: cover;
+}
+
+/* .info {
+    left: 100px;
+    position:absolute;
+} */
+
+ span.categoryName {
+    /* position: absolute; */
+    padding: 2px;
+    font-size: 12px;
+    font-size: 1.2rem;
+    margin: 0 4px 0 0;
+    /* left: 2px;
+    top: 2px; */
+    font-weight: bold;
+    /* z-index: 10; */
+    border-radius: 5px;
+    border: solid 2px black;
+}
+
+.color-friend {
+    color: white;
+    background-color: rgb(63, 133, 236);
+}
+
+.color-circle {
+    color: white;
+    background-color: rgb(8, 161, 21);
+}
+
+.color-travel {
+    color: white;
+    background-color: rgb(253, 96, 5);
+}
+
+.color-study {
+    color: black;
+    background-color: rgb(202, 253, 17);
+}
+
+.color-event {
+    color: white;
+    background-color: rgb(70, 5, 145);
+}
+
+.color-etc {
+    color: black;
+    background-color: rgb(242, 243, 237);
 }

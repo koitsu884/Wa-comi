@@ -7,6 +7,7 @@ export interface ClanSeek {
     categoryName: string;
     appUserId: number;
     displayName: string;
+    appUserIconUrl: string;
     mainPhotoId: number;
     mainPhoto: Photo;
     photos: Photo[];

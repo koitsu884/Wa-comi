@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Wacomi.API.Models
 {
+    public enum GenderEnum{
+        SECRET,
+        MALE,
+        FEMALE
+    }
     public class MemberProfile
     {
         public int Id{ get; set;}
@@ -12,7 +17,7 @@ namespace Wacomi.API.Models
         public AppUser AppUser{ get; set;}
         public string SearchId{ get; set;}
         //Private Profiles
-        public string Gender { get; set;}
+        public GenderEnum Gender { get; set;}
         public DateTime? DateOfBirth { get; set; }
         //Public Profiles
         public string Introduction { get; set;}

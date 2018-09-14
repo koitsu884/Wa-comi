@@ -78,7 +78,6 @@ export class AttractionEffects {
 
             return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction', { params: Params, observe: 'response' })
                 .map((response) => {
-                    // console.log(response.body);
                     return {
                         type: AttractionActions.SET_ATTRACTION_SEARCH_RESULT,
                         payload: {
@@ -140,7 +139,7 @@ export class AttractionEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .map(() => {
-                    this.router.navigate(['/attraction']);
+                    this.router.navigate(['/users/posts', attraction.appUserId]);
                     return {
                         type: GlobalActions.SUCCESS, payload: "更新しました"
                     };
@@ -235,7 +234,8 @@ export class AttractionEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .map(() => {
-                    this.router.navigate(['/attraction/detail/', attractionState.attraction.selectedAttraction.id]);
+                    //this.router.navigate(['/attraction/detail/', attractionState.attraction.selectedAttraction.id]);
+                    this.router.navigate(['/users/posts/', attractionReview.appUserId]);
                     return {
                         type: GlobalActions.SUCCESS, payload: "更新しました"
                     };

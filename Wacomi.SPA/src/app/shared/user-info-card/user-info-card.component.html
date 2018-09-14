@@ -1,0 +1,13 @@
+<div>
+    <h4>投稿者</h4>
+    <img src="{{appUser.mainPhoto | iconurl:true}}"/>
+    <a [routerLink]="['/users/detail/' + appUser.id]" style="cursor: pointer">{{appUser.displayName}}</a>
+    <div *ngIf="canSendMessage">
+        <button class="btn btn-success btn-sm" (click)="onSend()">ショートメッセージを送る</button>
+    </div>
+    <p class="text-danger" *ngIf="!canSendMessage && !isMine">※ショートメッセージを送るにはログインしてください</p>
+    <p>投稿日:{{dateCreated | date: 'mediumDate'}}</p>
+    <p>最終更新日：{{dateUpdate | date: 'mediumDate'}}</p>
+    <!-- <hr>
+    <h4>広告</h4> -->
+  </div>

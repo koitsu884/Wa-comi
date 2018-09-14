@@ -84,6 +84,7 @@ namespace Wacomi.API
             services.AddScoped<IPhotoRepository, PhotoRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IPropertySeekRepository, PropertySeekRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>
@@ -122,7 +123,6 @@ namespace Wacomi.API
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-           // this.cronTask = ActivatorUtilities.CreateInstance<CronTask>(serviceProvider);
 
             // Add scheduled tasks & scheduler
             services.AddSingleton<IScheduledTask, RssReaderTask>();

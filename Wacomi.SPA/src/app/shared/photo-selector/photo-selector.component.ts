@@ -37,7 +37,6 @@ export class PhotoSelectorComponent implements OnInit {
       loadImage(
         file,
         (canvas) => {
-          // console.log(canvas);
           if (canvas.type === "error") {
             console.log("Error loading image " + file.name);
           } else {

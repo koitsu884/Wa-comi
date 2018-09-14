@@ -69,6 +69,14 @@ namespace Wacomi.API.Controllers
             return Ok(attractionsForReturn);
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> GetAttractionsByUser(int userId)
+        {
+            var attractions = await _attractionRepo.GetAttractionsByUser(userId);
+            var attractionsForReturn = _mapper.Map<IEnumerable<AttractionForReturnDto>>(attractions);
+            return Ok(attractionsForReturn);
+        }
+
         [HttpGet("categories")]
         public async Task<ActionResult> GetCategories()
         {

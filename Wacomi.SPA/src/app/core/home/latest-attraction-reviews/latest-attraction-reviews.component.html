@@ -3,15 +3,15 @@
   [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}"
   [routerLink]="['/attraction/detail', review.attractionId]">
     <h5 class="attractionName">{{review.attractionName}} </h5>
-    <span class="cityName">{{review.cityName}}</span>
+    <span class="simpleTag">{{review.cityName}}</span>
     <div class="reviewContainer">
       <div class="info">
-        <img class="img-thumbnail" *ngIf="review.mainPhoto || review.attractionThumbnailUrl " src="{{review.mainPhoto ? review.mainPhoto.thumbnailUrl : review.attractionThumbnailUrl}}" alt="{{review.attractionName}}">
+        <img class="img-thumbnail" *ngIf="review.mainPhoto || review.attractionThumbnailUrl " src="{{review.mainPhoto? (review.mainPhoto | thumburl) : review.attractionThumbnailUrl}}" alt="{{review.attractionName}}">
       </div>
       <div class="review">
         <label>{{review.appUserName}} さんのレビュー </label><br>
         <rating *ngIf="review.score>0" [(ngModel)]="review.score" [max]="5" [readonly]="true"></rating>
-        <app-user-comment [userName]="review.appUserName" [userPhotoUrl]="review.appUserIconUrl" [comment]="getShorternComment(review.review)"></app-user-comment>
+        <app-user-comment [userName]="review.appUserName" [userPhotoUrl]="review.appUserIconUrl" [comment]="review.review | shorten:30"></app-user-comment>
       </div>
 
     </div>

@@ -16,7 +16,7 @@ namespace Wacomi.API.Data
         public async Task<ClanSeek> GetClanSeek(int id)
         {
             return await _context.ClanSeeks.Include(cs => cs.Category)
-                                           .Include(cs => cs.AppUser)
+                                           .Include(cs => cs.AppUser).ThenInclude(u => u.MainPhoto)
                                            .Include(cs => cs.Location)
                                            .Include(cs => cs.MainPhoto)
                                            .Include(cs => cs.Photos)

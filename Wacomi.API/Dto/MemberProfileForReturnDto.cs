@@ -10,7 +10,7 @@ namespace Wacomi.API.Dto
         // public string IdentityId { get; set; }
         //Private Profiles
         // public string DisplayName { get; set; }
-        public string Gender { get; set; }
+        public GenderEnum Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         // public DateTime Created { get; set; }
         // public DateTime LastActive { get; set; }

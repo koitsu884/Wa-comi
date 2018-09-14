@@ -2,6 +2,7 @@
   <h5>投稿日:{{clanSeek.created | date: 'mediumDate'}}</h5>
   <h5>最終更新日：{{clanSeek.lastActive | date: 'mediumDate'}}</h5>
   <h4>投稿者</h4>
+  <img *ngIf="clanSeek.appUserIconUrl" src="{{clanSeek.appUserIconUrl}}"/>
   <a [routerLink]="['/users/detail/' + clanSeek.appUserId]" style="cursor: pointer">{{clanSeek.displayName}}</a>
   <div *ngIf="appUser && clanSeek.appUserId != appUser.id">
       <button class="btn btn-success btn-sm" (click)="onSend()" [disabled]="!appUser">ショートメッセージを送る</button>

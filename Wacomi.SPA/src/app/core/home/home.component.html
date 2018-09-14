@@ -5,10 +5,8 @@
         <h2>何か情報とか？</h2>
       </div> -->
       <h2>仲間募集中！</h2>
-      <div class="row">
-        <app-loading *ngIf="!latestClanSeekList"></app-loading>
-        <app-latest-clan-list *ngIf="latestClanSeekList" [latestClanSeeklist]="latestClanSeekList"></app-latest-clan-list>
-      </div>
+      <app-loading *ngIf="!latestClanSeekList"></app-loading>
+      <app-clan-list [clanSeeks]="latestClanSeekList"></app-clan-list>
       <p class="text-center">
         <button class="btn btn-sm btn-success" [routerLink]="['/clan']">仲間募集検索</button>
       </p>
@@ -26,6 +24,12 @@
       <br>
       <p class="text-center">
         <button class="btn btn-sm btn-success" [routerLink]="['/attraction']">スポット検索</button>
+      </p>
+      <h2>新着住まい情報</h2>
+      <app-loading *ngIf="!latestPropertyList"></app-loading>
+      <app-property-list [propertyList]="latestPropertyList"></app-property-list>
+      <p class="text-center">
+        <button class="btn btn-sm btn-success" [routerLink]="['/property']">住まい募集検索</button>
       </p>
       <h2>みんなのブログ</h2>
       <div class="row">

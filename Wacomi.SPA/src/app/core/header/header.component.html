@@ -13,10 +13,11 @@
       <ul class="nav navbar-nav">
         <!-- <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
         <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
-        <li *ngIf="appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
-        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/attraction']" >スポット</a></li>
-        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
-        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/property']" >住まい</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/attraction']" >スポット</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ</a></li>
         <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/notification']" >お知らせ <span *ngIf="notificationCount > 0" class="badge">{{notificationCount}}</span></a></li>
       </ul>
@@ -33,6 +34,7 @@
            <ul class="dropdown-menu" *dropdownMenu>
              <!-- <li role="separator" class="divider"></li> -->
              <li><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
+             <li><a [routerLink]="['/users/posts', appUser.id]">マイ投稿管理</a></li>
              <li><a [routerLink]="['/blog']">ブログ管理</a></li>
              <li *ngIf="isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>

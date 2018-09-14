@@ -51,14 +51,10 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             };
         case DailyTopicActions.SET_LIKED_TOPIC_LIST:
             temp = [...state.topicList];
-            // console.log(action.payload);
             action.payload.forEach((topicId) => {
                 var index = temp.findIndex(x => x.id == topicId);
                 if(index >= 0)
                 {
-                    // console.log("Index");
-                    // console.log(index);
-                    // console.log(temp[index]);
                     temp[index].isLiked = true;
                 }
             });
@@ -130,8 +126,6 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
                 var index = tempTopicComments.findIndex(x => x.id == feel.commentId);
                 if(index)
                     tempTopicComments[index].reactionByUser = feel.feeling;
-                // console.log(feel);
-                // console.log("index" + index);
             })
 
             return {

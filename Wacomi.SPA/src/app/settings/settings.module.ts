@@ -29,7 +29,7 @@ import { registerLocaleData } from "@angular/common";
         TabsModule,
         ReactiveFormsModule,
         SettingsRoutingModule,
-        BsDatepickerModule.forRoot(),
+        BsDatepickerModule,
     ],
     providers:[
         BusinessEditResolver,

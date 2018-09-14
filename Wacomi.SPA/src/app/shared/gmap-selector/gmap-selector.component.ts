@@ -1,27 +1,31 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Marker, Circle, LatLngLiteral } from '@agm/core/services/google-maps-types';
-import { MouseEvent } from '@agm/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Marker, Circle, LatLngLiteral, LatLngBounds } from '@agm/core/services/google-maps-types';
+import { MouseEvent, AgmCircle } from '@agm/core';
 import { AlertifyService } from '../../_services/alertify.service';
+import { GmapParameter } from '../../_models/GmapParameter';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 
 @Component({
   selector: 'app-gmap-selector',
   templateUrl: './gmap-selector.component.html',
   styleUrls: ['./gmap-selector.component.css']
 })
+
 export class GmapSelectorComponent implements OnInit {
   @Input() lat: number;
   @Input() lng: number;
   @Input() radius: number;
   @Input() useCircle: boolean;
-  marker: Marker;
-  circle: Circle;
+  @Input() radiusMax: number = 5000;
+  @Input() getBoundary: boolean = false;
+  @ViewChild(AgmCircle) circle;
 
-  @Output() areaSelectedEvent = new EventEmitter<{ lat: number, lng: number, radius: number }>();
+  @Output() areaSelectedEvent = new EventEmitter<GmapParameter>();
 
   constructor(private alertify: AlertifyService) { }
 
   ngOnInit() {
-      //Default position: Britomart
+    //Default position: Britomart
     if (!this.lat)
       this.lat = -36.8441;
     if (!this.lng)
@@ -37,10 +41,9 @@ export class GmapSelectorComponent implements OnInit {
   }
 
   radiusChange($event: number) {
-    if($event > 5000)
-    {
+    if ($event > this.radiusMax) {
       this.alertify.error("選択範囲が広すぎます");
-      this.radius = 5000;
+      this.radius = this.radiusMax;
       return;
     }
     this.areaChanged();
@@ -52,14 +55,32 @@ export class GmapSelectorComponent implements OnInit {
     this.areaChanged();
   }
 
-  centerChanged($event: LatLngLiteral){
+  centerChanged($event: LatLngLiteral) {
     this.lng = $event.lng;
     this.lat = $event.lat;
     this.areaChanged();
   }
 
   private areaChanged() {
-    this.areaSelectedEvent.emit({ lat: this.lat, lng: this.lng, radius: this.useCircle ? this.radius : null });
+    if (this.useCircle) {
+      fromPromise(this.circle.getBounds()).subscribe((bounds: LatLngBounds) => {
+        let ne = bounds.getNorthEast();
+        let sw = bounds.getSouthWest();
+        this.areaSelectedEvent.emit({
+          lat: this.lat,
+          lng: this.lng,
+          radius: this.radius,
+          area_top: ne.lat(),
+          area_left: ne.lng(),
+          area_bottom: sw.lat(),
+          area_right: sw.lng()
+        });
+      })
+
+
+    }
+    else
+      this.areaSelectedEvent.emit({ lat: this.lat, lng: this.lng, radius: null });
   }
 
 }

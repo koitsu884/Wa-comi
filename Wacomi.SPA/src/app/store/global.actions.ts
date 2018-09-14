@@ -10,9 +10,13 @@ export const GET_HOMETOWN_LIST = 'GET_HOMETOWN_LIST';
 export const SET_HOMETOWN_LIST = 'SET_HOMETOWN_LIST';
 export const GET_ATTRACTION_CATEGORY_LIST = 'GET_ATTRACTION_CATEGORY_LIST';
 export const SET_ATTRACTION_CATEGORY_LIST = 'SET_ATTRACTION_CATEGORY_LIST';
+export const GET_PROPERTY_CATEGORY_LIST = 'GET_PROPERTY_CATEGORY_LIST';
+export const SET_PROPERTY_CATEGORY_LIST = 'SET_PROPERTY_CATEGORY_LIST';
 export const GET_CLANCATEGORY_LIST = 'GET_CLANCATEGORY_LIST';
 export const SET_CLANCATEGORY_LIST = 'SET_CLANCATEGORY_LIST';
 export const TRY_ADD_PHOTOS = 'TRY_ADD_PHOTOS';
+export const DELETE_RECORD = 'DELETE_RECORD';
+export const UPDATE_RECORD = 'UPDATE_RECORD';
 export const SUCCESS = 'SUCCESS';
 export const FAILED = 'FAILED';
 
@@ -58,10 +62,31 @@ export class SetAttractionCategoryList implements Action {
     constructor(public payload: Category[]) {}
 }
 
+export class GetPropertyCategoryList implements Action {
+    readonly type = GET_PROPERTY_CATEGORY_LIST;
+    constructor() {}
+}
+
+export class SetPropertyCategoryList implements Action {
+    readonly type = SET_PROPERTY_CATEGORY_LIST;
+    constructor(public payload: Category[]) {}
+}
+
 export class TryAddPhotos implements Action {
     readonly type = TRY_ADD_PHOTOS;
     constructor(public payload: {recordType:string, recordId: number, formData:FormData, callbackLocation:string}){};
 }
+
+export class DeleteRecord implements Action {
+    readonly type = DELETE_RECORD;
+    constructor(public payload: {recordType:string, recordId:number, callbackLocation:string}){};
+}
+
+export class UpdateRecord implements Action {
+    readonly type = UPDATE_RECORD;
+    constructor(public payload: {recordType:string, record: any, callbackLocation?:string, recordSetActionType?:string}){};
+}
+
 
 export class Failed implements Action {
     readonly type = FAILED;
@@ -83,5 +108,9 @@ export type GlobalActions = GetCityList
                           | SetClanCategoryList
                           | GetAttractionCategoryList
                           | SetAttractionCategoryList
+                          | GetPropertyCategoryList
+                          | SetPropertyCategoryList
+                          | UpdateRecord
+                          | DeleteRecord
                           | Success
                           | Failed;

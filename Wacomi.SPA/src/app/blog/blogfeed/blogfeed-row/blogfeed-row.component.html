@@ -1,6 +1,6 @@
 <div class="row feedItem bg-light-blue" [ngClass]="{isMine: appUser?.id == blogFeed.ownerId}" >
   <div class="col-sm-6">
-      <img class="feedImage" src="{{blogFeed.photo ? blogFeed.photo.url : '/assets/NoImage.png'}}">
+      <img class="feedImage" src="{{blogFeed.photo | photourl}}">
       <h5><strong><a href="{{blogFeed.url}}">{{blogFeed.title}}</a></strong></h5>
        <span class="clearfix"></span>
   </div>

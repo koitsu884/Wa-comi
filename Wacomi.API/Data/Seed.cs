@@ -111,12 +111,10 @@ namespace Wacomi.API.Data
         public static void SeedPropertySeekCategories(ApplicationDbContext context)
         {
             string[] propertySeekCategories = {
-                "フラット（1人部屋）",
-                "フラット（相部屋）",
-                "一軒家",
-                "アパートメント",
-                "ホームステイ",
-                "その他"};
+                "駐車場有",
+                "英語環境",
+                "カップルOK",
+                "食事付き"};
 
             foreach (var propertySeekCategory in propertySeekCategories)
             {
@@ -203,7 +201,7 @@ namespace Wacomi.API.Data
                 "ファンガレイ,-35.720,174.310",
                 "ワンガヌイ,-39.930,175.030",
                 "ギズボーン,-38.660,178.020",
-                "その他,-36.844642,174.766620"};
+                "その他北島,-36.844642,174.766620"};
             string[] southCities = {
                 "クライストチャーチ,-43.530,172.640",
                 "クイーンズタウン,-45.040,168.640",
@@ -214,7 +212,7 @@ namespace Wacomi.API.Data
                 "ティマル,-44.380,171.220",
                 "オアマル,-45.070,170.980",
                 "テカポ,-44.004915,170.477285",
-                "その他,-43.530,172.640"};
+                "その他南島,-43.530,172.640"};
 
             foreach (var prefecture in prefectures)
             {
