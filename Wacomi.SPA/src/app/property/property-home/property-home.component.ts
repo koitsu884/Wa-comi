@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { City } from '../../_models/City';
 import { AppUser } from '../../_models/AppUser';
 import { Category } from '../../_models/Category';
-import { PropertySearchOptions, PropertyRequestEnum, TermEnum } from '../../_models/PropertySearchOptions';
+import { PropertySearchOptions, PropertyRequestEnum, TermEnum, RentTypeEnum } from '../../_models/PropertySearchOptions';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
 import { GmapParameter } from '../../_models/GmapParameter';
@@ -28,6 +28,7 @@ export class PropertyHomeComponent implements OnInit {
   appUser: AppUser;
   termsEnum = TermEnum;
   propertyRequestEnum = PropertyRequestEnum;
+  rentTypeEnum = [RentTypeEnum.OWN, RentTypeEnum.SHARE, RentTypeEnum.WHOLE, RentTypeEnum.HOMESTAY];
 
   bsConfig: Partial<BsDatepickerConfig>;
 
@@ -35,7 +36,9 @@ export class PropertyHomeComponent implements OnInit {
   searchParams: PropertySearchOptions;
 
   selectedCityId: number;
+  mobile: boolean =  window.screen.width < 500;
   loading: boolean;
+  closeSearchPanel: boolean = false;
   useGmap: boolean = false;
   advancedSearch: boolean = false;
   latitude: number;
@@ -63,7 +66,7 @@ export class PropertyHomeComponent implements OnInit {
     
     // this.clearSearchFilter();
     this.loading = true;
-    this.store.dispatch(new PropertyActions.SearchProperties());
+    //this.store.dispatch(new PropertyActions.SearchProperties());
     
     this.store.select("property").subscribe((propertyState) => {
       this.searchParams = Object.assign({},propertyState.searchParams);
@@ -89,6 +92,14 @@ export class PropertyHomeComponent implements OnInit {
       this.searchParams.categoryIds.push(id);
     else
       this.searchParams.categoryIds.splice(index, 1);
+  }
+
+  toggleRentType( rentType: RentTypeEnum){
+    let index = this.searchParams.rentTypes.findIndex(rt => rt == rentType);
+    if (index < 0)
+      this.searchParams.rentTypes.push(rentType);
+    else
+      this.searchParams.rentTypes.splice(index, 1);
   }
 
   toggleAddvancedSearch(){
@@ -133,8 +144,18 @@ export class PropertyHomeComponent implements OnInit {
     return this.searchParams.categoryIds.findIndex(c => c == id) >= 0;
   }
 
+  rentTypeSelected( rentType: RentTypeEnum){
+    return this.searchParams.rentTypes.findIndex(t => t == rentType) >= 0;
+  }
+
+  openSearchPanel(){
+    this.closeSearchPanel = false;
+  }
+
   onSearch(){
     this.loading = true;
+    if(this.mobile)
+      this.closeSearchPanel = true;
     this.store.dispatch(new PropertyActions.SetPropertySearchOptions(this.searchParams));
   }
 }

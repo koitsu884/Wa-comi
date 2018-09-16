@@ -249,6 +249,10 @@ h4 {
     border-radius: 7px;
 }
 
+.bg-light-gray {
+  background-color: rgb(171, 177, 182);
+}
+
 .bg-light-blue {
     background-color: aliceblue;
 }

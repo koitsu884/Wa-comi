@@ -14,6 +14,20 @@ namespace Wacomi.API.Models
         MONTH_3,
         LONG
     };
+
+    public enum PropertyTypeEnum{
+        HOUSE,
+        APPARTMENT,
+        UNIT
+    };
+
+    public enum RentTypeEnum {
+        OWN,
+        SHARE,
+        WHOLE,
+        HOMESTAY
+    }
+
     public class Property
     {
         public int Id { get; set;}
@@ -33,6 +47,8 @@ namespace Wacomi.API.Models
         [Required]
         public int CityId{ get; set;}
         public City City{get; set;}
+        // public PropertyTypeEnum PropertyType{ get; set;}
+        public RentTypeEnum RentType { get; set;}
         public double? Latitude{ get; set;}
         public double? Longitude{ get; set;} 
         public bool HasPet{ get; set;}

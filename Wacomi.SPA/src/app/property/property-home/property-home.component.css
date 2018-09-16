@@ -17,7 +17,7 @@
     width: 100px;
 }
 
-.categoryTab {
+.tag {
     margin:2px;
     color: gray;
     background-color: white;
@@ -30,7 +30,7 @@
 }
 
 
-.categoryTab.active {
+.tag.active {
     color: white;
     background-color: rgb(19, 135, 243);
     border: solid 2px blue;

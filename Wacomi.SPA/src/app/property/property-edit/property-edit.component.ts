@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { PropertyEdit } from '../../_models/PropertyEdit';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { TermEnum } from '../../_models/PropertySearchOptions';
+import { TermEnum, RentTypeEnum } from '../../_models/PropertySearchOptions';
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import {jaLocale} from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos/locale/locales';
@@ -33,6 +33,8 @@ export class PropertyEditComponent implements OnInit {
 
   minTermArray: Array<number> = [];
   maxTermArray: Array<number> = [];
+
+  rentTypeEnum = RentTypeEnum;
   
   constructor(private route: ActivatedRoute, 
     private router: Router, 
@@ -78,6 +80,7 @@ export class PropertyEditComponent implements OnInit {
           isActive: tempProperty.isActive,
           title : tempProperty.title,
           cityId : tempProperty.cityId,
+          rentType: tempProperty.rentType,
           photos: tempProperty.photos,
           description : tempProperty.description,
           mainPhotoId : tempProperty.mainPhoto ? tempProperty.mainPhoto.id : null,
@@ -110,6 +113,7 @@ export class PropertyEditComponent implements OnInit {
         isActive: true,
         hasPet: false,
         hasChild: false,
+        rentType: RentTypeEnum.OWN,
         internet:0,
         gender:0,
         minTerm: TermEnum.SHORT,
@@ -192,6 +196,18 @@ export class PropertyEditComponent implements OnInit {
     ngForm.form.markAsDirty();
   }
 
+  onActivate(ngForm: NgForm){
+    this.property.isActive = true;
+    ngForm.form.markAsPristine();
+    this.store.dispatch(new PropertyActions.UpdateProperty(this.property));
+  }
+
+  onDeactivate(ngForm: NgForm) {
+    this.property.isActive = false;
+    ngForm.form.markAsPristine();
+    this.store.dispatch(new PropertyActions.UpdateProperty(this.property));
+  }
+
   submit(ngForm: NgForm) {
     if(!this.useGmap){
       this.property.latitude = null;
@@ -199,7 +215,7 @@ export class PropertyEditComponent implements OnInit {
     }
 
     if (this.id) {
-      ngForm.form.markAsDirty();
+      ngForm.form.markAsPristine();
       this.store.dispatch(new PropertyActions.UpdateProperty(this.property));
     }
     else {

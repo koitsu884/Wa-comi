@@ -1,6 +1,7 @@
 import { AppUser } from "./AppUser";
 import { Photo } from "./Photo";
 import { Category } from "./Category";
+import { PropertyTypeEnum, RentTypeEnum } from "./PropertySearchOptions";
 
 export interface Property {
     id: number;
@@ -12,6 +13,8 @@ export interface Property {
     description: string;
     cityName:string;
     cityId: number;
+    // propertyType: PropertyTypeEnum;
+    rentType: RentTypeEnum;
     latitude?: number;
     longitude?: number;
     hasPet: boolean;

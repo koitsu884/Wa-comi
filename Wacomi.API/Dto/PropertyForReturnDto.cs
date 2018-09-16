@@ -16,6 +16,8 @@ namespace Wacomi.API.Dto
         public string Description{get; set;}
         public string CityName{ get; set;}
         public string CityId{ get; set;}
+        // public PropertyTypeEnum PropertyType{ get; set;}
+        public RentTypeEnum RentType { get; set;}
         public double? Latitude{ get; set;}
         public double? Longitude{ get; set;} 
         public bool HasPet{ get; set;}

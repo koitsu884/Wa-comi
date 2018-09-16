@@ -1,5 +1,14 @@
 <div class="container">
-  <form #propertyEditForm="ngForm" id="propertyEditForm" (ngSubmit)="submit(propertyEditForm)">
+  <div *ngIf="id">
+    <div *ngIf="!property.isActive">
+      <h5 class="text-danger">※現在募集停止中です</h5>
+      <button type="button" class="btn btn-success" (click)="onActivate(propertyEditForm)">募集を再開する</button>
+    </div>
+    <div *ngIf="property.isActive">
+      <button type="button" class="btn btn-danger" (click)="onDeactivate(propertyEditForm)">募集を停止する</button>
+    </div>
+  </div>
+  <form #propertyEditForm="ngForm" id="propertyEditForm" (ngSubmit)="submit(propertyEditForm)" [ngClass]="{inactive: !property.isActive}">
     <div class="form-group" *ngIf="id">
       <h4>メイン画像選択</h4>
       <app-mainphoto-selector *ngIf="property.photos?.length > 0" [photos]="property.photos" [mainPhotoId]="property.mainPhotoId"
@@ -35,6 +44,17 @@
       <p class="text-danger text-small">※設定しない場合は『いつからでもOK』になります</p>
       <input class="form-control" name="dateAvailable" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="入居可能日" [(ngModel)]="property.dateAvailable">
     </div>
+    <div class="form-group">
+        <h5>貸し方</h5>
+        <input type="radio" id="rentType-own" [value]="rentTypeEnum.OWN" name="rentType" [(ngModel)]="property.rentType">
+        <label for="rentType-own" class="radio">オウンルーム</label>
+        <input type="radio" id="rentType-share" [value]="rentTypeEnum.SHARE" name="rentType" [(ngModel)]="property.rentType">
+        <label for="rentType-share" class="radio">ルームシェア</label>
+        <input type="radio" id="rentType-whole" [value]="rentTypeEnum.WHOLE" name="rentType" [(ngModel)]="property.rentType">
+        <label for="rentType-whole" class="radio">家丸ごと</label>
+        <input type="radio" id="rentType-homestay" [value]="rentTypeEnum.HOMESTAY" name="rentType" [(ngModel)]="property.rentType">
+        <label for="rentType-homestay" class="radio">ホームステイ</label>
+      </div>
     <div class="form-group">
       <label>滞在可能期間</label>
       <select name="minTerm" id="minTerm" [(ngModel)]="property.minTerm" (change)="minTermChanged()">
@@ -75,7 +95,7 @@
     </div>
     <div class="form-group">
       <input type="checkbox" name="useGmap" id="useGmap" [(ngModel)]="useGmap" [value]="useGmap" (change)="toggleUseGmap(propertyEditForm)">
-      <label for="useGmap" class="checkbox">マップを登録{{useGmap ? 'しない' : 'する'}}</label>
+      <label for="useGmap" class="checkbox">マップを登録する</label>
       <div *ngIf="useGmap">
         <div class="gmapSelector">
           <app-gmap-selector [lat]="property.latitude" [lng]="property.longitude" [useCircle]="false" (areaSelectedEvent)="mapSelected(propertyEditForm, $event)"></app-gmap-selector>

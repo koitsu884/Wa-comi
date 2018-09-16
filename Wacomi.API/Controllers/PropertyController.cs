@@ -74,7 +74,8 @@ namespace Wacomi.API.Controllers
         [HttpPost("search")]
         public async Task<ActionResult> SearchProperties(PaginationParams paginationParams, [FromBody]PropertySeekParameters searchParams){
             var memberProfile = await GetLoggedInMemberProfileAsync();
-            searchParams.Gender = memberProfile.Gender;
+            if(memberProfile != null)
+                searchParams.Gender = memberProfile.Gender;
             var properties = await this._repo.GetProperties(paginationParams, searchParams);
             var propertiesForReturn = this._mapper.Map<IEnumerable<PropertyForReturnDto>>(properties);
 

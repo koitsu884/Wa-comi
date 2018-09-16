@@ -20,6 +20,7 @@ const initialState: State = {
     propertiesFound: [],
     searchParams: <PropertySearchOptions>{
         categoryIds: [],
+        rentTypes: [],
         cityId: 0,
         pet: 0,
         child: 0
@@ -52,6 +53,7 @@ export function propertyReducer(state = initialState, action: PropertyActions.Pr
                 ...state,
                 searchParams: <PropertySearchOptions>{
                     categoryIds: [],
+                    rentTypes: [],
                     cityId: 0,
                     pet: 0,
                     child: 0

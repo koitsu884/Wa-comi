@@ -65,6 +65,11 @@ namespace Wacomi.API.Data
                 query = query.Where(a => a.Categorizations.Any(c => searchOptions.CategoryIds.Contains(c.PropertySeekCategoryId)));
             }
 
+            if (searchOptions.RentTypes != null && searchOptions.RentTypes.Length > 0)
+            {
+                query = query.Where(a => searchOptions.RentTypes.Contains(a.RentType));
+            }
+
             if (searchOptions.rentMin != null)
                 query = query.Where(a => a.Rent >= searchOptions.rentMin);
 
@@ -75,7 +80,7 @@ namespace Wacomi.API.Data
                 query = query.Where(a => a.Internet >= searchOptions.Internet);
 
             if (searchOptions.DateFrom != null)
-                query = query.Where(a => a.DateAvailable <= searchOptions.DateFrom);
+                query = query.Where(a => a.DateAvailable == null || a.DateAvailable <= searchOptions.DateFrom);
 
             if (searchOptions.Pet == PropertyRequestEnum.Yes)
                 query = query.Where(a => a.HasPet);

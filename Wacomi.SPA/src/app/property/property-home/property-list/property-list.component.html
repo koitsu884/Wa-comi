@@ -4,7 +4,7 @@
         <!-- <div class="property"> -->
         <img src="{{property.mainPhoto | thumburl}}" class="propertyImage pull-left img-thumbnail">
         <div class="info">
-          <h5>{{property.title}}</h5>
+          <h5>{{property.title}}<span *ngIf="!property.isActive" class="text-danger">(募集停止中)</span></h5>
           <span class="simpleTag">{{property.cityName}}</span>
           <div>
             <p>入居可能日：{{property.dateAvailable ? (property.dateAvailable | date: 'mediumDate') : 'いつでも'}}</p>

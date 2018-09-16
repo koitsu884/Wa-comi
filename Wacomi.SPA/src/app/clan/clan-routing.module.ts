@@ -7,10 +7,7 @@ import { ClanDetailComponent } from "./clan-detail/clan-detail.component";
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 import { AppUserResolver } from "../_resolvers/appuser.resolver";
-import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { ClanEditComponent } from "./clan-edit/clan-edit.component";
-import { AuthGuard } from "../_guards/auth.guard";
-import { MemberIdGuard } from "../_guards/memberid.guard";
 import { MemberGuard } from "../_guards/member.guard";
 
 
@@ -39,21 +36,23 @@ const clanRoute: Routes = [
         }
     },
     {
-        path: 'edit/:appUserId', 
+        path: 'edit', 
         runGuardsAndResolvers: 'always',
         component: ClanEditComponent, 
         canActivate: [MemberGuard],
         resolve: {
+            appUser:AppUserResolver,
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,
             photos:UserPhotoResolver,
         },
     },
     {
-        path: 'edit/:appUserId/:id', 
+        path: 'edit/:id', 
         component: ClanEditComponent, 
         canActivate: [MemberGuard],
         resolve: {
+            appUser:AppUserResolver,
             cities:CityListResolver,
             categories:ClanSeekCategoryResolver,
             editingClan:ClanSeekEditResolver,

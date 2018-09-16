@@ -16,6 +16,8 @@ namespace Wacomi.API.Data
         public int? AppUserId{ get; set;}
         public int[] CategoryIds {get; set;}
         public int CityId {get; set;}
+        // public PropertyTypeEnum[] PropertyTypes { get; set;}
+        public RentTypeEnum[] RentTypes { get; set;}
         public PropertyRequestEnum Pet {get; set;} = PropertyRequestEnum.NotCare;
         public PropertyRequestEnum Child {get; set;} = PropertyRequestEnum.NotCare;
         public int Internet { get;set;} = 0; //0: not care, 1: limited 3:unlimited

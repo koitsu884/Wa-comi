@@ -1,10 +1,11 @@
 <div>
   <dl>
     <dt>レント（週）</dt><dd>{{property.rent}}</dd>
+    <dt>貸し方</dt><dd>{{property.rentType | propertyRentType}}</dd>
     <dt>入居可能日</dt><dd>{{property.dateAvailable ? (property.dateAvailable | date:'mediumDate') : "いつでも"}}</dd>
-    <dt>滞在可能期間</dt><dd>{{termToString(property.minTerm)}} ~ {{termToString(property.maxTerm)}}</dd>
+    <dt>滞在可能期間</dt><dd>{{property.minTerm | propertyTerms}} ~ {{property.maxTerm | propertyTerms}}</dd>
     <dt>募集性別</dt><dd>{{genderToString(property.gender)}}</dd>
-    <dt>インターネット</dt><dd>{{interNetToString(property.internet)}}</dd>
+    <dt>インターネット</dt><dd>{{property.internet | propertyInternet}}</dd>
     <dt>ペットの有無</dt><dd>{{property.hasPet ? "有" : "無"}}</dd>
     <dt>小さい子供の有無</dt><dd>{{property.hasChild ? "有" : "無"}}</dd>
   </dl>

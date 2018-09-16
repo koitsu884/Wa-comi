@@ -1,4 +1,4 @@
-import { TermEnum } from "./PropertySearchOptions";
+import { TermEnum, RentTypeEnum } from "./PropertySearchOptions";
 import { Photo } from "./Photo";
 
 export interface PropertyEdit {
@@ -10,6 +10,7 @@ export interface PropertyEdit {
     title:string;
     description: string;
     cityId: number;
+    rentType: RentTypeEnum;
     latitude?: number;
     longitude?: number;
     hasPet: boolean;

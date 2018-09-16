@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import * as fromClan from '../store/clan.reducers';
 import * as ClanActions from '../store/clan.actions';
 import { Location } from '@angular/common';
+import { AppUser } from '../../_models/AppUser';
 
 @Component({
   selector: 'app-clan-edit',
@@ -22,7 +23,7 @@ export class ClanEditComponent implements OnInit {
   
   editMode: boolean;
   id: number;
-  appUserId: number;
+  appUser: AppUser;
   editingClan: ClanSeek;
   waitingResponse: boolean = false;
   // formData: FormData;
@@ -43,8 +44,8 @@ export class ClanEditComponent implements OnInit {
       .subscribe(
         (params: Params) => {
           this.id = +params['id'];
-          this.appUserId = +params['appUserId'];
-          if (this.appUserId == null) {
+          this.appUser = this.route.snapshot.data['appUser'];
+          if (this.appUser == null) {
             this.router.navigate(['/']);
             return;
           }
@@ -68,7 +69,7 @@ export class ClanEditComponent implements OnInit {
     else {
       this.editingClan = <ClanSeek>{};
     }
-    this.editingClan.appUserId = this.appUserId;
+    this.editingClan.appUserId = this.appUser.id;
   }
 
   onClear() {

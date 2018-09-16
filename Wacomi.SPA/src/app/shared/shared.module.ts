@@ -32,6 +32,7 @@ import { PhotoGalleryComponent } from './photo-gallery/photo-gallery.component';
 import { PropertyInternetPipe } from '../_pipes/propertyInternet.pipe';
 import { PropertyGenderPipe } from '../_pipes/propertyGender.pipe';
 import { PropertyTermsPipe } from '../_pipes/propertyTerms.pipe';
+import { PropertyRentTypePipe } from '../_pipes/propertyRentType.pipe';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { PropertyTermsPipe } from '../_pipes/propertyTerms.pipe';
     PropertyGenderPipe,
     PropertyTermsPipe,
     PropertyInternetPipe,
+    PropertyRentTypePipe,
 
     MainphotoSelectorComponent,
     LoadingComponent,
@@ -84,6 +86,7 @@ import { PropertyTermsPipe } from '../_pipes/propertyTerms.pipe';
     PropertyInternetPipe,
     PropertyGenderPipe,
     PropertyTermsPipe,
+    PropertyRentTypePipe,
 
     CommonModule,
     ClanCardComponent,

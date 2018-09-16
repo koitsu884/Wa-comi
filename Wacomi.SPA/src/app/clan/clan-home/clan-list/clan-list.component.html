@@ -2,7 +2,7 @@
   <div class="col-sm-6 clanCardContainer" *ngFor="let clanSeek of clanSeeks index as i" >
     <div class="clanCard" [routerLink]="['/clan/detail', clanSeek.id]" [@clanCard] [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
       <!-- <div class="clanCard"> -->
-      <h5 class="title">{{clanSeek.title}}</h5>
+      <h5 class="title">{{clanSeek.title}}<span *ngIf="!clanSeek.isActive" class="text-danger">（募集停止中）</span></h5>
       <img src="{{clanSeek.mainPhoto | photourl}}" class="clanImage pull-left img-thumbnail">
       <div class="info">
         <div [ngSwitch]="clanSeek.categoryName">

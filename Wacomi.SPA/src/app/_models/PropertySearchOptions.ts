@@ -14,6 +14,19 @@ export enum TermEnum {
     LONG
 }
 
+export enum PropertyTypeEnum {
+    HOUSE,
+    APPARTMENT,
+    UNIT
+}
+
+export enum RentTypeEnum {
+    OWN,
+    SHARE,
+    WHOLE,
+    HOMESTAY
+}
+
 export enum PropertyRequestEnum {
     NotCare,
     Yes,
@@ -25,6 +38,7 @@ export interface PropertySearchOptions {
     categoryIds: number[];
     cityId: number;
     gender?: GenderEnum;
+    rentTypes: RentTypeEnum[];
     pet: PropertyRequestEnum; //0: not care 1: want 2: not want
     child: PropertyRequestEnum;
     internet: number; //0:none 1: limited 2:unlimited
