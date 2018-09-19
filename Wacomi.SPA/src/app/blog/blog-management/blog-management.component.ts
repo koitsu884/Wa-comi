@@ -5,7 +5,6 @@ import { Blog } from '../../_models/Blog';
 
 import * as fromBlog from '../store/blogs.reducers';
 import * as BlogActions from '../store/blogs.actions';
-import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
 import { BlogFeed } from '../../_models/BlogFeed';

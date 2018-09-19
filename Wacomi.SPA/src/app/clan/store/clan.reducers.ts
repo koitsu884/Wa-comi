@@ -32,6 +32,11 @@ const initialState: State = {
 export function clanSeekReducer(state = initialState, action: ClanSeekActions.ClanSeekActions) {
     let tempPagination: Pagination;
     switch (action.type) {
+        case ClanSeekActions.GET_CLANSEEK:
+            return {
+                ...state,
+                editingClan: null,
+            }
         case ClanSeekActions.SET_EDITING_CLANSEEK:
             return {
                 ...state,
@@ -83,11 +88,11 @@ export function clanSeekReducer(state = initialState, action: ClanSeekActions.Cl
                 ...state,
                 reachLimit: action.payload
             }
-        case ClanSeekActions.TRY_ADD_CLANSEEK_PHOTOS:
-            return {
-                ...state,
-                uploading: true
-            }
+        // case ClanSeekActions.TRY_ADD_CLANSEEK_PHOTOS:
+        //     return {
+        //         ...state,
+        //         uploading: true
+        //     }
         default:
             return state;
     }

@@ -20,6 +20,7 @@ namespace Wacomi.API.Data
         Task<IEnumerable<BlogFeedLike>> GetBlogFeedLikesForUser(int userId);
         Task<BlogFeedComment> GetBlogFeedComment(int id);
         Task<IEnumerable<BlogFeedComment>> GetBlogFeedCommentsForFeed(int feedId);
+        Task<List<Photo>> GetAllFeedsPhotosForBlog(int blogId);
         Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds();
         Task<PagedList<BlogFeed>> GetBlogFeeds(PaginationParams paginationParams, string category, int? userId);
         Task<IEnumerable<BlogFeed>> GetBlogFeeds(System.DateTime? from, System.DateTime? to);

@@ -36,7 +36,7 @@ namespace Wacomi.API.Data
                                             .ThenInclude(u => u.MainPhoto)
                                           .Include(cs => cs.MainPhoto)
                                           .Include(cs => cs.Location)
-                                          .OrderByDescending(cs => cs.LastActive)
+                                          .OrderByDescending(cs => cs.DateUpdated)
                                           .AsQueryable();
             if (categoryId != null)
             {
@@ -58,7 +58,7 @@ namespace Wacomi.API.Data
                                            .Include(cs => cs.Location)
                                            .Include(cs => cs.MainPhoto)
                                            .Where(cs => cs.AppUserId == userId)
-                                           .OrderByDescending(cs => cs.LastActive).ToListAsync();
+                                           .OrderByDescending(cs => cs.DateUpdated).ToListAsync();
         }
 
         public async Task<int> GetClanSeeksCountByUser(int userId)

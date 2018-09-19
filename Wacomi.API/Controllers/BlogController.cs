@@ -10,6 +10,7 @@ using CodeHollow.FeedReader;
 using CodeHollow.FeedReader.Feeds;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
@@ -20,7 +21,7 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class BlogController : DataController
+    public class BlogController : DataWithPhotoController
     {
         private const int MAX_BLOGCOUNT = 1;
         private const int MAX_BLOGCOUNT_PR = 5;
@@ -31,13 +32,25 @@ namespace Wacomi.API.Controllers
         public BlogController(
          IAppUserRepository appUserRepo,
          IBlogRepository blogRepo,
-         IMapper mapper, 
-         ILogger<PhotoController> logger, 
-         ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper) {
+         IPhotoRepository photoRepo,
+         IMapper mapper,
+         ILogger<PhotoController> logger,
+         ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper, photoRepo)
+        {
             this._logger = logger;
             this._blogRepo = blogRepo;
             this._imageFileStorageManager = imageFileStorageManager;
-         }
+        }
+
+        protected override string GetTableName()
+        {
+            return "Blogs";
+        }
+
+        protected override bool MultiPhoto()
+        {
+            return false;
+        }
 
         [HttpGet("{id}", Name = "GetBlog")]
         public async Task<ActionResult> Get(int id)
@@ -69,12 +82,13 @@ namespace Wacomi.API.Controllers
                         var document = new HtmlDocument();
                         document.LoadHtml(result);
                         var links = document.DocumentNode?.SelectNodes("//link");
-                        if (links != null){
+                        if (links != null)
+                        {
                             var nodes = links.Where(
                             x => x.Attributes["type"] != null &&
                             (x.Attributes["type"].Value.Contains("application/rss") || x.Attributes["type"].Value.Contains("application/atom")));
 
-                            if(nodes != null)
+                            if (nodes != null)
                                 feedUrl = nodes.ElementAt(0).Attributes["href"]?.Value;
                         }
 
@@ -104,8 +118,10 @@ namespace Wacomi.API.Controllers
             //     return Unauthorized();
             var blogsFromRepo = await _blogRepo.GetBlogsForUser(appUserId);
             var blogsForReturnDto = _mapper.Map<IEnumerable<BlogForReturnDto>>(blogsFromRepo);
-            if(includeFeeds){
-                foreach(var blogForReturn in blogsForReturnDto){
+            if (includeFeeds)
+            {
+                foreach (var blogForReturn in blogsForReturnDto)
+                {
                     var feeds = _mapper.Map<IEnumerable<BlogFeedForReturnDto>>(await _blogRepo.GetBlogFeedsByBlogId(blogForReturn.Id));
                     blogForReturn.BlogFeeds = feeds;
                 }
@@ -267,7 +283,7 @@ namespace Wacomi.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteBlogForUser(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -279,12 +295,17 @@ namespace Wacomi.API.Controllers
             if (!await this.MatchAppUserWithToken(blogFromRepo.OwnerId))
                 return Unauthorized();
 
+            var allFeedPhotos = await _blogRepo.GetAllFeedsPhotosForBlog(blogFromRepo.Id);
+            foreach(var feedPhoto in allFeedPhotos){
+                _blogRepo.Delete(feedPhoto);
+                await this._imageFileStorageManager.DeleteImageFileAsync(feedPhoto);
+            }
             await _blogRepo.DeleteFeedsForBlog(blogFromRepo.Id);
-            if(blogFromRepo.Photo != null){
+
+            if (blogFromRepo.Photo != null)
+            {
                 _blogRepo.Delete(blogFromRepo.Photo);
-                var deletingResult = this._imageFileStorageManager.DeleteImageFile(blogFromRepo.Photo);
-                if (!string.IsNullOrEmpty(deletingResult.Error))
-                    this._logger.LogError(deletingResult.Error);
+                await this._imageFileStorageManager.DeleteImageFileAsync(blogFromRepo.Photo);
             }
 
             _blogRepo.Delete(blogFromRepo);
@@ -293,6 +314,26 @@ namespace Wacomi.API.Controllers
                 return Ok();
 
             return BadRequest("ブログ情報の削除に失敗しました");
+        }
+
+        [HttpGet("{id}/photo", Name = "GetBlogPhotos")]
+        public async Task<ActionResult> GetBlogPhotos(int id)
+        {
+            return await base.GetPhotos(id);
+        }
+
+        [HttpPost("{id}/photo")]
+        [Authorize]
+        public async Task<ActionResult> AddBlogPhotos(int id, List<IFormFile> files)
+        {
+            return await AddPhotos(id, files, "GetBlogPhotos");
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/photo/{photoId}")]
+        public async Task<ActionResult> DeleteBlogPhoto(int id, int photoId)
+        {
+            return await DeletePhoto(id, photoId);
         }
     }
 

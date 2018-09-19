@@ -85,6 +85,7 @@ namespace Wacomi.API
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IPropertySeekRepository, PropertySeekRepository>();
+            services.AddScoped<ICircleRepository, CircleRepository>();
 
             services.AddIdentity<Account, IdentityRole>
             (o =>

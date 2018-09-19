@@ -5,7 +5,6 @@ import { BlogManagementComponent } from "./blog-management/blog-management.compo
 import { AppUserResolver } from "../_resolvers/appuser.resolver";
 import { BlogEditorComponent } from "./blog-editor/blog-editor.component";
 import { AuthGuard } from "../_guards/auth.guard";
-import { UserPhotoResolver } from "../_resolvers/userphoto.resolver";
 
 
 const blogRoute: Routes = [

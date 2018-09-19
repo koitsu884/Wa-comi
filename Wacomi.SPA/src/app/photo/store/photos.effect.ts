@@ -22,7 +22,8 @@ export class PhotoEffect{
         .ofType(PhotoActions.GET_PHOTOS)
         .map((action: PhotoActions.GetPhotos) => { return action.payload })
         .switchMap((payload) => {
-            return this.httpClient.get<Photo[]>(this.baseUrl + 'photo/' + payload.recordType + "/" + payload.recordId)
+            return this.httpClient.get<Photo[]>(this.baseUrl + payload.recordType.toLowerCase() + "/" + payload.recordId + '/photo')
+            //return this.httpClient.get<Photo[]>(this.baseUrl + 'photo/' + payload.recordType + "/" + payload.recordId)
             .mergeMap((photos) => {
                 return [
                     {
@@ -44,7 +45,8 @@ export class PhotoEffect{
         .switchMap(([id , photoState]) => {
         //.switchMap(payload => {
             this.alertify.message("写真を削除中…");
-            return this.httpClient.delete(this.baseUrl + 'photo/' + photoState.photo.recordType + '/' + photoState.photo.recordId + '/' + id)
+            return this.httpClient.delete(this.baseUrl + photoState.photo.recordType + '/' + photoState.photo.recordId + '/photo/' + id)
+            //return this.httpClient.delete(this.baseUrl + 'photo/' + photoState.photo.recordType + '/' + photoState.photo.recordId + '/' + id)
                 .mergeMap(() => {
                     return [
                         {

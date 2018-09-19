@@ -70,7 +70,18 @@ export class BlogEffects {
                 .mergeMap((result) => {
                     let returnValues: Array<any> = [{ type: BlogActions.ADD_BLOG, payload: result }];
                     if (payload.photo != null) {
-                        returnValues.push({ type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: result.id, photo: payload.photo } });
+                        var formData = new FormData();
+                        formData.append("files", payload.photo);
+
+                        //returnValues.push({ type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: result.id, photo: payload.photo } });
+                        returnValues.push({
+                            type: GlobalActions.TRY_ADD_PHOTOS,
+                            payload: {
+                                recordType: 'blog',
+                                recordId: result.id,
+                                formData: formData,
+                                callbackLocation: '/blog'
+                            }});
                     }
                     else {
                         this.location.back();
@@ -84,34 +95,34 @@ export class BlogEffects {
                 });
         })
 
-    @Effect()
-    tryAddBlogPhoto = this.actions$
-        .ofType(BlogActions.TRY_ADD_BLOG_PHOTO)
-        .map((action: BlogActions.TryAddBlogPhoto) => {
-            return action.payload
-        })
-        .switchMap((payload) => {
-            this.modal.open(UploadingComponent);
-            var formData = new FormData();
-            formData.append("files", payload.photo);
+    // @Effect()
+    // tryAddBlogPhoto = this.actions$
+    //     .ofType(BlogActions.TRY_ADD_BLOG_PHOTO)
+    //     .map((action: BlogActions.TryAddBlogPhoto) => {
+    //         return action.payload
+    //     })
+    //     .switchMap((payload) => {
+    //         this.modal.open(UploadingComponent);
+    //         var formData = new FormData();
+    //         formData.append("files", payload.photo);
 
-            return this.httpClient.post(this.baseUrl + 'photo/blog/' + payload.blogId,
-                formData)
-                .mergeMap((result) => {
-                    this.modal.close();
-                    this.location.back();
-                    return [
-                        {
-                            type: GlobalActions.SUCCESS, payload: "写真をアップロードしました"
-                        }
-                    ];
-                })
-                .catch((error: string) => {
-                    this.modal.close();
-                    this.location.back();
-                    return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+    //         return this.httpClient.post(this.baseUrl + 'photo/blog/' + payload.blogId,
+    //             formData)
+    //             .mergeMap((result) => {
+    //                 this.modal.close();
+    //                 this.location.back();
+    //                 return [
+    //                     {
+    //                         type: GlobalActions.SUCCESS, payload: "写真をアップロードしました"
+    //                     }
+    //                 ];
+    //             })
+    //             .catch((error: string) => {
+    //                 this.modal.close();
+    //                 this.location.back();
+    //                 return of({ type: GlobalActions.FAILED, payload: error })
+    //             });
+    //     })
 
 
     @Effect()
@@ -130,7 +141,21 @@ export class BlogEffects {
                     //this.alertify.success("更新しました");
                     if (payload.photo) {
                         this.alertify.success("更新しました");
-                        return { type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: payload.blog.id, photo: payload.photo } }
+                        var formData = new FormData();
+                        formData.append("files", payload.photo);
+
+                        //returnValues.push({ type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: result.id, photo: payload.photo } });
+                        return {
+                            type: GlobalActions.TRY_ADD_PHOTOS,
+                            payload: {
+                                recordType: 'blog',
+                                recordId: payload.blog.id,
+                                formData: formData,
+                                callbackLocation: '/blog'
+                            }
+                        };
+
+                       // return { type: BlogActions.TRY_ADD_BLOG_PHOTO, payload: { blogId: payload.blog.id, photo: payload.photo } }
                     }
 
                     this.location.back();

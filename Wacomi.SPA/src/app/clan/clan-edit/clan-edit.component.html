@@ -4,7 +4,7 @@
         <h4>メイン画像選択</h4>
         <!-- <img src="{{editingClan.mainPhotoUrl ? editingClan.mainPhotoUrl : 'assets/NoImage_Person.png'}}" class="img-responsive" alt=""> -->
         <app-mainphoto-selector 
-          *ngIf="editingClan.photos.length > 0" 
+          *ngIf="editingClan.photos && editingClan.photos.length > 0" 
           [photos]="editingClan.photos" 
           [mainPhotoId]="editingClan.mainPhotoId" 
           (photoSelected)="mainPhotoSelected($event, clanEditForm)">

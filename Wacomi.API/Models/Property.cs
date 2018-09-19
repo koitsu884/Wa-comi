@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Wacomi.API.Data;
 
 namespace Wacomi.API.Models
 {
@@ -28,11 +29,11 @@ namespace Wacomi.API.Models
         HOMESTAY
     }
 
-    public class Property
+    public class Property : IDataItemWithMultiplePhotos, IAppUserLinkable
     {
         public int Id { get; set;}
         [Required]
-        public int AppUserId{ get; set;}
+        public int? AppUserId{ get; set;}
         public AppUser AppUser{ get; set;}
 
         public virtual ICollection<Photo> Photos { get; set; }

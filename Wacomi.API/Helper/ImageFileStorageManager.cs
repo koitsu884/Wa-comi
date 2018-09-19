@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -137,6 +138,17 @@ namespace Wacomi.API.Helper
                 imageFileManager.DeleteImage(photoFromRepo.ThumbnailUrl);
             if (!string.IsNullOrEmpty(photoFromRepo.IconUrl))
                 imageFileManager.DeleteImage(photoFromRepo.IconUrl);
+        }
+
+        public List<string> DeleteAttachedPhotos(ICollection<Photo> photos){
+            List<string> errors = new List<string>();
+            foreach (var photo in photos)
+            {
+                var deletingResult = DeleteImageFile(photo);
+                if (!string.IsNullOrEmpty(deletingResult.Error))
+                    errors.Add(deletingResult.Error);
+            }
+            return errors;
         }
 
     }

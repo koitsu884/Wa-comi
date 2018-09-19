@@ -2,13 +2,12 @@ import { Action } from "@ngrx/store";
 import { Blog } from "../../_models/Blog";
 import { BlogFeed } from "../../_models/BlogFeed";
 import { Pagination } from "../../_models/Pagination";
-import { importExpr } from "@angular/compiler/src/output/output_ast";
 import { ShortComment } from "../../_models/ShortComment";
 
 export const GET_BLOG = 'GET_BLOG';
 export const SET_BLOG = 'SET_BLOG';
 export const TRY_ADDBLOG = 'TRY_ADDBLOG';
-export const TRY_ADD_BLOG_PHOTO = 'TRY_ADD_BLOG_PHOTO';
+// export const TRY_ADD_BLOG_PHOTO = 'TRY_ADD_BLOG_PHOTO';
 export const TRY_DELETEBLOG = 'TRY_DELETEBLOG';
 export const ADD_BLOG = 'ADD_BLOG';
 export const UPDATE_BLOG = 'UPDATE_BLOG';
@@ -44,11 +43,11 @@ export class TryAddBlog implements Action {
     constructor(public payload:{blog: Blog, photo:File}){}
 }
 
-export class TryAddBlogPhoto implements Action {
-    readonly type = TRY_ADD_BLOG_PHOTO;
+// export class TryAddBlogPhoto implements Action {
+//     readonly type = TRY_ADD_BLOG_PHOTO;
 
-    constructor(public payload:{blogId: number, photo:File}){}
-}
+//     constructor(public payload:{blogId: number, photo:File}){}
+// }
 
 export class TryDeleteBlog implements Action {
     readonly type = TRY_DELETEBLOG;
@@ -174,7 +173,7 @@ export class ToggleCommentForm implements Action {
 
 
 export type AccountActions = TryAddBlog 
-                           | TryAddBlogPhoto
+                        //    | TryAddBlogPhoto
                            | TryDeleteBlog 
                            | GetBlog 
                            | SetBlog 

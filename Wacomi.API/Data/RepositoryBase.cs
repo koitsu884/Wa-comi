@@ -1,23 +1,38 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Wacomi.API.Helper;
+using Wacomi.API.Models;
 
 namespace Wacomi.API.Data
 {
     public abstract class RepositoryBase
     {
         protected readonly ApplicationDbContext _context;
-        private ApplicationDbContext context;
 
         public RepositoryBase(ApplicationDbContext context)
         {
             this._context = context;
         }
+
         public void Add<T>(T entity) where T : class
         {
             _context.Add(entity);
         }
 
+        public async Task<T> Get<T>(int recordId) where T : DataRecord
+        {
+            return await _context.FindAsync<T>(recordId);
+        }
+
+        public IQueryable<T> GetDataRecordByTableName<T>(string tableName) where T : class
+        {
+            PropertyInfo entityProperty = _context.GetType().GetProperty(tableName);
+            return (IQueryable<T>)entityProperty.GetValue(_context, null);
+        }
         public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);

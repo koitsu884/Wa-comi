@@ -106,7 +106,7 @@ export class AttractionEffects {
                 })
                 .map((result) => {
                     if (payload.formData == null) {
-                        this.router.navigate(['/attraction']);
+                        this.router.navigate(['/user/posts/' + payload.attraction.id]);
                         return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
                     }
 
@@ -116,7 +116,7 @@ export class AttractionEffects {
                             recordType: 'attraction',
                             recordId: result.id,
                             formData: payload.formData,
-                            callbackLocation: '/attraction'
+                            callbackLocation: '/user/posts/' + payload.attraction.id
                         }
                     };
                 })

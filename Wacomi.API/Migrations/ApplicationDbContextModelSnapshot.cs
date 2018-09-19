@@ -190,6 +190,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("DateCreated");
 
+                    b.Property<DateTime>("DateUpdated");
+
                     b.Property<string>("DisplayName");
 
                     b.Property<bool>("IsActive");
@@ -239,6 +241,8 @@ namespace Wacomi.API.Migrations
                     b.Property<string>("Introduction")
                         .IsRequired()
                         .HasMaxLength(1500);
+
+                    b.Property<bool>("IsActive");
 
                     b.Property<double?>("Latitude");
 
@@ -318,6 +322,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
+                    b.Property<bool>("IsActive");
+
                     b.Property<int?>("MainPhotoId");
 
                     b.Property<string>("Review")
@@ -362,7 +368,11 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Category3");
 
+                    b.Property<DateTime>("DateCreated");
+
                     b.Property<DateTime?>("DateRssRead");
+
+                    b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Description");
 
@@ -499,6 +509,159 @@ namespace Wacomi.API.Migrations
                     b.ToTable("BusinessProfiles");
                 });
 
+            modelBuilder.Entity("Wacomi.API.Models.Circle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<int?>("CityId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(5000);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<int?>("MainPhotoId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("MainPhotoId");
+
+                    b.ToTable("Circles");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CircleCategories");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleMember", b =>
+                {
+                    b.Property<int>("AppUserId");
+
+                    b.Property<int>("CircleId");
+
+                    b.Property<int>("Role");
+
+                    b.HasKey("AppUserId", "CircleId");
+
+                    b.HasIndex("CircleId");
+
+                    b.ToTable("CircleMembers");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int>("CircleId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(5000);
+
+                    b.Property<int>("PhotoId");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("CircleId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("CircleTopic");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopicComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int>("CircleTopicId");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<int>("PhotoId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("CircleTopicId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("CircleTopicComments");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopicCommentReply", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AppUserId");
+
+                    b.Property<int>("CommentId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
+
+                    b.Property<string>("Reply")
+                        .IsRequired()
+                        .HasMaxLength(1000);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CircleTopicCommentReplies");
+                });
+
             modelBuilder.Entity("Wacomi.API.Models.City", b =>
                 {
                     b.Property<int>("Id")
@@ -522,19 +685,20 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AppUserId");
+                    b.Property<int?>("AppUserId")
+                        .IsRequired();
 
                     b.Property<int?>("CategoryId");
 
-                    b.Property<DateTime>("Created");
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("DateUpdated");
 
                     b.Property<string>("Description");
 
                     b.Property<string>("Email");
 
                     b.Property<bool>("IsActive");
-
-                    b.Property<DateTime>("LastActive");
 
                     b.Property<int>("LocationId");
 
@@ -553,7 +717,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Created");
+                    b.HasIndex("DateCreated");
 
                     b.HasIndex("LocationId");
 
@@ -801,6 +965,8 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("AttractionReviewId");
 
+                    b.Property<int?>("CircleId");
+
                     b.Property<int?>("ClanSeekId");
 
                     b.Property<DateTime>("DateAdded");
@@ -827,6 +993,8 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("AttractionReviewId");
 
+                    b.HasIndex("CircleId");
+
                     b.HasIndex("ClanSeekId");
 
                     b.HasIndex("PropertyId");
@@ -839,7 +1007,8 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AppUserId");
+                    b.Property<int?>("AppUserId")
+                        .IsRequired();
 
                     b.Property<int>("CityId");
 
@@ -1210,6 +1379,81 @@ namespace Wacomi.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Wacomi.API.Models.Circle", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.CircleCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Wacomi.API.Models.Photo", "MainPhoto")
+                        .WithMany()
+                        .HasForeignKey("MainPhotoId");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleMember", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany("CircleMembers")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Circle", "Circle")
+                        .WithMany("CircleMemberList")
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopic", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Circle", "Circle")
+                        .WithMany("Topics")
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopicComment", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.CircleTopic", "CircleTopic")
+                        .WithMany("TopicComments")
+                        .HasForeignKey("CircleTopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleTopicCommentReply", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.CircleTopicComment", "Comment")
+                        .WithMany("Replies")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Wacomi.API.Models.ClanSeek", b =>
                 {
                     b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
@@ -1317,6 +1561,10 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.AttractionReview")
                         .WithMany("Photos")
                         .HasForeignKey("AttractionReviewId");
+
+                    b.HasOne("Wacomi.API.Models.Circle")
+                        .WithMany("Photos")
+                        .HasForeignKey("CircleId");
 
                     b.HasOne("Wacomi.API.Models.ClanSeek")
                         .WithMany("Photos")

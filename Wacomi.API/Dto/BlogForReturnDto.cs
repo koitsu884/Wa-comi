@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Wacomi.API.Dto
@@ -23,5 +24,7 @@ namespace Wacomi.API.Dto
         public int HatedCount{ get; set;}
         public bool IsActive{ get; set;}
         public IEnumerable<BlogFeedForReturnDto> BlogFeeds{ get; set;} = null;
+        public DateTime DateCreated{ get; set;}
+        public DateTime DateUpdated{ get; set;}
     }
 }

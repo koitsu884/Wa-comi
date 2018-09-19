@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import * as fromBlog from '../store/blogs.reducers';
 import * as BlogAction from '../store/blogs.actions';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
-import { Blog } from '../../_models/Blog';
-import { Photo } from '../../_models/Photo';
-import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import {  NgForm } from '@angular/forms';
 import { GlobalService } from '../../_services/global.service';
 import { Location } from '@angular/common';
 
@@ -28,9 +25,7 @@ export class BlogEditorComponent implements OnInit {
 
   constructor(private store: Store<fromBlog.FeatureState>,
     private global: GlobalService,
-    private route: ActivatedRoute,
-    private location: Location,
-    private alertify: AlertifyService) {
+    private route: ActivatedRoute) {
       this.feedUriLoading = false;
       this.loading = false;
      }

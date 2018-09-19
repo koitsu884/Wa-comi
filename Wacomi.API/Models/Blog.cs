@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Wacomi.API.Models
 {
-    public class Blog
+    public class Blog : IDataItemWithSinglePhoto
     {
         public int Id { get; set;}
 
@@ -29,6 +29,7 @@ namespace Wacomi.API.Models
         public int FollowerCount{get; set;}
         public int HatedCount{ get; set;}
         public bool IsActive{ get; set;} = true;
-
+        public DateTime DateCreated {get; set; } = DateTime.Now;
+        public DateTime DateUpdated { get; set;} = DateTime.Now;
     }
 }

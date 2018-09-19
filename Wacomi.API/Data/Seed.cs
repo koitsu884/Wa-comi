@@ -19,6 +19,7 @@ namespace Wacomi.API.Data
             SeedRoles(roleManager);
             SeedUsers(userManager, context);
             SeedClanSeekCategories(context);
+            SeedCircleCategories(context);
             SeedPropertySeekCategories(context);
             SeedAttractionCategories(context);
             SeedDailyTopic(context);
@@ -69,6 +70,40 @@ namespace Wacomi.API.Data
                     if (result == null)
                     {
                         throw new Exception("Failed to create clan seek category " + clanSeekCategory);
+                    }
+                }
+            }
+
+            context.SaveChanges();
+        }
+
+        public static void SeedCircleCategories(ApplicationDbContext context)
+        {
+            string[] circleCategories = {
+                "交流会",
+                "音楽",
+                "スポーツ",
+                "アウトドア",
+                "グルメ",
+                "旅行",
+                "ゲーム",
+                "趣味",
+                "同年代",
+                "勉強・自己啓発",
+                "仕事・ビジネス",
+                "子育て",
+                "インターネット",
+                "その他"
+                };
+
+            foreach (var circleCategory in circleCategories)
+            {
+                if (!context.CircleCategories.Any(h => h.Name == circleCategory))
+                {
+                    var result = context.CircleCategories.AddAsync(new CircleCategory() { Name = circleCategory }).Result;
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create clan seek category " + circleCategory);
                     }
                 }
             }

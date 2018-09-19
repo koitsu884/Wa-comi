@@ -18,4 +18,7 @@ export interface Blog {
     followerCount: number;
     hatedCount: number;
     blogFeeds?: BlogFeed[];
+    isActive:boolean;
+    dateUpdated: Date;
+    dateCreated: Date;
 }

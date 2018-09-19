@@ -31,6 +31,11 @@ const initialState: State = {
 export function propertyReducer(state = initialState, action: PropertyActions.PropertyActions) {
     let tempPagination: Pagination;
     switch (action.type) {
+        case PropertyActions.GET_PROPERTY:
+            return {
+                ...state,
+                selectedProperty: null,
+            }
         case PropertyActions.SET_PROPERTY:
             return {
                 ...state,

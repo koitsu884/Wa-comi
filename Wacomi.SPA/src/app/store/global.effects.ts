@@ -109,7 +109,8 @@ export class GlobalEffect {
         })
         .switchMap((payload) => {
             this.modal.open(UploadingComponent);
-            return this.httpClient.post(this.baseUrl + 'photo/' + payload.recordType + '/' + payload.recordId,
+            //return this.httpClient.post(this.baseUrl + 'photo/' + payload.recordType + '/' + payload.recordId,
+            return this.httpClient.post(this.baseUrl + payload.recordType + '/' +  payload.recordId + '/photo',
                 payload.formData)
                 .map(() => {
                     this.modal.close();

@@ -87,6 +87,19 @@ namespace Wacomi.API.Data
                                                   .OrderBy(bfc => bfc.DateCreated)
                                                   .ToListAsync();
         }
+
+        public async Task<List<Photo>> GetAllFeedsPhotosForBlog(int blogId)
+        {
+            var blogFeeds = await _context.BlogFeeds.Include(bf => bf.Photo)
+                                                    .Where(bf => bf.BlogId == blogId && bf.PhotoId != null)
+                                                    .ToListAsync();
+            List<Photo> photos = new List<Photo>();
+            foreach (var feed in blogFeeds)
+            {
+                photos.Add(feed.Photo);
+            }
+            return photos;
+        }
         public async Task<IEnumerable<BlogFeed>> GetLatestBlogFeeds()
         {
             return await _context.BlogFeeds.Include(bf => bf.Photo)
@@ -156,23 +169,13 @@ namespace Wacomi.API.Data
             return await query.ToListAsync();
         }
 
-        // public async Task DeleteOldFeeds(){
-        //     var targetDate = DateTime.Now.AddMonths(-6);
-        //     var deletingFeeds = await _context.BlogFeeds.Where(bf => bf.PublishingDate <= targetDate).ToListAsync();
-        //   //  _context.BlogFeeds.RemoveRange(deletingFeeds);
-        //     foreach(var feed in deletingFeeds){
-        //         await DeleteFeedLikes(feed.Id);
-        //         await DeleteFeedComments(feed.Id);
-        //         _context.BlogFeeds.Remove(feed);
-        //     }
-        // }
-
         public async Task DeleteFeed(BlogFeed feed)
         {
             await DeleteFeedLikes(feed.Id);
             await DeleteFeedComments(feed.Id);
-            Delete(feed.Photo);
-            Delete(feed);
+            if(feed.Photo != null)
+                Delete(feed.Photo);
+            Delete(feed); 
         }
         public async Task DeleteFeeds(System.DateTime? targetDate = null)
         {
@@ -182,23 +185,9 @@ namespace Wacomi.API.Data
             var deletingFeeds = await query.ToListAsync();
             foreach (var feed in deletingFeeds)
             {
-                await DeleteFeeWithRelatingTablesAndFiles(feed);
+                await DeleteFeed(feed);
             }
         }
-
-        private async Task DeleteFeeWithRelatingTablesAndFiles(BlogFeed feed)
-        {
-            await DeleteFeedLikes(feed.Id);
-            await DeleteFeedComments(feed.Id);
-            // var fileName = System.IO.Path.GetFileName(feed.ImageUrl);
-            // var physicalImagePath = System.IO.Path.Combine(feedImageFolder, feed.BlogId.ToString(), fileName);
-            // System.IO.File.Delete(physicalImagePath);
-            _context.Photos.Remove(feed.Photo);
-            _context.BlogFeeds.Remove(feed);
-        }
-
-
-
         public async Task DeleteFeedLikes(int feedId)
         {
             var deletingFeedLikes = await _context.BlogFeedLikes.Where(bfl => bfl.BlogFeedId == feedId).ToListAsync();
@@ -216,7 +205,7 @@ namespace Wacomi.API.Data
             var deletingFeeds = await _context.BlogFeeds.Where(bf => bf.BlogId == blogId).ToListAsync();
             foreach (var feed in deletingFeeds)
             {
-                await DeleteFeeWithRelatingTablesAndFiles(feed);
+                await DeleteFeed(feed);
             }
         }
     }

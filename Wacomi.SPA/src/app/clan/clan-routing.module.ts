@@ -49,6 +49,7 @@ const clanRoute: Routes = [
     },
     {
         path: 'edit/:id', 
+        runGuardsAndResolvers: 'always',
         component: ClanEditComponent, 
         canActivate: [MemberGuard],
         resolve: {

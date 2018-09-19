@@ -1,6 +1,5 @@
 import { Action } from "@ngrx/store";
 import { City } from "../_models/City";
-import { Hometown } from "../_models/Hometown";
 import { KeyValue } from "../_models/KeyValue";
 import { Category } from "../_models/Category";
 

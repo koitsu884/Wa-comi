@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
@@ -14,17 +15,31 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class ClanSeekController : DataController
+    public class ClanSeekController : DataWithPhotoController
     {
         private readonly ImageFileStorageManager _imageFileStorageManager;
         private readonly ILogger<ClanSeekController> _logger;
         const int CLANSEEK_MAX = 5;
         private readonly IClanSeekRepository _clanRepo;
-        public ClanSeekController(IAppUserRepository appUserRepo, IClanSeekRepository clanRepo, IMapper mapper, ILogger<ClanSeekController> logger, ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper)
+        // private readonly IPhotoRepository _photoRepo;
+        public ClanSeekController(
+            IAppUserRepository appUserRepo,
+            IClanSeekRepository clanRepo,
+            IMapper mapper,
+            IPhotoRepository photoRepo,
+            ILogger<ClanSeekController> logger,
+            ImageFileStorageManager imageFileStorageManager
+        ) : base(appUserRepo, mapper, photoRepo)
         {
             this._clanRepo = clanRepo;
+            // this._photoRepo = photoRepo;
             this._imageFileStorageManager = imageFileStorageManager;
             this._logger = logger;
+        }
+
+        protected override string GetTableName()
+        {
+            return "ClanSeeks";
         }
 
         [HttpGet("{id}", Name = "GetClanSeek")]
@@ -34,6 +49,19 @@ namespace Wacomi.API.Controllers
             var clanSeekForReturn = _mapper.Map<ClanSeekForReturnDto>(clanSeekFromRepo);
             return Ok(clanSeekForReturn);
         }
+
+        [HttpGet("{id}/photo", Name = "GetClanSeekPhotos")]
+        public async Task<ActionResult> GetClanSeekPhotos(int id)
+        {
+            return await base.GetPhotos(id);
+        }
+
+        // [HttpGet("{id}/photo")]
+        // public async Task<ActionResult> GetPhotos(int id)
+        // {
+        //     var photos = await _photoRepo.GetPhotosForDbSet("ClanSeeks", id);
+        //     return Ok(_mapper.Map<IEnumerable<PhotoForReturnDto>>(photos));
+        // }
 
         [HttpGet()]
         //        public async Task<ActionResult> GetClanSeeks(int? categoryId, int? cityId, bool? latest)
@@ -85,6 +113,28 @@ namespace Wacomi.API.Controllers
             return BadRequest("Failed to add clanseek");
         }
 
+        [HttpPost("{id}/photo")]
+        [Authorize]
+        public async Task<ActionResult> AddClanSeekPhotos(int id, List<IFormFile> files){
+            return await AddPhotos(id, files, "GetClanSeekPhotos");
+        }
+
+        // [HttpPost("{id}/photo")]
+        // [Authorize]
+        // public async Task<ActionResult> AddPhotos(int id, List<IFormFile> files){
+        //     var clanFromRepo = await _clanRepo.GetClanSeek(id);
+        //     if(clanFromRepo == null)
+        //         return NotFound();
+        //     if (!await this.MatchAppUserWithToken((int)clanFromRepo.AppUserId))
+        //         return Unauthorized();
+
+        //     var addedPhotoCount = await _photoRepo.AddPhotosToRecord(clanFromRepo, files);
+
+        //     if(addedPhotoCount == 0)
+        //         return BadRequest("写真を追加できませんでした");
+        //     return Ok(this._mapper.Map<PropertyForReturnDto>(clanFromRepo));
+        // }
+
         [HttpPut()]
         [Authorize]
         public async Task<ActionResult> UpdateClanSeek([FromBody]ClanSeekUpdateDto model)
@@ -97,12 +147,11 @@ namespace Wacomi.API.Controllers
             {
                 return NotFound();
             }
-            if (!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
+            if (!await MatchAppUserWithToken((int)clanSeekFromRepo.AppUserId))
             {
                 return Unauthorized();
             }
 
-            model.LastActive = DateTime.Now;
             _mapper.Map(model, clanSeekFromRepo);
             if (await _clanRepo.SaveAll() > 0)
             {
@@ -126,18 +175,34 @@ namespace Wacomi.API.Controllers
             }
             _clanRepo.Delete(clanSeek);
             await _clanRepo.SaveAll();
+            await DeletePhotos(clanSeek.Photos);
 
-            foreach (var photo in clanSeek.Photos)
-            {
-                _clanRepo.Delete(photo);
-                var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
-                if (!string.IsNullOrEmpty(deletingResult.Error))
-                    this._logger.LogError(deletingResult.Error);
-            }
-
-            await _clanRepo.SaveAll();
             return Ok();
         }
+
+        [Authorize]
+        [HttpDelete("{id}/photo/{photoId}")]
+        public async Task<ActionResult> DeleteClanSeekPhoto(int id, int photoId){
+            return await DeletePhoto(id, photoId);
+        }
+
+        // [Authorize]
+        // [HttpDelete("{id}/photo/{photoId}")]
+        // public async Task<ActionResult> DeletePhoto(int id, int photoId)
+        // {
+        //     var clanFromRepo = await _clanRepo.GetClanSeek(id);
+        //     if (clanFromRepo == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     if (!await MatchAppUserWithToken((int)clanFromRepo.AppUserId))
+        //     {
+        //         return Unauthorized();
+        //     }
+
+        //     await _photoRepo.DeletePhoto(photoId);
+        //     return Ok();
+        // }
 
         [Authorize]
         [HttpPut("{id}/{photoId}")]
@@ -150,7 +215,7 @@ namespace Wacomi.API.Controllers
             if (!await _clanRepo.RecordExist("Photo", photoId))
                 return NotFound("Photo " + photoId + " was not found");
 
-            if (!await MatchAppUserWithToken(clanSeekFromRepo.AppUserId))
+            if (!await MatchAppUserWithToken((int)clanSeekFromRepo.AppUserId))
                 return Unauthorized();
 
             clanSeekFromRepo.MainPhotoId = photoId;

@@ -93,6 +93,11 @@ export function attractionReducer(state = initialState, action: AttractionAction
                 loading: false,
                 selectedAttraction: null
             }
+        case AttractionActions.GET_ATTRACTION_REVIEW:
+            return {
+                ...state,
+                selectedAttractionReview: null,
+            }
         case AttractionActions.SET_ATTRACTION_REVIEW:
             return {
                 ...state,

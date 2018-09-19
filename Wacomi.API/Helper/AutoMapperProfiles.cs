@@ -52,9 +52,10 @@ namespace Wacomi.API.Helper
             CreateMap<UserRegistrationDto, Account>();
 
             CreateMap<AppUser, AppUserForReturnDto>()
-              .ForMember(m => m.MainPhoto, opt => opt.MapFrom(src => src.MainPhoto))
               .ForMember(m => m.City, opt => opt.MapFrom(src => src.City.Name));
             CreateMap<AppUserUpdateDto, AppUser>();
+            CreateMap<AppUser, AppUserForListDto>()
+              .ForMember(l => l.CityName, opt => opt.MapFrom(src => src.City.Name));
 
             // CreateMap<MemberRegistrationDto, AppUser>();
             // CreateMap<MemberRegistrationDto, Member>();
@@ -90,6 +91,24 @@ namespace Wacomi.API.Helper
               .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("BlogFeed"))
               .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId))
               .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
+
+            CreateMap<Circle, CircleForReturnDto>()
+              .ForMember(a => a.CircleMemberList, opt => opt.ResolveUsing((src) => {
+                  List<AppUser> users = new List<AppUser> ();
+                  if(src.CircleMemberList != null)
+                  {
+                    foreach( var circleMember in src.CircleMemberList){
+                      users.Add(circleMember.AppUser);
+                    }
+                  }
+                  return users;
+              }
+              ));
+
+            CreateMap<CircleUpdateDto, Circle>();
+
+            CreateMap<CircleTopic, CircleTopicForReturnDto>()
+              .ForMember(ct => ct.CommentCount, opt => opt.MapFrom(src => src.TopicComments.Count()));
 
             CreateMap<PhotoForCreationDto, Photo>();
             CreateMap<Photo, PhotoForReturnDto>()

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Wacomi.API.Data;
 
 namespace Wacomi.API.Models
 {
-    public class Attraction
+    public class Attraction : IDataItemWithMultiplePhotos, IAppUserLinkable
     {
         public int Id {get; set;}
+        public bool IsActive{get; set;} = true;
         public AppUser AppUser{ get; set;}
         public int? AppUserId { get; set;}
         public City City{ get; set;}

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
@@ -12,27 +13,49 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class PropertyController : DataController
+    public class PropertyController : DataWithPhotoController
     {
         private readonly IPropertySeekRepository _repo;
-        private readonly  ILogger<PropertyController> _logger;
-        private readonly ImageFileStorageManager _imageFileStorageManager;
-        public PropertyController(IAppUserRepository appUserRepo, 
-            IPropertySeekRepository repo, 
+        private readonly IPhotoRepository _photoRepo;
+        private readonly ILogger<PropertyController> _logger;
+        // private readonly ImageFileStorageManager _imageFileStorageManager;
+        public PropertyController(IAppUserRepository appUserRepo,
+            IPropertySeekRepository repo,
+            IPhotoRepository photoRepo,
             IMapper mapper,
-            ILogger<PropertyController> logger,
-            ImageFileStorageManager imageFileStorageManager) : base(appUserRepo, mapper)
+            ILogger<PropertyController> logger
+            // ImageFileStorageManager imageFileStorageManager
+            ) : base(appUserRepo, mapper, photoRepo)
         {
             this._repo = repo;
-            this._imageFileStorageManager = imageFileStorageManager;
+            this._photoRepo = photoRepo;
+            // this._imageFileStorageManager = imageFileStorageManager;
             this._logger = logger;
         }
 
-         [HttpGet("{id}", Name = "GetProperty")]
+        protected override string GetTableName()
+        {
+            return "Properties";
+        }
+
+        [HttpGet("{id}", Name = "GetProperty")]
         public async Task<ActionResult> Get(int id)
         {
             return Ok(_mapper.Map<PropertyForReturnDto>(await _repo.GetProperty(id)));
         }
+
+        [HttpGet("{id}/photo", Name = "GetPropertyPhotos")]
+        public async Task<ActionResult> GetPropertyPhotos(int id)
+        {
+            return await GetPhotos(id);
+        }
+
+        // [HttpGet("{id}/photo")]
+        // public async Task<ActionResult> GetPhotos(int id)
+        // {
+        //     var photos = await _photoRepo.GetPhotosForDbSet("Properties", id);
+        //     return Ok(_mapper.Map<IEnumerable<PhotoForReturnDto>>(photos));
+        // }
 
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestProperties()
@@ -54,10 +77,11 @@ namespace Wacomi.API.Controllers
         {
             return Ok(await _repo.GetPropertyCategories());
         }
-    
+
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Post([FromBody]PropertyUpdateDto model){
+        public async Task<ActionResult> Post([FromBody]PropertyUpdateDto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (!await this.MatchAppUserWithToken(model.AppUserId))
@@ -65,16 +89,41 @@ namespace Wacomi.API.Controllers
 
             var newPropertySeek = this._mapper.Map<Property>(model);
             _repo.Add(newPropertySeek);
-            if(await _repo.SaveAll() > 0){
-                return CreatedAtRoute("GetProperty", new {id = newPropertySeek.Id}, _mapper.Map<PropertyForReturnDto>(newPropertySeek)); 
+            if (await _repo.SaveAll() > 0)
+            {
+                return CreatedAtRoute("GetProperty", new { id = newPropertySeek.Id }, _mapper.Map<PropertyForReturnDto>(newPropertySeek));
             }
             return BadRequest("Failed to add property");
         }
 
+        [HttpPost("{id}/photo")]
+        [Authorize]
+        public async Task<ActionResult> AddPropertyPhotos(int id, List<IFormFile> files)
+        {
+            return await AddPhotos(id, files, "GetPropertyPhotos");
+        }
+
+        // [HttpPost("{id}/photo")]
+        // [Authorize]
+        // public async Task<ActionResult> AddPhotos(int id, List<IFormFile> files){
+        //     var propertyFromRepo = await _repo.GetProperty(id);
+        //     if(propertyFromRepo == null)
+        //         return NotFound();
+        //     if (!await this.MatchAppUserWithToken((int)propertyFromRepo.AppUserId))
+        //         return Unauthorized();
+
+        //     var addedPhotoCount = await _photoRepo.AddPhotosToRecord(propertyFromRepo, files);
+
+        //     if(addedPhotoCount == 0)
+        //         return BadRequest("写真を追加できませんでした");
+        //     return Ok(this._mapper.Map<PropertyForReturnDto>(propertyFromRepo));
+        // }
+
         [HttpPost("search")]
-        public async Task<ActionResult> SearchProperties(PaginationParams paginationParams, [FromBody]PropertySeekParameters searchParams){
+        public async Task<ActionResult> SearchProperties(PaginationParams paginationParams, [FromBody]PropertySeekParameters searchParams)
+        {
             var memberProfile = await GetLoggedInMemberProfileAsync();
-            if(memberProfile != null)
+            if (memberProfile != null)
                 searchParams.Gender = memberProfile.Gender;
             var properties = await this._repo.GetProperties(paginationParams, searchParams);
             var propertiesForReturn = this._mapper.Map<IEnumerable<PropertyForReturnDto>>(properties);
@@ -132,18 +181,36 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(propertyFromRepo);
             await _repo.SaveAll();
+            await _photoRepo.DeletePhotos(propertyFromRepo.Photos);
 
-            foreach (var photo in propertyFromRepo.Photos)
-            {
-                _repo.Delete(photo);
-                var deletingResult = this._imageFileStorageManager.DeleteImageFile(photo);
-                if (!string.IsNullOrEmpty(deletingResult.Error))
-                    this._logger.LogError(deletingResult.Error);
-            }
-
-            await _repo.SaveAll();
             return Ok();
         }
+
+        
+        [Authorize]
+        [HttpDelete("{id}/photo/{photoId}")]
+        public async Task<ActionResult> DeletePropertyPhoto(int id, int photoId)
+        {
+            return await DeletePhoto(id, photoId);
+        }
+
+        // [Authorize]
+        // [HttpDelete("{id}/photo/{photoId}")]
+        // public async Task<ActionResult> DeletePhoto(int id, int photoId)
+        // {
+        //     var propertyFromRepo = await _repo.GetProperty(id);
+        //     if (propertyFromRepo == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //     if (!await MatchAppUserWithToken((int)propertyFromRepo.AppUserId))
+        //     {
+        //         return Unauthorized();
+        //     }
+
+        //     await _photoRepo.DeletePhoto(photoId);
+        //     return Ok();
+        // }
 
     }
 }

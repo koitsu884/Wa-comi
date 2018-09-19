@@ -17,8 +17,8 @@ export interface ClanSeek {
     description: string;
     locationId: number;
     locationName: string;
-    created: Date;
-    lastActive: Date;
+    dateCreated: Date;
+    dateUpdated: Date;
 }
 /*public string Title{ get; set;}
         public int? CategoryId{ get; set;}

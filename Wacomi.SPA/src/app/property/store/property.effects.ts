@@ -62,7 +62,7 @@ export class PropertyEffects {
                             recordType: 'property',
                             recordId: result.id,
                             formData: payload.formData,
-                            callbackLocation: '/property'
+                            callbackLocation: '/users/posts/' + payload.property.appUserId
                         }
                     };
                 })

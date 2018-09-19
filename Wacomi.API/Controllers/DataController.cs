@@ -18,8 +18,10 @@ namespace Wacomi.API.Controllers
         }
 
 
-        protected async Task<bool> MatchAppUserWithToken(int appUserId){
-            var appUser = await _appUserRepo.GetAppUser(appUserId);
+        protected async Task<bool> MatchAppUserWithToken(int? appUserId){
+            if(appUserId == null)
+                return false;
+            var appUser = await _appUserRepo.GetAppUser((int)appUserId);
             if(appUser != null && appUser.AccountId == User.FindFirst(ClaimTypes.NameIdentifier).Value){
                 return true;
             }

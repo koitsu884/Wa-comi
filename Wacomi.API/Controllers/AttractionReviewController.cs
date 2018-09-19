@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
@@ -12,16 +13,25 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Controllers
 {
     [Route("api/[controller]")]
-    public class AttractionReviewController : DataController
+    public class AttractionReviewController : DataWithPhotoController
     {
         private readonly IAttractionRepository _attractionRepo;
         private readonly ImageFileStorageManager _imageFileStorageManager;
         private readonly ILogger<AttractionReviewController> _logger;
-        public AttractionReviewController(IAppUserRepository appUserRepository, IMapper mapper, ILogger<AttractionReviewController> logger, ImageFileStorageManager imageFileStorageManager, IAttractionRepository attractionRepo) : base(appUserRepository, mapper)
+        public AttractionReviewController(IAppUserRepository appUserRepository,
+         IMapper mapper, ILogger<AttractionReviewController> logger, 
+         ImageFileStorageManager imageFileStorageManager, 
+         IAttractionRepository attractionRepo,
+         IPhotoRepository photoRepo
+         ) : base(appUserRepository, mapper, photoRepo)
         {
             this._logger = logger;
             this._attractionRepo = attractionRepo;
             this._imageFileStorageManager = imageFileStorageManager;
+        }
+
+        protected override string GetTableName(){
+            return "AttractionReviews";
         }
 
         [HttpGet("{id}", Name = "GetAttractionReview")]
@@ -123,6 +133,24 @@ namespace Wacomi.API.Controllers
 
             await _attractionRepo.SaveAll();
             return Ok();
+        }
+
+        [HttpGet("{id}/photo", Name = "GetAttractionReviewPhotos")]
+        public async Task<ActionResult> GetAttractionReviewPhotos(int id)
+        {
+            return await base.GetPhotos(id);
+        }
+
+        [HttpPost("{id}/photo")]
+        [Authorize]
+        public async Task<ActionResult> AddAttractionPhotos(int id, List<IFormFile> files){
+            return await AddPhotos(id, files, "GetAttractionReviewPhotos");
+        }
+
+        [Authorize]
+        [HttpDelete("{id}/photo/{photoId}")]
+        public async Task<ActionResult> DeleteAttractionReviewPhoto(int id, int photoId){
+            return await DeletePhoto(id, photoId);
         }
 
     }

@@ -12,7 +12,7 @@ export const CLEAR_CLANSEEK_FILTERS = 'CLEAR_CLANSEEK_FILTERS';
 export const SEARCH_CLANSEEKS = 'SEARCH_CLANSEEKS';
 export const SET_CLANSEEK_SEARCH_RESULT = 'SET_CLANSEEK_SEARCH_RESULT';
 export const TRY_ADD_CLANSEEK = 'TRY_ADD_CLANSEEK';
-export const TRY_ADD_CLANSEEK_PHOTOS = 'TRY_ADD_CLANSEEK_PHOTOS';
+// export const TRY_ADD_CLANSEEK_PHOTOS = 'TRY_ADD_CLANSEEK_PHOTOS';
 export const TRY_DELETE_CLANSEEK = 'TRY_DELETE_CLANSEEK';
 export const UPDATE_CLANSEEK = 'UPDATE_CLANSEEK';
 
@@ -21,10 +21,10 @@ export class TryAddClanSeek implements Action {
     constructor(public payload: { clanSeek: ClanSeek, formData:FormData}) {}
 }
 
-export class TryAddClanSeekPhotos implements Action {
-    readonly type = TRY_ADD_CLANSEEK_PHOTOS;
-    constructor(public payload: {clanSeekId: number, formData:FormData}){}
-}
+// export class TryAddClanSeekPhotos implements Action {
+//     readonly type = TRY_ADD_CLANSEEK_PHOTOS;
+//     constructor(public payload: {clanSeekId: number, formData:FormData}){}
+// }
 
 export class GetClanSeek implements Action {
     readonly type = GET_CLANSEEK;
@@ -85,7 +85,7 @@ export class TryDeleteClanSeek implements Action {
 
 
 export type ClanSeekActions = TryAddClanSeek 
-                            | TryAddClanSeekPhotos
+                            // | TryAddClanSeekPhotos
                             | GetClanSeek 
                             | CheckClanseeksCountLimit
                             | SetCountLimitFlag

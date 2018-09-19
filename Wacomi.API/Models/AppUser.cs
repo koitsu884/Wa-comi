@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Wacomi.API.Data;
 
 namespace Wacomi.API.Models
 {
-    public class AppUser
+    public class AppUser : IDataItemWithMultiplePhotos
     {
         public int Id { get; set;}
         [Required]
@@ -27,11 +28,13 @@ namespace Wacomi.API.Models
         public int TotalLikeW {get; set;} = 0;
 
         public DateTime DateCreated {get; set;} = DateTime.Now;
+        public DateTime DateUpdated {get; set;} = DateTime.Now;
         public DateTime LastActive{get; set;} = DateTime.Now;
         public virtual ICollection<Message> MessageReceived{ get; set;}
         public virtual ICollection<Message> MessageSent{ get; set;}
         public virtual ICollection<Photo> Photos { get; set; }
         public virtual ICollection<Blog>  Blogs { get; set;}
         public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
+        public virtual ICollection<CircleMember> CircleMembers { get; set;}
     }
 }

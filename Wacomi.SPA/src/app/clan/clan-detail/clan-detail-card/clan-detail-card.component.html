@@ -1,6 +1,6 @@
 <div *ngIf="clanSeek">
-  <h5>投稿日:{{clanSeek.created | date: 'mediumDate'}}</h5>
-  <h5>最終更新日：{{clanSeek.lastActive | date: 'mediumDate'}}</h5>
+  <h5>投稿日:{{clanSeek.dateCreated | date: 'mediumDate'}}</h5>
+  <h5>最終更新日：{{clanSeek.dateUpdated | date: 'mediumDate'}}</h5>
   <h4>投稿者</h4>
   <img *ngIf="clanSeek.appUserIconUrl" src="{{clanSeek.appUserIconUrl}}"/>
   <a [routerLink]="['/users/detail/' + clanSeek.appUserId]" style="cursor: pointer">{{clanSeek.displayName}}</a>
