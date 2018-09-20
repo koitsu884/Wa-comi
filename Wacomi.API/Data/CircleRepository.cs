@@ -31,6 +31,7 @@ namespace Wacomi.API.Data
         {
             return await _context.Circles.Include(c => c.Category)
                                          .Include(c => c.City)
+                                         .Include(c => c.AppUser)
                                          .Include(c => c.Photos)
                                          .Include(c => c.MainPhoto)
                                          .Include(c => c.CircleMemberList)
@@ -59,8 +60,8 @@ namespace Wacomi.API.Data
 
             if (searchOptions.CityId > 0)
                 query = query.Where(c => c.CityId == searchOptions.CityId);
-            if (searchOptions.Category != null)
-                query = query.Where(c => c.Category.Id == searchOptions.Category.Id);
+            if (searchOptions.CategoryId > 0)
+                query = query.Where(c => c.Category.Id == searchOptions.CategoryId);
 
             return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }

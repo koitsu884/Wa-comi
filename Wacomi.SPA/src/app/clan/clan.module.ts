@@ -4,7 +4,6 @@ import { SharedModule } from "../shared/shared.module";
 import { ClanDetailComponent } from './clan-detail/clan-detail.component';
 import { ClanEditComponent } from "./clan-edit/clan-edit.component";
 import { ClanSeekCategoryResolver } from "../_resolvers/clanseek-categories.resolver";
-import { ClanListComponent } from "./clan-home/clan-list/clan-list.component";
 import { ClanRoutingModule } from "./clan-routing.module";
 import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
@@ -15,7 +14,6 @@ import { ClanDetailInfoComponent } from "./clan-detail/clan-detail-info/clan-det
 import { ClanSeekEditResolver } from "../_resolvers/clanseek-edit.resolver";
 import { ClanSeekResolver } from "./_resolver/clanseek.resolver";
 import { PaginationModule } from "ngx-bootstrap";
-import { LatestClanListComponent } from "../core/home/latest-clan-list/latest-clan-list.component";
 
 @NgModule({
     declarations: [

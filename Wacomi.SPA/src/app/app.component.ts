@@ -51,6 +51,7 @@ export class AppComponent implements OnInit{
     this.store.dispatch(new GlobalActions.GetCityList());
     this.store.dispatch(new GlobalActions.GetHometownList());
     this.store.dispatch(new GlobalActions.GetClanCategoryList());
+    this.store.dispatch(new GlobalActions.GetCircleCategoryList());
     this.store.dispatch(new GlobalActions.GetAttractionCategoryList());
     this.store.dispatch(new GlobalActions.GetPropertyCategoryList());
   }

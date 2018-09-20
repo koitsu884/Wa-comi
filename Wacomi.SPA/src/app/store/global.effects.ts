@@ -102,6 +102,22 @@ export class GlobalEffect {
         })
 
     @Effect()
+    getCircleCategoryList = this.actions$
+        .ofType(GlobalActions.GET_CIRCLE_CATEGORY_LIST)
+        .switchMap(() => {
+            return this.httpClient.get<Category[]>(this.baseUrl + 'circle/categories')
+                .map((result) => {
+                    return {
+                        type: GlobalActions.SET_CIRCLE_CATEGORY_LIST,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
     tryAddPhotos = this.actions$
         .ofType(GlobalActions.TRY_ADD_PHOTOS)
         .map((action: GlobalActions.TryAddPhotos) => {
@@ -110,7 +126,7 @@ export class GlobalEffect {
         .switchMap((payload) => {
             this.modal.open(UploadingComponent);
             //return this.httpClient.post(this.baseUrl + 'photo/' + payload.recordType + '/' + payload.recordId,
-            return this.httpClient.post(this.baseUrl + payload.recordType + '/' +  payload.recordId + '/photo',
+            return this.httpClient.post(this.baseUrl + payload.recordType + '/' + payload.recordId + '/photo',
                 payload.formData)
                 .map(() => {
                     this.modal.close();
@@ -140,6 +156,58 @@ export class GlobalEffect {
         })
 
     @Effect()
+    getRecord = this.actions$
+        .ofType(GlobalActions.GET_RECORD)
+        .map((action: GlobalActions.GetRecord) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.get<any>(this.baseUrl + payload.recordType + '/' + payload.recordId)
+                .map((result) => {
+                    return {
+                        type: payload.callbackAction,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    tryAddRecord = this.actions$
+        .ofType(GlobalActions.TRY_ADD_RECORD)
+        .map((action: GlobalActions.TryAddRecord) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.post<any>(this.baseUrl + payload.recordType,
+                payload.record,
+                {
+                    headers: new HttpHeaders().set('Content-Type', 'application/json')
+                })
+                .map((result) => {
+                    if (!payload.formData) {
+                        this.router.navigate([payload.callbackLocation ? payload.callbackLocation : '/users/posts/' + payload.record.appUserId]);
+                        return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
+                    }
+
+                    return {
+                        type: GlobalActions.TRY_ADD_PHOTOS,
+                        payload: {
+                            recordType: payload.recordType,
+                            recordId: result.id,
+                            formData: payload.formData,
+                            callbackLocation: '/users/posts/' + payload.record.appUserId
+                        }
+                    };
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
     updateRecord = this.actions$
         .ofType(GlobalActions.UPDATE_RECORD)
         .map((action: GlobalActions.UpdateRecord) => {
@@ -153,10 +221,10 @@ export class GlobalEffect {
                 })
                 .mergeMap(() => {
                     let returnValues: Array<any> = [{ type: GlobalActions.SUCCESS, payload: "更新しました" }];
-                    if(payload.callbackLocation)
+                    if (payload.callbackLocation)
                         this.router.navigate([payload.callbackLocation]);
-                    if(payload.recordSetActionType)
-                        returnValues.push({type: payload.recordSetActionType, payload: payload.record});
+                    if (payload.recordSetActionType)
+                        returnValues.push({ type: payload.recordSetActionType, payload: payload.record });
 
                     return returnValues;
                 })

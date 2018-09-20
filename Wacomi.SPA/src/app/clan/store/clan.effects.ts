@@ -13,7 +13,6 @@ import 'rxjs/add/operator/withLatestFrom';
 import { Store } from "@ngrx/store";
 import * as fromClan from "./clan.reducers";
 import { ModalService } from "../../_services/modal.service";
-import { UploadingComponent } from "../../core/modal/uploading/uploading.component";
 
 @Injectable()
 export class ClanSeekEffects {

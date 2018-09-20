@@ -28,7 +28,7 @@ namespace Wacomi.API.Models
         public Photo MainPhoto  { get; set; }
         public int? MainPhotoId  { get; set; }
         public bool IsActive  { get; set; } = true;
-        public DateTime DateCreated  { get; set; } =DateTime.Now;
+        public DateTime DateCreated  { get; set; } = DateTime.Now;
         public DateTime DateUpdated  { get; set; } = DateTime.Now;
     }
 }

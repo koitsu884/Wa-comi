@@ -18,6 +18,7 @@ const appRoutes: Routes = [
   { path: 'message', loadChildren: './message/message.module#MessageModule'},
   { path: 'attraction', loadChildren: './attraction/attraction.module#AttractionModule'},
   { path: 'property', loadChildren: './property/property.module#PropertyModule'},
+  { path: 'circle', loadChildren: './circle/circle.module#CircleModule'},
   { path: 'admin', loadChildren: './admin/admin.module#AdminModule'},
   // { path: 'member', loadChildren: './users/members/members.module#MembersModule'},
   { path: 'users', loadChildren: './users/users.module#UsersModule'},

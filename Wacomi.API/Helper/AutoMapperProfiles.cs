@@ -49,7 +49,7 @@ namespace Wacomi.API.Helper
 
             CreateMap<AttractionReviewUpdateDto, AttractionReview>();
 
-            CreateMap<UserRegistrationDto, Account>();
+
 
             CreateMap<AppUser, AppUserForReturnDto>()
               .ForMember(m => m.City, opt => opt.MapFrom(src => src.City.Name));
@@ -93,6 +93,8 @@ namespace Wacomi.API.Helper
               .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<Circle, CircleForReturnDto>()
+              .ForMember(a => a.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+              .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.City.Name))
               .ForMember(a => a.CircleMemberList, opt => opt.ResolveUsing((src) => {
                   List<AppUser> users = new List<AppUser> ();
                   if(src.CircleMemberList != null)
@@ -167,6 +169,8 @@ namespace Wacomi.API.Helper
               .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply));
 
             CreateMap<TopicCommentFeel, TopicCommentFeelForReturnDto>();
+
+            CreateMap<UserRegistrationDto, Account>();
 
             CreateMap<Friend, FriendForReturnDto>()
               .ForMember(f => f.FriendDisplayName,

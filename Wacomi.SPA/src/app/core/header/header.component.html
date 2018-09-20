@@ -15,6 +15,7 @@
         <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
         <li routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
         <li routerLinkActive="active"><a [routerLink]="['/property']" >住まい</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/circle']" >コミュニティ</a></li>
         <li routerLinkActive="active"><a [routerLink]="['/attraction']" >スポット</a></li>
         <li routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
         <li routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>

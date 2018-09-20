@@ -11,9 +11,13 @@ export const GET_ATTRACTION_CATEGORY_LIST = 'GET_ATTRACTION_CATEGORY_LIST';
 export const SET_ATTRACTION_CATEGORY_LIST = 'SET_ATTRACTION_CATEGORY_LIST';
 export const GET_PROPERTY_CATEGORY_LIST = 'GET_PROPERTY_CATEGORY_LIST';
 export const SET_PROPERTY_CATEGORY_LIST = 'SET_PROPERTY_CATEGORY_LIST';
+export const GET_CIRCLE_CATEGORY_LIST = 'GET_CIRCLE_CATEGORY_LIST';
+export const SET_CIRCLE_CATEGORY_LIST = 'SET_CIRCLE_CATEGORY_LIST';
 export const GET_CLANCATEGORY_LIST = 'GET_CLANCATEGORY_LIST';
 export const SET_CLANCATEGORY_LIST = 'SET_CLANCATEGORY_LIST';
 export const TRY_ADD_PHOTOS = 'TRY_ADD_PHOTOS';
+export const TRY_ADD_RECORD = 'TRY_ADD_RECORD';
+export const GET_RECORD = 'GET_RECORD';
 export const DELETE_RECORD = 'DELETE_RECORD';
 export const UPDATE_RECORD = 'UPDATE_RECORD';
 export const SUCCESS = 'SUCCESS';
@@ -71,14 +75,34 @@ export class SetPropertyCategoryList implements Action {
     constructor(public payload: Category[]) {}
 }
 
+export class GetCircleCategoryList implements Action {
+    readonly type = GET_CIRCLE_CATEGORY_LIST;
+    constructor() {}
+}
+
+export class SetCircleCategoryList implements Action {
+    readonly type = SET_CIRCLE_CATEGORY_LIST;
+    constructor(public payload: Category[]) {}
+}
+
 export class TryAddPhotos implements Action {
     readonly type = TRY_ADD_PHOTOS;
     constructor(public payload: {recordType:string, recordId: number, formData:FormData, callbackLocation:string}){};
 }
 
+export class GetRecord implements Action {
+    readonly type = GET_RECORD;
+    constructor(public payload: {recordType:string, recordId:number, callbackAction:string}){};
+}
+
 export class DeleteRecord implements Action {
     readonly type = DELETE_RECORD;
     constructor(public payload: {recordType:string, recordId:number, callbackLocation:string}){};
+}
+
+export class TryAddRecord implements Action {
+    readonly type = TRY_ADD_RECORD;
+    constructor(public payload: {recordType:string, record: any, formData?:FormData, callbackLocation?:string}){};
 }
 
 export class UpdateRecord implements Action {
@@ -109,6 +133,9 @@ export type GlobalActions = GetCityList
                           | SetAttractionCategoryList
                           | GetPropertyCategoryList
                           | SetPropertyCategoryList
+                          | GetCircleCategoryList
+                          | SetCircleCategoryList
+                          | TryAddRecord
                           | UpdateRecord
                           | DeleteRecord
                           | Success

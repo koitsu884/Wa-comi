@@ -33,6 +33,7 @@ import { PropertyInternetPipe } from '../_pipes/propertyInternet.pipe';
 import { PropertyGenderPipe } from '../_pipes/propertyGender.pipe';
 import { PropertyTermsPipe } from '../_pipes/propertyTerms.pipe';
 import { PropertyRentTypePipe } from '../_pipes/propertyRentType.pipe';
+import { CircleListComponent } from '../circle/circle-list/circle-list.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { PropertyRentTypePipe } from '../_pipes/propertyRentType.pipe';
     BlogfeedListComponent,
     ClanListComponent,
     PropertyListComponent,
+    CircleListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
     PhotoSelectorComponent,
@@ -99,6 +101,7 @@ import { PropertyRentTypePipe } from '../_pipes/propertyRentType.pipe';
     BlogfeedListComponent,
     ClanListComponent,
     PropertyListComponent,
+    CircleListComponent,
     BlogfeedCardComponent,
     ShortCommentFormComponent,
     PhotoSelectorComponent,

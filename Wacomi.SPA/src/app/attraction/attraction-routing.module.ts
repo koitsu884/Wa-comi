@@ -42,7 +42,7 @@ const attractionRoute: Routes = [
     {
         path: 'edit', 
         component: AttractionEditComponent, 
-        canActivate: [MemberGuard],
+        canActivate: [AuthGuard],
         resolve: {
             appUser:AppUserResolver,
             cities:CityListResolver,
@@ -52,7 +52,7 @@ const attractionRoute: Routes = [
     {
         path: 'edit/:id', 
         component: AttractionEditComponent, 
-        canActivate: [MemberGuard],
+        canActivate: [AuthGuard],
         resolve: {
             appUser:AppUserResolver,
             cities:CityListResolver,

@@ -6,8 +6,7 @@ using Wacomi.API.Models;
 namespace Wacomi.API.Data
 {
     public class CircleSearchParameter{
-        public int? AppUserId{ get; set;}
-        public CircleCategory Category {get; set;}
+        public int CategoryId {get; set;}
         public int CityId {get; set;}
     }
 

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { City } from '../_models/City';
-import { Hometown } from '../_models/Hometown';
 import 'rxjs/add/operator/catch';
 import { BlogFeed } from '../_models/BlogFeed';
 import { ClanSeek } from '../_models/ClanSeek';

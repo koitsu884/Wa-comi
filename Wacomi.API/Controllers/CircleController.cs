@@ -16,13 +16,13 @@ namespace Wacomi.API.Controllers
     public class CircleController : DataWithPhotoController
     {
         private readonly ICircleRepository _repo;
-        private readonly  ILogger<CircleController> _logger;
+        private readonly ILogger<CircleController> _logger;
         private readonly ImageFileStorageManager _imageFileStorageManager;
-        public CircleController(IAppUserRepository appUserRepository, 
-            IMapper mapper, 
-            ICircleRepository repo, 
-            IPhotoRepository photoRepo, 
-            ImageFileStorageManager imageFileStorageManager, 
+        public CircleController(IAppUserRepository appUserRepository,
+            IMapper mapper,
+            ICircleRepository repo,
+            IPhotoRepository photoRepo,
+            ImageFileStorageManager imageFileStorageManager,
             ILogger<CircleController> logger) : base(appUserRepository, mapper, photoRepo)
         {
             _repo = repo;
@@ -30,18 +30,20 @@ namespace Wacomi.API.Controllers
             _logger = logger;
         }
 
-        protected override string GetTableName(){
+        protected override string GetTableName()
+        {
             return "Circles";
         }
 
-         [HttpGet("{id}", Name = "GetCircle")]
+        [HttpGet("{id}", Name = "GetCircle")]
         public async Task<ActionResult> Get(int id)
         {
             return Ok(_mapper.Map<CircleForReturnDto>(await _repo.GetCircle(id)));
         }
 
         [HttpGet("test")]
-        public async Task<ActionResult> Test(){
+        public async Task<ActionResult> Test()
+        {
             _repo.Test();
             return Ok();
         }
@@ -67,33 +69,40 @@ namespace Wacomi.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Post([FromBody]CircleUpdateDto model){
+        public async Task<ActionResult> Post([FromBody]CircleUpdateDto model)
+        {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (!await this.MatchAppUserWithToken(model.AppUserId))
                 return Unauthorized();
 
             var newCircle = this._mapper.Map<Circle>(model);
-            var ownerUser = _appUserRepo.GetAppUser(model.AppUserId);
-            if(ownerUser == null){
+            var ownerUser = await _appUserRepo.GetAppUser(model.AppUserId);
+            if (ownerUser == null)
+            {
                 _logger.LogError("User not found: " + model.AppUserId);
                 return NotFound("ユーザーが見つかりません");
             }
 
-            newCircle.CircleMemberList = new List<CircleMember>();
-            newCircle.CircleMemberList.Add(new CircleMember(){
+            newCircle.CircleMemberList = new List<CircleMember>(){
+                new CircleMember(){
                     AppUserId = model.AppUserId,
-                    Role = CircleRoleEnum.OWNER
+                    Role = CircleRoleEnum.OWNER,
+                    CircleId = newCircle.Id
                 }
-            );
+            };
+
             _repo.Add(newCircle);
             await _repo.SaveAll();
 
-            return CreatedAtRoute("GetCircle", new {id = newCircle.Id}, _mapper.Map<CircleForReturnDto>(newCircle));
+
+
+            return CreatedAtRoute("GetCircle", new { id = newCircle.Id }, _mapper.Map<CircleForReturnDto>(newCircle));
         }
 
         [HttpPost("search")]
-        public async Task<ActionResult> SearchCircles(PaginationParams paginationParams, [FromBody]CircleSearchParameter searchParams){
+        public async Task<ActionResult> SearchCircles(PaginationParams paginationParams, [FromBody]CircleSearchParameter searchParams)
+        {
             var circles = await this._repo.GetCircles(paginationParams, searchParams);
             var circlesForReturn = this._mapper.Map<IEnumerable<CircleForReturnDto>>(circles);
 
@@ -101,19 +110,19 @@ namespace Wacomi.API.Controllers
             return Ok(circlesForReturn);
         }
 
-         [HttpPut()]
+        [HttpPut()]
         [Authorize]
         public async Task<ActionResult> Put([FromBody]CircleUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var circleFromRepo = await this._repo.GetCircle(model.Id);
+            var circleFromRepo = await this._repo.GetCircle((int)model.Id);
             if (circleFromRepo == null)
             {
                 return NotFound();
             }
- 
+
             if (!await _repo.CheckUpdatePermission(model.AppUserId))
             {
                 return Unauthorized();
@@ -154,7 +163,8 @@ namespace Wacomi.API.Controllers
             await _repo.SaveAll();
 
             var errors = this._imageFileStorageManager.DeleteAttachedPhotos(circleFromRepo.Photos);
-            foreach(var error in errors){
+            foreach (var error in errors)
+            {
                 this._logger.LogError(error);
             }
             await _repo.SaveAll();
@@ -169,16 +179,18 @@ namespace Wacomi.API.Controllers
 
         [HttpPost("{id}/photo")]
         [Authorize]
-        public async Task<ActionResult> AddCirclePhotos(int id, List<IFormFile> files){
+        public async Task<ActionResult> AddCirclePhotos(int id, List<IFormFile> files)
+        {
             return await AddPhotos(id, files, "GetCirclePhotos");
         }
 
         [Authorize]
         [HttpDelete("{id}/photo/{photoId}")]
-        public async Task<ActionResult> DeleteCirclePhoto(int id, int photoId){
+        public async Task<ActionResult> DeleteCirclePhoto(int id, int photoId)
+        {
             return await DeletePhoto(id, photoId);
         }
 
     }
-    
+
 }

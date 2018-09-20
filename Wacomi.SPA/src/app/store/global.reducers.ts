@@ -10,6 +10,7 @@ export interface State {
     clanSeekCategories: KeyValue[];
     attractionCategories: Category[];
     propertyCategories: Category[];
+    circleCategories: Category[];
 }
 
 const initialState: State = {
@@ -18,6 +19,7 @@ const initialState: State = {
     clanSeekCategories : [],
     attractionCategories: [],
     propertyCategories: [],
+    circleCategories: []
 };
 
 export function globalReducer(state = initialState, action: GlobalActions.GlobalActions ){
@@ -48,6 +50,11 @@ export function globalReducer(state = initialState, action: GlobalActions.Global
         return {
             ...state,
             propertyCategories: action.payload
+        }
+        case GlobalActions.SET_CIRCLE_CATEGORY_LIST:
+        return {
+            ...state,
+            circleCategories: action.payload
         }
         default:
             return state;

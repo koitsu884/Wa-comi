@@ -19,25 +19,6 @@ export class PropertyEffects {
         private router: Router,
         private httpClient: HttpClient) { }
 
-    // @Effect()
-    // tryDeleteClanSeek = this.actions$
-    //     .ofType(PropertyActions.TRY_DELETE_PROPERTY)
-    //     .switchMap((actions: PropertyActions.TryDeleteProperty) => {
-    //         return this.httpClient.delete(this.baseUrl + 'property/' + actions.payload,
-    //             {
-    //                 headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //             })
-    //             .mergeMap(() => {
-    //                 this.router.navigate(['/property']);
-    //                 return [{
-    //                     type: GlobalActions.SUCCESS, payload: "削除しました"
-    //                 }];
-    //             })
-    //             .catch((error: string) => {
-    //                 return of({ type: GlobalActions.FAILED, payload: error })
-    //             });
-    //     })
-
     @Effect()
     tryAddProperty = this.actions$
         .ofType(PropertyActions.TRY_ADD_PROPERTY)
