@@ -28,6 +28,17 @@ const initialState: State = {
 export function circleReducer(state = initialState, action: CircleActions.CircleActions) {
     let tempPagination: Pagination;
     switch (action.type) {
+        case CircleActions.INIT_CIRCLE_STATE:
+            return {
+                ...state,
+                selectedCircle: null,
+                circles: [],
+                searchParam: <CircleSearchOptions>{
+                    categoryId: 0,
+                    cityId: 0,
+                },
+                pagination: null
+            }
         case CircleActions.GET_CIRCLE:
             return {
                 ...state,
@@ -44,15 +55,16 @@ export function circleReducer(state = initialState, action: CircleActions.Circle
                 searchParam: action.payload,
             }
         case CircleActions.SET_CIRCLE_PAGE:
+            tempPagination = state.pagination;
+            tempPagination.currentPage = action.payload;
             return {
                 ...state,
-                pagination: action.payload,
+                pagination: tempPagination
             }
         case CircleActions.SEARCH_CIRCLE:
             return {
                 ...state,
-                circles: null,
-                pagination: null
+                circles: null
             }
         case CircleActions.SET_CIRCLE_SEARCH_RESULT:
             return {

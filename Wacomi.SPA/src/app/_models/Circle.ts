@@ -1,7 +1,5 @@
 import { IDataItemWithMultiplePhotos } from "./DataItemWithMultiplePhotos";
 import { IAppUserLinkable } from "./IAppUserLinkable";
-import { Category } from "./Category";
-import { City } from "./City";
 
 export interface Circle extends IDataItemWithMultiplePhotos, IAppUserLinkable {
     id: number;
@@ -12,6 +10,8 @@ export interface Circle extends IDataItemWithMultiplePhotos, IAppUserLinkable {
     cityId: number;
     description :string;
     approvalRequired: boolean;
+    dateCreated: Date;
+    dateUpdated: Date;
 }
 // public int Id{ get; set;}
 // public AppUserForReturnDto AppUser{ get; set;}

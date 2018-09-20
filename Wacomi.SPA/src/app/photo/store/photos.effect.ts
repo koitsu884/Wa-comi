@@ -79,7 +79,8 @@ export class PhotoEffect{
             this.alertify.message("写真をアップロード中…");
 
             return this.httpClient.post(
-                this.baseUrl + 'photo/' + photoState.photo.recordType + '/' + photoState.photo.recordId,
+                this.baseUrl + photoState.photo.recordType + '/' + photoState.photo.recordId + '/photo',
+                //this.baseUrl + 'photo/' + photoState.photo.recordType + '/' + photoState.photo.recordId,
                 formData)
             .mergeMap(() => {
                 return [

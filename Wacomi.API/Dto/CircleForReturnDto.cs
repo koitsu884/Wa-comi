@@ -8,13 +8,14 @@ namespace Wacomi.API.Dto
     {
         public int Id{ get; set;}
         public AppUserForReturnDto AppUser{ get; set;}
+        public int AppUserId{ get; set;}
         public string Name{ get; set;}
         public string CategoryName { get; set;}
         public int CategoryId { get; set;}
         public string CityName { get; set;}
         public int CityId { get; set;}
         public string Description{ get; set;}
-        bool ApprovalRequired { get; set;}
+        public bool ApprovalRequired { get; set;}
         public ICollection<AppUserForListDto> CircleMemberList {get; set;}
         public virtual ICollection<PhotoForReturnDto> Photos{ get; set;}
         public virtual ICollection<CircleTopicForReturnDto> Topics{ get; set;}

@@ -152,6 +152,10 @@ export class PropertyHomeComponent implements OnInit {
     this.closeSearchPanel = false;
   }
 
+pageChanged(event) {
+    this.store.dispatch(new PropertyActions.SetPropertyPage(event.page));
+ }
+
   onSearch(){
     this.loading = true;
     if(this.mobile)

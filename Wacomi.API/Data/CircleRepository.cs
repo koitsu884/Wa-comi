@@ -31,7 +31,7 @@ namespace Wacomi.API.Data
         {
             return await _context.Circles.Include(c => c.Category)
                                          .Include(c => c.City)
-                                         .Include(c => c.AppUser)
+                                         .Include(c => c.AppUser).ThenInclude(a => a.MainPhoto)
                                          .Include(c => c.Photos)
                                          .Include(c => c.MainPhoto)
                                          .Include(c => c.CircleMemberList)

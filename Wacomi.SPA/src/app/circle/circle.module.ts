@@ -10,12 +10,16 @@ import { circleReducer } from "./store/circle.reducers";
 import { EffectsModule } from "@ngrx/effects";
 import { CircleEffects } from "./store/circle.effects";
 import { CircleCategoryResolver } from "../_resolvers/circle-categories.resolver";
+import { CircleInfoComponent } from "./circle-details/circle-info/circle-info.component";
+import { CircleSideinfoComponent } from "./circle-details/circle-sideinfo/circle-sideinfo.component";
 
 @NgModule({
     declarations: [
         CircleHomeComponent,
         CircleEditComponent,
-        CircleDetailsComponent
+        CircleDetailsComponent,
+        CircleInfoComponent,
+        CircleSideinfoComponent
     ],
     imports: [
         CircleRoutingModule,

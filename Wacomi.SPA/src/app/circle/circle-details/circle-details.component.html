@@ -1,4 +1,23 @@
-<div *ngIf="circle">
-  <h5>{{circle.name}}</h5>
-  <div>{{circle.description}}</div>
+<div class="container">
+  <app-loading *ngIf="!circle"></app-loading>
+  <div *ngIf="circle">
+    <div class="row">
+      <div class="col-sm-8">
+        <app-circle-info [circle]="circle"></app-circle-info>
+      </div>
+      <div class="col-sm-4">
+          <app-user-info-card 
+          [appUser]="circle.appUser"
+          [dateCreated]="circle.dateCreated" 
+          [dateUpdate]="circle.dateUpdated" 
+          (messageSend)="onMessageSend()"
+        ></app-user-info-card>
+        <app-circle-sideinfo [circle]="circle"></app-circle-sideinfo>
+      </div>
+    </div>
+    <div *ngIf="isMine">
+      <a class="btn btn-primary" [routerLink]="['/circle/edit',  circle.id]">編集</a>
+      <a class="btn btn-danger" (click)="onDelete(circle.id)">削除</a>
+    </div>
+  </div>
 </div>

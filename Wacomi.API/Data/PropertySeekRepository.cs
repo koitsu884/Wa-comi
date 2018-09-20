@@ -118,7 +118,7 @@ namespace Wacomi.API.Data
         {
             return await _context.Properties.Include(p => p.Categorizations)
                                              .ThenInclude(c => c.PropertySeekCategory)
-                                             .Include(p => p.AppUser)
+                                             .Include(p => p.AppUser).ThenInclude(au => au.MainPhoto)
                                              .Include(p => p.Photos)
                                              .Include(p => p.City)
                                              .FirstOrDefaultAsync(p => p.Id == id);

@@ -16,9 +16,10 @@ namespace Wacomi.API.Dto
         [Required]
         [MaxLength(5000)]
         public string Description{ get; set;}
-        bool ApprovalRequired { get; set;} = false;
+        public bool ApprovalRequired { get; set;} = false;
         [Required]
         public int AppUserId{ get; set;}
+        public int? MainPhotoId { get; set;}
         public DateTime DateUpdated{ get; set;} = DateTime.Now;
     }
 }

@@ -1,3 +1,4 @@
+import * as GlobalActions from '../../store/global.actions';
 import * as CircleActions from '../store/circle.actions';
 import * as fromCircle from '../store/circle.reducers';
 import { Component, OnInit } from '@angular/core';
@@ -5,6 +6,8 @@ import { Circle } from '../../_models/Circle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppUser } from '../../_models/AppUser';
 import { Store } from '@ngrx/store';
+import { MessageService } from '../../_services/message.service';
+import { AlertifyService } from '../../_services/alertify.service';
 
 @Component({
   selector: 'app-circle-details',
@@ -17,7 +20,11 @@ export class CircleDetailsComponent implements OnInit {
   appUser: AppUser;
   isMine: boolean;
 
-  constructor(private route: ActivatedRoute, private router: Router, private store: Store<fromCircle.FeatureState>) { }
+  constructor(private route: ActivatedRoute, 
+        private router: Router, 
+        private alertify: AlertifyService,
+        private store: Store<fromCircle.FeatureState>,
+        private messageService: MessageService) { }
 
   ngOnInit() {
     this.circle = null;
@@ -36,6 +43,29 @@ export class CircleDetailsComponent implements OnInit {
         this.isMine = this.appUser.id == this.circle.appUser.id;
       this.loading = false;
     });
+  }
+
+  onMessageSend() {
+    this.messageService.preparSendingeMessage(
+      {
+        title: "RE:" + this.circle.name,
+        recipientDisplayName: this.circle.appUser.displayName,
+        recipientId: this.circle.appUser.id,
+        senderId: this.appUser.id
+      },
+      "<p class='text-info'>以下のコミュニティに対して管理人にメッセージを送ります</p>"
+       + "<h5>コミュニティ名：" + this.circle.name + "</h5>"
+       + this.circle.description
+    );
+    this.router.navigate(['/message/send']);
+  }
+
+  onDelete(id: number){
+    this.alertify.confirm('本当に削除しますか?', () => {
+      this.loading = true;
+      this.store.dispatch(new CircleActions.InitCircleState());
+      this.store.dispatch(new GlobalActions.DeleteRecord({recordType:'circle', recordId:id, callbackLocation:'/users/posts/' + this.appUser.id}));
+    })
   }
 
 }

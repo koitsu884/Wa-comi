@@ -1,0 +1,17 @@
+<div class="clanDetailInfo" *ngIf="circle">
+    <h2>{{circle.name}}</h2>
+    <h4>エリア：{{circle.cityName}}</h4>
+    <app-photo-gallery *ngIf="circle.photos && circle.photos.length > 0" [photos]="circle.photos"></app-photo-gallery>
+    <h4 class="bg-primary">概要</h4>
+    <div [innerHTML]="circle.description | nl2br"></div>
+    <!-- <div *ngIf="circle.websiteUrl">
+      <a href="{{circle.websiteUrl}}">ホームページ</a>
+      <br>
+      <br>
+    </div> -->
+<!--   
+    <div class="gallery" *ngIf="circle.reviewPhotos && circle.reviewPhotos.length > 0">
+      <h4>投稿写真</h4>
+      <ngx-gallery [options]="reviewerGalleryOptions" [images]="reviewerGalleryImages"></ngx-gallery>
+    </div> -->
+  </div>

@@ -21,7 +21,7 @@ namespace Wacomi.API.Models
         [Required]
         [MaxLength(5000)]
         public string Description{ get; set;}
-        bool ApprovalRequired { get; set;} = false;
+        public bool ApprovalRequired { get; set;} = false;
         public virtual ICollection<CircleMember> CircleMemberList {get; set;}
         public virtual ICollection<CircleTopic> Topics{ get; set;}
         public virtual ICollection<Photo> Photos { get; set; }
