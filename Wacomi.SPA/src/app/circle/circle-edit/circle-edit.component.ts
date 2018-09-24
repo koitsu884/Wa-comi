@@ -50,8 +50,8 @@ export class CircleEditComponent implements OnInit {
   initForm() {
     if (this.id) {
       this.store.dispatch(new CircleActions.GetCircle(this.id));
-      this.store.select("circle").subscribe((circleState) => {
-        this.editingCircle = Object.assign(<CircleEdit>{}, circleState.selectedCircle);
+      this.store.select("circleModule").subscribe((circleState) => {
+        this.editingCircle = Object.assign(<CircleEdit>{}, circleState.circle.selectedCircle);
       })
     }
     else {

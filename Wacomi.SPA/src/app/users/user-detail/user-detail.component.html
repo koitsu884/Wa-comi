@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-sm-4">
       <!-- <app-member-card  [member]="member" [appUser]="appUser"></app-member-card> -->
-      <app-user-card [imageUrl]="userDetail.appUser.mainPhoto.url" [created]="userDetail.appUser.dateCreated" [city]="userDetail.appUser.city"
+      <app-user-card [imageUrl]="userDetail.appUser.mainPhoto | photourl" [created]="userDetail.appUser.dateCreated" [city]="userDetail.appUser.city"
         [totalLike]="userDetail.appUser.totalLike" [lastActive]="userDetail.appUser.lastActive"></app-user-card>
       <a *ngIf="appUserId != userDetail.appUser.id" class="btn btn-success" (click)="onSend()">ショートメッセージを送る</a>
     </div>

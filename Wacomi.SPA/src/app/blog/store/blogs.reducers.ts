@@ -32,7 +32,7 @@ const initialState: State = {
 };
 
 
-export function blogReducer(state = initialState, action: BlogActions.AccountActions) {
+export function blogReducer(state = initialState, action: BlogActions.BlogActions) {
     let tempBlogs: Blog[];
     let tempPagination: Pagination;
     switch (action.type) {

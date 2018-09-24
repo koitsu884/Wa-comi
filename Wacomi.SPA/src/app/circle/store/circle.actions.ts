@@ -2,9 +2,16 @@ import { Action } from "@ngrx/store";
 import { Circle } from "../../_models/Circle";
 import { Pagination } from "../../_models/Pagination";
 import { CircleSearchOptions } from "../../_models/CircleSearchOptions";
+import { CircleMember } from "../../_models/CircleMember";
+import { CircleRequest } from "../../_models/CircleRequest";
 
 export const GET_CIRCLE = 'GET_CIRCLE';
 export const SET_CIRCLE = 'SET_CIRCLE';
+export const GET_CIRCLE_REQUEST_LIST = 'GET_CIRCLE_REQUEST_LIST';
+export const SET_CIRCLE_REQUEST_LIST = 'SET_CIRCLE_REQUEST_LIST';
+export const APPROVE_CIRCLE_REQUEST = 'APPROVE_CIRCLE_REQUEST';
+export const DECLINE_CIRCLE_REQUEST = 'DECLINE_CIRCLE_REQUEST';
+
 //============= CIRCLE home & details (search) ======================
 export const SET_CIRCLE_SEARCH_OPTIONS = 'SET_CIRCLE_SEARCH_OPTIONS';
 export const SET_CIRCLE_PAGE = 'SET_CIRCLE_PAGE';
@@ -27,6 +34,26 @@ export class GetCircle implements Action {
 export class SetCircle implements Action {
     readonly type = SET_CIRCLE;
     constructor(public payload: Circle) { }
+}
+
+export class GetCircleRequestList implements Action {
+    readonly type = GET_CIRCLE_REQUEST_LIST;
+    constructor(public payload: number) { }
+}
+
+export class SetCircleRequestList implements Action {
+    readonly type = SET_CIRCLE_REQUEST_LIST;
+    constructor(public payload: CircleRequest[]) { }
+}
+
+export class ApproveCircleRequest implements Action {
+    readonly type = APPROVE_CIRCLE_REQUEST;
+    constructor(public payload: CircleRequest) { }
+}
+
+export class DeclineCircleRequest implements Action {
+    readonly type = DECLINE_CIRCLE_REQUEST;
+    constructor(public payload: CircleRequest) { }
 }
 
 export class SetCircleSearchOptions implements Action {
@@ -73,6 +100,10 @@ export class InitCircleState implements Action {
 export type CircleActions = InitCircleState
                         | GetCircle
                         | SetCircle
+                        | GetCircleRequestList
+                        | SetCircleRequestList
+                        | ApproveCircleRequest
+                        | DeclineCircleRequest
                         //   | TryAddCircle
                         //   | UpdateCircle
                         //   | TryDeleteCircle

@@ -4,6 +4,8 @@
     <app-photo-gallery *ngIf="circle.photos && circle.photos.length > 0" [photos]="circle.photos"></app-photo-gallery>
     <h4 class="bg-primary">概要</h4>
     <div [innerHTML]="circle.description | nl2br"></div>
+    <h4>参加条件</h4>
+    <p>{{circle.approvalRequired ? '管理人の承認が必要' : '誰でも参加可能'}}</p>
     <!-- <div *ngIf="circle.websiteUrl">
       <a href="{{circle.websiteUrl}}">ホームページ</a>
       <br>

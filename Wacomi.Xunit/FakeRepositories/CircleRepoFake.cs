@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,14 +8,15 @@ using Wacomi.API.Models;
 
 namespace Wacomi.Xunit.MockRepositories
 {
-    public class CircleRepoFake : RepositoryBase, ICircleRepository
+    public class CircleRepoFake : ICircleRepository
     {
         private readonly List<Circle> _circleList;
         private readonly List<AppUser> _appUsers;
         private readonly List<CircleMember> _circleMemberList;
         private readonly List<CircleCategory> _circleCategories;
+        private readonly List<CircleRequest> _circleRequestList;
 
-        public CircleRepoFake(ApplicationDbContext context) : base(context)
+        public CircleRepoFake(ApplicationDbContext context)
         {
             _appUsers = CommonTestData.AppUserList;
 
@@ -56,6 +58,19 @@ namespace Wacomi.Xunit.MockRepositories
                 new CircleMember{AppUserId = 2, CircleId = 1, Role = CircleRoleEnum.MEMBER},
                 new CircleMember{AppUserId = 3, CircleId = 2, Role = CircleRoleEnum.OWNER},
             };
+
+            _circleRequestList = new List<CircleRequest>(){
+                new CircleRequest{AppUserId = 3, CircleId =1},
+                new CircleRequest{AppUserId = 1, CircleId =2}
+            };
+        }
+
+        public void Add<T>(T entity) where T : class
+        {
+            var entityType = entity.GetType();
+            if(entityType == typeof(CircleMember))
+                _circleMemberList.Add(entity as CircleMember);
+            return;
         }
 
         public Task ApproveAll(int circleId)
@@ -71,6 +86,29 @@ namespace Wacomi.Xunit.MockRepositories
         public Task<bool> CircleExists(int id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void Delete<T>(T entity) where T : class
+        {
+            var entityType = entity.GetType();
+            Console.WriteLine(entityType);
+            if(entityType == typeof(CircleMember))
+                _circleMemberList.Remove(entity as CircleMember);
+            else if(entityType == typeof(CircleRequest))
+                _circleRequestList.Remove(entity as CircleRequest);
+            return;
+        }
+
+        public void DeleteAll<T>(T entities) where T : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<T> Get<T>(int recordId) where T : class
+        {
+            if(typeof(T) == typeof(Circle))
+                return Task.FromResult(_circleList.Find(c => c.Id == recordId) as T);
+            return Task.FromResult(null as T);
         }
 
         public Task<Circle> GetCircle(int id)
@@ -90,7 +128,7 @@ namespace Wacomi.Xunit.MockRepositories
 
         public Task<CircleMember> GetCircleMember(int appUserId, int circleId)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(_circleMemberList.FirstOrDefault(cm => cm.AppUserId == appUserId && cm.CircleId == circleId));
         }
 
         public Task<int> GetCircleMemberCount(int circleId)
@@ -105,7 +143,7 @@ namespace Wacomi.Xunit.MockRepositories
 
         public Task<CircleRequest> GetCircleRequest(int appUserId, int circleId)
         {
-            return Task.FromResult<CircleRequest>(null);
+            return Task.FromResult<CircleRequest>(_circleRequestList.FirstOrDefault(cr => cr.AppUserId == appUserId && cr.CircleId == circleId));
         }
 
         public Task<PagedList<Circle>> GetCircles(PaginationParams paginationParams, CircleSearchParameter searchOptions)
@@ -155,7 +193,7 @@ namespace Wacomi.Xunit.MockRepositories
 
         public Task<IEnumerable<CircleRequest>> GetRequestsForCircle(int circleId)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult((IEnumerable<CircleRequest>)_circleRequestList.Where(cr => cr.CircleId == circleId).ToList());
         }
 
         public Task<bool> IsMember(int appUserId, int circleId)
@@ -175,12 +213,12 @@ namespace Wacomi.Xunit.MockRepositories
 
         public Task<bool> RequestSent(int appUserId, int circleId)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(_circleRequestList.Any(cr => cr.AppUserId == appUserId && cr.CircleId == circleId));
         }
 
         public Task<int> SaveAll()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(1);
         }
 
         public void Test()

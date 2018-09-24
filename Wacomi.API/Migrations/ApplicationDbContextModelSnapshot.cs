@@ -569,6 +569,12 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int>("CircleId");
 
+                    b.Property<int?>("ApprovedBy");
+
+                    b.Property<DateTime?>("DateJoined");
+
+                    b.Property<DateTime?>("DateLastActive");
+
                     b.Property<int>("Role");
 
                     b.HasKey("AppUserId", "CircleId");
@@ -576,6 +582,24 @@ namespace Wacomi.API.Migrations
                     b.HasIndex("CircleId");
 
                     b.ToTable("CircleMembers");
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleRequest", b =>
+                {
+                    b.Property<int>("AppUserId");
+
+                    b.Property<int>("CircleId");
+
+                    b.Property<bool>("Declined");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(1000);
+
+                    b.HasKey("AppUserId", "CircleId");
+
+                    b.HasIndex("CircleId");
+
+                    b.ToTable("CircleRequests");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.CircleTopic", b =>
@@ -1414,6 +1438,19 @@ namespace Wacomi.API.Migrations
 
                     b.HasOne("Wacomi.API.Models.Circle", "Circle")
                         .WithMany("CircleMemberList")
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Wacomi.API.Models.CircleRequest", b =>
+                {
+                    b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
+                        .WithMany("CircleRequestsSent")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Wacomi.API.Models.Circle", "Circle")
+                        .WithMany("CircleRequestsReceived")
                         .HasForeignKey("CircleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

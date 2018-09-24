@@ -23,7 +23,7 @@ namespace Wacomi.API.Data
             _context.Add(entity);
         }
 
-        public async Task<T> Get<T>(int recordId) where T : DataRecord
+        public async Task<T> Get<T>(int recordId) where T : class
         {
             return await _context.FindAsync<T>(recordId);
         }

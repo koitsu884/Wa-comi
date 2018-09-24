@@ -172,7 +172,7 @@ export class ToggleCommentForm implements Action {
 
 
 
-export type AccountActions = TryAddBlog 
+export type BlogActions = TryAddBlog 
                         //    | TryAddBlogPhoto
                            | TryDeleteBlog 
                            | GetBlog 

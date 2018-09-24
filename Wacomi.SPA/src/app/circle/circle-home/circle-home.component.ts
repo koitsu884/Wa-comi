@@ -38,10 +38,10 @@ export class CircleHomeComponent implements OnInit {
     this.loading = true;
     this.store.dispatch(new CircleActions.SearchCircle());
     
-    this.store.select("circle").subscribe((circleState) => {
-      this.searchParam = Object.assign({},circleState.searchParam);
-      this.circles = circleState.circles;
-      this.pagination = circleState.pagination;
+    this.store.select("circleModule").subscribe((circleState) => {
+      this.searchParam = Object.assign({},circleState.circle.searchParam);
+      this.circles = circleState.circle.circles;
+      this.pagination = circleState.circle.pagination;
       this.loading = false;
     })
   }

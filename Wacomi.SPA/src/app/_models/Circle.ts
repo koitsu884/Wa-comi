@@ -9,9 +9,15 @@ export interface Circle extends IDataItemWithMultiplePhotos, IAppUserLinkable {
     cityName: string;
     cityId: number;
     description :string;
+    totalMemberCount: number;
     approvalRequired: boolean;
     dateCreated: Date;
     dateUpdated: Date;
+
+    isManageable?: boolean;
+    isMember?:boolean;
+    isWaitingApproval? :boolean;
+    isDeclined? : boolean;
 }
 // public int Id{ get; set;}
 // public AppUserForReturnDto AppUser{ get; set;}

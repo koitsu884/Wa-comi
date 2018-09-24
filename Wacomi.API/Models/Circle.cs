@@ -23,6 +23,7 @@ namespace Wacomi.API.Models
         public string Description{ get; set;}
         public bool ApprovalRequired { get; set;} = false;
         public virtual ICollection<CircleMember> CircleMemberList {get; set;}
+        public virtual ICollection<CircleRequest> CircleRequestsReceived {get; set;}
         public virtual ICollection<CircleTopic> Topics{ get; set;}
         public virtual ICollection<Photo> Photos { get; set; }
         public Photo MainPhoto  { get; set; }

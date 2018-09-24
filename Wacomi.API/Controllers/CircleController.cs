@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -38,14 +39,34 @@ namespace Wacomi.API.Controllers
         [HttpGet("{id}", Name = "GetCircle")]
         public async Task<ActionResult> Get(int id)
         {
-            return Ok(_mapper.Map<CircleForReturnDto>(await _repo.GetCircle(id)));
-        }
+            var circleForReturn = _mapper.Map<CircleForReturnDto>(await _repo.GetCircle(id));
+            var appUser = await GetLoggedInUserAsync();
+            if (appUser != null)
+            {
+                if (await _repo.IsOwner(appUser.Id, circleForReturn.Id))
+                {
+                    circleForReturn.IsManageable = true;
+                    circleForReturn.IsMember = true;
+                }
+                else if (await _repo.IsMember(appUser.Id, circleForReturn.Id))
+                {
+                    circleForReturn.IsMember = true;
+                }
+                else
+                {
+                    var request = await _repo.GetCircleRequest(appUser.Id, circleForReturn.Id);
+                    if (request != null)
+                    {
+                        if (request.Declined)
+                            circleForReturn.IsDeclined = true;
+                        else
+                            circleForReturn.IsWaitingApproval = true;
+                    }
+                }
+            }
 
-        [HttpGet("test")]
-        public async Task<ActionResult> Test()
-        {
-            _repo.Test();
-            return Ok();
+            circleForReturn.TotalMemberCount = await _repo.GetCircleMemberCount(id);
+            return Ok(circleForReturn);
         }
 
         [HttpGet("latest")]
@@ -105,6 +126,10 @@ namespace Wacomi.API.Controllers
         {
             var circles = await this._repo.GetCircles(paginationParams, searchParams);
             var circlesForReturn = this._mapper.Map<IEnumerable<CircleForReturnDto>>(circles);
+            foreach (var circleForReturn in circlesForReturn)
+            {
+                circleForReturn.TotalMemberCount = await _repo.GetCircleMemberCount(circleForReturn.Id);
+            }
 
             Response.AddPagination(circles.CurrentPage, circles.PageSize, circles.TotalCount, circles.TotalPages);
             return Ok(circlesForReturn);
@@ -123,9 +148,14 @@ namespace Wacomi.API.Controllers
                 return NotFound();
             }
 
-            if (!await _repo.CheckUpdatePermission(model.AppUserId))
+            if (!await _repo.CheckUpdatePermission(model.AppUserId, (int)model.Id))
             {
                 return Unauthorized();
+            }
+
+            if(!model.ApprovalRequired && circleFromRepo.ApprovalRequired)
+            {
+                await _repo.ApproveAll(circleFromRepo.Id);
             }
 
             _mapper.Map(model, circleFromRepo);
@@ -152,7 +182,7 @@ namespace Wacomi.API.Controllers
                 return NotFound();
             }
             var loggedInUser = await GetLoggedInUserAsync();
-            if (!await _repo.CheckUpdatePermission(loggedInUser.Id))
+            if (!await _repo.CheckUpdatePermission(loggedInUser.Id, id))
             {
                 return Unauthorized();
             }

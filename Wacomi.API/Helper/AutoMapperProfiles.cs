@@ -94,18 +94,21 @@ namespace Wacomi.API.Helper
 
             CreateMap<Circle, CircleForReturnDto>()
               .ForMember(a => a.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-              .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.City.Name))
-              .ForMember(a => a.CircleMemberList, opt => opt.ResolveUsing((src) => {
-                  List<AppUser> users = new List<AppUser> ();
-                  if(src.CircleMemberList != null)
-                  {
-                    foreach( var circleMember in src.CircleMemberList){
-                      users.Add(circleMember.AppUser);
-                    }
-                  }
-                  return users;
-              }
-              ));
+              .ForMember(a => a.CityName, opt => opt.MapFrom(src => src.City.Name));
+              // .ForMember(a => a.CircleMemberList, opt => opt.ResolveUsing((src) => {
+              //     List<AppUser> users = new List<AppUser> ();
+              //     if(src.CircleMemberList != null)
+              //     {
+              //       foreach( var circleMember in src.CircleMemberList){
+              //         users.Add(circleMember.AppUser);
+              //       }
+              //     }
+              //     return users;
+              // }
+              // ));
+
+            CreateMap<CircleRequest, CircleRequestForReturnDto>();
+            CreateMap<CircleMember, CircleMemberForReturnDto>();
 
             CreateMap<CircleUpdateDto, Circle>();
 

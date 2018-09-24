@@ -11,10 +11,12 @@ namespace Wacomi.API.Data
     {
         public CircleRepository(ApplicationDbContext context) : base(context) { }
 
-        public void Test(){
+        public void Test()
+        {
             Dictionary<string, string> typeNameMap = new Dictionary<string, string>();
             var dbSetList = _context.GetType().GetProperties();
-            foreach(var dbSet in dbSetList){
+            foreach (var dbSet in dbSetList)
+            {
                 typeNameMap.Add(dbSet.GetType().ToString(), dbSet.Name);
             }
         }
@@ -24,8 +26,9 @@ namespace Wacomi.API.Data
             return await _context.Circles.AnyAsync(c => c.Id == id);
         }
 
-        public async Task<bool> CheckUpdatePermission(int userId){
-            return await _context.CircleMembers.AnyAsync(cm => cm.AppUserId == userId && cm.Role == CircleRoleEnum.OWNER);
+        public async Task<bool> CheckUpdatePermission(int userId, int circleId)
+        {
+            return await _context.CircleMembers.AnyAsync(cm => cm.AppUserId == userId && cm.CircleId == circleId && cm.Role == CircleRoleEnum.OWNER);
         }
         public async Task<Circle> GetCircle(int id)
         {
@@ -55,27 +58,44 @@ namespace Wacomi.API.Data
             var query = _context.Circles.Include(c => c.Category)
                                          .Include(c => c.City)
                                          .Include(c => c.MainPhoto)
-                                         .Include(c => c.CircleMemberList)
+                                        //  .Include(c => c.CircleMemberList)
                                         .AsQueryable();
 
-            if (searchOptions.CityId > 0)
+            if (searchOptions.CityId != null && searchOptions.CityId > 0)
                 query = query.Where(c => c.CityId == searchOptions.CityId);
-            if (searchOptions.CategoryId > 0)
+            if (searchOptions.CategoryId != null && searchOptions.CategoryId > 0)
                 query = query.Where(c => c.Category.Id == searchOptions.CategoryId);
 
             return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
-        public async Task<IEnumerable<AppUser>> GetCircleMemberList(int circleId, CircleRoleEnum? role = null)
+        public async Task<CircleMember> GetCircleMember(int appUserId, int circleId)
         {
-            var query = _context.CircleMembers.Include(cm => cm.AppUser)
+            return await _context.CircleMembers.FirstOrDefaultAsync(cm => cm.AppUserId == appUserId && cm.CircleId == circleId);
+        }
+
+        public async Task<int> GetCircleMemberCount(int circleId){
+            return await _context.CircleMembers.CountAsync(cm => cm.CircleId == circleId);
+        }
+        public async Task<PagedList<CircleMember>> GetCircleMemberList(PaginationParams paginationParams, int circleId, CircleRoleEnum? role = null)
+        {
+            var query = _context.CircleMembers.Include(cm => cm.AppUser).ThenInclude(ap => ap.MainPhoto)
                                             .Where(cm => cm.CircleId == circleId)
                                             // .Select(cm => cm.AppUser)
                                             .AsQueryable();
-            if(role != null)
-                query = query.Where( cm => cm.Role == role);
-            
-            return await query.Select(cm => cm.AppUser).ToListAsync();
+            if (role != null)
+                query = query.Where(cm => cm.Role == role);
+
+            return await PagedList<CircleMember>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
+        }
+
+         public async Task<IEnumerable<CircleMember>> GetLatestCircleMemberList(int circleId)
+        {
+            return await _context.CircleMembers.Include(cm => cm.AppUser).ThenInclude(ap => ap.MainPhoto)
+                                            .Where(cm => cm.CircleId == circleId)
+                                            .OrderByDescending(cm => cm.DateJoined)
+                                            // .Select(cm => cm.AppUser)
+                                            .ToListAsync();
         }
         public async Task<IEnumerable<Circle>> GetCirclesByUser(int userId)
         {
@@ -124,6 +144,42 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<Circle>> GetLatestCircles()
         {
             return await _context.Circles.OrderByDescending(c => c.DateCreated).Take(10).ToListAsync();
+        }
+
+        public async Task<bool> IsMember(int appUserId, int circleId)
+        {
+            return await _context.CircleMembers.AnyAsync(cm => cm.AppUserId == appUserId && cm.CircleId == circleId);
+        }
+
+        public async Task<bool> IsOwner(int appUserId, int circleId)
+        {
+            return await _context.CircleMembers.AnyAsync(cm => cm.AppUserId == appUserId && cm.CircleId == circleId && cm.Role == CircleRoleEnum.OWNER);
+        }
+
+        public async Task<CircleRequest> GetCircleRequest(int appUserId, int circleId)
+        {
+            return await _context.CircleRequests.Where(cr => cr.AppUserId == appUserId && cr.CircleId == circleId).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> RequestSent(int appUserId, int circleId)
+        {
+            return await _context.CircleRequests.AnyAsync(cr => cr.AppUserId == appUserId && cr.CircleId == circleId);
+        }
+
+        public async Task ApproveAll(int circleId){
+            var requests = await _context.CircleRequests.Where(cr => cr.CircleId == circleId && !cr.Declined).ToListAsync();
+            foreach(var request in requests){
+                Add(new CircleMember(){
+                    AppUserId = request.AppUserId,
+                    CircleId = request.CircleId,
+                    Role = CircleRoleEnum.MEMBER
+                });
+                Delete(request);
+            }
+        }
+        public async Task<IEnumerable<CircleRequest>> GetRequestsForCircle(int circleId)
+        {
+            return await _context.CircleRequests.Include(cr => cr.AppUser).ThenInclude(a => a.MainPhoto).Where(cr => cr.CircleId == circleId).ToListAsync();
         }
     }
 }

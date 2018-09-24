@@ -27,6 +27,7 @@ namespace Wacomi.API.Data
         public DbSet<BusinessProfile> BusinessProfiles { get; set; }
         public DbSet<Circle> Circles { get; set; }
         public DbSet<CircleMember> CircleMembers { get; set; }
+        public DbSet<CircleRequest> CircleRequests { get; set; }
         public DbSet<CircleTopic> CircleTopic { get; set; }
         public DbSet<CircleTopicComment> CircleTopicComments { get; set; }
         public DbSet<CircleTopicCommentReply> CircleTopicCommentReplies { get; set; }
@@ -98,6 +99,22 @@ namespace Wacomi.API.Data
 
             builder.Entity<BlogFeed>()
                 .HasIndex(bf => bf.PublishingDate);
+
+            //---- Circle Request ----
+            builder.Entity<CircleRequest>()
+                .HasKey(cr => new { cr.AppUserId, cr.CircleId });
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.Circle)
+                .WithMany(cr => cr.CircleRequestsReceived)
+                .HasForeignKey(cr => cr.CircleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CircleRequest>()
+                .HasOne(cr => cr.AppUser)
+                .WithMany(cr => cr.CircleRequestsSent)
+                .HasForeignKey(cr => cr.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
              builder.Entity<CircleMember>()
                 .HasKey(cm => new { cm.AppUserId, cm.CircleId} );

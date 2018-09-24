@@ -9,6 +9,9 @@ import { CircleEditComponent } from "./circle-edit/circle-edit.component";
 import { MemberGuard } from "../_guards/member.guard";
 import { AppUserGuard } from "../_guards/appuser.guard";
 import { AuthGuard } from "../_guards/auth.guard";
+import { CircleMemberListComponent } from "./circle-member/circle-member-list/circle-member-list.component";
+import { CircleOverviewComponent } from "./circle-details/circle-overview/circle-overview.component";
+import { CircleRequestListComponent } from "./circle-details/circle-request-list/circle-request-list.component";
 
 
 const circleRoute: Routes = [
@@ -28,6 +31,19 @@ const circleRoute: Routes = [
         resolve: {
             appUser:AppUserResolver
         },
+        children: [
+            {path: '', redirectTo: 'overview'}, 
+            {path: 'overview', component: CircleOverviewComponent}, 
+            {path: 'member', component: CircleMemberListComponent, canActivate: [AuthGuard]}, 
+            {path: 'topic', redirectTo: 'overview'}, 
+            {path: 'event', redirectTo: 'overview'},
+            {path: 'request', component: CircleRequestListComponent, canActivate: [AuthGuard]}
+          ]
+    },
+    {
+        path: 'detail/:id/members', 
+        component: CircleMemberListComponent, 
+        canActivate: [AuthGuard]
     },
     {
         path: 'edit', 
