@@ -8,9 +8,8 @@
      style="cursor: pointer">
   </div>
   <div class="comment">
-    <div class="commentBaloon" [ngClass]="{isMine:appUserId == topicComment.appUserId}">
-      <p><b>{{topicComment.displayName}}</b>: {{topicComment.comment}}</p>
-    </div>
+    <b>{{topicComment.displayName}}:</b>
+    <div class="commentBaloon" [ngClass]="{'isMine': isMine}" [innerHTML]="topicComment.comment | nl2br"></div>
   </div>
   <div class="commentTools">
     <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !appUserId">

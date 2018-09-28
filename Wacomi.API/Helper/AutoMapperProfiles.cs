@@ -88,7 +88,7 @@ namespace Wacomi.API.Helper
               .ForMember(bf => bf.CommentCount, opt => opt.MapFrom(src => src.FeedComments.Count));
 
             CreateMap<BlogFeedComment, CommentForReturnDto>()
-              .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("BlogFeed"))
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.UseValue<string>("BlogFeed"))
               .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.BlogFeedId))
               .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
@@ -112,8 +112,18 @@ namespace Wacomi.API.Helper
 
             CreateMap<CircleUpdateDto, Circle>();
 
-            CreateMap<CircleTopic, CircleTopicForReturnDto>()
-              .ForMember(ct => ct.CommentCount, opt => opt.MapFrom(src => src.TopicComments.Count()));
+            CreateMap<CircleTopic, CircleTopicForReturnDto>();
+            CreateMap<CircleTopicUpdateDto, CircleTopic>();
+
+            CreateMap<CircleTopicComment, CircleTopicCommentForReturnDto>();
+            CreateMap<CircleTopicCommentUpdateDto, CircleTopicComment>();
+
+            CreateMap<CircleTopicCommentReply, CommentForReturnDto>()
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.UseValue<string>("CircleTopicComment"))
+              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.CommentId))
+              .ForMember(cr => cr.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
+              .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply))
+              .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<PhotoForCreationDto, Photo>();
             CreateMap<Photo, PhotoForReturnDto>()
@@ -166,7 +176,7 @@ namespace Wacomi.API.Helper
             .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<TopicReply, CommentForReturnDto>()
-              .ForMember(cr => cr.OwnerRecordClass, opt => opt.MapFrom("TopicCommentId"))
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.UseValue<string>("TopicComment"))
               .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.TopicCommentId))
               .ForMember(tc => tc.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()))
               .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply));

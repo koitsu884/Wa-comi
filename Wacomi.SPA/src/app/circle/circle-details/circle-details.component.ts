@@ -26,8 +26,11 @@ export class CircleDetailsComponent implements OnInit {
       if(!circleState.circle.selectedCircle || circleState.circle.selectedCircle.id != this.circleId)
       {
         this.store.dispatch(new CircleActions.GetCircle(this.circleId));
+        this.store.dispatch(new CircleActions.GetLatestCircleMemberList(this.circleId));
+        this.store.dispatch(new CircleActions.GetLatestCircleTopicList(this.circleId));
         // this.store.dispatch(new CircleMemberActions.GetCircleMemberList({circleId: this.circleId, initPage: true}));
-        // this.store.dispatch(new CircleActions.GetCircleRequestList(this.circleId));
+        
+        //this.store.dispatch(new CircleActions.GetCircleRequestList(this.circleId));
       }
     });
 

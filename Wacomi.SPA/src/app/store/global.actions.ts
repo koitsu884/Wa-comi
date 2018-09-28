@@ -87,7 +87,7 @@ export class SetCircleCategoryList implements Action {
 
 export class TryAddPhotos implements Action {
     readonly type = TRY_ADD_PHOTOS;
-    constructor(public payload: {recordType:string, recordId: number, formData:FormData, callbackLocation:string}){};
+    constructor(public payload: {recordType:string, recordId: number, formData:FormData, callbackLocation:string, callbackActions?: {type:string, payload:any}[]}){};
 }
 
 export class GetRecord implements Action {
@@ -97,12 +97,12 @@ export class GetRecord implements Action {
 
 export class DeleteRecord implements Action {
     readonly type = DELETE_RECORD;
-    constructor(public payload: {recordType:string, recordId:number, callbackLocation:string}){};
+    constructor(public payload: {recordType:string, recordId:number, callbackLocation?:string, callbackActions?: {type:string, payload:any}[]}){};
 }
 
 export class TryAddRecord implements Action {
     readonly type = TRY_ADD_RECORD;
-    constructor(public payload: {recordType:string, record: any, formData?:FormData, callbackLocation?:string}){};
+    constructor(public payload: {recordType:string, record: any, formData?:FormData, callbackLocation?:string, callbackActions?: {type:string, payload:any}[]}){};
 }
 
 export class UpdateRecord implements Action {

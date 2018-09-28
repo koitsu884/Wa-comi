@@ -113,7 +113,7 @@ namespace Wacomi.API.Controllers
             };
             _repo.Add(newCircleMember);
             await _repo.SaveAll();
-            return CreatedAtRoute("GetCircleMember", new {userId = model.AppUserId, circleId = model.CircleId}, _mapper.Map<CircleMemberForReturnDto>(newCircleMember));
+            return CreatedAtRoute("GetCircleMember", new {userId = model.AppUserId, circleId = model.CircleId}, _mapper.Map<CircleMemberForReturnDto>(await _repo.GetCircleMember(model.AppUserId, model.CircleId)));
         }
 
          [Authorize]

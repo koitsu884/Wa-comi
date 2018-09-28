@@ -28,7 +28,7 @@ namespace Wacomi.API.Data
         public DbSet<Circle> Circles { get; set; }
         public DbSet<CircleMember> CircleMembers { get; set; }
         public DbSet<CircleRequest> CircleRequests { get; set; }
-        public DbSet<CircleTopic> CircleTopic { get; set; }
+        public DbSet<CircleTopic> CircleTopics { get; set; }
         public DbSet<CircleTopicComment> CircleTopicComments { get; set; }
         public DbSet<CircleTopicCommentReply> CircleTopicCommentReplies { get; set; }
         public DbSet<CircleCategory> CircleCategories { get; set; }

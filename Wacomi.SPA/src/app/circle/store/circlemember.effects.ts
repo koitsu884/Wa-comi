@@ -17,24 +17,7 @@ export class CircleMemberEffects {
         private store$: Store<fromCircle.FeatureState>,
         private httpClient: HttpClient) { }
 
-    @Effect()
-    getLatestCircleMemberList = this.actions$
-        .ofType(CircleMemberActions.GET_LATEST_CIRCLE_MEMBER_LIST)
-        .map((action: CircleMemberActions.GetLatestCircleMemberList) => {
-            return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<CircleMember[]>(this.baseUrl + 'circlemember/' + id + '/latest')
-                .map((result) => {
-                    return {
-                        type: CircleMemberActions.SET_LATEST_CIRCLE_MEMBER_LIST,
-                        payload: result
-                    }
-                })
-                .catch((error: string) => {
-                    return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+
 
     @Effect()
     getLatestCircleMemberMemberList = this.actions$
@@ -108,10 +91,15 @@ export class CircleMemberEffects {
         })
         .switchMap((circleMember) => {
             return this.httpClient.delete(this.baseUrl + 'circlemember/' + circleMember.circleId + '/' + circleMember.appUserId)
-                .map(() => {
-                    return {
+                .mergeMap(() => {
+                    return [
+                    {
                         type: GlobalActions.SUCCESS, payload: null
-                    };
+                    },
+                    { 
+                        type:CircleActions.GET_CIRCLE, payload:circleMember.circleId
+                    }
+                ];
                 })
                 .catch((error: string) => {
                     return of({ type: 'FAILED', payload: error })

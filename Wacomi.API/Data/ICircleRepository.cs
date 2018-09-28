@@ -28,9 +28,17 @@ namespace Wacomi.API.Data
         // Task<IEnumerable<CircleTopic>> GetLatestCircleTopic(int circleId); //No need..?
         Task<CircleTopic> GetCircleTopic(int id);
         Task<PagedList<CircleTopic>> GetCircleTopicList(PaginationParams paginationParams, int circleId);
+        Task<IEnumerable<CircleTopic>> GetLatestCircleTopicList(int circleId);
+        Task<PagedList<CircleTopic>> GetCircleTopicByUser(PaginationParams paginationParams, int circleId, int userId);
+        Task<int> GetCircleTopicCommentCount(int circleTopicId);
+
+        Task<CircleTopicComment> GetCircleTopicComment(int id);
 
         Task<PagedList<CircleTopicComment>> GetCircleTopicCommentList(PaginationParams paginationParams, int circleTopicId);
+        Task<List<Photo>> GetAllCommentPhotosForCircleTopic(int circleTopicId);
+        Task<CircleTopicCommentReply> GetCircleTopicCommentReply(int id);
         Task<IEnumerable<CircleTopicCommentReply>> GetCircleTopicCommentReplies(int circleTopicCommentId);
+        Task<int> GetCircleTopicCommentReplyCount(int circleTopicCommentId);
 
         //Circle Member functions
         Task<bool> IsMember(int appUserId, int circleId);

@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="circleTopicInfo row">
+    <h5>{{circleTopic.title}}</h5>
+    <div *ngIf="circleTopic.photo" class="col-sm-6">
+      <img class="img-responsive" src="{{circleTopic.photo | photourl}}" alt="">
+    </div>
+    <div [ngClass]="{'col-sm-6': circleTopic.photo}">
+      <h4>概要</h4>
+      <p>{{circleTopic.description}}</p>
+    </div>
+    <div *ngIf="appUser && appUser.id == circleTopic.appUserId">
+      <button class="btn btn-sm btn-primarry" type="button" [routerLink]="['/circle/topic/edit', circleTopic.id]">編集</button>
+      <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
+    </div>
+  </div>
+  <h4>コメント</h4>
+  <div *ngIf="appUser">
+      <app-comment-form (addComment)="addComment($event)"></app-comment-form>
+    <!-- <input type="checkbox" name="openCommentForm" id="openCommentForm" [(ngModel)]="openCommentForm" [value]="openCommentForm">
+    <label for="openCommentForm" class="checkbox">新しくコメントする</label>
+    <app-comment-form *ngIf="openCommentForm" (addComment)="addComment($event)"></app-comment-form> -->
+  </div>
+  <div class="topicCommentList" *ngIf="appUser">
+
+    <div class="topicCommentCard" *ngFor="let topicComment of circleTopicCommentList">
+      <app-circle-topic-comment [appUserId]="appUser?.id" [topicComment]="topicComment"></app-circle-topic-comment>
+      <app-short-comment-form 
+            *ngIf="appUser && topicComment.displayReplies" 
+            [shortComments]="topicComment.topicReplies" 
+            [currentAppUserId]="appUser.id"
+            (addShortComment)="onAddTopicCommentReply(topicComment.id ,$event)" 
+            (deleteShortComment)="onDeleteTopicCommentReply($event)" ></app-short-comment-form>
+    </div>
+    <div *ngIf="commentPagination && commentPagination.totalPages > 1" class="text-center">
+        <pagination [boundaryLinks]="true" [totalItems]="commentPagination.totalItems" [ngModel]="commentPagination.currentPage" [itemsPerPage]="commentPagination.itemsPerPage"
+          (pageChanged)="commentPageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+          lastText="&raquo;">
+        </pagination>
+      </div>
+  </div>
+</div>

@@ -2,29 +2,33 @@ import * as GlobalActions from '../../../store/global.actions';
 import * as CircleActions from '../../store/circle.actions';
 import * as CircleMemberActions from '../../store/circlemember.actions';
 import * as fromCircle from '../../store/circle.reducers';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CircleMember } from '../../../_models/CircleMember';
 import { Circle } from '../../../_models/Circle';
+import { CircleTopic } from '../../../_models/CircleTopic';
 import { AppUser } from '../../../_models/AppUser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { Store } from '@ngrx/store';
 import { MessageService } from '../../../_services/message.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-circle-overview',
   templateUrl: './circle-overview.component.html',
   styleUrls: ['./circle-overview.component.css']
 })
-export class CircleOverviewComponent implements OnInit {
+export class CircleOverviewComponent implements OnInit, OnDestroy {
   circle: Circle;
   latestMembers: CircleMember[];
+  latestTopics: CircleTopic[];
   loading: boolean;
   appUser: AppUser;
   isMine: boolean;
   attachShortMessage: boolean = false;
   requestSent: boolean = false;
   shortMessage: string = "";
+  subscription: Subscription;
   
   constructor(private route: ActivatedRoute, 
     private router: Router, 
@@ -42,10 +46,12 @@ export class CircleOverviewComponent implements OnInit {
       this.router.navigate(['/circle']);
       return;
     }
-    // this.store.dispatch(new CircleActions.GetCircle(id));
-    this.store.select('circleModule').subscribe((circleState) => {
+    this.subscription = this.store.select('circleModule').subscribe((circleState) => {
+      console.log(circleState);
       this.circle = circleState.circle.selectedCircle;
-      this.latestMembers = circleState.circleMember.latestMemberList;
+      this.latestMembers = circleState.circle.latestMemberList;
+      this.latestTopics = circleState.circle.latestTopicList;
+      
       if(this.appUser && this.circle)
         this.isMine = this.appUser.id == this.circle.appUser.id;
       this.loading = false;
@@ -90,6 +96,10 @@ export class CircleOverviewComponent implements OnInit {
       this.store.dispatch(new CircleMemberActions.DeleteCircleMember({circleId: this.circle.id, appUserId: this.appUser.id}));
       this.alertify.success("脱退しました");
     })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

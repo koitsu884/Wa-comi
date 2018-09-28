@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Circle } from '../../../_models/Circle';
+import { Circle } from '../../../../_models/Circle';
 
 @Component({
   selector: 'app-circle-info',

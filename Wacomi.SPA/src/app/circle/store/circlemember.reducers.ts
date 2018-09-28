@@ -4,13 +4,11 @@ import { CircleMember } from '../../_models/CircleMember';
 
 
 export interface State {
-    latestMemberList: CircleMember[];
     memberList: CircleMember[];
-    pagination: Pagination
+    pagination: Pagination;
 }
 
 const memberInitialState: State = {
-    latestMemberList: [],
     memberList: [],
     pagination: null
 };
@@ -18,16 +16,6 @@ const memberInitialState: State = {
 export function circleMemberReducer(state = memberInitialState, action: CircleMemberActions.CircleMemberActions) {
     let tempPagination: Pagination;
     switch (action.type) {
-        case CircleMemberActions.GET_LATEST_CIRCLE_MEMBER_LIST:
-            return {
-                ...state,
-                latestMemberList: [],
-            }
-        case CircleMemberActions.SET_LATEST_CIRCLE_MEMBER_LIST:
-            return {
-                ...state,
-                latestMemberList: action.payload,
-            }
         case CircleMemberActions.CLEAR_MEMBER_LIST:
             return {
                 ...state,
@@ -55,19 +43,15 @@ export function circleMemberReducer(state = memberInitialState, action: CircleMe
         case CircleMemberActions.DELETE_CIRCLE_MEMBER:
             let tempMembers = [...state.memberList];
             let index = tempMembers.findIndex(tm => tm.appUserId == action.payload.appUserId);
-            if (index != null) {
-                tempMembers.splice(index, 1);
-            }
-
-            let tempLatestMembers = [...state.latestMemberList];
-            index = tempLatestMembers.findIndex(tm => tm.appUserId == action.payload.appUserId);
-            if (index != null) {
-                tempLatestMembers.splice(index, 1);
-            }
+            tempMembers.splice(index, 1);
+            // let tempCircle = Object.assign({}, state.selectedCircle);
+            // tempCircle.isMember = false;
+            // if (index != null) {
+            //     tempMembers.splice(index, 1);
+            // }
             return {
                 ...state,
-                memberList: tempMembers,
-                latestMemberList: tempLatestMembers
+                memberList: tempMembers
             }
         default:
             return state;

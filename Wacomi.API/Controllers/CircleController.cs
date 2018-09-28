@@ -69,6 +69,21 @@ namespace Wacomi.API.Controllers
             return Ok(circleForReturn);
         }
 
+        [HttpGet("{id}/topics")]
+        public async Task<ActionResult> GetCircleTopics(PaginationParams paginationParams, int id)
+        {
+            var circleTopicsForReturn = await _repo.GetCircleTopicList(paginationParams, id);
+            Response.AddPagination(circleTopicsForReturn.CurrentPage, circleTopicsForReturn.PageSize, circleTopicsForReturn.TotalCount, circleTopicsForReturn.TotalPages);
+            return Ok(_mapper.Map<IEnumerable<CircleTopicForReturnDto>>(circleTopicsForReturn));
+        }
+
+        [HttpGet("{id}/topics/latest")]
+        public async Task<ActionResult> GetLatestCircleTopics(int id)
+        {
+            var circleTopicsForReturn = await _repo.GetLatestCircleTopicList(id);
+            return Ok(_mapper.Map<IEnumerable<CircleTopicForReturnDto>>(circleTopicsForReturn));
+        }
+
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestCircles()
         {

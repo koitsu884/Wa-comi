@@ -99,7 +99,8 @@ export class CircleEditComponent implements OnInit {
           recordType:'circle',
           record: this.editingCircle,
           formData:this.selectedFiles.length > 0 ? formData : null,
-          callbackLocation: '/users/posts/' + this.appUser.id
+          callbackLocation: '/users/posts/' + this.appUser.id,
+          callbackActions: [{ type: GlobalActions.SUCCESS, payload: "投稿しました" }]
         }));
     }
   }

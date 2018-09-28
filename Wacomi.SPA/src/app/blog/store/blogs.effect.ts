@@ -14,15 +14,13 @@ import { Router } from "@angular/router";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { AlertifyService } from "../../_services/alertify.service";
-import { Observable } from "rxjs/Observable";
 
-import { Action, Store } from "@ngrx/store";
+import { Store } from "@ngrx/store";
 import { of } from "rxjs/observable/of";
 import { Blog } from "../../_models/Blog";
 import { BlogFeed } from "../../_models/BlogFeed";
 import { ShortComment } from "../../_models/ShortComment";
 import { ModalService } from "../../_services/modal.service";
-import { UploadingComponent } from "../../core/modal/uploading/uploading.component";
 import { Location } from "@angular/common";
 
 @Injectable()
@@ -30,9 +28,7 @@ export class BlogEffects {
     baseUrl = environment.apiUrl;
     constructor(private actions$: Actions,
         private store$: Store<fromBlog.FeatureState>,
-        private router: Router,
         private httpClient: HttpClient,
-        private modal: ModalService,
         private location: Location,
         private alertify: AlertifyService) { }
 
@@ -94,35 +90,6 @@ export class BlogEffects {
                     return of({ type: 'FAILED', payload: error })
                 });
         })
-
-    // @Effect()
-    // tryAddBlogPhoto = this.actions$
-    //     .ofType(BlogActions.TRY_ADD_BLOG_PHOTO)
-    //     .map((action: BlogActions.TryAddBlogPhoto) => {
-    //         return action.payload
-    //     })
-    //     .switchMap((payload) => {
-    //         this.modal.open(UploadingComponent);
-    //         var formData = new FormData();
-    //         formData.append("files", payload.photo);
-
-    //         return this.httpClient.post(this.baseUrl + 'photo/blog/' + payload.blogId,
-    //             formData)
-    //             .mergeMap((result) => {
-    //                 this.modal.close();
-    //                 this.location.back();
-    //                 return [
-    //                     {
-    //                         type: GlobalActions.SUCCESS, payload: "写真をアップロードしました"
-    //                     }
-    //                 ];
-    //             })
-    //             .catch((error: string) => {
-    //                 this.modal.close();
-    //                 this.location.back();
-    //                 return of({ type: GlobalActions.FAILED, payload: error })
-    //             });
-    //     })
 
 
     @Effect()

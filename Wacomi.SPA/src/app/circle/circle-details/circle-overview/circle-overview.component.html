@@ -23,7 +23,7 @@
           <app-user-info-card [appUser]="circle.appUser" [dateCreated]="circle.dateCreated" [dateUpdate]="circle.dateUpdated" (messageSend)="onMessageSend()"></app-user-info-card>
           <h4>最近参加したメンバー</h4>
           <app-circle-member-shortlist [circleId]="circle.id"  [latestMemberList]="latestMembers"></app-circle-member-shortlist>
-          <app-circle-sideinfo [circle]="circle"></app-circle-sideinfo>
+          <app-circle-sideinfo [circle]="circle" [latestTopics]="latestTopics"></app-circle-sideinfo>
         </div>
       </div>
       <div *ngIf="isMine">

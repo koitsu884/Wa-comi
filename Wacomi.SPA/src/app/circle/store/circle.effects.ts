@@ -11,8 +11,9 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Circle } from '../../_models/Circle';
 import { of } from 'rxjs/observable/of';
 import 'rxjs/add/operator/withLatestFrom';
-import { CircleMember } from '../../_models/CircleMember';
 import { CircleRequest } from '../../_models/CircleRequest';
+import { CircleTopic } from '../../_models/CircleTopic';
+import { CircleMember } from '../../_models/CircleMember';
 
 @Injectable()
 export class CircleEffects {
@@ -31,24 +32,37 @@ export class CircleEffects {
         .switchMap((id) => {
             return this.httpClient.get<Circle>(this.baseUrl + 'circle/' + id)
                 .mergeMap((result) => {
-                    return [
+                    var returnValue = [
                         {
                             type: CircleActions.SET_CIRCLE,
                             payload: result
                         },
                         {
-                            type: CircleMemberActions.GET_LATEST_CIRCLE_MEMBER_LIST,
+                            type: CircleActions.GET_LATEST_CIRCLE_MEMBER_LIST,
                             payload: id
                         },
                         {
-                            type: CircleMemberActions.GET_CIRCLE_MEMBER_LIST,
-                            payload: {circleId : id, initPage: true}
-                        },
-                        {
-                            type: CircleActions.GET_CIRCLE_REQUEST_LIST,
+                            type: CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST,
                             payload: id
-                        }
+                        },
+                        // {
+                        //     type: CircleMemberActions.GET_CIRCLE_MEMBER_LIST,
+                        //     payload: {circleId : id, initPage: true}
+                        // },
+                        // {
+                        //     type: CircleTopicActions.GET_CIRCLE_TOPIC_LIST,
+                        //     payload: {circleId : id, initPage: true}
+                        // }
                     ]
+
+                    if (result.isManageable)
+                        returnValue.push(
+                            {
+                                type: CircleActions.GET_CIRCLE_REQUEST_LIST,
+                                payload: id
+                            }
+                        )
+                    return returnValue;
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
@@ -134,24 +148,58 @@ export class CircleEffects {
             return action.payload;
         })
         .switchMap((circleRequest) => {
-            return this.httpClient.post<any>(this.baseUrl + 'circlemember/approve',
+            return this.httpClient.post<CircleMember>(this.baseUrl + 'circlemember/approve',
                 circleRequest,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .mergeMap((result) => {
+                .mergeMap((newMember) => {
                     return [{
                         type: GlobalActions.SUCCESS,
                         payload: "メンバー認証しました"
                     },
                     {
-                        type: CircleMemberActions.GET_LATEST_CIRCLE_MEMBER_LIST,
-                        payload: circleRequest.circleId
-                    },
-                    {
-                        type: CircleMemberActions.GET_CIRCLE_MEMBER_LIST,
-                        payload: circleRequest.circleId
+                        type: CircleActions.ADD_NEW_CIRCLE_MEMBER,
+                        payload: newMember
                     }];
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getLatestCircleMemberList = this.actions$
+        .ofType(CircleActions.GET_LATEST_CIRCLE_MEMBER_LIST)
+        .map((action: CircleActions.GetLatestCircleMemberList) => {
+            return action.payload;
+        })
+        .switchMap((id) => {
+            return this.httpClient.get<CircleMember[]>(this.baseUrl + 'circlemember/' + id + '/latest')
+                .map((result) => {
+                    return {
+                        type: CircleActions.SET_LATEST_CIRCLE_MEMBER_LIST,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getLatestCircleTopicList = this.actions$
+        .ofType(CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST)
+        .map((action: CircleActions.GetLatestCircleTopicList) => {
+            return action.payload;
+        })
+        .switchMap((id) => {
+            return this.httpClient.get<CircleTopic[]>(this.baseUrl + 'circle/' + id + '/topics/latest')
+                .map((result) => {
+                    return {
+                        type: CircleActions.SET_LATEST_CIRCLE_TOPIC_LIST,
+                        payload: result
+                    }
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })

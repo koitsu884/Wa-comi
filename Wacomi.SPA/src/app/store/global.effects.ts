@@ -128,10 +128,15 @@ export class GlobalEffect {
             //return this.httpClient.post(this.baseUrl + 'photo/' + payload.recordType + '/' + payload.recordId,
             return this.httpClient.post(this.baseUrl + payload.recordType + '/' + payload.recordId + '/photo',
                 payload.formData)
-                .map(() => {
+                .mergeMap(() => {
+                    var returnActions = payload.callbackActions ? payload.callbackActions : <{type:string, payload:any}[]>{};
                     this.modal.close();
-                    this.router.navigate([payload.callbackLocation]);
-                    return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
+                    if(payload.callbackLocation)
+                        this.router.navigate([payload.callbackLocation]);
+
+                    if(returnActions.length == 0)
+                        returnActions.push({ type: GlobalActions.SUCCESS, payload: "投稿しました" });
+                    return returnActions;
                 })
                 .catch((error: string) => {
                     this.modal.close();
@@ -186,21 +191,27 @@ export class GlobalEffect {
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .map((result) => {
-                    if (!payload.formData) {
-                        this.router.navigate([payload.callbackLocation ? payload.callbackLocation : '/users/posts/' + payload.record.appUserId]);
-                        return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
+                .mergeMap((result) => {
+                    if(payload.formData){
+                        return [{
+                            type: GlobalActions.TRY_ADD_PHOTOS,
+                            payload: {
+                                recordType: payload.recordType,
+                                recordId: result.id,
+                                formData: payload.formData,
+                                callbackLocation: payload.callbackLocation,
+                                callbackActions: payload.callbackActions
+                            }}];
                     }
 
-                    return {
-                        type: GlobalActions.TRY_ADD_PHOTOS,
-                        payload: {
-                            recordType: payload.recordType,
-                            recordId: result.id,
-                            formData: payload.formData,
-                            callbackLocation: '/users/posts/' + payload.record.appUserId
-                        }
-                    };
+                    var returnActions = payload.callbackActions ? payload.callbackActions : <{type:string, payload:any}[]>{};
+                    if(payload.callbackLocation)
+                        this.router.navigate([payload.callbackLocation]);
+                    // return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
+                    if(returnActions.length == 0)
+                        returnActions.push({ type: GlobalActions.SUCCESS, payload: "投稿しました" });
+                    
+                    return returnActions;
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
@@ -242,11 +253,15 @@ export class GlobalEffect {
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
-                .map(() => {
-                    this.router.navigate([payload.callbackLocation]);
-                    return {
+                .mergeMap(() => {
+                    var returnActions = payload.callbackActions ? payload.callbackActions : <{type:string, payload:any}[]>{};
+                    if(payload.callbackLocation)
+                        this.router.navigate([payload.callbackLocation]);
+
+                    returnActions.push({
                         type: GlobalActions.SUCCESS, payload: "削除しました"
-                    };
+                    });
+                    return returnActions;
                 })
                 .catch((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })

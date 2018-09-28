@@ -1,0 +1,9 @@
+<form  #commentForm="ngForm" id="commentForm">
+    <textarea class="form-control" name="comment" rows="{{rowNum}}" [(ngModel)]="comment" maxlength="{{maxLength}}}"></textarea>
+    <br>
+    <app-photo-selector (photoSelected)="setSelectedFiles($event)" [multipleSelect]="false"></app-photo-selector>
+    <img class="img-responsive" src="{{previewUrl}}" />
+    <button type="button" class="btn btn-primary btn-sm" *ngIf="selectedFile" (click)="deletePhoto()">取り消し</button>
+    <hr>
+    <button [disabled]="!commentForm.valid" class="btn btn-sm btn-success" [disabled]="comment.length == 0" type="button" (click)="onSubmit()">コメント追加</button>
+</form>

@@ -8,7 +8,7 @@ namespace Wacomi.API.Helper
             get { return pageNumber;}
             set { pageNumber = (value < 1) ? 1 : value;}
         }
-        private int pageSize = 30;
+        private int pageSize = 3;
 
         public int PageSize{
             get { return pageSize;}

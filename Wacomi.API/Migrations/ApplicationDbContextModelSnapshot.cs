@@ -617,9 +617,13 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(5000);
+                        .HasMaxLength(2000);
 
-                    b.Property<int>("PhotoId");
+                    b.Property<bool>("IsActive");
+
+                    b.Property<bool>("IsSecret");
+
+                    b.Property<int?>("PhotoId");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -633,7 +637,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("CircleTopic");
+                    b.ToTable("CircleTopics");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.CircleTopicComment", b =>
@@ -642,6 +646,8 @@ namespace Wacomi.API.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AppUserId");
+
+                    b.Property<int>("CircleId");
 
                     b.Property<int>("CircleTopicId");
 
@@ -653,7 +659,9 @@ namespace Wacomi.API.Migrations
 
                     b.Property<DateTime>("DateUpdated");
 
-                    b.Property<int>("PhotoId");
+                    b.Property<bool>("IsActive");
+
+                    b.Property<int?>("PhotoId");
 
                     b.HasKey("Id");
 
@@ -673,11 +681,15 @@ namespace Wacomi.API.Migrations
 
                     b.Property<int?>("AppUserId");
 
+                    b.Property<int>("CircleId");
+
                     b.Property<int>("CommentId");
 
                     b.Property<DateTime>("DateCreated");
 
                     b.Property<DateTime>("DateUpdated");
+
+                    b.Property<bool>("IsActive");
 
                     b.Property<string>("Reply")
                         .IsRequired()
@@ -1468,8 +1480,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasOne("Wacomi.API.Models.Photo", "Photo")
                         .WithMany()
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.CircleTopicComment", b =>
@@ -1485,8 +1496,7 @@ namespace Wacomi.API.Migrations
 
                     b.HasOne("Wacomi.API.Models.Photo", "Photo")
                         .WithMany()
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Wacomi.API.Models.CircleTopicCommentReply", b =>

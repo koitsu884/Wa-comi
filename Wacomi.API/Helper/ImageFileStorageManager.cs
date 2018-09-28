@@ -86,6 +86,7 @@ namespace Wacomi.API.Helper
         }
         public ImageFileResult SaveImage(string recordType, int recordId, IFormFile file, string targetFolder = null, int maxWidth = 600, bool forceLocalSave = false)
         {
+            recordType = recordType.ToLower();
             try
             {
                 StorageType storageType;
