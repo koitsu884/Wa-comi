@@ -1,6 +1,9 @@
 <div class="commentContainer row" [ngClass]="{hasForcus:forcused}">
   <div *ngIf="topicComment.photo" class="col-sm-3">
-    <img src="{{topicComment.photo | thumburl}}" class="img-responsive">
+    <img src="{{topicComment.photo | thumburl}}" class="img-responsive" (click)="openModal(template)">
+    <ng-template #template>
+      <div class="modal-body"><img src="{{topicComment.photo.url}}" (click)="modalRef.hide()"></div>
+    </ng-template>
   </div>
   <div [ngClass]="{'col-sm-9': topicComment.photo}">
     <app-user-comment 

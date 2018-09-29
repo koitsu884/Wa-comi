@@ -2,10 +2,10 @@
   <app-loading *ngIf="!topics"></app-loading>
   <div *ngIf="topics">
     <button *ngIf="circle?.isMember" class="btn btn-primary" type="button" [routerLink]="['edit']">新規投稿</button>
-    <div class="topicCard" *ngFor="let topic of topics">
+    <div class="topicCard" *ngFor="let topic of topics" [routerLink]="['detail', topic.id]">
       <img class="img-thumbnail pull-left" src="{{topic.photo | thumburl}}" alt="">
       <div>
-        <h5 [routerLink]="['detail', topic.id]">{{topic.title}}</h5>
+        <h5>{{topic.title}}</h5>
         <p>作成日:{{topic.dateCreated | date: 'mediumDate'}}</p>
       </div>
       <span class="clearfix"></span>

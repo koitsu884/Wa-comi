@@ -1,10 +1,11 @@
 import * as fromCircle from '../../../../store/circle.reducers';
 import * as CircleTopicActions from '../../../../store/circletopic.actions';
 import * as GlobalActions from '../../../../../store/global.actions';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef } from '@angular/core';
 import { CircleTopicComment } from '../../../../../_models/CircleTopicComment';
 import { AlertifyService } from '../../../../../_services/alertify.service';
 import { Store } from '@ngrx/store';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-circle-topic-comment',
@@ -15,10 +16,15 @@ export class CircleTopicCommentComponent implements OnInit {
   @Input() topicComment: CircleTopicComment;
   @Input() appUserId: number;
   @Input() forcused: boolean = false;
+  modalRef: BsModalRef;
 
-  constructor(private alertify: AlertifyService, private store: Store<fromCircle.FeatureState>) { }
+  constructor(private alertify: AlertifyService, private modalService: BsModalService, private store: Store<fromCircle.FeatureState>) { }
 
   ngOnInit() {
+  }
+
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
   }
 
   sendLike(topicCommentId: number) {

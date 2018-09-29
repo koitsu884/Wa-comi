@@ -16,3 +16,7 @@ button[disabled]{
   opacity: 0.9;
   color: #01a9f7;
 }
+
+.modal-body img{
+	width:100%;
+}

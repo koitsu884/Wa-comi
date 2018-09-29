@@ -14,7 +14,7 @@ import { CircleMemberListComponent } from "./circle-member/circle-member-list/ci
 import { CircleMemberEffects } from "./store/circlemember.effects";
 import { CircleRequestListComponent } from "./circle-details/circle-request-list/circle-request-list.component";
 import { CircleOverviewComponent } from "./circle-details/circle-overview/circle-overview.component";
-import { TabsModule } from "ngx-bootstrap";
+import { TabsModule, ModalModule } from "ngx-bootstrap";
 import { CircleTopicComponent } from "./circle-details/circle-topic/circle-topic.component";
 import { CircleInfoComponent } from "./circle-details/circle-overview/circle-info/circle-info.component";
 import { CircleSideinfoComponent } from "./circle-details/circle-overview/circle-sideinfo/circle-sideinfo.component";
@@ -43,6 +43,7 @@ import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circl
         SharedModule,
         PaginationModule,
         TabsModule,
+        ModalModule,
         StoreModule.forFeature('circleModule', reducers),
         EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects])
     ],

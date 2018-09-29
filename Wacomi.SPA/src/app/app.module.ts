@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
 import localeJa from '@angular/common/locales/ja';
 import { AppComponent } from './app.component';
-import { BsDropdownModule, BsLocaleService, TabsModule, PaginationModule } from 'ngx-bootstrap';
+import { BsDropdownModule, BsLocaleService, TabsModule, PaginationModule, ModalModule } from 'ngx-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -83,6 +83,7 @@ registerLocaleData(localeJa, 'ja');
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    ModalModule.forRoot(),
     PaginationModule.forRoot(),
   ],
   providers: [
