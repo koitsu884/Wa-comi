@@ -48,6 +48,7 @@ html {
   body {
     font-size: 14px;
     font-size: 1.4rem;
+    background-color:rgb(250, 255, 250);
   }
    
   h1 {
@@ -73,6 +74,32 @@ html {
     font-size: 18px;
     font-size: 1.8rem;
   }
+
+  .area {
+    background-color:white;
+    margin:0;
+    padding: 2px;
+    border: solid 1px rgb(230, 240, 230);
+    z-index: -5;
+  }
+
+  .area .areaTitle {
+    font-size: 18px;
+    font-size: 1.8rem;
+    width:100%;
+    margin:0;
+    padding:5px;
+    /* background-color: rgb(164, 252, 233); */
+    border-bottom: solid 2px rgb(3, 129, 102);
+  }
+
+  .hoverZoom:hover  {
+    cursor: pointer;
+    transform : scale(1.05, 1.05);
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
+    opacity: 0.8;
+}
    
   @media only screen and (min-width:651px) {
     html {
@@ -138,7 +165,7 @@ h3:before {
     border-radius:  50%;
     top: -5px; 
     top: -.5rem; 
-    z-index:  -1;
+    z-index: -1;
 }
 
 h4 {
@@ -259,6 +286,10 @@ h4 {
 
 .bg-light-yellow {
     background-color: rgb(247, 255, 240);
+}
+
+.bg-light-orange {
+  background-color: rgb(250, 250, 240);
 }
 
 .bg-light-green {

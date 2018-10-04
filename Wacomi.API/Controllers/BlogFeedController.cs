@@ -22,6 +22,11 @@ namespace Wacomi.API.Controllers
             this._fileStorageManager = fileStorageManager;
         }
 
+        [HttpGet("test")]
+        public string Test(){
+            return "Test";
+        }
+
 
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestBlogFeeds()

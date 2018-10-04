@@ -84,7 +84,7 @@ export class CircleEditComponent implements OnInit {
       this.store.dispatch(new GlobalActions.UpdateRecord({
         recordType:'circle',
         record: this.editingCircle,
-        callbackLocation: '/users/posts/' + this.appUser.id,
+        callbackLocation: '/circle/management',
         recordSetActionType: CircleActions.SET_CIRCLE
       }));
     }
@@ -99,7 +99,7 @@ export class CircleEditComponent implements OnInit {
           recordType:'circle',
           record: this.editingCircle,
           formData:this.selectedFiles.length > 0 ? formData : null,
-          callbackLocation: '/users/posts/' + this.appUser.id,
+          callbackLocation: '/circle/management',
           callbackActions: [{ type: GlobalActions.SUCCESS, payload: "投稿しました" }]
         }));
     }

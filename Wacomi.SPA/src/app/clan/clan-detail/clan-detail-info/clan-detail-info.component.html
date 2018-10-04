@@ -1,12 +1,12 @@
 <div class="clanDetailInfo" *ngIf="clanSeek">
   <h2>{{clanSeek.title}}</h2>
-  <h4>エリア：{{clanSeek.locationName}}</h4>
+  <h3>エリア：{{clanSeek.locationName}}</h3>
   <div class="gallery">
     <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
   </div>
-  <h4 class="bg-primary">本文</h4>
+  <h4>本文</h4>
   <div *ngIf="clanSeek.websiteUrl">
-    <a href="{{clanSeek.websiteUrl}}">ホームページ</a>
+    <h5><a href="{{clanSeek.websiteUrl}}">ホームページ</a></h5>
     <br>
     <br>
   </div>

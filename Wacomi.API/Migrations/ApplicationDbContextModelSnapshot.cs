@@ -617,7 +617,7 @@ namespace Wacomi.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000);
+                        .HasMaxLength(5000);
 
                     b.Property<bool>("IsActive");
 
@@ -982,6 +982,8 @@ namespace Wacomi.API.Migrations
                     b.Property<int>("RecordId");
 
                     b.Property<string>("RecordType");
+
+                    b.Property<string>("RelatingRecordIdsStr");
 
                     b.HasKey("Id");
 

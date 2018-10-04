@@ -1,11 +1,13 @@
 <div class="container">
-  <app-loading *ngIf="!topics"></app-loading>
-  <div *ngIf="topics">
-    <button *ngIf="circle?.isMember" class="btn btn-primary" type="button" [routerLink]="['edit']">新規投稿</button>
+    <h3>トピック一覧</h3>
+  <app-loading *ngIf="loading"></app-loading>
+  <div *ngIf="!loading" class="area">
+    <button *ngIf="circle?.isMember" class="btn btn-primary" type="button" [routerLink]="['edit']">新しいトピックを作成する</button>
+    <p *ngIf="!loading && topics.length == 0" class="text-danger"><b>まだトピックがありません</b></p>
     <div class="topicCard" *ngFor="let topic of topics" [routerLink]="['detail', topic.id]">
-      <img class="img-thumbnail pull-left" src="{{topic.photo | thumburl}}" alt="">
+      <img *ngIf="topic.photoId" class="img-thumbnail pull-left" src="{{topic.photo | thumburl}}" >
       <div>
-        <h5>{{topic.title}}</h5>
+        <h5><a>{{topic.title}}</a></h5>
         <p>作成日:{{topic.dateCreated | date: 'mediumDate'}}</p>
       </div>
       <span class="clearfix"></span>

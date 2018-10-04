@@ -37,6 +37,7 @@
              <li><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
              <li><a [routerLink]="['/users/posts', appUser.id]">マイ投稿管理</a></li>
              <li><a [routerLink]="['/blog']">ブログ管理</a></li>
+             <li><a [routerLink]="['/circle/management']">コミュニティ管理</a></li>
              <li *ngIf="isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
              <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>
            </ul>

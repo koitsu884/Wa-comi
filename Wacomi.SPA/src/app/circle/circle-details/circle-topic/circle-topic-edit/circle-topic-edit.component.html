@@ -1,5 +1,5 @@
 <div class="container">
-    <form *ngIf="!loading" #circleTopicEditForm="ngForm" id="circleTopicEditForm" (ngSubmit)="onSubmit()">
+    <form #circleTopicEditForm="ngForm" id="circleTopicEditForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
             <label for="title" class="control-label required">タイトル</label>
             <input class="form-control" name="title" type="text" maxlength="100" [(ngModel)]="circleTopic.title" required #title="ngModel">
@@ -15,7 +15,7 @@
             <label for="description" class="control-label">トピック画像</label>
             <img class="img-responsive" src="{{previewUrl}}" />
             <app-photo-selector (photoSelected)="setSelectedFiles($event, circleTopicEditForm)" [multipleSelect]="false"></app-photo-selector>
-            <button type="button" class="btn btn-primary btn-sm" (click)="deletePhoto()">取り消し</button>
+            <button type="button" *ngIf="selectedFile" class="btn btn-primary btn-sm" (click)="deletePhoto()">取り消し</button>
         </div>
         <button class="btn btn-success" [disabled]="!circleTopicEditForm.valid || circleTopicEditForm.pristine" type="submit">{{id ? '更新' : '追加'}}</button>
     </form>

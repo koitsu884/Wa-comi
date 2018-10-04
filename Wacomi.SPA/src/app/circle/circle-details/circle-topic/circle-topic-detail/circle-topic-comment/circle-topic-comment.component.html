@@ -19,6 +19,7 @@
     <div class="comment">
       <div class="commentBaloon" [ngClass]="{'isMine': isMine}" [innerHTML]="commentWithName() | nl2br"></div>
     </div> -->
+    <p>{{topicComment.dateCreated | timeago_jp}}</p>
     <div class="commentTools">
       <!-- <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !appUserId">
             <i class="fa fa-thumbs-up" title="良いね"></i>

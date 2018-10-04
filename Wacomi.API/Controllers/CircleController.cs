@@ -91,15 +91,25 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult> GetByUser(int userId)
+        public async Task<ActionResult> GetByUser(PaginationParams paginationParams, int userId)
         {
-            var circles = await _repo.GetCirclesByUser(userId);
+            var circles = await _repo.GetCirclesByUser(paginationParams, userId);
+            Response.AddPagination(circles.CurrentPage, circles.PageSize, circles.TotalCount, circles.TotalPages);
+            return Ok(this._mapper.Map<IEnumerable<CircleForReturnDto>>(circles));
+        }
+
+        [HttpGet("user/{userId}/own")]
+        public async Task<ActionResult> GetOwnedByUser(PaginationParams paginationParams, int userId)
+        {
+            var circles = await _repo.GetCirclesOwnedByUser(paginationParams, userId);
+            Response.AddPagination(circles.CurrentPage, circles.PageSize, circles.TotalCount, circles.TotalPages);
             return Ok(this._mapper.Map<IEnumerable<CircleForReturnDto>>(circles));
         }
 
         [HttpGet("categories")]
         public async Task<ActionResult> GetCategories()
         {
+            var test = await _repo.GetCircleCategories(); 
             return Ok(await _repo.GetCircleCategories());
         }
 

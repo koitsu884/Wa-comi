@@ -41,54 +41,74 @@ export class CircleTopicEffects {
                 });
         })
 
-        @Effect()
-        getCircleTopicCommentList = this.actions$
-            .ofType(CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST)
-            .map((action: CircleTopicActions.GetCircleTopicCommentList) => {
-                return action.payload;
-            })
-            .withLatestFrom(this.store$)
-            .switchMap(([payload, circleMemberState]) => {
-                let Params = new HttpParams();
-                if (!payload.initPage && circleMemberState.circleModule.circleTopic.commentPagination) {
-                    Params = Params.append('pageNumber', circleMemberState.circleModule.circleTopic.commentPagination.currentPage.toString());
-                    Params = Params.append('pageSize', circleMemberState.circleModule.circleTopic.commentPagination.itemsPerPage.toString());
-                }
-    
-                return this.httpClient.get<CircleTopicComment[]>(this.baseUrl + 'circletopic/' + payload.topicId + '/comments', { params: Params, observe: 'response' })
-                    .map((response) => {
-                        console.log(response);
-                        return {
-                            type: CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_LIST,
-                            payload: {
-                                commentList: response.body,
-                                pagination: JSON.parse(response.headers.get("Pagination"))
-                            }
-                        }
-                    })
-                    .catch((error: string) => {
-                        return of({ type: GlobalActions.FAILED, payload: error })
-                    });
-            })
+    @Effect()
+    getCircleTopicCommentList = this.actions$
+        .ofType(CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST)
+        .map((action: CircleTopicActions.GetCircleTopicCommentList) => {
+            return action.payload;
+        })
+        .withLatestFrom(this.store$)
+        .switchMap(([payload, circleMemberState]) => {
+            let Params = new HttpParams();
+            if (!payload.initPage && circleMemberState.circleModule.circleTopic.commentPagination) {
+                Params = Params.append('pageNumber', circleMemberState.circleModule.circleTopic.commentPagination.currentPage.toString());
+                Params = Params.append('pageSize', circleMemberState.circleModule.circleTopic.commentPagination.itemsPerPage.toString());
+            }
 
-            @Effect()
-            getCircleTopicReplies = this.actions$
-                .ofType(CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES)
-                .map((action: CircleTopicActions.GetCircleTopicReplies) => {
-                    return action.payload;
+            return this.httpClient.get<CircleTopicComment[]>(this.baseUrl + 'circletopic/' + payload.topicId + '/comments', { params: Params, observe: 'response' })
+                .map((response) => {
+                    return {
+                        type: CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_LIST,
+                        payload: {
+                            commentList: response.body,
+                            pagination: JSON.parse(response.headers.get("Pagination"))
+                        }
+                    }
                 })
-                .switchMap((payload) => {
-                    return this.httpClient.get<ShortComment[]>(this.baseUrl + 'circletopiccomment/' + payload + '/replies')
-                        .map((result) => {
-                            return {
-                                type: CircleTopicActions.SET_CIRCLE_TOPIC_REPLIES,
-                                payload: { commentId: payload, topicReplies: result }
-                            }
-                        })
-                        .catch((error: string) => {
-                            return of({ type: GlobalActions.FAILED, payload: error })
-                        });
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getForcusedTopicComment = this.actions$
+        .ofType(CircleTopicActions.GET_FORCUSED_TOPIC_COMMENT)
+        .map((action: CircleTopicActions.GetForcusedTopicComment) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.get<CircleTopicComment>(this.baseUrl + 'circletopiccomment/' + payload)
+                .map((circleTopicComment) => {
+                    return {
+                        type: CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_LIST,
+                        payload: {
+                            commentList: [circleTopicComment],
+                        }
+                    }
                 })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getCircleTopicReplies = this.actions$
+        .ofType(CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES)
+        .map((action: CircleTopicActions.GetCircleTopicReplies) => {
+            return action.payload;
+        })
+        .switchMap((payload) => {
+            return this.httpClient.get<ShortComment[]>(this.baseUrl + 'circletopiccomment/' + payload + '/replies')
+                .map((result) => {
+                    return {
+                        type: CircleTopicActions.SET_CIRCLE_TOPIC_REPLIES,
+                        payload: { commentId: payload, topicReplies: result }
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
 
     @Effect()
     updateCircleTopic = this.actions$
@@ -134,7 +154,7 @@ export class CircleTopicEffects {
                 })
         });
 
-   
+
 
     @Effect()
     getLatestCircleTopicMemberList = this.actions$
@@ -176,16 +196,16 @@ export class CircleTopicEffects {
             }
         })
 
-        @Effect()
-        setCircleTopicCommentPagination = this.actions$
-            .ofType(CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_PAGE)
-            .withLatestFrom(this.store$)
-            .map(([action, circleTopicState]) => {
-                return {
-                    type: CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST,
-                    payload: { topicId: circleTopicState.circleModule.circleTopic.selectedCircleTopic.id }
-                }
-            })
+    @Effect()
+    setCircleTopicCommentPagination = this.actions$
+        .ofType(CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_PAGE)
+        .withLatestFrom(this.store$)
+        .map(([action, circleTopicState]) => {
+            return {
+                type: CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST,
+                payload: { topicId: circleTopicState.circleModule.circleTopic.selectedCircleTopic.id }
+            }
+        })
 
 
 

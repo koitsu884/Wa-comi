@@ -1,10 +1,8 @@
-.circleCardContainer{
-    padding:4px;
-}
-
 .circleCard{
     border-radius: 10px;
-    border: 1px solid rgb(209, 204, 204);
+    margin:2px;
+    border: 1px solid rgb(204, 224, 204);
+    background-color:white;
     /* margin:2px; */
 }
 

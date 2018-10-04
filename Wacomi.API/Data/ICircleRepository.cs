@@ -22,7 +22,8 @@ namespace Wacomi.API.Data
         Task<int> GetCircleMemberCount(int circleId);
         Task<PagedList<CircleMember>> GetCircleMemberList(PaginationParams paginationParams, int circleId, CircleRoleEnum? role = null);
          Task<IEnumerable<CircleMember>> GetLatestCircleMemberList(int circleId);
-        Task<IEnumerable<Circle>> GetCirclesByUser(int userId); //Should get circle topic made by same user as well
+        Task<PagedList<Circle>> GetCirclesByUser(PaginationParams paginationParams, int userId);
+        Task<PagedList<Circle>> GetCirclesOwnedByUser(PaginationParams paginationParams, int userId);
         Task<int> GetCircleCountForUser( int userId);
         Task<IEnumerable<CircleCategory>> GetCircleCategories();
         // Task<IEnumerable<CircleTopic>> GetLatestCircleTopic(int circleId); //No need..?

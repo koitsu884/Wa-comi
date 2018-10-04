@@ -4,7 +4,8 @@
 
 .clanCard{
     border-radius: 10px;
-    /* border: 1px solid rgb(209, 204, 204); */
+    border: 1px solid rgb(230, 240, 230);
+    background-color:white;
     /* margin:2px; */
 }
 

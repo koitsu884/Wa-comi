@@ -1,0 +1,27 @@
+<div class="container">
+    <h1>コミュニティ管理</h1>
+    <div class="row">
+      <div class="col-md-12">
+        <h2>参加しているコミュニティ</h2>
+        <app-loading *ngIf="!myCircleList"></app-loading>
+        <app-circle-list [circleList]="myCircleList"></app-circle-list>
+        <div *ngIf="myCirclePagination && myCirclePagination.totalPages > 1" class="text-center">
+            <pagination [boundaryLinks]="true" [totalItems]="myCirclePagination.totalItems" [ngModel]="myCirclePagination.currentPage" [itemsPerPage]="myCirclePagination.itemsPerPage"
+              (pageChanged)="myCirclePageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+              lastText="&raquo;">
+            </pagination>
+          </div>
+        <!-- <button class="btn btn-primary" [routerLink]="['/clan/edit']" [disabled]="clanList && clanList.length >= 5" type="button">新規投稿</button> -->
+        <h2>管理しているコミュニティ</h2>
+        <app-loading *ngIf="!ownCircleList"></app-loading>
+        <app-circle-list [circleList]="ownCircleList"></app-circle-list>
+        <div *ngIf="ownCirclePagination && ownCirclePagination.totalPages > 1" class="text-center">
+            <pagination [boundaryLinks]="true" [totalItems]="ownCirclePagination.totalItems" [ngModel]="ownCirclePagination.currentPage" [itemsPerPage]="ownCirclePagination.itemsPerPage"
+              (pageChanged)="ownCirclePageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+              lastText="&raquo;">
+            </pagination>
+          </div>
+        <!-- <button class="btn btn-primary" [routerLink]="['/attraction/edit']" type="button">新規投稿</button> -->
+      </div>
+    </div>
+  </div>

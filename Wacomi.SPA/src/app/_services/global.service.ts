@@ -11,6 +11,7 @@ import { Blog } from '../_models/Blog';
 import { Attraction } from '../_models/Attraction';
 import { AttractionReview } from '../_models/AttractionReview';
 import { Property } from '../_models/Property';
+import { Circle } from '../_models/Circle';
 
 @Injectable()
 export class GlobalService {
@@ -31,13 +32,18 @@ export class GlobalService {
         return array;
     }
 
-    // public enum NotificationEnum {
-//     NewMessage = 1,
-//     NewPostOnFeedComment,
-//     RepliedOnFeedComment,
-//     NewPostOnTopicComment,
-//     RepliedOnTopicComment,
-// }
+    /* public enum NotificationEnum {
+        NewMessage = 1,
+        NewPostOnFeedComment,
+        RepliedOnFeedComment,
+        NewPostOnTopicComment,
+        RepliedOnTopicComment,
+        NewCircleMemberRequest,
+        CircleRequestAccepted,
+        NewCircleTopicCreated,
+        NewReplyForYourCircleComment,
+        RepliedForYourCircleReply
+// }*/
 
     getNotificationTypes() {
         const array = [];
@@ -46,6 +52,11 @@ export class GlobalService {
         array["RepliedOnFeedComment"] = 3;
         array["NewPostOnTopicComment"] = 4;
         array["RepliedOnTopicComment"] = 5;
+        array["NewCircleMemberRequest"] = 6;
+        array["CircleRequestAccepted"] = 7;
+        array["NewCircleTopicCreated"] = 8;
+        array["NewReplyForYourCircleComment"] = 9;
+        array["RepliedForYourCircleReply"] = 10;
         return array;
     }
 
@@ -72,6 +83,10 @@ export class GlobalService {
 
     getLatestClanSeekList() {
         return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek?pageSize=10');
+    }
+
+    getLatestCircleList() {
+        return this.httpClient.get<Circle[]>(this.baseUrl + 'circle/latest');
     }
 
     getClanSeekListByUser(appUserId: number){

@@ -1,10 +1,13 @@
 <div>
-  <h4>最近のトピック</h4>
-  <div *ngIf="latestTopics">
-    <div *ngFor="let topic of latestTopics">
-      <h5>{{topic.title}}</h5>
-      <p>{{topic.appUser.displayName}}</p>
-    </div>
+  <div class="area">
+    <h4>最近のトピック</h4>
+    <div *ngIf="latestTopics">
+        <div *ngFor="let topic of latestTopics">
+          <a [routerLink]="['/circle/detail', topic.circleId, 'topic', 'detail', topic.id]" >{{topic.title}}</a>
+        </div>
+      </div>
   </div>
-  <h4>最近のイベント？</h4>
+  <div class="area">
+    <h4>最近のイベント</h4>
+  </div>
 </div>

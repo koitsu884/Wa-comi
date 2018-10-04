@@ -1,11 +1,42 @@
 import { Photo } from "./Photo";
 
+// public enum NotificationEnum {
+//     NewMessage = 1,
+//     //Blog feed notifications
+//     NewPostOnFeedComment,
+//     RepliedOnFeedComment,
+//     //Daily topic notifications
+//     NewPostOnTopicComment,
+//     RepliedOnTopicComment,
+//     //Circle notifications
+//     NewCircleMemberRequest,
+//     CircleRequestAccepted,
+//     // NewCircleMemberJoined, //多分くどいので要らない
+//     NewCircleTopicCreated,
+//     NewCircleCommentReplyByMember,
+//     NewCircleCommentReplyByOwner
+// }
+
+export enum NotificationEnum {
+    NewMessage = 1,
+    NewPostOnFeedComment,
+    RepliedOnFeedComment,
+    NewPostOnTopicComment,
+    RepliedOnTopicComment,
+    NewCircleMemberRequest,
+    CircleRequestAccepted,
+    NewCircleTopicCreated,
+    NewCircleCommentReplyByMember,
+    NewCircleCommentReplyByOwner
+ };
+
 export interface AppNotification {
     id:number;
     notificationType: number;
     appUserId?: number;
     recordType? :string;
     recordId?: number;
+    relatingRecordIds?: any;
     photo: Photo;
     message:string;
 }

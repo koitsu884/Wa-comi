@@ -1,12 +1,16 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
-<div  *ngIf="location.path() !== '' 
+<div *ngIf="location.path() !== '' 
             && location.path() !== '/registered' 
             && location.path().indexOf('/account')
             && location.path().indexOf('/photo/edit') < 0
-            && location.path().indexOf('/clan/edit') < 0"  class="container">
-<hr>
-<a class="btn btn-warning" (click)="backClicked()">戻る</a>
+            && location.path().indexOf('/clan/edit') < 0" class="container">
+    <hr>
+    <a class="btn btn-warning" (click)="backClicked()">戻る</a>
 </div>
 <app-footer></app-footer>
 <app-modal></app-modal>
+<!--Scroll to top-->
+<div id="goToTop" class="scroll-to-top" [ngClass]="{'show-scroll': navIsFixed}">
+    <i class="fa fa-arrow-circle-up"  aria-hidden="true" title="ページトップへ戻る" (click)="scrollToTop()"></i>
+</div>

@@ -12,3 +12,7 @@ li img {
     background-color: Red;
     color: white;
 }
+
+.dropdown-menu {
+    z-index: 2000;
+}

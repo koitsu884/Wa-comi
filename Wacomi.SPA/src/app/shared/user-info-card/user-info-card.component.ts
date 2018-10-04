@@ -12,6 +12,7 @@ export class UserInfoCardComponent implements OnInit {
   @Input() appUser: AppUser;
   @Input() dateUpdate: Date;
   @Input() dateCreated: Date;
+  @Input() hideMessageButton: boolean = false;
   @Output() messageSend = new EventEmitter();
   isMine: boolean = false;
   canSendMessage: boolean = false;

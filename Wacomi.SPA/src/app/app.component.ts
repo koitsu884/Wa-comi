@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as jwt_decode from "jwt-decode";
 import * as fromApp from './store/app.reducer';
 import * as AccountActions from './account/store/account.actions';
 import * as GlobalActions from './store/global.actions';
 import { Location } from '@angular/common';
-import { Meta, Title } from '@angular/platform-browser';
+import { Meta, Title, DOCUMENT } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +13,9 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+  navIsFixed: boolean;
 
-  constructor(private store:Store<fromApp.AppState>, private meta: Meta, private title: Title, public location: Location) {}
+  constructor(private store:Store<fromApp.AppState>, private meta: Meta, private title: Title, public location: Location, @Inject(DOCUMENT) private document: Document) {}
 
   ngOnInit() {
     this.title.setTitle("Wa-コミ | NZ情報検索・コミュニティーサイト");
@@ -59,4 +60,15 @@ export class AppComponent implements OnInit{
   backClicked() {
     this.location.back();
   }
+
+  @HostListener("window:scroll", [])
+    onWindowScroll() {
+        if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
+            this.navIsFixed = true;
+        } else if (this.navIsFixed && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) { this.navIsFixed = false; } } scrollToTop() { (function smoothscroll() { var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; if (currentScroll > 0) {
+                window.requestAnimationFrame(smoothscroll);
+                window.scrollTo(0, currentScroll - (currentScroll / 5));
+            }
+        })();
+    }
 }

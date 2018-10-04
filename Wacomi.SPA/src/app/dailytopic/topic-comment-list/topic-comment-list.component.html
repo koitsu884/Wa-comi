@@ -15,7 +15,7 @@
     </div>
   </form>
   <div *ngFor="let topicComment of (dailyTopicState | async).topicComments">
-    <app-topic-comment *ngIf="(dailyTopicState | async).commentFeelings" [topicComment]="topicComment" [appUserId]="appUser? appUser.id : null" [forcused]="topicComment.id == forcusedRecordId"
+    <app-topic-comment *ngIf="(dailyTopicState | async).commentFeelings" [isMine]="appUser && appUser.id == topicComment.appUserId" [topicComment]="topicComment" [appUserId]="appUser? appUser.id : null" [forcused]="topicComment.id == forcusedRecordId"
       [commentFeelEnum]="commentFeelingEnum"></app-topic-comment>
     <!-- <app-topic-reply *ngIf="topicComment.displayReplies" [topicCommentId]="topicComment.id" [currentMemberId]="appUser? appUser.userProfileId : null"  [topicReplies]="topicComment.topicReplies" ></app-topic-reply> -->
     <app-short-comment-form 

@@ -6,7 +6,8 @@
         <app-clan-detail-info [clanSeek]="editingClan"></app-clan-detail-info>
       </div>
       <div class="col-sm-4">
-        <app-clan-detail-card [clanSeek]="editingClan" [appUser]="appUser"></app-clan-detail-card>
+        <app-user-info-card [appUser]="appUser" [dateCreated]="editingClan.dateCreated" [dateUpdate]="editingClan.dateUpdated"></app-user-info-card>
+        <!-- <app-clan-detail-card [clanSeek]="editingClan" [appUser]="appUser"></app-clan-detail-card> -->
       </div>
     </div>
     <div *ngIf="editingClan.appUserId == appUser?.id">

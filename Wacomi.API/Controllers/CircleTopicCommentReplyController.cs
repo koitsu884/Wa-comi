@@ -12,9 +12,11 @@ namespace Wacomi.API.Controllers
     public class CircleTopicCommentReplyController : DataController
     {
         private readonly ICircleRepository _repo;
-        public CircleTopicCommentReplyController(IAppUserRepository appUserRepository, IMapper mapper, ICircleRepository repo) : base(appUserRepository, mapper)
+        private readonly INotificationRepository _notificationRepo;
+        public CircleTopicCommentReplyController(IAppUserRepository appUserRepository, IMapper mapper, ICircleRepository repo, INotificationRepository notificationRepo) : base(appUserRepository, mapper)
         {
             this._repo = repo;
+            this._notificationRepo = notificationRepo;
         }
 
          [HttpGet("{id}", Name = "GetCircleTopicCommentReply")]
@@ -38,6 +40,11 @@ namespace Wacomi.API.Controllers
             model.CircleId = circleTopicComment.CircleId;
             // var newTopic = this._mapper.Map<CircleTopic>(model);
             _repo.Add(model);
+            await _repo.SaveAll();
+            if(circleTopicComment.AppUserId == model.AppUserId) //Comment owner
+                await _notificationRepo.AddNotification(NotificationEnum.NewCircleCommentReplyByOwner, (int)model.AppUserId, model);
+            else
+                await _notificationRepo.AddNotification(NotificationEnum.NewCircleCommentReplyByMember, (int)model.AppUserId, model);
             await _repo.SaveAll();
 
             return CreatedAtRoute("GetCircleTopicCommentReply", new { id = model.Id }, _mapper.Map<CommentForReturnDto>(model));

@@ -43,6 +43,15 @@ namespace Wacomi.API
             CurrentEnvironment = env;
         }
 
+        public virtual void ConfigureDatabase(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            services.AddSingleton<IDatabaseSeeder, DatabaseSeeder>();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -60,13 +69,12 @@ namespace Wacomi.API
             // }
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-           services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
             //services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSG"));
             //services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptionsSB"));
             services.AddAutoMapper();
             // services.AddLogging();
-            services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
+            ConfigureDatabase(services);
             services.AddSingleton<IEmailSender, EmailSender>();
             //services.AddSingleton<IEmailSender, SendGlidManager>();
             //services.AddSingleton<IEmailSender, MailGunManager>();
@@ -122,9 +130,6 @@ namespace Wacomi.API
                     };
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-
             // Add scheduled tasks & scheduler
             services.AddSingleton<IScheduledTask, RssReaderTask>();
             services.AddSingleton<IScheduledTask, DeleteOldFeedTask>();
@@ -140,6 +145,20 @@ namespace Wacomi.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+
+                var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var seeder = serviceProvider.GetService<IDatabaseSeeder>();
+                seeder.Seed(userManager, roleManager, context);
+
+                //Seed.SeedData(userManager, roleManager, context);
+
+            }
+
             //staticFileManager.AddStaticFileFolder("static", "static");
 
             if (env.IsDevelopment())
@@ -166,16 +185,17 @@ namespace Wacomi.API
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseAuthentication();
-            
+
             //var feedImageFolder = Path.Combine(Directory.GetCurrentDirectory(), Configuration.GetSection("BlogFeedImageFolder").Value);
 
             if (env.IsDevelopment())
             {
                 //app.UseMvc();
-                 app.UseDefaultFiles();
+                app.UseDefaultFiles();
                 app.UseStaticFiles();
-                app.UseStaticFiles(new StaticFileOptions{
-                    RequestPath = "/static", 
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    RequestPath = "/static",
                     FileProvider = new PhysicalFileProvider(@"C:/Angular_Core/Wacomi/Wacomi.API/static")
                 });
                 // foreach(var item in staticFileManager.GetFolderList()){
@@ -203,9 +223,10 @@ namespace Wacomi.API
                 app.UseLetsEncryptFolder(env);
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
-                app.UseStaticFiles(new StaticFileOptions{
-                    RequestPath = "/static", 
-                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"static"))
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    RequestPath = "/static",
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "static"))
                 });
                 //  foreach(var item in staticFileManager.GetFolderList()){
                 //     app.UseStaticFiles(new StaticFileOptions

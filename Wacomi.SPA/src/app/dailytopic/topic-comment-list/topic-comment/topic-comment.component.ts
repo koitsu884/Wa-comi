@@ -18,6 +18,7 @@ export class TopicCommentComponent implements OnInit {
   @Input() appUserId: number;
   @Input() commentFeelEnum: any[];
   @Input() forcused: boolean = false;
+  @Input() isMine: boolean;
 
   constructor(private store: Store<fromDailyTopic.FeatureState>, private alertify: AlertifyService) { }
 

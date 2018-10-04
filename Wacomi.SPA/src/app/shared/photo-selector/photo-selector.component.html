@@ -5,7 +5,8 @@
 </div>
 <div *ngIf="!multipleSelect">
       <label class="btn btn-primary btn-sm" for="inputFiles">
-            画像をアップロードする
+            <span *ngIf="selectedFiles.length == 0">画像をアップロードする</span>
+            <span *ngIf="selectedFiles.length > 0">画像を変更する</span>
       <input  #inputFiles id="inputFiles" type="file" class="form-control" accept="image/*" (change)="setUploadingFiles(inputFiles.files)"/>
       </label>
 </div>

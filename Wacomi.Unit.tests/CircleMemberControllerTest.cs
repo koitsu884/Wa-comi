@@ -6,6 +6,7 @@ using Wacomi.API.Controllers;
 using Wacomi.API.Data;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
+using Wacomi.Xunit.FakeRepositories;
 using Wacomi.Xunit.MockRepositories;
 using Xunit;
 
@@ -17,6 +18,7 @@ namespace Wacomi.Xunit
         ICircleRepository _repo;
         IPhotoRepository _photoRepo;
         IAppUserRepository _appUserRepo;
+        INotificationRepository _notificationRepo;
         ContextMapperFixture fixture;
 
         public CircleMemberControllerTest(ContextMapperFixture fixture)
@@ -25,8 +27,9 @@ namespace Wacomi.Xunit
             _repo = new CircleRepoFake(this.fixture.Context);
             _photoRepo = new PhotoRepoFake(this.fixture.Context);
             _appUserRepo = new AppUserRepoFake(this.fixture.Context);
+            _notificationRepo = new NotificationRepoFake(this.fixture.Context);
 
-            _controller = new CircleMemberController(_repo, _appUserRepo, this.fixture.Mapper);
+            _controller = new CircleMemberController(_repo, _appUserRepo, _notificationRepo, this.fixture.Mapper);
         }
 
         [Fact]
@@ -102,10 +105,12 @@ namespace Wacomi.Xunit
             _controller.ControllerContext = SetLoginUser(loggedInUserId);
             //Act
             var createdResult = _controller.ApproveCircleRequest(new CircleRequest(){AppUserId = userId, CircleId = circleId}).Result;
+            var notifications = _notificationRepo.GetNotifications(userId).Result;
 
             Assert.IsType<CreatedAtRouteResult>(createdResult);
             Assert.Equal(requestCounts - 1,  _repo.GetRequestsForCircle(circleId).Result.Count());
             Assert.NotNull( _repo.GetCircleMember(userId, circleId).Result);
+            Assert.True(notifications.Count(n => n.AppUserId == userId && n.NotificationType == NotificationEnum.CircleRequestAccepted) == 1);
         }
     }
 }

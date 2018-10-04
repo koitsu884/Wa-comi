@@ -1,6 +1,6 @@
-<div class="row fix">
+<div class="row">
   <div class="col-sm-6 circleCardContainer" *ngFor="let circle of circleList index as i" >
-    <div class="circleCard" [@circleCard] [routerLink]="['/circle/detail', circle.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+    <div class="circleCard hoverZoom" [@circleCard] [routerLink]="['/circle/detail', circle.id]" >
       <!-- <div class="circle"> -->
       <img src="{{circle.mainPhoto | thumburl}}" class="circleImage pull-left img-thumbnail">
       <div class="info">

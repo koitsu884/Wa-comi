@@ -111,6 +111,11 @@ namespace Wacomi.Xunit.MockRepositories
             return Task.FromResult(null as T);
         }
 
+        public Task<List<Photo>> GetAllCommentPhotosForCircleTopic(int circleTopicId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Circle> GetCircle(int id)
         {
             return Task.FromResult(_circleList.FirstOrDefault(c => c.Id == id));
@@ -156,9 +161,34 @@ namespace Wacomi.Xunit.MockRepositories
             throw new System.NotImplementedException();
         }
 
+        public Task<PagedList<Circle>> GetCirclesByUser(PaginationParams paginationParams, int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PagedList<Circle>> GetCirclesOwnedByUser(PaginationParams paginationParams, int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<CircleTopic> GetCircleTopic(int id)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<PagedList<CircleTopic>> GetCircleTopicByUser(PaginationParams paginationParams, int circleId, int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CircleTopicComment> GetCircleTopicComment(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetCircleTopicCommentCount(int circleTopicId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<PagedList<CircleTopicComment>> GetCircleTopicCommentList(PaginationParams paginationParams, int circleTopicId)
@@ -169,6 +199,16 @@ namespace Wacomi.Xunit.MockRepositories
         public Task<IEnumerable<CircleTopicCommentReply>> GetCircleTopicCommentReplies(int circleTopicCommentId)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<CircleTopicCommentReply> GetCircleTopicCommentReply(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetCircleTopicCommentReplyCount(int circleTopicCommentId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<PagedList<CircleTopic>> GetCircleTopicList(PaginationParams paginationParams, int circleId)
@@ -189,6 +229,11 @@ namespace Wacomi.Xunit.MockRepositories
         public Task<IEnumerable<Circle>> GetLatestCircles()
         {
             throw new System.NotImplementedException();
+        }
+
+        public Task<IEnumerable<CircleTopic>> GetLatestCircleTopicList(int circleId)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<CircleRequest>> GetRequestsForCircle(int circleId)

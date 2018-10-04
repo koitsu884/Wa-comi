@@ -10,6 +10,13 @@ const photoRoute: Routes = [
         runGuardsAndResolvers: 'always',
         component:PhotoEditorComponent,
         canActivate: [AuthGuard],
+    },
+
+    {
+        path: 'edit/:recordType/:recordId/:imageSize',
+        runGuardsAndResolvers: 'always',
+        component:PhotoEditorComponent,
+        canActivate: [AuthGuard],
     }
 ];
 

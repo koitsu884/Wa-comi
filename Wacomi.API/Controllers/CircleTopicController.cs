@@ -16,17 +16,20 @@ namespace Wacomi.API.Controllers
     public class CircleTopicController : DataWithPhotoController
     {
         private readonly ICircleRepository _repo;
+        private readonly INotificationRepository _notificationRepo;
         private readonly ImageFileStorageManager _imageFileStorageManager;
 
         public CircleTopicController(IAppUserRepository appUserRepository,
                 IMapper mapper,
                 IPhotoRepository photoRepo,
+                INotificationRepository notificationRepo,
                 ImageFileStorageManager imageFileStorageManager,
                 ICircleRepository repo
                 ) : base(appUserRepository, mapper, photoRepo)
         {
             _imageFileStorageManager = imageFileStorageManager;
             _repo = repo;
+            _notificationRepo = notificationRepo;
         }
 
         protected override string GetTableName()
@@ -58,12 +61,21 @@ namespace Wacomi.API.Controllers
             return Ok(this._mapper.Map<IEnumerable<CircleTopicForReturnDto>>(topics));
         }
 
+        [HttpGet("{id}/comments/{commentId}")]
+        public async Task<ActionResult> GetTopicComment(int id, int commentId)
+        {
+            var comment = await _repo.GetCircleTopicComment(commentId);
+            var topicsCommentForReturn = this._mapper.Map<CircleTopicCommentForReturnDto>(comment);
+            topicsCommentForReturn.ReplyCount = await _repo.GetCircleTopicCommentReplyCount(comment.Id);
+            return Ok(topicsCommentForReturn);
+        }
+
         [HttpGet("{id}/comments")]
         public async Task<ActionResult> GetTopicComments(PaginationParams paginationParams, int id)
         {
-            var topics = await _repo.GetCircleTopicCommentList(paginationParams, id);
-            Response.AddPagination(topics.CurrentPage, topics.PageSize, topics.TotalCount, topics.TotalPages);
-            var topicsCommentsForReturn = this._mapper.Map<IEnumerable<CircleTopicCommentForReturnDto>>(topics);
+            var topicComments = await _repo.GetCircleTopicCommentList(paginationParams, id);
+            Response.AddPagination(topicComments.CurrentPage, topicComments.PageSize, topicComments.TotalCount, topicComments.TotalPages);
+            var topicsCommentsForReturn = this._mapper.Map<IEnumerable<CircleTopicCommentForReturnDto>>(topicComments);
             foreach(var topicComment in topicsCommentsForReturn){
                 topicComment.ReplyCount = await _repo.GetCircleTopicCommentReplyCount(topicComment.Id);
             }
@@ -81,6 +93,8 @@ namespace Wacomi.API.Controllers
 
             var newTopic = this._mapper.Map<CircleTopic>(model);
             _repo.Add(newTopic);
+            await _repo.SaveAll();
+            await _notificationRepo.AddNotification(NotificationEnum.NewCircleTopicCreated, model.AppUserId, newTopic);
             await _repo.SaveAll();
 
             return CreatedAtRoute("GetCircleTopic", new { id = newTopic.Id }, _mapper.Map<CircleTopicForReturnDto>(await _repo.GetCircleTopic(newTopic.Id)));

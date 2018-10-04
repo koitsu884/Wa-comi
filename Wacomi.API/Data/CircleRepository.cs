@@ -62,7 +62,7 @@ namespace Wacomi.API.Data
                                         .AsQueryable();
 
             if (searchOptions.CityId != null && searchOptions.CityId > 0)
-                query = query.Where(c => c.CityId == searchOptions.CityId);
+                query = query.Where(c => c.CityId == null || c.CityId == searchOptions.CityId);
             if (searchOptions.CategoryId != null && searchOptions.CategoryId > 0)
                 query = query.Where(c => c.Category.Id == searchOptions.CategoryId);
 
@@ -98,14 +98,28 @@ namespace Wacomi.API.Data
                                             // .Select(cm => cm.AppUser)
                                             .ToListAsync();
         }
-        public async Task<IEnumerable<Circle>> GetCirclesByUser(int userId)
+        public async Task<PagedList<Circle>> GetCirclesByUser(PaginationParams paginationParams, int userId)
         {
-            return await _context.CircleMembers.Include(cm => cm.Circle).ThenInclude(c => c.MainPhoto)
-                                            .Include(cm => cm.Circle).ThenInclude(c => c.City)
-                                            .Include(cm => cm.Circle).ThenInclude(c => c.Category)
-                                            .Where(cm => cm.AppUserId == userId && cm.Role == CircleRoleEnum.OWNER)
-                                            .Select(cm => cm.Circle)
-                                            .ToListAsync();
+            var query = _context.Circles.Include(c => c.CircleMemberList)
+                                         .Include(c => c.AppUser).ThenInclude(au => au.MainPhoto)
+                                         .Include(c => c.City)
+                                         .Include(c => c.MainPhoto)
+                                         .Include(c => c.Category)
+                                         .Where(c => c.CircleMemberList.Any(cm => cm.AppUserId == userId && cm.Role == CircleRoleEnum.MEMBER))
+                                         .AsQueryable();
+            return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
+        }
+
+        public async Task<PagedList<Circle>> GetCirclesOwnedByUser(PaginationParams paginationParams, int userId)
+        {
+            var query = _context.Circles.Include(c => c.CircleMemberList)
+                                         .Include(c => c.AppUser).ThenInclude(au => au.MainPhoto)
+                                         .Include(c => c.City)
+                                         .Include(c => c.MainPhoto)
+                                         .Include(c => c.Category)
+                                         .Where(c => c.CircleMemberList.Any(cm => cm.AppUserId == userId && cm.Role == CircleRoleEnum.OWNER))
+                                         .AsQueryable();
+            return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
         public async Task<CircleTopic> GetCircleTopic(int id)
@@ -154,8 +168,10 @@ namespace Wacomi.API.Data
             return await _context.CircleTopicComments.Where(tc => tc.CircleTopicId == circleTopicId).CountAsync();
         }
 
-        public async Task<CircleTopicComment> GetCircleTopicComment(int id){
-            return await _context.CircleTopicComments.Include(tc => tc.Photo).FirstOrDefaultAsync(ctc => ctc.Id == id);
+        public async Task<CircleTopicComment> GetCircleTopicComment(int id)
+        {
+            return await _context.CircleTopicComments.Include(tc => tc.AppUser).ThenInclude(au => au.MainPhoto)
+                                                     .Include(tc => tc.Photo).FirstOrDefaultAsync(ctc => ctc.Id == id);
         }
 
         public async Task<PagedList<CircleTopicComment>> GetCircleTopicCommentList(PaginationParams paginationParams, int circleTopicId)
@@ -183,7 +199,7 @@ namespace Wacomi.API.Data
             return photos;
         }
 
-         public async Task<CircleTopicCommentReply> GetCircleTopicCommentReply(int circleTopicCommentReplyId)
+        public async Task<CircleTopicCommentReply> GetCircleTopicCommentReply(int circleTopicCommentReplyId)
         {
             return await _context.CircleTopicCommentReplies.FirstOrDefaultAsync(tr => tr.Id == circleTopicCommentReplyId);
         }
@@ -191,7 +207,7 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<CircleTopicCommentReply>> GetCircleTopicCommentReplies(int circleTopicCommentId)
         {
             return await _context.CircleTopicCommentReplies.Include(cr => cr.AppUser).ThenInclude(a => a.MainPhoto)
-                                                    . Where(tr => tr.CommentId == circleTopicCommentId).ToListAsync();
+                                                    .Where(tr => tr.CommentId == circleTopicCommentId).OrderBy(tr => tr.DateCreated).ToListAsync();
         }
 
         public async Task<int> GetCircleTopicCommentReplyCount(int circleTopicCommentId)
@@ -201,7 +217,8 @@ namespace Wacomi.API.Data
 
         public async Task<IEnumerable<Circle>> GetLatestCircles()
         {
-            return await _context.Circles.OrderByDescending(c => c.DateCreated).Take(10).ToListAsync();
+            return await _context.Circles.Include(c => c.AppUser).ThenInclude(au => au.MainPhoto)
+                                    .Include(c => c.MainPhoto).OrderByDescending(c => c.DateCreated).Take(6).ToListAsync();
         }
 
         public async Task<bool> IsMember(int appUserId, int circleId)

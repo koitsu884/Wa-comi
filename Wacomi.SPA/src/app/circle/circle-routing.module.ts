@@ -15,6 +15,7 @@ import { CircleRequestListComponent } from "./circle-details/circle-request-list
 import { CircleTopicComponent } from "./circle-details/circle-topic/circle-topic.component";
 import { CircleTopicEditComponent } from "./circle-details/circle-topic/circle-topic-edit/circle-topic-edit.component";
 import { CircleTopicDetailComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-detail.component";
+import { CircleManagementComponent } from "./circle-management/circle-management.component";
 
 
 const circleRoute: Routes = [
@@ -29,6 +30,15 @@ const circleRoute: Routes = [
         },
     },
     {
+        path: 'management',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component:CircleManagementComponent,
+        resolve: {
+            appUser:AppUserResolver
+        },
+    },
+    {
         path: 'detail/:id', 
         component: CircleDetailsComponent, 
         resolve: {
@@ -40,10 +50,11 @@ const circleRoute: Routes = [
             {path: 'member', component: CircleMemberListComponent, canActivate: [AuthGuard]}, //TODO: add Circle member guard
             {path: 'topic', component: CircleTopicComponent, canActivate: [AuthGuard]}, 
             {path: 'topic/detail/:id', component: CircleTopicDetailComponent, canActivate: [AuthGuard]}, 
+            {path: 'topic/detail/:id/:forcusCommentId', component: CircleTopicDetailComponent, canActivate: [AuthGuard]}, 
             {path: 'topic/edit', component: CircleTopicEditComponent, canActivate: [AuthGuard]}, 
             {path: 'topic/edit/:id', component: CircleTopicEditComponent, canActivate: [AuthGuard]}, 
             {path: 'event', redirectTo: 'overview'},
-            {path: 'request', component: CircleRequestListComponent, canActivate: [AuthGuard]}
+            {path: 'request', component: CircleRequestListComponent, canActivate: [AuthGuard]},
           ]
     },
     {

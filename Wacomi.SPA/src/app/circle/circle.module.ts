@@ -22,6 +22,8 @@ import { CircleTopicEditComponent } from "./circle-details/circle-topic/circle-t
 import { CircleTopicDetailComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-detail.component";
 import { CircleTopicEffects } from "./store/circletopic.effects";
 import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-comment/circle-topic-comment.component";
+import { CircleManagementComponent } from "./circle-management/circle-management.component";
+import { CircleManagementEffects } from "./store/circle-management.effects";
 
 @NgModule({
     declarations: [
@@ -36,7 +38,8 @@ import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circl
         CircleTopicDetailComponent,
         CircleTopicCommentComponent,
         CircleRequestListComponent,
-        CircleOverviewComponent
+        CircleOverviewComponent,
+        CircleManagementComponent
     ],
     imports: [
         CircleRoutingModule,
@@ -45,7 +48,7 @@ import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circl
         TabsModule,
         ModalModule,
         StoreModule.forFeature('circleModule', reducers),
-        EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects])
+        EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects, CircleManagementEffects])
     ],
     providers: [
         CircleCategoryResolver

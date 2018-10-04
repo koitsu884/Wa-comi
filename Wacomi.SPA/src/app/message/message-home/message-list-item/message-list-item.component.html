@@ -1,4 +1,4 @@
-<div class="message-list-item" [ngClass]="{'bg-light-yellow': isSent, 'bg-light-blue': !isSent, 'isNew': !isSent && !message.isRead}" (click)="onSelect()">
+<div class="message-list-item" [ngClass]="{'bg-light-orange': isSent, 'bg-light-blue': !isSent, 'isNew': !isSent && !message.isRead}" (click)="onSelect()">
   <h5 class="bg-success">{{message.title}}</h5>
   <div>
       <img src="{{imageUrl ? imageUrl : 'assets/NoImage_Person.png'}}" class="thumbnail pull-left">

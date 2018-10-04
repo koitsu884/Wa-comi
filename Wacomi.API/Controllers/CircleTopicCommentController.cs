@@ -21,10 +21,12 @@ namespace Wacomi.API.Controllers
         public CircleTopicCommentController(IAppUserRepository appUserRepository, 
                 IMapper mapper, 
                 IPhotoRepository photoRepo,
+                INotificationRepository notificationRepo,
                 ImageFileStorageManager imageFileStorageManager,
                 ICircleRepository repo) : base(appUserRepository, mapper, photoRepo)
         {
             this._imageFileStorageManager = imageFileStorageManager;
+            this._repo = repo;
             this._repo = repo;
         }
 

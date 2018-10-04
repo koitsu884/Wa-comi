@@ -10,9 +10,9 @@ import * as loadImage from 'blueimp-load-image';
 export class PhotoSelectorComponent implements OnInit {
   @Output() photoSelected = new EventEmitter<any>();
   @Input() multipleSelect: boolean = true;
+  @Input() imageSize:number = 600;
 
   readonly FILE_UPLOAD_LIMIT = 5;
-  readonly IMAGE_SIZE = 600;
   selectedFiles: Array<File> = [];
   previewUrls: Array<string> = [];
 
@@ -47,8 +47,8 @@ export class PhotoSelectorComponent implements OnInit {
           }
         },
         {
-          maxWidth: this.IMAGE_SIZE,
-          maxHeight: this.IMAGE_SIZE,
+          maxWidth: this.imageSize,
+          maxHeight: this.imageSize,
           canvas: true,
           orientation: true
         }

@@ -13,6 +13,7 @@ using Wacomi.API.Data;
 using Wacomi.API.Models;
 using NLog.Web;
 using System.Net.Http;
+using Wacomi.API.Helper;
 
 namespace Wacomi.API
 {
@@ -26,16 +27,19 @@ namespace Wacomi.API
                 // logger.Info("init main");
                 // logger.Error("error log test");
                 var host = BuildWebHost(args);
-                using (var scope = host.Services.CreateScope())
-                {
-                    var serviceProvider = scope.ServiceProvider;
+                // using (var scope = host.Services.CreateScope())
+                // {
+                //     var serviceProvider = scope.ServiceProvider;
 
-                    var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
-                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    Seed.SeedData(userManager, roleManager, context);
+                //     var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                //     var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
+                //     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                //     var seeder = serviceProvider.GetService<IDatabaseSeeder>();
+                //     seeder.Seed(userManager, roleManager, context);
 
-                }
+                //     //Seed.SeedData(userManager, roleManager, context);
+
+                // }
                 // RecurringJob.AddOrUpdate(
                 //     () => Test(),
                 //     Cron.Minutely);

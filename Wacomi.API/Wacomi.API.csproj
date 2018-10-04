@@ -26,5 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest"/>
+    <Content Update="appsettings.json" CopyToOutputDirectory="Always"/>
+    <Content Update="appsettings.Development.json" CopyToOutputDirectory="Always"/>
   </ItemGroup>
 </Project>

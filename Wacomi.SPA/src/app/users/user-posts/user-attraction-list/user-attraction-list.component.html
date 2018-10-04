@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-sm-6 attractionCardContainer" *ngFor="let attraction of attractionList index as i" >
-    <div class="attractionCard" [@attractionCard] [routerLink]="['/attraction/detail', attraction.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+    <div class="attractionCard" [@attractionCard] [routerLink]="['/attraction/detail', attraction.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-orange' : !(i % 2)}">
       <!-- <div class="attraction"> -->
       <img src="{{attraction.mainPhoto | photourl}}" class="attractionImage pull-left img-thumbnail">
       <div class="info">

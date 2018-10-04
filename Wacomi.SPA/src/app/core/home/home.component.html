@@ -4,6 +4,13 @@
       <!-- <div>
         <h2>何か情報とか？</h2>
       </div> -->
+      <h2>新着コミュニティ</h2>
+      <app-loading *ngIf="!latestCircleList"></app-loading>
+      <app-circle-list [circleList]="latestCircleList"></app-circle-list>
+      <p class="text-center">
+        <button class="btn btn-sm btn-success" [routerLink]="['/circle']">コミュニティ検索</button>
+      </p>
+
       <h2>仲間募集中！</h2>
       <app-loading *ngIf="!latestClanSeekList"></app-loading>
       <app-clan-list [clanSeeks]="latestClanSeekList"></app-clan-list>
@@ -18,8 +25,8 @@
       </div>
       <h4>新着レビュー</h4>
       <div>
-          <app-loading *ngIf="!latestAttractionReviews"></app-loading>
-          <app-latest-attraction-reviews [latestAttractionReviews]="latestAttractionReviews"></app-latest-attraction-reviews>
+        <app-loading *ngIf="!latestAttractionReviews"></app-loading>
+        <app-latest-attraction-reviews [latestAttractionReviews]="latestAttractionReviews"></app-latest-attraction-reviews>
       </div>
       <br>
       <p class="text-center">

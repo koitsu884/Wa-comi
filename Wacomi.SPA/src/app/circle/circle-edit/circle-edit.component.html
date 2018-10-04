@@ -5,11 +5,11 @@
       <app-mainphoto-selector *ngIf="editingCircle.photos?.length > 0" [photos]="editingCircle.photos" [mainPhotoId]="editingCircle.mainPhotoId"
         (photoSelected)="mainPhotoSelected($event, circleEditForm)">
       </app-mainphoto-selector>
-      <a class="btn btn-primary" [routerLink]="['/photo/edit', 'Circle', editingCircle.id]">写真の追加・削除</a>
+      <a class="btn btn-primary" [routerLink]="['/photo/edit', 'Circle', editingCircle.id, 1240]">写真の追加・削除</a>
     </div>
     <div *ngIf="!id">
       <h4>画像アップロード</h4>
-      <app-photo-selector (photoSelected)="setSelectedFiles($event)" [multipleSelect]="true"></app-photo-selector>
+      <app-photo-selector (photoSelected)="setSelectedFiles($event)" [imageSize]="1024" [multipleSelect]="true"></app-photo-selector>
       <div class="row" *ngIf="selectedFiles">
         <div class="col-xs-2 col-md-3" *ngFor="let tempImageUrl of previewUrls">
           <img class="img-responsive" [src]="tempImageUrl" />

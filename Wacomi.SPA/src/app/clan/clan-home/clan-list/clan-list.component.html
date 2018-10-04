@@ -1,6 +1,6 @@
 <div class="row fix">
   <div class="col-sm-6 clanCardContainer" *ngFor="let clanSeek of clanSeeks index as i" >
-    <div class="clanCard" [routerLink]="['/clan/detail', clanSeek.id]" [@clanCard] [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+    <div class="clanCard hoverZoom" [routerLink]="['/clan/detail', clanSeek.id]" [@clanCard]>
       <!-- <div class="clanCard"> -->
       <h5 class="title">{{clanSeek.title}}<span *ngIf="!clanSeek.isActive" class="text-danger">（募集停止中）</span></h5>
       <img src="{{clanSeek.mainPhoto | photourl}}" class="clanImage pull-left img-thumbnail">
@@ -15,7 +15,7 @@
           <span class="simpleTag">{{clanSeek.locationName}}</span>
         </div>
         <div>
-          <p>更新：{{clanSeek.lastActive | timeago_jp}}</p>
+          <p>更新：{{clanSeek.dateUpdated | timeago_jp}}</p>
           <app-user-card-small *ngIf="clanSeek.displayName" [appUserDisplayName]="clanSeek.displayName" [appUserIconUrl]="clanSeek.appUserIconUrl" [appUserId]="clanSeek.appUserId"></app-user-card-small>
         </div>
       </div>

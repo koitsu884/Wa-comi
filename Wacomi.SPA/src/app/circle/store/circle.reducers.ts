@@ -2,6 +2,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as CircleActions from './circle.actions';
 import * as fromCircleTopic from './circletopic.reducers';
 import * as fromCircleMember from './circlemember.reducers';
+import * as fromCircleManagement from './circle-management.reducers';
 import { Pagination } from '../../_models/Pagination';
 import { Circle } from '../../_models/Circle';
 import { CircleSearchOptions } from '../../_models/CircleSearchOptions';
@@ -18,12 +19,14 @@ export interface CircleState {
     circle: State;
     circleTopic: fromCircleTopic.State;
     circleMember: fromCircleMember.State;
+    circleManagement: fromCircleManagement.State;
 }
 
 export const reducers: ActionReducerMap<CircleState> = {
     circle: circleReducer,
     circleTopic: fromCircleTopic.circleTopicReducer,
     circleMember: fromCircleMember.circleMemberReducer,
+    circleManagement: fromCircleManagement.circleManagementReducer
 };
 
 export interface State {

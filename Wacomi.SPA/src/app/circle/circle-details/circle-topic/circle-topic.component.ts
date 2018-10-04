@@ -22,6 +22,7 @@ export class CircleTopicComponent implements OnInit, OnDestroy {
   topics: CircleTopic[];
   pagination: Pagination;
   circleTopicSubscription: Subscription;
+  loading: boolean;
 
   constructor(private store: Store<fromCircle.FeatureState>, private route:ActivatedRoute, private router:Router) { }
 
@@ -33,15 +34,18 @@ export class CircleTopicComponent implements OnInit, OnDestroy {
       this.router.navigate(['/circle']);
       return;
     }
+    this.loading = true;
     this.store.dispatch(new CircleTopicActions.GetCircleTopicList({circleId: this.circleId, initPage:true}));
     this.circleTopicSubscription = this.store.select('circleModule').subscribe((circleState) => {
       this.circle = circleState.circle.selectedCircle;
       this.topics = circleState.circleTopic.topicList;
       this.pagination = circleState.circleTopic.pagination;
+      this.loading = false;
     })
   }
 
   pageChanged(event) {
+    this.loading = true;
     this.store.dispatch(new CircleTopicActions.SetCircleTopicPage(event.page));
   }
 

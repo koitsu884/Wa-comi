@@ -22,7 +22,7 @@ namespace Wacomi.API.Dto
         public string Description{get; set;}
         public int LocationId{ get; set;}
         public string LocationName{get; set;}
-        public DateTime Created{get; set;}
-        public DateTime LastActive{get; set;}
+        public DateTime DateCreated{get; set;}
+        public DateTime DateUpdated{get; set;}
     }
 }

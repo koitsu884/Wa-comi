@@ -193,6 +193,9 @@ namespace Wacomi.API.Data
                 .HasIndex(m => m.DateCreated);
 
             builder.Entity<Notification>()
+                .Property<string>("RelatingRecordIdsStr")
+                .HasField("_relatingRecordIds");
+            builder.Entity<Notification>()
                 .HasIndex(n => n.AppUserId);
             builder.Entity<Notification>()
                 .HasIndex(n => n.RecordType);

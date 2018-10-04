@@ -1,6 +1,6 @@
 <div>
   <div class="reviewCard" *ngFor="let review of latestAttractionReviews index as i" 
-  [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}"
+  [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-orange' : !(i % 2)}"
   [routerLink]="['/attraction/detail', review.attractionId]">
     <h5 class="attractionName">{{review.attractionName}} </h5>
     <span class="simpleTag">{{review.cityName}}</span>

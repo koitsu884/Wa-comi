@@ -6,18 +6,18 @@
   <div>
     <label>行ってみたい！:</label><span class="likeButton fa fa-heart" [ngClass]="{'isLiked': attraction.isLiked}" (click)="onLike()"></span><span>({{attraction.likedCount}})</span>
   </div>
-  <h4>エリア：{{attraction.cityName}}</h4>
+  <h3>エリア：{{attraction.cityName}}</h3>
   <div class="gallery" *ngIf="attraction.photos && attraction.photos.length > 0">
     <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
   </div>
-  <h4 class="bg-primary">概要</h4>
+  <h4>概要</h4>
   <div *ngIf="attraction.websiteUrl">
     <a href="{{attraction.websiteUrl}}">ホームページ</a>
     <br>
     <br>
   </div>
   <div [innerHTML]="attraction.introduction | nl2br"></div>
-  <h4 class="bg-primary">アクセス</h4>
+  <h4>アクセス</h4>
   <div [innerHTML]="attraction.accessInfo | nl2br"></div>
 
   <!-- Google map here -->

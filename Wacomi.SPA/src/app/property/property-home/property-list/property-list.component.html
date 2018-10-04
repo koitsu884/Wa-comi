@@ -1,6 +1,6 @@
 <div class="row fix">
     <div class="col-sm-6 propertyCardContainer" *ngFor="let property of propertyList index as i" >
-      <div class="propertyCard" [@propertyCard] [routerLink]="['/property/detail', property.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-yellow' : !(i % 2)}">
+      <div class="propertyCard hoverZoom" [@propertyCard] [routerLink]="['/property/detail', property.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-orange' : !(i % 2)}">
         <!-- <div class="property"> -->
         <img src="{{property.mainPhoto | thumburl}}" class="propertyImage pull-left img-thumbnail">
         <div class="info">

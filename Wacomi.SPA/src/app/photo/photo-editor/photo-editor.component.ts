@@ -21,7 +21,7 @@ import * as loadImage from 'blueimp-load-image';
 })
 export class PhotoEditorComponent implements OnInit, OnDestroy {
   readonly FILE_UPLOAD_LIMIT = 5;
-  readonly IMAGE_SIZE = 500;
+  readonly DEFAULT_IMAGE_SIZE = 500;
 
   title: string;
   photos: Photo[] = [];
@@ -29,6 +29,7 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
   baseUrl = environment.apiUrl;
   selectedFile: File;
   previewUrl: string;
+  imageSize: number;
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -50,6 +51,9 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
         return;
       }
+      this.imageSize = +params["imageSize"];
+      if(!this.imageSize)
+        this.imageSize = this.DEFAULT_IMAGE_SIZE;
       switch (recordType) {
         case "AppUser":
           this.title = "プロフィール写真編集"
@@ -59,6 +63,7 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
           break;
       }
       this.store.dispatch(new PhotoActions.GetPhotos({ recordType: recordType, recordId: recordId }));
+      console.log(this.imageSize);
     });
   }
 
@@ -80,8 +85,8 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
         }
       },
       {
-        maxWidth: this.IMAGE_SIZE,
-        maxHeight: this.IMAGE_SIZE,
+        maxWidth: this.imageSize,
+        maxHeight: this.imageSize,
         canvas: true,
         orientation: true
       }

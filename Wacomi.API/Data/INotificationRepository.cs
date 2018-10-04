@@ -14,5 +14,6 @@ namespace Wacomi.API.Data
         Task AddNotificationNewPostOnTopicComment(int appUserId, TopicComment topicComment);
         Task AddNotificationRepliedForFeedComment(BlogFeed blogFeed);
         Task AddNotificationNewPostOnFeedComment(int appUserId, BlogFeed blogFeed);
+        Task AddNotification(NotificationEnum type, int appUserId, object record);
     }
 }

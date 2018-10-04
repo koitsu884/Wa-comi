@@ -26,6 +26,8 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   openCommentForm: boolean = false;
   appUser: AppUser;
+  loading:boolean = false;
+  forcusCommentId: number;
 
   constructor(private route: ActivatedRoute, private store: Store<fromCircle.FeatureState>, private alertify: AlertifyService) { }
 
@@ -36,12 +38,18 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
       return;
     }
     this.appUser = this.route.parent.snapshot.data['appUser'];
+    this.forcusCommentId = this.route.snapshot.params['forcusCommentId'];
+    this.loading = true;
     this.store.dispatch(new CircleTopicActions.GetCircleTopic(id))
-    this.store.dispatch(new CircleTopicActions.GetCircleTopicCommentList({topicId: id, initPage:true}));
+    if(this.forcusCommentId)
+      this.store.dispatch(new CircleTopicActions.GetForcusedTopicComment(this.forcusCommentId));
+    else
+      this.store.dispatch(new CircleTopicActions.GetCircleTopicCommentList({topicId: id, initPage:true}));
     this.subscription = this.store.select("circleModule").subscribe((circleModuleState) => {
-      this.circleTopic = Object.assign(<CircleTopic>{}, circleModuleState.circleTopic.selectedCircleTopic);
+      this.circleTopic = circleModuleState.circleTopic.selectedCircleTopic;
       this.circleTopicCommentList = circleModuleState.circleTopic.circleTopicCommentList;
       this.commentPagination = Object.assign({}, circleModuleState.circleTopic.commentPagination);
+      this.loading = false;
     })
   }
 
@@ -84,6 +92,7 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
   }
 
   commentPageChanged(event) {
+    this.loading = true;
     this.store.dispatch(new CircleTopicActions.SetCircleTopicCommentPage(event.page));
   }
 
