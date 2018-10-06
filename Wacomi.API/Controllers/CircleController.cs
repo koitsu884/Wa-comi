@@ -109,7 +109,6 @@ namespace Wacomi.API.Controllers
         [HttpGet("categories")]
         public async Task<ActionResult> GetCategories()
         {
-            var test = await _repo.GetCircleCategories(); 
             return Ok(await _repo.GetCircleCategories());
         }
 
@@ -140,8 +139,6 @@ namespace Wacomi.API.Controllers
 
             _repo.Add(newCircle);
             await _repo.SaveAll();
-
-
 
             return CreatedAtRoute("GetCircle", new { id = newCircle.Id }, _mapper.Map<CircleForReturnDto>(newCircle));
         }

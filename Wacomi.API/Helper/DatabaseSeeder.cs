@@ -8,23 +8,34 @@ namespace Wacomi.API.Helper
 {
     public class DatabaseSeeder : IDatabaseSeeder
     {
+        protected readonly UserManager<Account> _userManager;
+        protected readonly RoleManager<IdentityRole> _roleManager;
+        protected readonly ApplicationDbContext  _context;
 
-        public void Seed(UserManager<Account> userManager,
+        public DatabaseSeeder(
+            UserManager<Account> userManager,
             // UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext context)
-        {
-            SeedRoles(roleManager);
-            SeedUsers(userManager, context);
-            SeedClanSeekCategories(context);
-            SeedCircleCategories(context);
-            SeedPropertySeekCategories(context);
-            SeedAttractionCategories(context);
-            SeedDailyTopic(context);
-            SeedOthers(context);
+            ApplicationDbContext context
+        ){
+            this._userManager = userManager;
+            this._roleManager = roleManager;
+            this._context = context;
         }
 
-        public static void SeedDailyTopic(ApplicationDbContext context)
+        public virtual void Seed()
+        {
+            SeedRoles();
+            SeedUsers();
+            SeedClanSeekCategories();
+            SeedCircleCategories();
+            SeedPropertySeekCategories();
+            SeedAttractionCategories();
+            SeedDailyTopic();
+            SeedOthers();
+        }
+
+        public void SeedDailyTopic()
         {
             string[] initialDailyTopics = {
                 "今食べたい物",
@@ -38,9 +49,9 @@ namespace Wacomi.API.Helper
 
             foreach (var initialDailyTopic in initialDailyTopics)
             {
-                if (!context.DailyTopics.Any(h => h.Title == initialDailyTopic))
+                if (!this._context.DailyTopics.Any(h => h.Title == initialDailyTopic))
                 {
-                    var result = context.DailyTopics.AddAsync(new DailyTopic() { Title = initialDailyTopic, IsTemporary = false }).Result;
+                    var result = this._context.DailyTopics.AddAsync(new DailyTopic() { Title = initialDailyTopic, IsTemporary = false }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create daily topic " + initialDailyTopic);
@@ -48,10 +59,10 @@ namespace Wacomi.API.Helper
                 }
             }
 
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
 
-        public static void SeedClanSeekCategories(ApplicationDbContext context)
+        public void SeedClanSeekCategories()
         {
             string[] clanSeekCategories = {
                 "友達",
@@ -62,9 +73,9 @@ namespace Wacomi.API.Helper
 
             foreach (var clanSeekCategory in clanSeekCategories)
             {
-                if (!context.ClanSeekCategories.Any(h => h.Name == clanSeekCategory))
+                if (!this._context.ClanSeekCategories.Any(h => h.Name == clanSeekCategory))
                 {
-                    var result = context.ClanSeekCategories.AddAsync(new ClanSeekCategory() { Name = clanSeekCategory }).Result;
+                    var result = this._context.ClanSeekCategories.AddAsync(new ClanSeekCategory() { Name = clanSeekCategory }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create clan seek category " + clanSeekCategory);
@@ -72,10 +83,10 @@ namespace Wacomi.API.Helper
                 }
             }
 
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
 
-        public static void SeedCircleCategories(ApplicationDbContext context)
+        public void SeedCircleCategories()
         {
             string[] circleCategories = {
                 "交流会",
@@ -96,9 +107,9 @@ namespace Wacomi.API.Helper
 
             foreach (var circleCategory in circleCategories)
             {
-                if (!context.CircleCategories.Any(h => h.Name == circleCategory))
+                if (!this._context.CircleCategories.Any(h => h.Name == circleCategory))
                 {
-                    var result = context.CircleCategories.AddAsync(new CircleCategory() { Name = circleCategory }).Result;
+                    var result = this._context.CircleCategories.AddAsync(new CircleCategory() { Name = circleCategory }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create clan seek category " + circleCategory);
@@ -106,10 +117,10 @@ namespace Wacomi.API.Helper
                 }
             }
 
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
 
-        public static void SeedAttractionCategories(ApplicationDbContext context)
+        public void SeedAttractionCategories()
         {
             string[] attractionCategories = {
                 "自然",
@@ -128,9 +139,9 @@ namespace Wacomi.API.Helper
 
             foreach (var attractionCategory in attractionCategories)
             {
-                if (!context.AttractionCategories.Any(h => h.Name == attractionCategory))
+                if (!this._context.AttractionCategories.Any(h => h.Name == attractionCategory))
                 {
-                    var result = context.AttractionCategories.AddAsync(new AttractionCategory() { Name = attractionCategory }).Result;
+                    var result = this._context.AttractionCategories.AddAsync(new AttractionCategory() { Name = attractionCategory }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create attraction category " + attractionCategory);
@@ -138,10 +149,10 @@ namespace Wacomi.API.Helper
                 }
             }
 
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
 
-        public static void SeedPropertySeekCategories(ApplicationDbContext context)
+        public void SeedPropertySeekCategories()
         {
             string[] propertySeekCategories = {
                 "駐車場有",
@@ -151,9 +162,9 @@ namespace Wacomi.API.Helper
 
             foreach (var propertySeekCategory in propertySeekCategories)
             {
-                if (!context.PropertySeekCategories.Any(h => h.Name == propertySeekCategory))
+                if (!this._context.PropertySeekCategories.Any(h => h.Name == propertySeekCategory))
                 {
-                    var result = context.PropertySeekCategories.AddAsync(new PropertySeekCategory() { Name = propertySeekCategory }).Result;
+                    var result = this._context.PropertySeekCategories.AddAsync(new PropertySeekCategory() { Name = propertySeekCategory }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create property seek category " + propertySeekCategory);
@@ -161,10 +172,10 @@ namespace Wacomi.API.Helper
                 }
             }
 
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
 
-        public static void SeedUsers(UserManager<Account> userManager, ApplicationDbContext context)
+        public void SeedUsers()
         {
             string password = "P@ssw0rd!!";
 
@@ -175,9 +186,9 @@ namespace Wacomi.API.Helper
                 EmailConfirmed = true
             };
 
-            if (!userManager.Users.Any(u => u.UserName == "Admin"))
+            if (!_userManager.Users.Any(u => u.UserName == "Admin"))
             {
-                var result = userManager.CreateAsync(user, password).Result;
+                var result = _userManager.CreateAsync(user, password).Result;
                 if (result.Succeeded)
                 {
                     var appUser = new AppUser()
@@ -187,22 +198,22 @@ namespace Wacomi.API.Helper
                         UserType = "Admin"
                     };
 
-                    context.Add(appUser);
-                    context.SaveChanges();
-                    userManager.AddToRoleAsync(user, "Administrator").Wait();
+                    this._context.Add(appUser);
+                    this._context.SaveChanges();
+                    _userManager.AddToRoleAsync(user, "Administrator").Wait();
                 }
             }
         }
-        public static void SeedRoles(RoleManager<IdentityRole> roleManager)
+        public void SeedRoles()
         {
             string[] roles = { "Administrator", "Member", "Business" };
 
 
             foreach (var role in roles)
             {
-                if (!roleManager.RoleExistsAsync(role).Result)
+                if (!_roleManager.RoleExistsAsync(role).Result)
                 {
-                    var result = roleManager.CreateAsync(new IdentityRole(role)).Result;
+                    var result = _roleManager.CreateAsync(new IdentityRole(role)).Result;
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create role " + role);
@@ -211,7 +222,7 @@ namespace Wacomi.API.Helper
             }
         }
 
-        public static void SeedOthers(ApplicationDbContext context)
+        public void SeedOthers()
         {
             string[] prefectures = {"北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
             "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",
@@ -249,9 +260,9 @@ namespace Wacomi.API.Helper
 
             foreach (var prefecture in prefectures)
             {
-                if (!context.HomeTowns.Any(h => h.Prefecture == prefecture))
+                if (!this._context.HomeTowns.Any(h => h.Prefecture == prefecture))
                 {
-                    var result = context.HomeTowns.AddAsync(new HomeTown() { Prefecture = prefecture }).Result;
+                    var result = this._context.HomeTowns.AddAsync(new HomeTown() { Prefecture = prefecture }).Result;
                     if (result == null)
                     {
                         throw new Exception("Failed to create hometown " + prefecture);
@@ -262,10 +273,10 @@ namespace Wacomi.API.Helper
             foreach (var northCity in northCities)
             {
                 var data = northCity.Split(',');
-                var city = context.Cities.FirstOrDefault(c => c.Name == data[0]);
+                var city = this._context.Cities.FirstOrDefault(c => c.Name == data[0]);
                 if (city == null)
                 {
-                    var result = context.Cities.AddAsync(new City()
+                    var result = this._context.Cities.AddAsync(new City()
                     {
                         Region = "北島",
                         Name = data[0],
@@ -288,10 +299,10 @@ namespace Wacomi.API.Helper
             foreach (var southCity in southCities)
             {
                 var data = southCity.Split(',');
-                var city = context.Cities.FirstOrDefault(c => c.Name == data[0]);
+                var city = this._context.Cities.FirstOrDefault(c => c.Name == data[0]);
                 if (city == null)
                 {
-                    var result = context.Cities.AddAsync(new City()
+                    var result = this._context.Cities.AddAsync(new City()
                     {
                         Region = "南島",
                         Name = data[0],
@@ -311,7 +322,7 @@ namespace Wacomi.API.Helper
                     city.Longitude = Convert.ToDouble(data[2]);
                 }
             }
-            context.SaveChanges();
+            this._context.SaveChanges();
         }
     }
 }

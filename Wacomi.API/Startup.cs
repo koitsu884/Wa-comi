@@ -49,7 +49,7 @@ namespace Wacomi.API
             options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-            services.AddSingleton<IDatabaseSeeder, DatabaseSeeder>();
+            services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -149,11 +149,11 @@ namespace Wacomi.API
             {
                 var serviceProvider = scope.ServiceProvider;
 
-                var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
-                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                // var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                // var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
+                // var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var seeder = serviceProvider.GetService<IDatabaseSeeder>();
-                seeder.Seed(userManager, roleManager, context);
+                seeder.Seed();
 
                 //Seed.SeedData(userManager, roleManager, context);
 

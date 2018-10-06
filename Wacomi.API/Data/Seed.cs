@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wacomi.API.Data
 {
-    public static class Seed
+    public class Seed
     {
-        public static void SeedData(
+        public void SeedData(
            UserManager<Account> userManager,
             // UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -26,7 +26,7 @@ namespace Wacomi.API.Data
             SeedOthers(context);
         }
 
-        public static void SeedDailyTopic(ApplicationDbContext context)
+        public void SeedDailyTopic(ApplicationDbContext context)
         {
             string[] initialDailyTopics = {
                 "今食べたい物",
@@ -53,7 +53,7 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedClanSeekCategories(ApplicationDbContext context)
+        public void SeedClanSeekCategories(ApplicationDbContext context)
         {
             string[] clanSeekCategories = {
                 "友達",
@@ -77,7 +77,7 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedCircleCategories(ApplicationDbContext context)
+        public void SeedCircleCategories(ApplicationDbContext context)
         {
             string[] circleCategories = {
                 "交流会",
@@ -111,7 +111,7 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedAttractionCategories(ApplicationDbContext context)
+        public void SeedAttractionCategories(ApplicationDbContext context)
         {
             string[] attractionCategories = {
                 "自然",
@@ -143,7 +143,7 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedPropertySeekCategories(ApplicationDbContext context)
+        public void SeedPropertySeekCategories(ApplicationDbContext context)
         {
             string[] propertySeekCategories = {
                 "駐車場有",
@@ -166,7 +166,7 @@ namespace Wacomi.API.Data
             context.SaveChanges();
         }
 
-        public static void SeedUsers(UserManager<Account> userManager, ApplicationDbContext context)
+        public void SeedUsers(UserManager<Account> userManager, ApplicationDbContext context)
         {
             string password = "P@ssw0rd!!";
 
@@ -195,7 +195,7 @@ namespace Wacomi.API.Data
                 }
             }
         }
-        public static void SeedRoles(RoleManager<IdentityRole> roleManager)
+        public void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
             string[] roles = { "Administrator", "Member", "Business" };
 
@@ -213,7 +213,7 @@ namespace Wacomi.API.Data
             }
         }
 
-        public static void SeedOthers(ApplicationDbContext context)
+        public void SeedOthers(ApplicationDbContext context)
         {
             string[] prefectures = {"北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県",
             "茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県",

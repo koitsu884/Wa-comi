@@ -118,6 +118,7 @@ namespace Wacomi.API.Controllers
             var newCircleMember = new CircleMember()
             {
                 AppUserId = (int)model.AppUserId,
+                Circle = circleRequestFromRepo.Circle,
                 CircleId = model.CircleId,
                 Role = CircleRoleEnum.MEMBER,
                 DateJoined = DateTime.Now,

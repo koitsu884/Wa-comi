@@ -8,22 +8,23 @@ using Microsoft.Extensions.Configuration;
 using Wacomi.API;
 using Microsoft.AspNetCore;
 using Wacomi.Integration.tests;
+using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Wacomi.API.Dto;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 namespace Integration
 {
-    public class TestContext
+    public class TestContext : IDisposable
     {
-        private TestServer _server;
-        public HttpClient Client {get; private set;}
+        protected readonly TestServer _server;
+        protected readonly HttpClient _client;
 
         public TestContext(){
-            SetUpClient();
-        }
-
-        private void SetUpClient()
-        {
-            // var projectDir = System.IO.Directory.GetCurrentDirectory();
-            _server = new TestServer(WebHost.CreateDefaultBuilder()
+                this._server = new TestServer(WebHost.CreateDefaultBuilder()
                 // .UseContentRoot(projectDir)
                 .UseEnvironment("Development")
                 // .UseConfiguration(new ConfigurationBuilder()
@@ -34,12 +35,24 @@ namespace Integration
                 // )
                 .UseStartup<TestStartup>());
 
-            Client = _server.CreateClient();
+            _client = _server.CreateClient();
         }
 
         public void Dispose(){
-            Client.Dispose();
+            _client.Dispose();
             _server.Dispose();
+        }
+
+        protected StringContent BuildStringContent(object obj)
+        {
+            return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+        }
+        protected async Task LoginByUser(string userName){
+            var contents = new StringContent(JsonConvert.SerializeObject(new UserLoginDto{ UserName = userName, Password = "P@ssw0rd!!"}), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("/api/auth/login", contents);
+            var result = response.Content.ReadAsStringAsync();
+            var loginResult = JsonConvert.DeserializeObject<JObject>(result.Result);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResult["tokenString"].ToObject<string>());
         }
     }
 }

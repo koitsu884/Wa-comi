@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,10 +18,17 @@ namespace Wacomi.Integration.tests
 
         public override void ConfigureDatabase(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("WacomiNZ_test_db"));
+        //     services.AddDbContext<ApplicationDbContext>(options =>
+        //     options.UseMySql(Configuration.GetConnectionString("WacomiTestDbConnection")));
+        //     var serviceProvider = services.BuildServiceProvider();
+        //    // serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+        //     services.AddScoped<IDatabaseSeeder, TestDataSeeder>();
 
-            services.AddTransient<IDatabaseSeeder, TestDataSeeder>();
+            services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+                options.UseInMemoryDatabase("WacomiNZ_Test"));
+
+            services.AddScoped<IDatabaseSeeder, TestDataSeeder>();
         }
     }
 }

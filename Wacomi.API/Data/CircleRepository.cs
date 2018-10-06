@@ -233,7 +233,7 @@ namespace Wacomi.API.Data
 
         public async Task<CircleRequest> GetCircleRequest(int appUserId, int circleId)
         {
-            return await _context.CircleRequests.Where(cr => cr.AppUserId == appUserId && cr.CircleId == circleId).FirstOrDefaultAsync();
+            return await _context.CircleRequests.Include(cr => cr.Circle).Include(cr => cr.AppUser).Where(cr => cr.AppUserId == appUserId && cr.CircleId == circleId).FirstOrDefaultAsync();
         }
 
         public async Task<bool> RequestSent(int appUserId, int circleId)

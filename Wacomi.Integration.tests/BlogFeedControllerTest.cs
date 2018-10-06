@@ -6,20 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Integration
 {
-    public class BlogFeedControllerTest
+    public class BlogFeedControllerTest : TestContext
     {
-        private readonly TestContext _sut;
-
-        public BlogFeedControllerTest()
-        {
-            _sut = new TestContext();
-        }
 
         [Fact]
         public async Task GetReturnsOkResponse()
         {
-            var response = await _sut.Client.GetAsync("/api/blogfeed/test");
-            Assert.Equal("Test", await response.Content.ReadAsStringAsync());
+            var response = await _client.GetAsync("/api/blogfeed/test");
+            response.EnsureSuccessStatusCode();
+            // Assert.Equal("Test", await response.Content.ReadAsStringAsync());
         }
     }
 }
