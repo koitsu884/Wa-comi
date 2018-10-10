@@ -31,15 +31,15 @@
   <h4>コメント({{commentPagination.totalItems}}件)</h4>
   <div class="topicCommentList area">
     <div *ngIf="circleTopicCommentList.length == 0" class="text-danger"><b>まだコメントがありません</b></div>
-    <div *ngIf="appUser">
-      <h5>コメントを追加する</h5>
-      <app-comment-form (addComment)="addComment($event)"></app-comment-form>
-    </div>
     <div class="topicCommentCard" *ngFor="let topicComment of circleTopicCommentList">
       <app-circle-topic-comment [appUserId]="appUser?.id" [topicComment]="topicComment" [forcused]="topicComment.id == forcusCommentId"></app-circle-topic-comment>
       <app-short-comment-form *ngIf="appUser && topicComment.displayReplies" [shortComments]="topicComment.topicReplies"
         [currentAppUserId]="appUser.id" (addShortComment)="onAddTopicCommentReply(topicComment.id ,$event)"
         (deleteShortComment)="onDeleteTopicCommentReply($event)"></app-short-comment-form>
+    </div>
+    <div *ngIf="appUser">
+      <h5>コメントを追加する</h5>
+      <app-comment-form (addComment)="addComment($event)"></app-comment-form>
     </div>
     <div *ngIf="commentPagination && commentPagination.totalPages > 1" class="text-center">
       <pagination [boundaryLinks]="true" [totalItems]="commentPagination.totalItems" [ngModel]="commentPagination.currentPage"

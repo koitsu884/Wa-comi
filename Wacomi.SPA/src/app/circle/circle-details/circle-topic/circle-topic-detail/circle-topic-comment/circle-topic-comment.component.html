@@ -12,25 +12,12 @@
       [comment]="topicComment.comment"
       [isMine]="appUserId == topicComment.appUser.id"
       ></app-user-comment>
-    <!-- <div class="userImage">
-      <img class="img-circle" [routerLink]="['/users/detail/', topicComment.appUserId]" src="{{topicComment.appUser?.mainPhoto | iconurl}}"
-        alt="{{topicComment.appUser?.displayName}}" title="{{topicComment.appUser?.displayName}}" style="cursor: pointer">
-    </div>
-    <div class="comment">
-      <div class="commentBaloon" [ngClass]="{'isMine': isMine}" [innerHTML]="commentWithName() | nl2br"></div>
-    </div> -->
     <p>{{topicComment.dateCreated | timeago_jp}}</p>
     <div class="commentTools">
-      <!-- <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !appUserId">
-            <i class="fa fa-thumbs-up" title="良いね"></i>
-            <span class="badge">{{topicComment.likedCount}}</span>
-          </button><br/> -->
-      <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
       <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!appUserId">
         <i class="fa fa-comment" [ngClass]={blinking:forcused} title="返信数"></i>
         <span class="badge">{{topicComment.replyCount}}</span>
       </button>
-      <!-- <span class="replyCount">{{topicComment.replyCount}}</span> -->
     </div>
   </div>
 </div>

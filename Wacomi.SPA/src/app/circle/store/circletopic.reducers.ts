@@ -62,7 +62,7 @@ export function circleTopicReducer(state = wtfInitialState, action: CircleTopicA
         case CircleTopicActions.SET_CIRCLE_TOPIC_COMMENT_LIST:
             return {
                 ...state,
-                circleTopicCommentList: action.payload.commentList,
+                circleTopicCommentList: action.payload.commentList.reverse(),
                 commentPagination: action.payload.pagination
             }
         case CircleTopicActions.ADD_CIRCLE_TOPIC_COMMENT:
