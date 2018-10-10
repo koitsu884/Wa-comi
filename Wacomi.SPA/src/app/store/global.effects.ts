@@ -129,7 +129,7 @@ export class GlobalEffect {
             return this.httpClient.post(this.baseUrl + payload.recordType + '/' + payload.recordId + '/photo',
                 payload.formData)
                 .mergeMap(() => {
-                    var returnActions = payload.callbackActions ? payload.callbackActions : <{type:string, payload:any}[]>{};
+                    var returnActions = payload.callbackActions ? payload.callbackActions : [];
                     this.modal.close();
                     if(payload.callbackLocation)
                         this.router.navigate([payload.callbackLocation]);
@@ -139,6 +139,7 @@ export class GlobalEffect {
                     return returnActions;
                 })
                 .catch((error: string) => {
+                    console.log(error);
                     this.modal.close();
                     return of({ type: GlobalActions.FAILED, payload: error })
                 });

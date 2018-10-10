@@ -24,6 +24,8 @@ import { CircleTopicEffects } from "./store/circletopic.effects";
 import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-comment/circle-topic-comment.component";
 import { CircleManagementComponent } from "./circle-management/circle-management.component";
 import { CircleManagementEffects } from "./store/circle-management.effects";
+import { CircleMemberGuard } from "./_guard/circlemember.guard";
+import { CircleOwnerGuard } from "./_guard/circleowner.guard";
 
 @NgModule({
     declarations: [
@@ -51,7 +53,9 @@ import { CircleManagementEffects } from "./store/circle-management.effects";
         EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects, CircleManagementEffects])
     ],
     providers: [
-        CircleCategoryResolver
+        CircleCategoryResolver,
+        CircleMemberGuard,
+        CircleOwnerGuard
     ]
 })
 

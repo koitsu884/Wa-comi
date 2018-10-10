@@ -63,7 +63,6 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
           break;
       }
       this.store.dispatch(new PhotoActions.GetPhotos({ recordType: recordType, recordId: recordId }));
-      console.log(this.imageSize);
     });
   }
 

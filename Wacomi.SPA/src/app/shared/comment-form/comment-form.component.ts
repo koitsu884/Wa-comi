@@ -36,7 +36,6 @@ export class CommentFormComponent implements OnInit {
   setSelectedFiles(event: any){
     this.selectedFile = event.selectedFiles;
     this.previewUrl = event.previewUrls;
-    console.log(this.selectedFile);
   }
 
   deletePhoto(){

@@ -3,7 +3,8 @@
     <h4>最近のトピック</h4>
     <div *ngIf="latestTopics">
         <div *ngFor="let topic of latestTopics">
-          <a [routerLink]="['/circle/detail', topic.circleId, 'topic', 'detail', topic.id]" >{{topic.title}}</a>
+          <a *ngIf="circle.isMember" [routerLink]="['/circle/detail', topic.circleId, 'topic', 'detail', topic.id]" >{{topic.title}}</a>
+          <p *ngIf="!circle.isMember">{{topic.title}}</p>
         </div>
       </div>
   </div>

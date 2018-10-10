@@ -47,7 +47,6 @@ export class CircleOverviewComponent implements OnInit, OnDestroy {
       return;
     }
     this.subscription = this.store.select('circleModule').subscribe((circleState) => {
-      console.log(circleState);
       this.circle = circleState.circle.selectedCircle;
       this.latestMembers = circleState.circle.latestMemberList;
       this.latestTopics = circleState.circle.latestTopicList;

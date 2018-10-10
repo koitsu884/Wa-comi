@@ -32,20 +32,21 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.authState = this.store.select('account');
-        this.globalService.getLatestClanSeekList()
-        .subscribe((result) => {
-            this.latestClanSeekList = result;
-        }, (error) => {
-            this.latestClanSeekList = [];
-            console.log('Error occured when getting latest clan list');
-        });
-
+        
         this.globalService.getLatestCircleList()
         .subscribe((result) => {
             this.latestCircleList = result;
         }, (error) => {
             this.latestCircleList = [];
             console.log('Error occured when getting latest circle list');
+        });
+
+        this.globalService.getLatestClanSeekList()
+        .subscribe((result) => {
+            this.latestClanSeekList = result;
+        }, (error) => {
+            this.latestClanSeekList = [];
+            console.log('Error occured when getting latest clan list');
         });
 
         this.globalService.getLatestAttractionList()

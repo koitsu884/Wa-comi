@@ -91,7 +91,6 @@ namespace Wacomi.Xunit.MockRepositories
         public void Delete<T>(T entity) where T : class
         {
             var entityType = entity.GetType();
-            Console.WriteLine(entityType);
             if(entityType == typeof(CircleMember))
                 _circleMemberList.Remove(entity as CircleMember);
             else if(entityType == typeof(CircleRequest))

@@ -50,7 +50,6 @@ export class CircleTopicComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("Hello?");
     this.circleTopicSubscription.unsubscribe();
   }
 
