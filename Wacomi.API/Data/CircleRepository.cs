@@ -218,6 +218,7 @@ namespace Wacomi.API.Data
         public async Task<IEnumerable<Circle>> GetLatestCircles()
         {
             return await _context.Circles.Include(c => c.AppUser).ThenInclude(au => au.MainPhoto)
+                                    .Include(c => c.City)
                                     .Include(c => c.MainPhoto).OrderByDescending(c => c.DateCreated).Take(6).ToListAsync();
         }
 

@@ -21,6 +21,7 @@ namespace Wacomi.API.Dto
         public virtual ICollection<PhotoForReturnDto> Photos{ get; set;}
         public virtual ICollection<CircleTopicForReturnDto> Topics{ get; set;}
         public PhotoForReturnDto MainPhoto { get; set;}
+        public int? MainPhotoId{ get; set;}
         public bool IsActive { get; set;}
         public DateTime DateCreated { get; set;}
         public DateTime DateUpdated { get; set;}

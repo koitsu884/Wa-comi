@@ -58,7 +58,7 @@ export class CircleDetailsComponent implements OnInit {
         imageArrowsAutoHide: true,
         imageAnimation: NgxGalleryAnimation.Fade,
         thumbnails: false,
-        preview: false
+        preview: true
       }
     ];
   }

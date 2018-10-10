@@ -2,43 +2,49 @@
 <div class="container" *ngIf="!loading && circleTopic">
   <h3>{{circleTopic.title}}</h3>
   <div class="circleTopicInfo row">
-    <div *ngIf="circleTopic.photo" class="col-sm-6">
-      <img class="img-responsive" src="{{circleTopic.photo | photourl}}" alt="">
-    </div>
-    <div [ngClass]="{'col-sm-6': circleTopic.photo}">
-      <div class="area">
-        <div [innerHTML]="circleTopic.description | nl2br"></div>
-        <div class="ownerInfo">
-          <img src="{{circleTopic.appUser.mainPhoto|iconurl}}" class="pull-left image-circle">
-          <hr>
-          <div>
-            <p>{{circleTopic.appUser.displayName}}  投稿日: {{circleTopic.dateCreated | date:'mediumDate'}}</p>
-          </div>
-        </div>
-        <span class="clearfix"></span>
+    <div class="col-sm-8">
+      <div *ngIf="circleTopic.photo">
+        <img class="img-responsive" src="{{circleTopic.photo | photourl}}" alt="">
       </div>
+      <div>
+        <div class="area">
+          <div [innerHTML]="circleTopic.description | nl2br"></div>
+          <!-- <div class="ownerInfo">
+                <img src="{{circleTopic.appUser.mainPhoto|iconurl}}" class="pull-left image-circle">
+                <hr>
+                <div>
+                  <p>{{circleTopic.appUser.displayName}}  投稿日: {{circleTopic.dateCreated | date:'mediumDate'}}</p>
+                </div>
+              </div>
+              <span class="clearfix"></span> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <app-user-info-card [appUser]="circleTopic.appUser" [dateCreated]="circleTopic.dateCreated"  [dateUpdate]="circleTopic.dateUpdated"></app-user-info-card>
     </div>
     <div *ngIf="appUser && appUser.id == circleTopic.appUserId">
       <button class="btn btn-sm btn-primary" type="button" [routerLink]="['/circle/detail', circleTopic.circleId, 'topic', 'edit', circleTopic.id]">編集</button>
       <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
     </div>
   </div>
-  <h4>コメント</h4>
+  <h4>コメント({{commentPagination.totalItems}}件)</h4>
   <div class="topicCommentList area">
-      <div *ngIf="circleTopicCommentList.length == 0" class="text-danger"><b>まだコメントがありません</b></div>
-      <div *ngIf="appUser">
-        <h5>コメントを追加する</h5>
-        <app-comment-form (addComment)="addComment($event)"></app-comment-form>
-      </div>
+    <div *ngIf="circleTopicCommentList.length == 0" class="text-danger"><b>まだコメントがありません</b></div>
+    <div *ngIf="appUser">
+      <h5>コメントを追加する</h5>
+      <app-comment-form (addComment)="addComment($event)"></app-comment-form>
+    </div>
     <div class="topicCommentCard" *ngFor="let topicComment of circleTopicCommentList">
       <app-circle-topic-comment [appUserId]="appUser?.id" [topicComment]="topicComment" [forcused]="topicComment.id == forcusCommentId"></app-circle-topic-comment>
-      <app-short-comment-form *ngIf="appUser && topicComment.displayReplies" [shortComments]="topicComment.topicReplies" [currentAppUserId]="appUser.id"
-        (addShortComment)="onAddTopicCommentReply(topicComment.id ,$event)" (deleteShortComment)="onDeleteTopicCommentReply($event)"></app-short-comment-form>
+      <app-short-comment-form *ngIf="appUser && topicComment.displayReplies" [shortComments]="topicComment.topicReplies"
+        [currentAppUserId]="appUser.id" (addShortComment)="onAddTopicCommentReply(topicComment.id ,$event)"
+        (deleteShortComment)="onDeleteTopicCommentReply($event)"></app-short-comment-form>
     </div>
     <div *ngIf="commentPagination && commentPagination.totalPages > 1" class="text-center">
       <pagination [boundaryLinks]="true" [totalItems]="commentPagination.totalItems" [ngModel]="commentPagination.currentPage"
-        [itemsPerPage]="commentPagination.itemsPerPage" (pageChanged)="commentPageChanged($event)" class="pagination-sm" previousText="&lsaquo;"
-        nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+        [itemsPerPage]="commentPagination.itemsPerPage" (pageChanged)="commentPageChanged($event)" class="pagination-sm"
+        previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
       </pagination>
     </div>
   </div>
