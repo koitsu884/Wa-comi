@@ -45,6 +45,8 @@ namespace Wacomi.API.Models
         }
         public virtual Photo Photo { get; set;}
         public int? PhotoId { get; set;}
+        public string TargetRecordTitle{ get; set;}
+        public string FromUserName{ get; set;}
         public string Message {get; set;}
     }
 }

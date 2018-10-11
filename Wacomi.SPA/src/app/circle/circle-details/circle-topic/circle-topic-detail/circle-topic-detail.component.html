@@ -28,7 +28,7 @@
       <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
     </div>
   </div>
-  <h4>コメント({{commentPagination.totalItems}}件)</h4>
+  <h4>コメント<span *ngIf="!forcusCommentId">({{commentPagination.totalItems}}件)</span></h4>
   <div class="topicCommentList area">
     <div *ngIf="circleTopicCommentList.length == 0" class="text-danger"><b>まだコメントがありません</b></div>
     <div class="topicCommentCard" *ngFor="let topicComment of circleTopicCommentList">
@@ -37,7 +37,7 @@
         [currentAppUserId]="appUser.id" (addShortComment)="onAddTopicCommentReply(topicComment.id ,$event)"
         (deleteShortComment)="onDeleteTopicCommentReply($event)"></app-short-comment-form>
     </div>
-    <div *ngIf="appUser">
+        <div *ngIf="appUser">
       <h5>コメントを追加する</h5>
       <app-comment-form (addComment)="addComment($event)"></app-comment-form>
     </div>

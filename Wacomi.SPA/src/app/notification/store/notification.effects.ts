@@ -20,6 +20,7 @@ export class NotificationEffect {
         .switchMap((userId) => {
             return this.httpClient.get<AppNotification[]>(this.baseUrl + 'notification/' + userId)
                 .map((notifications) => {
+                    console.log(notifications);
                     return {
                         type: NotificationActions.SET_NOTIFICATIONS,
                         payload: notifications

@@ -39,6 +39,8 @@ export interface AppNotification {
     relatingRecordIds?: any;
     photo: Photo;
     message:string;
+    targetRecordTitle: string;
+    fromUserName: string;
 }
 
 

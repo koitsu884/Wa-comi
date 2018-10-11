@@ -62,6 +62,8 @@ namespace Wacomi.API.Data
                                                     .ToListAsync();
             }
 
+            var commentOwner = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == topicComment.AppUserId);
+
             foreach (var reply in notifyingReplies)
             {
                 if (reply.AppUserId != null)
@@ -72,32 +74,39 @@ namespace Wacomi.API.Data
                         RecordType = "TopicComment",
                         RecordId = reply.TopicCommentId,
                         Photo = topicComment.Photo,
-                        Message = "あなたのコメントに返信がありました（一言トピック：" + topicComment.Comment + "）"
+                        FromUserName = commentOwner.DisplayName,
+                        TargetRecordTitle = topicComment.Comment,
+                        // Message = "あなたのコメントに返信がありました（一言トピック：" + topicComment.Comment + "）"
                     });
             }
         }
         public async Task AddNotificationNewPostOnTopicComment(int appUserId, TopicComment topicComment)
         {
+            var fromUser = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == appUserId);
             await AddNotificationIfNotExist(new Notification()
             {
                 AppUserId = (int)topicComment.AppUserId,
                 NotificationType = NotificationEnum.NewPostOnTopicComment,
                 RecordType = "TopicComment",
                 RecordId = topicComment.Id,
-                Message = "あなたの一言『" + topicComment.Comment + "』に新しいコメントがあります"
+                FromUserName = fromUser.DisplayName,
+                TargetRecordTitle = topicComment.Comment,
+                // Message = "あなたの一言『" + topicComment.Comment + "』に新しいコメントがあります"
             });
         }
 
         public async Task AddNotificationNewMessage(Message message)
         {
+            var sender = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == message.SenderId);
             await AddNotificationIfNotExist(new Notification()
             {
                 AppUserId = message.RecipientId,
                 NotificationType = NotificationEnum.NewMessage,
                 RecordType = "Message",
+                RecordId = message.Id,
                 Photo = message.Sender.MainPhoto,
-                Message = message.Sender.DisplayName + " さんからメッセージが届いています",
-                RecordId = message.Id
+                FromUserName = sender.DisplayName
+                //Message = message.Sender.DisplayName + " さんからメッセージが届いています",
             });
         }
 
@@ -124,6 +133,8 @@ namespace Wacomi.API.Data
                                                     .ToListAsync();
             }
 
+            var blogOwner = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == blogFeed.Blog.OwnerId);
+
             foreach (var reply in notifyingReplies)
             {
                 if (reply.AppUserId != null)
@@ -134,20 +145,25 @@ namespace Wacomi.API.Data
                         RecordType = "BlogFeed",
                         RecordId = (int)reply.BlogFeedId,
                         Photo = blogFeed.Photo,
-                        Message = "あなたがコメントしたブログフィード『" + blogFeed.Title + "』に返信があります"
+                        FromUserName = blogOwner.DisplayName,
+                        TargetRecordTitle = blogFeed.Title,
+                        //Message = "あなたがコメントしたブログフィード『" + blogFeed.Title + "』に返信があります"
                     });
             }
         }
 
         public async Task AddNotificationNewPostOnFeedComment(int appUserId, BlogFeed blogFeed)
         {
+            var user = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == appUserId);
             await AddNotificationIfNotExist(new Notification()
             {
                 AppUserId = blogFeed.Blog.OwnerId,
                 NotificationType = NotificationEnum.NewPostOnFeedComment,
                 RecordType = "BlogFeed",
                 RecordId = blogFeed.Id,
-                Message = "あなたのブログフィード『" + blogFeed.Title + "』に新しいコメントがあります"
+                FromUserName = user.DisplayName,
+                TargetRecordTitle = blogFeed.Title,
+                //Message = "あなたのブログフィード『" + blogFeed.Title + "』に新しいコメントがあります"
             });
         }
 
@@ -222,8 +238,10 @@ namespace Wacomi.API.Data
                         RecordType = "CircleTopicComment",
                         RecordId = (int)reply.CommentId,
                         RelatingRecordIds = JObject.FromObject(recordIds),
+                        FromUserName = circleTopicComment.AppUser.DisplayName,
+                        TargetRecordTitle = circleTopicComment.CircleTopic.Title,
                         // Photo = blogFeed.Photo,
-                        Message = "コミュニティトピック『" + circleTopicComment.CircleTopic.Title +"』であなたが返信した" + circleTopicComment.AppUser.DisplayName + "さんのコメントに、新しい返信がありました"
+                       // Message = "コミュニティトピック『" + circleTopicComment.CircleTopic.Title +"』であなたが返信した" + circleTopicComment.AppUser.DisplayName + "さんのコメントに、新しい返信がありました"
                     });
             }
         }
@@ -240,6 +258,8 @@ namespace Wacomi.API.Data
                     {"CircleTopic", circleTopicComment.CircleTopicId}
             };
 
+            var user = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == appUserId);
+
             await AddNotificationIfNotExist(new Notification()
             {
                 AppUserId = (int)circleTopicComment.AppUserId,
@@ -247,8 +267,10 @@ namespace Wacomi.API.Data
                 RecordType = "CircleTopicComment",
                 RecordId = circleTopicComment.Id,
                 RelatingRecordIds = JObject.FromObject(recordIds),
+                FromUserName = user.DisplayName,
+                TargetRecordTitle = circleTopicComment.CircleTopic.Title,
                 // AdditionalRecordId = circleTopicComment.CircleTopicId,
-                Message = "コミュニティトピック『" + circleTopicComment.CircleTopic.Title +"』であなたのコメントに返信がありました"
+               // Message = "コミュニティトピック『" + circleTopicComment.CircleTopic.Title +"』であなたのコメントに返信がありました"
             });
         }
         private async Task AddNewCircleTopicCreatedNotification(int appUserId, CircleTopic circleTopic)
@@ -268,7 +290,8 @@ namespace Wacomi.API.Data
                     RecordType = "CircleTopic",
                     RecordId = circleTopic.Id,
                     RelatingRecordIds = JObject.FromObject(recordIds),
-                    Message = "コミュニティ『" + circleMember.Circle.Name + "』に新しいトピック『" + circleTopic.Title + "』が作成されました！"
+                    TargetRecordTitle = circleMember.Circle.Name + '|' + circleTopic.Title,
+                 //   Message = "コミュニティ『" + circleMember.Circle.Name + "』に新しいトピック『" + circleTopic.Title + "』が作成されました！"
                 });
             }
         }
@@ -285,7 +308,8 @@ namespace Wacomi.API.Data
                 NotificationType = NotificationEnum.CircleRequestAccepted,
                 RecordType = "Circle",
                 RecordId = circleMember.CircleId,
-                Message = "コミュニティ『" + circleMember.Circle.Name + "』への参加が承認されました"
+                TargetRecordTitle = circleMember.Circle.Name,
+//                Message = "コミュニティ『" + circleMember.Circle.Name + "』への参加が承認されました"
             });
         }
 
@@ -294,13 +318,16 @@ namespace Wacomi.API.Data
             // var circleRequest = record as CircleRequest;
             if(circleRequest == null)
                 return;
+            var user = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == appUserId);
             await AddNotificationIfNotExist(new Notification()
             {
                 AppUserId = (int)circleRequest.Circle.AppUserId,
                 NotificationType = NotificationEnum.NewCircleMemberRequest,
                 RecordType = "Circle",
                 RecordId = circleRequest.CircleId,
-                Message = circleRequest.AppUser.DisplayName + "さんからコミュニティ" + circleRequest.Circle.Name + "の参加リクエストがあります"
+                FromUserName = user.DisplayName,
+                TargetRecordTitle = circleRequest.Circle.Name,
+               // Message = circleRequest.AppUser.DisplayName + "さんからコミュニティ" + circleRequest.Circle.Name + "の参加リクエストがあります"
             });
 
         }

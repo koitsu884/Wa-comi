@@ -7,7 +7,6 @@ import { AppUser } from '../_models/AppUser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '../_services/global.service';
 import { HttpClient } from '@angular/common/http';
-import { CircleTopic } from '../_models/CircleTopic';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -45,6 +44,32 @@ export class NotificationComponent implements OnInit {
 
   onDelete(id: number) {
     this.store.dispatch(new NotificationActions.TryDeleteNotification(id));
+  }
+
+  getNotificationMessage(notification: AppNotification) {
+    switch (notification.notificationType) {
+      case NotificationEnum.NewMessage:
+        return `${notification.fromUserName}さんから新しいメッセージが届いています`;
+      case NotificationEnum.NewPostOnFeedComment:
+        return `ブログフィード『${notification.targetRecordTitle}』に新しいコメントがあります`;
+      case NotificationEnum.RepliedOnFeedComment:
+        return `あなたがコメントしたブログフィード『${notification.targetRecordTitle}』に${notification.fromUserName}さんもコメントしました`;
+      case NotificationEnum.NewPostOnTopicComment:
+        return `あなたの一言『${notification.targetRecordTitle}』に新しいコメントがあります`;
+      case NotificationEnum.RepliedOnTopicComment:
+        return `あなたが一言トピック『${notification.targetRecordTitle}』にしたコメントに、${notification.fromUserName}さんもコメントしました`;
+      case NotificationEnum.NewCircleMemberRequest:
+        return `コミュニティ『${notification.targetRecordTitle}』に新しい参加希望者が居ます`;
+      case NotificationEnum.CircleRequestAccepted:
+        return `コミュニティ『${notification.targetRecordTitle}』への参加が承認されました`;
+      case NotificationEnum.NewCircleTopicCreated:
+        let titles = notification.targetRecordTitle.split("|", 2);
+        return `コミュニティ『${titles[0]}』に新しいトピック『${titles[1]}』が作成されました`;
+      case NotificationEnum.NewCircleCommentReplyByOwner:
+        return `コミュニティトピック『${notification.targetRecordTitle}』にあなたがしたコメントに返信があります`;
+      case NotificationEnum.NewCircleCommentReplyByMember:
+        return `コミュニティトピック『${notification.targetRecordTitle}』であなたが返信したコメントに、${notification.fromUserName}さんも返信しました`;
+    }
   }
 
   onClick(notification: AppNotification) {
