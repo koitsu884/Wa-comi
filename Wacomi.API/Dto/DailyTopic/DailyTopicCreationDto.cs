@@ -7,7 +7,7 @@ namespace Wacomi.API.Dto
         [Required]
         public int UserId{ get; set;}
         [Required]
-        [MaxLength(100)]
+        [MaxLength(StaticData.ShortTextLength)]
         public string Title{ get; set;}
 
     }

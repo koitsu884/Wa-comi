@@ -12,10 +12,10 @@ namespace Wacomi.API.Dto
         public int AppUserId{ get; set;}
         public bool IsSecret {get; set;} = false;
         [Required]
-        [MaxLength(100)]
+        [MaxLength(StaticData.ShortTextLength)]
         public string Title{get; set;}
         [Required]
-        [MaxLength(5000)]
+        [MaxLength(StaticData.LongTextLength)]
         public string Description{ get; set;}
         public bool IsActive {get; set;} = true;
         public DateTime DateUpdated {get; set;} = DateTime.Now;

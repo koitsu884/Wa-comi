@@ -8,13 +8,13 @@ namespace Wacomi.API.Dto
     {
         public int? Id { get; set;}
         [Required]
-        [MaxLength(100)]
+        [MaxLength(StaticData.ShortTextLength)]
         public string Name{ get; set;}
         [Required]
         public int CategoryId { get; set;}
         public int? CityId{ get; set;}
         [Required]
-        [MaxLength(5000)]
+        [MaxLength(StaticData.LongTextLength)]
         public string Description{ get; set;}
         public bool ApprovalRequired { get; set;} = false;
         [Required]

@@ -9,7 +9,7 @@ namespace Wacomi.API.Dto
         [Required]
         public int CircleTopicId{ get; set;}
         [Required]
-        [MaxLength(2000)]
+        [MaxLength(StaticData.MidTextLength)]
         public string Comment{ get; set;}
         public DateTime DateUpdated {get; set;} = DateTime.Now;
     }

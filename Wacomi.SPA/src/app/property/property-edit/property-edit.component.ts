@@ -62,7 +62,7 @@ export class PropertyEditComponent implements OnInit {
             this.router.navigate(['/']);
             return;
           }
-          this.cities = this.route.snapshot.data['cities'];
+          this.cities = this.route.snapshot.data['cities'].filter(c => c.region != "その他");
           this.categories = this.route.snapshot.data['categories'];
           this.initForm();
         }

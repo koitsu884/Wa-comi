@@ -12,10 +12,10 @@ namespace Wacomi.API.Dto
         [Required]
         public int CityId { get; set;}
         [Required]
-        [MaxLength(100)]
+        [MaxLength(StaticData.ShortTextLength)]
         public string Name{ get; set;}
         [Required]
-        [MaxLength(1500)]
+        [MaxLength(StaticData.LongTextLength)]
         public string Introduction {get; set;}
         public string AccessInfo{ get; set;}
         public double? Latitude{ get; set;}

@@ -15,6 +15,8 @@ namespace Wacomi.Xunit.MockRepositories
         private readonly List<CircleMember> _circleMemberList;
         private readonly List<CircleCategory> _circleCategories;
         private readonly List<CircleRequest> _circleRequestList;
+        private readonly List<CircleEvent> _circleEventList;
+        private readonly List<CircleEventParticipation> _circleParticipantsList;
 
         public CircleRepoFake(ApplicationDbContext context)
         {
@@ -63,6 +65,33 @@ namespace Wacomi.Xunit.MockRepositories
                 new CircleRequest{AppUserId = 3, CircleId =1},
                 new CircleRequest{AppUserId = 1, CircleId =2}
             };
+
+            _circleEventList = new List<CircleEvent>(){
+                new CircleEvent{
+                    Id = 1,
+                    AppUserId = _appUsers[0].Id, 
+                    CircleId = 1,
+                    Title = "サークル１　イベント",
+                    Description = "サークル１　イベント テスト"},
+                new CircleEvent{
+                    Id = 2,
+                    AppUserId = _appUsers[0].Id, 
+                    CircleId = 1,
+                    Title = "サークル１　イベント 2",
+                    Description = "サークル１　イベント テスト 制限有",
+                    MaxNumber = 2
+                    },
+                new CircleEvent{
+                    Id = 3,
+                    AppUserId = _appUsers[0].Id, 
+                    CircleId = 1,
+                    Title = "サークル１　イベント 3",
+                    Description = "サークル１　イベント テスト 承認制",
+                    ApprovalRequired = true
+                    },
+            };
+
+            _circleParticipantsList = new List<CircleEventParticipation>();
         }
 
         public void Add<T>(T entity) where T : class
@@ -70,6 +99,10 @@ namespace Wacomi.Xunit.MockRepositories
             var entityType = entity.GetType();
             if(entityType == typeof(CircleMember))
                 _circleMemberList.Add(entity as CircleMember);
+            if(entityType == typeof(CircleEvent))
+                _circleEventList.Add(entity as CircleEvent);
+            if(entityType == typeof(CircleEventParticipation))
+                _circleParticipantsList.Add(entity as CircleEventParticipation);
             return;
         }
 
@@ -107,6 +140,8 @@ namespace Wacomi.Xunit.MockRepositories
         {
             if(typeof(T) == typeof(Circle))
                 return Task.FromResult(_circleList.Find(c => c.Id == recordId) as T);
+            if(typeof(T) == typeof(CircleEvent))
+                return Task.FromResult(_circleEventList.Find(c => c.Id == recordId) as T);
             return Task.FromResult(null as T);
         }
 
@@ -128,6 +163,21 @@ namespace Wacomi.Xunit.MockRepositories
         public Task<int> GetCircleCountForUser(int userId)
         {
             return Task.FromResult(_circleList.Count(c => c.AppUserId == userId));
+        }
+
+        public Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId)
+        {
+            return Task.FromResult(_circleParticipantsList.Find(cpl => cpl.AppUserId == appUserId && cpl.CircleEventId == eventId));
+        }
+
+        public Task<int> GetCircleEventParticipationCount(int eventId)
+        {
+            return Task.FromResult(_circleParticipantsList.Where(cpl => cpl.CircleEventId == eventId).Count());
+        }
+
+        public Task<PagedList<CircleEventParticipation>> GetCircleEventParticipationList(PaginationParams paginationParams, int eventId, CircleEventParticipationStatus? status = null)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<CircleMember> GetCircleMember(int appUserId, int circleId)
@@ -238,6 +288,12 @@ namespace Wacomi.Xunit.MockRepositories
         public Task<IEnumerable<CircleRequest>> GetRequestsForCircle(int circleId)
         {
             return Task.FromResult((IEnumerable<CircleRequest>)_circleRequestList.Where(cr => cr.CircleId == circleId).ToList());
+        }
+
+        public async Task<bool> IsEventFull(int eventId)
+        {
+            var temp = _circleEventList.FirstOrDefault(ce => ce.Id == eventId);
+            return temp != null && temp.MaxNumber != null ? await GetCircleEventParticipationCount(temp.Id) >= temp.MaxNumber : false;   
         }
 
         public Task<bool> IsMember(int appUserId, int circleId)

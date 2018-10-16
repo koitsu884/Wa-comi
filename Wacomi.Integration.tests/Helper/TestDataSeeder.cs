@@ -93,6 +93,8 @@ namespace Wacomi.Integration.tests.Helper
             {"TestMember2", 12},
             {"TestMember3", 13},
             {"TestMember4", 14},
+            {"TestMember5", 15},
+            {"TestMember6", 16},
         };
 
         public static int GetAppUserIdByName(string name){
@@ -137,7 +139,25 @@ namespace Wacomi.Integration.tests.Helper
                     Email = "dda.aab@outlook.com",
                     EmailConfirmed = true
                 }
-            }
+            },
+            new TestUser{
+                AppUserId =  userNameIdMap["TestMember5"],
+                DisplayName = "TestMember5",
+                Account = new Account{
+                    UserName = "TestMember5",
+                    Email = "yyy.yyy@outlook.com",
+                    EmailConfirmed = true
+                }
+            },
+            new TestUser{
+                AppUserId =  userNameIdMap["TestMember6"],
+                DisplayName = "TestMember6",
+                Account = new Account{
+                    UserName = "TestMember6",
+                    Email = "ggg.ggg@outlook.com",
+                    EmailConfirmed = true
+                }
+            },
         };
 
         public Circle[] TestCircles = new Circle[]{
@@ -153,8 +173,15 @@ namespace Wacomi.Integration.tests.Helper
                 new CircleMember{CircleId = 3, AppUserId = GetAppUserIdByName("TestMember3"), Role = CircleRoleEnum.OWNER},
                 new CircleMember{CircleId = 4, AppUserId = GetAppUserIdByName("TestMember2"), Role = CircleRoleEnum.OWNER},
                 new CircleMember{CircleId = 1, AppUserId = GetAppUserIdByName("TestMember3"), Role = CircleRoleEnum.MEMBER},
-                new CircleMember{CircleId = 1, AppUserId = GetAppUserIdByName("TestMember4"), Role = CircleRoleEnum.MEMBER}
+                new CircleMember{CircleId = 1, AppUserId = GetAppUserIdByName("TestMember4"), Role = CircleRoleEnum.MEMBER},
+                new CircleMember{CircleId = 1, AppUserId = GetAppUserIdByName("TestMember5"), Role = CircleRoleEnum.MEMBER},
+                new CircleMember{CircleId = 1, AppUserId = GetAppUserIdByName("TestMember6"), Role = CircleRoleEnum.MEMBER},
             };
+
+        public CircleEvent[] TestCircleEvents = new CircleEvent[]{
+                new CircleEvent{ Id = 1, Title = "サークル1 イベント１ Max 2", Description = "サークル1 イベント１ Max 2", MaxNumber = 2, AppUserId = GetAppUserIdByName("TestMember1"), CircleId = 1, CityId = 1},
+                new CircleEvent{ Id = 2, Title = "サークル1 イベント2 承認制", Description = "サークル1 イベント2 承認制", AppUserId = GetAppUserIdByName("TestMember1"), CircleId = 1, ApprovalRequired = true},
+        };
 
         public CircleTopic[] TestCircleTopicss = new CircleTopic[]{
                 new CircleTopic {Id = 1, CircleId = 1, AppUserId = GetAppUserIdByName("TestMember1"), Title = "トピック１", Description = "テスト　トピック１号"}
@@ -181,7 +208,6 @@ namespace Wacomi.Integration.tests.Helper
             base.Seed();
             SeedTestUsers();
             SeedTestCircles();
-
         }
 
         public void SeedTestCircles(){
@@ -206,6 +232,10 @@ namespace Wacomi.Integration.tests.Helper
 
             foreach(var circleTopicComment in TestCircleTopicComments){
                 _context.Add(circleTopicComment);
+            }
+
+            foreach(var circleEvent in TestCircleEvents){
+                _context.Add(circleEvent);
             }
 
            _context.SaveChanges();

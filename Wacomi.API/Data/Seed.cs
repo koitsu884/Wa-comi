@@ -249,6 +249,12 @@ namespace Wacomi.API.Data
                 "テカポ,-44.004915,170.477285",
                 "その他南島,-43.530,172.640"};
 
+            string[] etc = {
+                "NZ全域",
+                "NZ国外(日本)",
+                "NZ国外(その他)"
+            };
+
             foreach (var prefecture in prefectures)
             {
                 if (!context.HomeTowns.Any(h => h.Prefecture == prefecture))
@@ -313,6 +319,51 @@ namespace Wacomi.API.Data
                     city.Longitude = Convert.ToDouble(data[2]);
                 }
             }
+
+            foreach (var etcCity in etc)
+            {
+                var city = context.Cities.FirstOrDefault(c => c.Name == etcCity);
+                if (city == null)
+                {
+                    var result = context.Cities.AddAsync(new City()
+                    {
+                        Region = "その他",
+                        Name = etcCity,
+                    }).Result;
+
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create city " + etcCity);
+                    }
+                }
+                else
+                {
+                    city.Name = etcCity;
+                }
+            }
+
+            foreach (var etcCity in etc)
+            {
+                var city = context.Cities.FirstOrDefault(c => c.Name == etcCity);
+                if (city == null)
+                {
+                    var result = context.Cities.AddAsync(new City()
+                    {
+                        Region = "その他",
+                        Name = etcCity,
+                    }).Result;
+
+                    if (result == null)
+                    {
+                        throw new Exception("Failed to create city " + etcCity);
+                    }
+                }
+                else
+                {
+                    city.Name = etcCity;
+                }
+            }
+
             context.SaveChanges();
         }
 

@@ -56,7 +56,7 @@ export class PropertyHomeComponent implements OnInit {
     this.localeService.use('ja');
 
     this.appUser = this.route.snapshot.data['appUser'];
-    const citiesFromStore: City[] = this.route.snapshot.data['cities'];
+    const citiesFromStore: City[] = this.route.snapshot.data['cities'].filter(c => c.region != "その他");
     this.cities = citiesFromStore.slice(0, citiesFromStore.length);
     // let otherIndex = this.cities.findIndex(c => c.name == 'その他');
     // if(otherIndex)

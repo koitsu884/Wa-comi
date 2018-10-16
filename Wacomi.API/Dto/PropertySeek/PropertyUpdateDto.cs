@@ -12,9 +12,9 @@ namespace Wacomi.API.Dto
         public int? MainPhotoId{ get; set;}
         public bool IsActive{get; set;}
         [Required]
-        [MaxLength(100)]
+        [MaxLength(StaticData.ShortTextLength)]
         public string Title{get; set;}
-        [MaxLength(5000)]
+        [MaxLength(StaticData.LongTextLength)]
         public string Description{get; set;}
         [Required]
         public int CityId{ get; set;}

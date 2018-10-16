@@ -27,6 +27,8 @@ namespace Wacomi.API.Data
         public DbSet<BusinessProfile> BusinessProfiles { get; set; }
         public DbSet<Circle> Circles { get; set; }
         public DbSet<CircleMember> CircleMembers { get; set; }
+        public DbSet<CircleEvent> CircleEvents { get; set; }
+        public DbSet<CircleEventParticipation> CircleEventParticipations { get; set; }
         public DbSet<CircleRequest> CircleRequests { get; set; }
         public DbSet<CircleTopic> CircleTopics { get; set; }
         public DbSet<CircleTopicComment> CircleTopicComments { get; set; }
@@ -126,6 +128,21 @@ namespace Wacomi.API.Data
                 .HasOne(cm => cm.Circle)
                 .WithMany(c => c.CircleMemberList)
                 .HasForeignKey(cm => cm.CircleId);
+
+            builder.Entity<CircleEventParticipation>()
+                .HasKey(cr => new { cr.AppUserId, cr.CircleEventId });
+
+             builder.Entity<CircleEventParticipation>()
+                .HasOne(cep => cep.CircleEvent)
+                .WithMany(ce => ce.CircleEventParticipations)
+                .HasForeignKey(cep => cep.CircleEventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CircleEventParticipation>()
+                .HasOne(cep => cep.AppUser)
+                .WithMany(au => au.CircleEventParticipations)
+                .HasForeignKey(cep => cep.AppUserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ClanSeek>()
                 .HasIndex(c => c.DateCreated);

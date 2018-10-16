@@ -18,9 +18,13 @@ namespace Wacomi.API.Data
         Task<bool> CheckUpdatePermission(int userId, int circleId);
         Task<PagedList<Circle>> GetCircles(PaginationParams paginationParams, CircleSearchParameter searchOptions);
         Task<IEnumerable<Circle>> GetLatestCircles();
+        Task<int> GetCircleEventParticipationCount(int eventId);
+        Task<bool> IsEventFull(int eventId);
+        Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId);
         Task<CircleMember> GetCircleMember(int appUserId, int circleId);
         Task<int> GetCircleMemberCount(int circleId);
         Task<PagedList<CircleMember>> GetCircleMemberList(PaginationParams paginationParams, int circleId, CircleRoleEnum? role = null);
+        Task<PagedList<CircleEventParticipation>> GetCircleEventParticipationList(PaginationParams paginationParams, int eventId, CircleEventParticipationStatus? status = null);
          Task<IEnumerable<CircleMember>> GetLatestCircleMemberList(int circleId);
         Task<PagedList<Circle>> GetCirclesByUser(PaginationParams paginationParams, int userId);
         Task<PagedList<Circle>> GetCirclesOwnedByUser(PaginationParams paginationParams, int userId);

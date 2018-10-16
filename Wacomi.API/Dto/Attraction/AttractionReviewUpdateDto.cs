@@ -13,7 +13,7 @@ namespace Wacomi.API.Dto
         public int? MainPhotoId{ get; set;}
         public int Score{get; set;}
         [Required]
-        [MaxLength(1500)]
+        [MaxLength(StaticData.LongTextLength)]
         public string Review{ get; set;}
     }
 }

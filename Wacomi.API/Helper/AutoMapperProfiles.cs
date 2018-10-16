@@ -112,6 +112,11 @@ namespace Wacomi.API.Helper
 
             CreateMap<CircleUpdateDto, Circle>();
 
+            CreateMap<CircleEvent, CircleEventForReturnDto>();
+            CreateMap<CircleEventUpdateDto, CircleEvent>();
+
+            CreateMap<CircleEventParticipation, CircleEventParticipationForReturnDto>();
+
             CreateMap<CircleTopic, CircleTopicForReturnDto>();
             CreateMap<CircleTopicUpdateDto, CircleTopic>();
 

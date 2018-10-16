@@ -33,6 +33,7 @@ namespace Wacomi.API.Models
         public virtual ICollection<Message> MessageReceived{ get; set;}
         public virtual ICollection<Message> MessageSent{ get; set;}
         public virtual ICollection<CircleRequest> CircleRequestsSent {get; set;}
+        public virtual ICollection<CircleEventParticipation> CircleEventParticipations {get; set;}
         public virtual ICollection<Photo> Photos { get; set; }
         public virtual ICollection<Blog>  Blogs { get; set;}
         public virtual ICollection<TopicCommentFeel> TopicCommentFeels { get; set;}
