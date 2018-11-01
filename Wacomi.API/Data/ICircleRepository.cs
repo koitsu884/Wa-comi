@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wacomi.API.Helper;
@@ -17,10 +18,12 @@ namespace Wacomi.API.Data
         Task<bool> CircleExists(int id);
         Task<bool> CheckUpdatePermission(int userId, int circleId);
         Task<PagedList<Circle>> GetCircles(PaginationParams paginationParams, CircleSearchParameter searchOptions);
+        Task<PagedList<CircleEvent>> GetCircleEvents(PaginationParams paginationParams, DateTime fromDate = default(DateTime), int circleId = 0, int circleCategoryId = 0, int cityId = 0, int appUserId = 0);
         Task<IEnumerable<Circle>> GetLatestCircles();
         Task<int> GetCircleEventParticipationCount(int eventId);
         Task<bool> IsEventFull(int eventId);
         Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId);
+        Task<CircleEventParticipation> GetCircleEventFirstWaitingParticipation(int eventId);
         Task<CircleMember> GetCircleMember(int appUserId, int circleId);
         Task<int> GetCircleMemberCount(int circleId);
         Task<PagedList<CircleMember>> GetCircleMemberList(PaginationParams paginationParams, int circleId, CircleRoleEnum? role = null);
@@ -32,8 +35,10 @@ namespace Wacomi.API.Data
         Task<IEnumerable<CircleCategory>> GetCircleCategories();
         // Task<IEnumerable<CircleTopic>> GetLatestCircleTopic(int circleId); //No need..?
         Task<CircleTopic> GetCircleTopic(int id);
+        Task<CircleEvent> GetCircleEvent(int id);
         Task<PagedList<CircleTopic>> GetCircleTopicList(PaginationParams paginationParams, int circleId);
         Task<IEnumerable<CircleTopic>> GetLatestCircleTopicList(int circleId);
+        Task<IEnumerable<CircleEvent>> GetLatestCircleEventList(int circleId);
         Task<PagedList<CircleTopic>> GetCircleTopicByUser(PaginationParams paginationParams, int circleId, int userId);
         Task<int> GetCircleTopicCommentCount(int circleTopicId);
 

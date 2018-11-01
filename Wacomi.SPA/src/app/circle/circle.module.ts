@@ -14,7 +14,7 @@ import { CircleMemberListComponent } from "./circle-member/circle-member-list/ci
 import { CircleMemberEffects } from "./store/circlemember.effects";
 import { CircleRequestListComponent } from "./circle-details/circle-request-list/circle-request-list.component";
 import { CircleOverviewComponent } from "./circle-details/circle-overview/circle-overview.component";
-import { TabsModule, ModalModule } from "ngx-bootstrap";
+import { TabsModule, ModalModule, BsDatepickerModule } from "ngx-bootstrap";
 import { CircleTopicComponent } from "./circle-details/circle-topic/circle-topic.component";
 import { CircleInfoComponent } from "./circle-details/circle-overview/circle-info/circle-info.component";
 import { CircleSideinfoComponent } from "./circle-details/circle-overview/circle-sideinfo/circle-sideinfo.component";
@@ -26,12 +26,30 @@ import { CircleManagementComponent } from "./circle-management/circle-management
 import { CircleManagementEffects } from "./store/circle-management.effects";
 import { CircleMemberGuard } from "./_guard/circlemember.guard";
 import { CircleOwnerGuard } from "./_guard/circleowner.guard";
+import { CircleEventComponent } from "./circle-details/circle-event/circle-event.component";
+import { CircleEventCalendarComponent } from "./circle-details/circle-event/circle-event-calendar/circle-event-calendar.component";
+import { CircleEventEditComponent } from "./circle-details/circle-event/circle-event-edit/circle-event-edit.component";
+import { CircleEventDetailComponent } from "./circle-details/circle-event/circle-event-detail/circle-event-detail.component";
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { CircleEventEffects } from "./store/circleevent.effects";
+import { CircleEventParticipationsComponent } from "./circle-details/circle-event/circle-event-detail/circle-event-participations/circle-event-participations.component";
+import { CircleEventParticipationEffects } from "./store/circle-event-participations.effects";
+import { CircleEventResolver } from "./_resolver/circleevent.resolver";
+import { CircleSearchComponent } from "./circle-home/circle-search/circle-search.component";
+import { CircleEventSearchComponent } from "./circle-home/circle-event-search/circle-event-search.component";
+import { CircleEventParticipationsListComponent } from "./circle-details/circle-event/circle-event-detail/circle-event-participations/circle-event-participations-list/circle-event-participations-list.component";
 
 @NgModule({
     declarations: [
         CircleHomeComponent,
+        CircleSearchComponent,
+        CircleEventSearchComponent,
         CircleEditComponent,
         CircleDetailsComponent,
+        CircleEventComponent,
+        CircleEventCalendarComponent,
+        CircleEventEditComponent,
+        CircleEventDetailComponent,
         CircleInfoComponent,
         CircleSideinfoComponent,
         CircleMemberListComponent,
@@ -41,7 +59,9 @@ import { CircleOwnerGuard } from "./_guard/circleowner.guard";
         CircleTopicCommentComponent,
         CircleRequestListComponent,
         CircleOverviewComponent,
-        CircleManagementComponent
+        CircleManagementComponent,
+        CircleEventParticipationsComponent,
+        CircleEventParticipationsListComponent
     ],
     imports: [
         CircleRoutingModule,
@@ -49,11 +69,14 @@ import { CircleOwnerGuard } from "./_guard/circleowner.guard";
         PaginationModule,
         TabsModule,
         ModalModule,
+        BsDatepickerModule,
+        InfiniteScrollModule,
         StoreModule.forFeature('circleModule', reducers),
-        EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects, CircleManagementEffects])
+        EffectsModule.forFeature([CircleEffects, CircleMemberEffects, CircleTopicEffects, CircleManagementEffects, CircleEventEffects, CircleEventParticipationEffects])
     ],
     providers: [
         CircleCategoryResolver,
+        CircleEventResolver,
         CircleMemberGuard,
         CircleOwnerGuard
     ]

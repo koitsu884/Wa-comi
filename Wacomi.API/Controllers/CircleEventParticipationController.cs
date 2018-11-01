@@ -35,6 +35,13 @@ namespace Wacomi.API.Controllers
             return Ok(_mapper.Map<IEnumerable<CircleEventParticipationForReturnDto>>(memberListFromRepo));
         }
 
+        [HttpGet("{eventId}/latest")]
+        public async Task<ActionResult> GetLatestCircleEventParticipations(int eventId)
+        {
+            var memberListFromRepo = await _repo.GetCircleEventParticipationList(new PaginationParams(), eventId, CircleEventParticipationStatus.Confirmed);
+           return Ok(_mapper.Map<IEnumerable<CircleEventParticipationForReturnDto>>(memberListFromRepo));
+        }
+
         [Authorize]
         [HttpPost()]
         public async Task<ActionResult> Post([FromBody]CircleEventParticipation model)
@@ -87,8 +94,32 @@ namespace Wacomi.API.Controllers
                 return BadRequest(ModelState);
             if (!await this.MatchAppUserWithToken(model.AppUserId))
                 return Unauthorized();
+            var eventParticipationFromRepo = await _repo.GetCircleEventParticipation((int)model.AppUserId, model.CircleEventId);
+            if(eventParticipationFromRepo == null)
+                return NotFound();
 
-            model.Status = CircleEventParticipationStatus.Canceled;
+            eventParticipationFromRepo.Status = CircleEventParticipationStatus.Canceled;
+            var firstWaitingParticipant = await _repo.GetCircleEventFirstWaitingParticipation(model.CircleEventId);
+            if (firstWaitingParticipant != null)
+            {
+                firstWaitingParticipant.Status = CircleEventParticipationStatus.Confirmed;
+            }
+
+            await _repo.SaveAll();
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("{appUserId}/{eventId}")]
+        public async Task<ActionResult> Delete(int appUserId, int eventId)
+        {
+            if (!await this.MatchAppUserWithToken(appUserId))
+                return Unauthorized();
+
+            var participationFromRepo = await _repo.GetCircleEventParticipation(appUserId, eventId);
+            if(participationFromRepo == null)
+                return NotFound();
+            _repo.Delete(participationFromRepo);
             await _repo.SaveAll();
             return Ok();
         }

@@ -19,6 +19,20 @@ constructor() { }
         )
     }
 
+    prompt(title: string, okCallback: (evt, value) => any)
+    {
+        alertify.prompt(
+            title,
+            function(evt, value) {
+                okCallback(evt, value);
+            },
+            null
+        )
+        .set(
+            {transition:'fade'}
+        )
+    }
+
     success(message: string) {
         alertify.success(message);
     }

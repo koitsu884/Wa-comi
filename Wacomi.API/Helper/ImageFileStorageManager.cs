@@ -142,6 +142,7 @@ namespace Wacomi.API.Helper
         }
 
         public List<string> DeleteAttachedPhotos(ICollection<Photo> photos){
+            if(photos == null) return null;
             List<string> errors = new List<string>();
             foreach (var photo in photos)
             {

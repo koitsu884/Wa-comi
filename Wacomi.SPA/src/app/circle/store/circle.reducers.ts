@@ -1,6 +1,8 @@
 import * as fromApp from '../../store/app.reducer';
 import * as CircleActions from './circle.actions';
 import * as fromCircleTopic from './circletopic.reducers';
+import * as fromCircleEventParticipations from './circle-event-participations.reducers';
+import * as fromCircleEvent from './circleevent.reducers';
 import * as fromCircleMember from './circlemember.reducers';
 import * as fromCircleManagement from './circle-management.reducers';
 import { Pagination } from '../../_models/Pagination';
@@ -10,6 +12,7 @@ import { CircleMember } from '../../_models/CircleMember';
 import { ActionReducerMap } from '@ngrx/store';
 import { CircleRequest } from '../../_models/CircleRequest';
 import { CircleTopic } from '../../_models/CircleTopic';
+import { CircleEvent } from '../../_models/CircleEvent';
 
 export interface FeatureState extends fromApp.AppState {
     circleModule: CircleState
@@ -18,6 +21,8 @@ export interface FeatureState extends fromApp.AppState {
 export interface CircleState {
     circle: State;
     circleTopic: fromCircleTopic.State;
+    circleEvent: fromCircleEvent.State;
+    circleEventParticipation: fromCircleEventParticipations.State;
     circleMember: fromCircleMember.State;
     circleManagement: fromCircleManagement.State;
 }
@@ -25,6 +30,8 @@ export interface CircleState {
 export const reducers: ActionReducerMap<CircleState> = {
     circle: circleReducer,
     circleTopic: fromCircleTopic.circleTopicReducer,
+    circleEvent: fromCircleEvent.circleEventReducer,
+    circleEventParticipation: fromCircleEventParticipations.circleEventParticipationReducer,
     circleMember: fromCircleMember.circleMemberReducer,
     circleManagement: fromCircleManagement.circleManagementReducer
 };
@@ -33,6 +40,7 @@ export interface State {
     selectedCircle: Circle;
     latestMemberList: CircleMember[];
     latestTopicList: CircleTopic[];
+    latestEventList: CircleEvent[];
     circleRequests: CircleRequest[];
     circles: Circle[];
     searchParam: CircleSearchOptions;
@@ -43,6 +51,7 @@ const initialState: State = {
     selectedCircle: null,
     latestMemberList: [],
     latestTopicList: [],
+    latestEventList: [],
     circleRequests: [],
     circles: [],
     searchParam: <CircleSearchOptions>{
@@ -83,11 +92,20 @@ export function circleReducer(state = initialState, action: CircleActions.Circle
                 ...state,
                 latestTopicList: [],
             }
-
         case CircleActions.SET_LATEST_CIRCLE_TOPIC_LIST:
             return {
                 ...state,
                 latestTopicList: action.payload,
+            }
+        case CircleActions.GET_LATEST_CIRCLE_EVENT_LIST:
+            return {
+                ...state,
+                latestEventList: [],
+            }
+        case CircleActions.SET_LATEST_CIRCLE_EVENT_LIST:
+            return {
+                ...state,
+                latestEventList: action.payload,
             }
         case CircleActions.ADD_NEW_CIRCLE_TOPIC:
             return {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,10 +70,48 @@ namespace Wacomi.API.Data
             return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
+        public async Task<PagedList<CircleEvent>> GetCircleEvents(PaginationParams paginationParams, DateTime fromDate = default(DateTime), int circleId = 0, int circleCategoryId = 0, int cityId = 0, int appUserId = 0)
+        {
+            if(fromDate == default(DateTime))
+                fromDate = DateTime.Now;
+            // DateTime toDate = fromDate.AddMonths(1);
+            var query = _context.CircleEvents.Include(ce => ce.AppUser).ThenInclude(a => a.MainPhoto)
+                                .Include(ce => ce.Circle).ThenInclude(c => c.MainPhoto)
+                                .Include(ce => ce.MainPhoto)
+                                .Include(ce => ce.City)
+                                .Include(ce => ce.CircleEventParticipations)
+                                .Where(ce => ce.FromDate >= fromDate)
+                                .OrderBy(ce => ce.FromDate)
+                                .AsQueryable();
+
+            if (circleId > 0)
+                query = query.Where(ce => ce.CircleId == circleId);
+            else
+                query = query.Where(ce => ce.IsPublic == true);
+                
+            if (circleCategoryId > 0)
+                query = query.Where(ce => ce.Circle.CategoryId == circleCategoryId);
+            if (cityId > 0)
+                query = query.Where(ce => ce.CityId == cityId);
+            if (appUserId > 0)
+                query = query.Where(ce => ce.AppUserId == appUserId);
+
+            // return await query.ToListAsync();
+             return await PagedList<CircleEvent>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
+        }
         public async Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId)
         {
             return await _context.CircleEventParticipations.Include(cm => cm.AppUser).ThenInclude(a => a.MainPhoto).FirstOrDefaultAsync(cm => cm.AppUserId == appUserId && cm.CircleEventId == eventId);
         }
+
+        public async Task<CircleEventParticipation> GetCircleEventFirstWaitingParticipation(int eventId)
+        {
+            return await _context.CircleEventParticipations.Include(cm => cm.AppUser)
+                                                            .ThenInclude(a => a.MainPhoto)
+                                                            .OrderBy(cm => cm.DateCreated)
+                                                            .FirstOrDefaultAsync(cm => cm.CircleEventId == eventId && cm.Status == CircleEventParticipationStatus.Waiting);
+        }
+
 
         public async Task<CircleMember> GetCircleMember(int appUserId, int circleId)
         {
@@ -99,10 +138,11 @@ namespace Wacomi.API.Data
         {
             var query = _context.CircleEventParticipations.Include(cm => cm.AppUser).ThenInclude(ap => ap.MainPhoto)
                                             .Where(cm => cm.CircleEventId == eventId)
+                                            .OrderByDescending( cm => cm.DateCreated)
                                             // .Select(cm => cm.AppUser)
                                             .AsQueryable();
 
-            if(status != null)
+            if (status != null)
                 query = query.Where(cep => cep.Status == status);
 
             return await PagedList<CircleEventParticipation>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
@@ -140,6 +180,17 @@ namespace Wacomi.API.Data
             return await PagedList<Circle>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
+        public async Task<CircleEvent> GetCircleEvent(int id)
+        {
+            return await _context.CircleEvents.Include(ct => ct.AppUser).ThenInclude(au => au.MainPhoto)
+                                             .Include(ct => ct.Circle)
+                                             .Include(ct => ct.MainPhoto)
+                                             .Include(ct => ct.Photos)
+                                             .Include(ct => ct.City)
+                                             .Include(ct => ct.CircleEventParticipations)
+                                             .FirstOrDefaultAsync(ct => ct.Id == id);
+        }
+
         public async Task<CircleTopic> GetCircleTopic(int id)
         {
             return await _context.CircleTopics.Include(ct => ct.AppUser).ThenInclude(au => au.MainPhoto)
@@ -164,6 +215,15 @@ namespace Wacomi.API.Data
         {
             return await _context.CircleTopics.Include(ct => ct.AppUser).ThenInclude(a => a.MainPhoto)
                                  .Include(ct => ct.Photo)
+                                 .Where(ct => ct.CircleId == circleId)
+                                 .OrderByDescending(ct => ct.DateCreated)
+                                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CircleEvent>> GetLatestCircleEventList(int circleId)
+        {
+            return await _context.CircleEvents.Include(ct => ct.AppUser).ThenInclude(a => a.MainPhoto)
+                                 .Include(ct => ct.MainPhoto)
                                  .Where(ct => ct.CircleId == circleId)
                                  .OrderByDescending(ct => ct.DateCreated)
                                  .ToListAsync();
@@ -240,14 +300,15 @@ namespace Wacomi.API.Data
                                     .Include(c => c.MainPhoto).OrderByDescending(c => c.DateCreated).Take(6).ToListAsync();
         }
 
-        public async Task<int> GetCircleEventParticipationCount(int eventId){
+        public async Task<int> GetCircleEventParticipationCount(int eventId)
+        {
             return await _context.CircleEventParticipations.CountAsync(cep => cep.CircleEventId == eventId);
         }
 
         public async Task<bool> IsEventFull(int eventId)
         {
             var temp = await _context.CircleEvents.FirstOrDefaultAsync(ce => ce.Id == eventId);
-            return temp != null && temp.MaxNumber != null ? await GetCircleEventParticipationCount(temp.Id) >= temp.MaxNumber : false;    
+            return temp != null && temp.MaxNumber != null ? await GetCircleEventParticipationCount(temp.Id) >= temp.MaxNumber : false;
         }
 
         public async Task<bool> IsMember(int appUserId, int circleId)

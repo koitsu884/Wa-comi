@@ -48,7 +48,7 @@ namespace Wacomi.API
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(Configuration.GetConnectionString("WacomiDbConnection")));
             var serviceProvider = services.BuildServiceProvider();
-       //     serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            serviceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
         }
 

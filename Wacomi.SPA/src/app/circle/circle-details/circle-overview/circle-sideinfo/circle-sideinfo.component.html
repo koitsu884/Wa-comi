@@ -2,13 +2,20 @@
   <div class="area">
     <h4>最近のトピック</h4>
     <div *ngIf="latestTopics">
-        <div *ngFor="let topic of latestTopics">
-          <a *ngIf="circle.isMember" [routerLink]="['/circle/detail', topic.circleId, 'topic', 'detail', topic.id]" >{{topic.title}}</a>
-          <p *ngIf="!circle.isMember">{{topic.title}}</p>
-        </div>
+      <div *ngFor="let topic of latestTopics">
+        <a *ngIf="circle.isMember" [routerLink]="['/circle/detail', topic.circleId, 'topic', 'detail', topic.id]">{{topic.title}}</a>
+        <p *ngIf="!circle.isMember">{{topic.title}}</p>
       </div>
+    </div>
   </div>
   <div class="area">
-    <h4>最近のイベント</h4>
+    <h4>新着イベント</h4>
+    <div *ngIf="latestEvents">
+      <div *ngFor="let event of latestEvents">
+        <a *ngIf="circle.isMember" [routerLink]="['/circle/detail', event.circleId, 'event', 'detail', event.id]">{{event.title}}</a>
+        <p *ngIf="!circle.isMember">{{event.title}}</p>
+        <p>開催日:{{event.fromDate | date: 'mediumDate'}}</p>
+      </div>
+    </div>
   </div>
 </div>

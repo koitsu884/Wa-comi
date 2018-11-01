@@ -28,7 +28,7 @@
           <h4>最近参加したメンバー</h4>
           <app-circle-member-shortlist [circleId]="circle.id" [latestMemberList]="latestMembers"></app-circle-member-shortlist>
         </div>
-        <app-circle-sideinfo [circle]="circle" [latestTopics]="latestTopics"></app-circle-sideinfo>
+        <app-circle-sideinfo [circle]="circle" [latestTopics]="latestTopics" [latestEvents]="latestEvents"></app-circle-sideinfo>
       </div>
     </div>
     <div *ngIf="isMine">

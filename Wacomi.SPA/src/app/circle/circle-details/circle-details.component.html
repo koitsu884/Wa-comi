@@ -14,6 +14,7 @@
       <li routerLinkActive="active"><a [routerLink]="['overview']">概要</a></li>
       <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['member']">メンバー</a></li>
       <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['topic']">トピック</a></li>
+      <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['event']">イベント</a></li>
       <!-- <li routerLinkActive="active"><a [routerLink]="['event']" >イベント</a></li> -->
       <li routerLinkActive="active" *ngIf="circle.isManageable"><a [routerLink]="['request']">参加リクエスト</a></li>
     </ul>

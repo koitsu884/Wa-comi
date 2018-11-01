@@ -1,0 +1,25 @@
+<div class="eventList">
+  <div *ngIf="finish && events.length == 0">
+    まだイベントはありません
+  </div>
+  <div *ngFor="let event of events; let i=index;">
+    <h4 *ngIf="i == 0 || dateChanged(events[i-1].date, event.fromDate)">{{event.fromDate | date:"y年 MM月 dd日(EEE)"}}</h4>
+    <div class = "eventCard area">
+      <p *ngIf="!circleId"><a [routerLink]="['/circle/detail', event.circleId]" routerLinkActive="router-link-active" ><b class="text-warning">サークル：{{event.circle.name}}</b></a></p>
+      <h5><a [routerLink]="['/circle/detail', event.circleId, 'event', 'detail', event.id]">{{event.title}}</a></h5>
+      <p><b>{{event.fromDate | date:"shortTime"}}～</b></p>
+      <img class="pull-left" *ngIf="event.mainPhoto" src="{{event.mainPhoto | thumburl}}" alt="">
+      <div class="pull-left">
+        <p>{{event.description | shorten}}</p>
+      </div>
+      <span class="clearfix"></span>
+    </div>
+  </div>
+</div>
+<div 
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="500"
+    [infiniteScrollThrottle]="selector"
+    (scrolled)="onScroll()">
+</div>

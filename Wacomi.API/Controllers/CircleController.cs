@@ -84,6 +84,13 @@ namespace Wacomi.API.Controllers
             return Ok(_mapper.Map<IEnumerable<CircleTopicForReturnDto>>(circleTopicsForReturn));
         }
 
+        [HttpGet("{id}/events/latest")]
+        public async Task<ActionResult> GetLatestCircleEvents(int id)
+        {
+            var circleEventsForReturn = await _repo.GetLatestCircleEventList(id);
+            return Ok(_mapper.Map<IEnumerable<CircleEventForReturnDto>>(circleEventsForReturn));
+        }
+
         [HttpGet("latest")]
         public async Task<ActionResult> GetLatestCircles()
         {

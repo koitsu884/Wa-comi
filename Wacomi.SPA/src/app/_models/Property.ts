@@ -1,7 +1,7 @@
 import { AppUser } from "./AppUser";
 import { Photo } from "./Photo";
 import { Category } from "./Category";
-import { PropertyTypeEnum, RentTypeEnum } from "./PropertySearchOptions";
+import { RentTypeEnum } from "./PropertySearchOptions";
 
 export interface Property {
     id: number;

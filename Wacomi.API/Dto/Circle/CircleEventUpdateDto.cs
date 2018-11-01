@@ -15,10 +15,14 @@ namespace Wacomi.API.Dto
         [MaxLength(StaticData.LongTextLength)]
         public string Description { get; set;}
         public bool IsPublic{ get; set;} = false;
+        [Required]
+        public DateTime FromDate { get; set;}
+        public DateTime? ToDate{ get; set;}
         public string WebSiteUrls { get; set;}
         public int? MaxNumber{ get; set;}
         public bool ApprovalRequired{ get; set;} = false;
         public string Address{ get; set;}
+        [Required]
         public int CityId{ get; set;}
         public int? MainPhotoId {get; set;}
         public bool IsActive {get; set;} = true;

@@ -5,6 +5,7 @@ import { CircleSearchOptions } from "../../_models/CircleSearchOptions";
 import { CircleRequest } from "../../_models/CircleRequest";
 import { CircleMember } from "../../_models/CircleMember";
 import { CircleTopic } from "../../_models/CircleTopic";
+import { CircleEvent } from "../../_models/CircleEvent";
 
 export const GET_CIRCLE = 'GET_CIRCLE';
 export const SET_CIRCLE = 'SET_CIRCLE';
@@ -13,6 +14,8 @@ export const SET_LATEST_CIRCLE_MEMBER_LIST = 'SET_LATEST_CIRCLE_MEMBER_LIST';
 export const ADD_NEW_CIRCLE_MEMBER = 'ADD_NEW_CIRCLE_MEMBER';
 export const GET_LATEST_CIRCLE_TOPIC_LIST = 'GET_LATEST_CIRCLE_TOPIC_LIST';
 export const SET_LATEST_CIRCLE_TOPIC_LIST = 'SET_LATEST_CIRCLE_TOPIC_LIST';
+export const GET_LATEST_CIRCLE_EVENT_LIST = 'GET_LATEST_CIRCLE_EVENT_LIST';
+export const SET_LATEST_CIRCLE_EVENT_LIST = 'SET_LATEST_CIRCLE_EVENT_LIST';
 export const ADD_NEW_CIRCLE_TOPIC = 'ADD_NEW_CIRCLE_TOPIC';
 export const GET_CIRCLE_REQUEST_LIST = 'GET_CIRCLE_REQUEST_LIST';
 export const SET_CIRCLE_REQUEST_LIST = 'SET_CIRCLE_REQUEST_LIST';
@@ -21,9 +24,12 @@ export const DECLINE_CIRCLE_REQUEST = 'DECLINE_CIRCLE_REQUEST';
 
 //============= CIRCLE home & details (search) ======================
 export const SET_CIRCLE_SEARCH_OPTIONS = 'SET_CIRCLE_SEARCH_OPTIONS';
+export const SET_CIRCLE_EVENT_SEARCH_OPTIONS = 'SET_CIRCLE_EVENT_SEARCH_OPTIONS';
 export const SET_CIRCLE_PAGE = 'SET_CIRCLE_PAGE';
 export const SEARCH_CIRCLE = 'SEARCH_CIRCLE';
+export const SEARCH_CIRCLE_EVENT = 'SEARCH_CIRCLE_EVENT';
 export const SET_CIRCLE_SEARCH_RESULT = 'SET_CIRCLE_SEARCH_RESULT';
+export const SET_CIRCLE_EVENT_SEARCH_RESULT = 'SET_CIRCLE_EVENT_SEARCH_RESULT';
 export const INIT_CIRCLE_STATE = 'INIT_CIRCLE_STATE';
 
 //============= CIRCLE edit =====================
@@ -66,6 +72,16 @@ export class GetLatestCircleTopicList implements Action {
 export class SetLatestCircleTopicList implements Action {
     readonly type = SET_LATEST_CIRCLE_TOPIC_LIST;
     constructor(public payload: CircleTopic[]) { }
+}
+
+export class GetLatestCircleEventList implements Action {
+    readonly type = GET_LATEST_CIRCLE_EVENT_LIST;
+    constructor(public payload: number) { }
+}
+
+export class SetLatestCircleEventList implements Action {
+    readonly type = SET_LATEST_CIRCLE_EVENT_LIST;
+    constructor(public payload: CircleEvent[]) { }
 }
 
 export class AddNewCircleTopic implements Action {
@@ -142,6 +158,8 @@ export type CircleActions = InitCircleState
                         | AddNewCircleMember
                         | GetLatestCircleTopicList
                         | SetLatestCircleTopicList
+                        | GetLatestCircleEventList
+                        | SetLatestCircleEventList
                         | AddNewCircleTopic
                         | GetCircleRequestList
                         | SetCircleRequestList

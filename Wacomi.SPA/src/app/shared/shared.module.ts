@@ -36,6 +36,7 @@ import { PropertyRentTypePipe } from '../_pipes/propertyRentType.pipe';
 import { CircleListComponent } from '../circle/circle-list/circle-list.component';
 import { CircleMemberShortlistComponent } from '../circle/circle-member/circle-member-shortlist/circle-member-shortlist.component';
 import { CommentFormComponent } from './comment-form/comment-form.component';
+import { TimeSpanJpPipe } from '../_pipes/timespan_jp.pipe';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { CommentFormComponent } from './comment-form/comment-form.component';
     PropertyTermsPipe,
     PropertyInternetPipe,
     PropertyRentTypePipe,
+    TimeSpanJpPipe,
 
     MainphotoSelectorComponent,
     LoadingComponent,
@@ -89,6 +91,7 @@ import { CommentFormComponent } from './comment-form/comment-form.component';
     ThumbUrlPipe,
     IconUrlPipe,
     TimeAgoJpPipe,
+    TimeSpanJpPipe,
     PropertyInternetPipe,
     PropertyGenderPipe,
     PropertyTermsPipe,

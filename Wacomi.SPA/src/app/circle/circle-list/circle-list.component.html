@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-6 circleCardContainer" *ngFor="let circle of circleList index as i" >
+  <div class="col-sm-6 col-md-4 circleCardContainer" *ngFor="let circle of circleList index as i" >
     <div class="card clearfix" [@circleCard] >
       <!-- <div class="circle"> -->
       <img *ngIf="circle.mainPhoto" src="{{circle.mainPhoto | thumburl}}" class="circleImage">

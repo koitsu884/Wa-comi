@@ -6,8 +6,6 @@ import { CityListResolver } from "../_resolvers/citylist.resolver";
 import { CircleCategoryResolver } from "../_resolvers/circle-categories.resolver";
 import { CircleDetailsComponent } from "./circle-details/circle-details.component";
 import { CircleEditComponent } from "./circle-edit/circle-edit.component";
-import { MemberGuard } from "../_guards/member.guard";
-import { AppUserGuard } from "../_guards/appuser.guard";
 import { AuthGuard } from "../_guards/auth.guard";
 import { CircleMemberListComponent } from "./circle-member/circle-member-list/circle-member-list.component";
 import { CircleOverviewComponent } from "./circle-details/circle-overview/circle-overview.component";
@@ -18,6 +16,11 @@ import { CircleTopicDetailComponent } from "./circle-details/circle-topic/circle
 import { CircleManagementComponent } from "./circle-management/circle-management.component";
 import { CircleMemberGuard } from "./_guard/circlemember.guard";
 import { CircleOwnerGuard } from "./_guard/circleowner.guard";
+import { CircleEventDetailComponent } from "./circle-details/circle-event/circle-event-detail/circle-event-detail.component";
+import { CircleEventEditComponent } from "./circle-details/circle-event/circle-event-edit/circle-event-edit.component";
+import { CircleEventComponent } from "./circle-details/circle-event/circle-event.component";
+import { CircleEventParticipationsComponent } from "./circle-details/circle-event/circle-event-detail/circle-event-participations/circle-event-participations.component";
+import { CircleEventResolver } from "./_resolver/circleevent.resolver";
 
 
 const circleRoute: Routes = [
@@ -55,7 +58,11 @@ const circleRoute: Routes = [
             {path: 'topic/detail/:id/:forcusCommentId', component: CircleTopicDetailComponent, canActivate: [CircleMemberGuard]}, 
             {path: 'topic/edit', component: CircleTopicEditComponent, canActivate: [CircleMemberGuard]}, 
             {path: 'topic/edit/:id', component: CircleTopicEditComponent, canActivate: [CircleMemberGuard]}, 
-            {path: 'event', redirectTo: 'overview'},
+            {path: 'event', component: CircleEventComponent, canActivate: [AuthGuard]}, 
+            {path: 'event/detail/:id', component: CircleEventDetailComponent, canActivate: [AuthGuard]}, 
+            {path: 'event/detail/:id/participants', component: CircleEventParticipationsComponent, canActivate: [AuthGuard], resolve: {appUser:AppUserResolver, circleEvent:CircleEventResolver}}, 
+            {path: 'event/edit', component: CircleEventEditComponent, canActivate: [CircleMemberGuard], resolve: {cities:CityListResolver}}, 
+            {path: 'event/edit/:id', component: CircleEventEditComponent, canActivate: [CircleMemberGuard], resolve: {cities:CityListResolver}}, 
             {path: 'request', component: CircleRequestListComponent, canActivate: [CircleOwnerGuard]},
           ]
     },

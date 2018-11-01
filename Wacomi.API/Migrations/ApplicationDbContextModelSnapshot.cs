@@ -19,7 +19,7 @@ namespace Wacomi.API.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
+                .HasAnnotation("ProductVersion", "2.0.3-rtm-10026");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -585,6 +585,8 @@ namespace Wacomi.API.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(5000);
 
+                    b.Property<DateTime>("FromDate");
+
                     b.Property<bool>("IsActive");
 
                     b.Property<bool>("IsPublic");
@@ -596,11 +598,15 @@ namespace Wacomi.API.Migrations
                     b.Property<string>("Title")
                         .HasMaxLength(100);
 
+                    b.Property<DateTime?>("ToDate");
+
                     b.Property<string>("WebSiteUrls");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("CircleId");
 
                     b.HasIndex("CityId");
 
@@ -1522,6 +1528,11 @@ namespace Wacomi.API.Migrations
                     b.HasOne("Wacomi.API.Models.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("AppUserId");
+
+                    b.HasOne("Wacomi.API.Models.Circle", "Circle")
+                        .WithMany()
+                        .HasForeignKey("CircleId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Wacomi.API.Models.City", "City")
                         .WithMany()

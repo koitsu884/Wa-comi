@@ -12,6 +12,7 @@ import { AlertifyService } from '../../../_services/alertify.service';
 import { Store } from '@ngrx/store';
 import { MessageService } from '../../../_services/message.service';
 import { Subscription } from 'rxjs';
+import { CircleEvent } from '../../../_models/CircleEvent';
 
 @Component({
   selector: 'app-circle-overview',
@@ -22,6 +23,7 @@ export class CircleOverviewComponent implements OnInit, OnDestroy {
   circle: Circle;
   latestMembers: CircleMember[];
   latestTopics: CircleTopic[];
+  latestEvents: CircleEvent[];
   loading: boolean;
   appUser: AppUser;
   isMine: boolean;
@@ -50,6 +52,7 @@ export class CircleOverviewComponent implements OnInit, OnDestroy {
       this.circle = circleState.circle.selectedCircle;
       this.latestMembers = circleState.circle.latestMemberList;
       this.latestTopics = circleState.circle.latestTopicList;
+      this.latestEvents = circleState.circle.latestEventList;
       
       if(this.appUser && this.circle)
         this.isMine = this.appUser.id == this.circle.appUser.id;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -112,7 +113,11 @@ namespace Wacomi.API.Helper
 
             CreateMap<CircleUpdateDto, Circle>();
 
-            CreateMap<CircleEvent, CircleEventForReturnDto>();
+            CreateMap<CircleEvent, CircleEventForReturnDto>()
+              .ForMember(cer => cer.CityName, opt => opt.MapFrom(src => src.City.Name))
+              .ForMember(cer => cer.NumberOfPaticipants, opt => opt.MapFrom(src => src.CircleEventParticipations.Count(p => p.Status == CircleEventParticipationStatus.Confirmed)))
+              .ForMember(cer => cer.NumberOfWaiting, opt => opt.MapFrom(src => src.CircleEventParticipations.Count(p => p.Status == CircleEventParticipationStatus.Waiting)))
+              .ForMember(cer => cer.NumberOfCanceled, opt => opt.MapFrom(src => src.CircleEventParticipations.Count(p => p.Status == CircleEventParticipationStatus.Canceled)));
             CreateMap<CircleEventUpdateDto, CircleEvent>();
 
             CreateMap<CircleEventParticipation, CircleEventParticipationForReturnDto>();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Wacomi.API.Models;
 
 namespace Wacomi.API.Dto
 {
@@ -7,9 +8,12 @@ namespace Wacomi.API.Dto
     {
         public int Id { get; set;}
         public int CircleId{ get; set;}
+        public CircleForReturnDto Circle{ get; set;}
         public string Title { get; set;}
         public string Description { get; set;}
         public bool IsPublic{ get; set;} = false;
+        public DateTime FromDate { get; set;}
+        public DateTime? ToDate{ get; set;}
         public string WebSiteUrls { get; set;}
         public int? MaxNumber{ get; set;}
         public bool ApprovalRequired{ get; set;} = false;
@@ -26,5 +30,9 @@ namespace Wacomi.API.Dto
         public AppUserForReturnDto AppUser {get; set;}
         public int? AppUserId {get; set;}
         public int NumberOfPaticipants{ get; set;}
+        public int NumberOfWaiting{ get; set;}
+        public int NumberOfCanceled{ get; set;}
+        public CircleEventParticipationStatus? MyStatus { get; set;}
+        public Boolean IsCircleMember{ get; set;} = false;
     }
 }

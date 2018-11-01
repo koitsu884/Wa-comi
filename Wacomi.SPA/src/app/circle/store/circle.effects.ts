@@ -14,6 +14,7 @@ import 'rxjs/add/operator/withLatestFrom';
 import { CircleRequest } from '../../_models/CircleRequest';
 import { CircleTopic } from '../../_models/CircleTopic';
 import { CircleMember } from '../../_models/CircleMember';
+import { CircleEvent } from '../../_models/CircleEvent';
 
 @Injectable()
 export class CircleEffects {
@@ -43,6 +44,10 @@ export class CircleEffects {
                         },
                         {
                             type: CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST,
+                            payload: id
+                        },
+                        {
+                            type: CircleActions.GET_LATEST_CIRCLE_EVENT_LIST,
                             payload: id
                         },
                         // {
@@ -198,6 +203,25 @@ export class CircleEffects {
                 .map((result) => {
                     return {
                         type: CircleActions.SET_LATEST_CIRCLE_TOPIC_LIST,
+                        payload: result
+                    }
+                })
+                .catch((error: string) => {
+                    return of({ type: GlobalActions.FAILED, payload: error })
+                });
+        })
+
+    @Effect()
+    getLatestCircleEventList = this.actions$
+        .ofType(CircleActions.GET_LATEST_CIRCLE_EVENT_LIST)
+        .map((action: CircleActions.GetLatestCircleEventList) => {
+            return action.payload;
+        })
+        .switchMap((id) => {
+            return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/latest')
+                .map((result) => {
+                    return {
+                        type: CircleActions.SET_LATEST_CIRCLE_EVENT_LIST,
                         payload: result
                     }
                 })

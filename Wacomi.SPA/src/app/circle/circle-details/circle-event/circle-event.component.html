@@ -1,0 +1,5 @@
+<div class="container">
+  <h3>イベント一覧</h3>
+  <button class="btn btn-primary" type="button" *ngIf="isManageable" [routerLink]="['/circle/detail', circleId, 'event', 'edit']" >新規作成</button>
+  <app-circle-event-calendar [circleId]="circleId"></app-circle-event-calendar>
+</div>

@@ -63,7 +63,7 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
         recordType:"CircleTopic", 
         recordId: this.circleTopic.id, 
         callbackLocation:'/circle/detail/' + this.circleTopic.circleId,
-        callbackActions: [{type: CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST, payload: {topicId: this.circleTopic.id, initPage:true}}]
+        callbackActions: [{type: CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST, payload: this.circleTopic.circleId}]
       }));
     })
   }

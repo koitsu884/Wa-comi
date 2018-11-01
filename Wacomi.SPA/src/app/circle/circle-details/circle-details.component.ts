@@ -30,7 +30,7 @@ export class CircleDetailsComponent implements OnInit {
         this.store.dispatch(new CircleActions.GetCircle(this.circleId));
         this.store.dispatch(new CircleActions.GetLatestCircleMemberList(this.circleId));
         this.store.dispatch(new CircleActions.GetLatestCircleTopicList(this.circleId));
-      
+        this.store.dispatch(new CircleActions.GetLatestCircleEventList(this.circleId));
     });
 
     this.store.select('circleModule').subscribe((circleSate) => {
@@ -62,7 +62,7 @@ export class CircleDetailsComponent implements OnInit {
     const imageUrls = [];
     for (let i = 0; i < photos.length; i++){
       imageUrls.push({
-        small: photos[i].url,
+        small: photos[i].thumbnailUrl,
         medium: photos[i].url,
         big: photos[i].url,
         description: photos[i].description

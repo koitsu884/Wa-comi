@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Wacomi.API.Models
 {
     public enum CircleEventParticipationStatus {
-        Waiting,
+        Waiting = 1,
         Confirmed,
         Canceled
     }

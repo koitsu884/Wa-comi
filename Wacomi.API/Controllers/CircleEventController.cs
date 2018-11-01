@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -20,11 +21,18 @@ namespace Wacomi.API.Controllers
         private readonly ILogger<CircleEventController> _logger;
         private readonly ImageFileStorageManager _imageFileStorageManager;
 
-        public CircleEventController(ICircleRepository repo, INotificationRepository notificationRepo, ILogger<CircleEventController> logger, IAppUserRepository appUserRepository, IMapper mapper, IPhotoRepository photoRepo) : base(appUserRepository, mapper, photoRepo)
+        public CircleEventController(ICircleRepository repo, 
+            INotificationRepository notificationRepo, 
+            ILogger<CircleEventController> logger, 
+            IAppUserRepository appUserRepository, 
+            IMapper mapper, 
+            ImageFileStorageManager imageFileStorageManager,
+            IPhotoRepository photoRepo) : base(appUserRepository, mapper, photoRepo)
         {
             this._logger = logger;
             this._repo = repo;
             this._notificationRepo = notificationRepo;
+            this._imageFileStorageManager = imageFileStorageManager;
         }
 
         protected override string GetTableName()
@@ -34,12 +42,27 @@ namespace Wacomi.API.Controllers
 
         [HttpGet("{id}", Name = "GetCircleEvent")]
         public async Task<ActionResult> Get(int id){
-            var circleEventForReturn = _mapper.Map<CircleEventForReturnDto>(await _repo.Get<CircleEvent>(id));
+            var circleEventForReturn = _mapper.Map<CircleEventForReturnDto>(await _repo.GetCircleEvent(id));
             if(circleEventForReturn == null)
                 return NotFound();
             //circleEventForReturn.TopicCommentCounts = await _repo.GetCircleTopicCommentCount(id);
+            var loggedInUser = await GetLoggedInUserAsync();
+            if(loggedInUser != null)
+            {
+                var myParticipation = await _repo.GetCircleEventParticipation(loggedInUser.Id, id);
+                circleEventForReturn.MyStatus = myParticipation != null ? (CircleEventParticipationStatus?)myParticipation.Status : null;
+                circleEventForReturn.IsCircleMember = await _repo.IsMember(loggedInUser.Id, circleEventForReturn.CircleId);
+            }
 
             return Ok(circleEventForReturn);
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult> GetCircleEvents(PaginationParams paginationParams, DateTime? fromDate = null, int circleId = 0, int circleCategoryId = 0, int cityId = 0, int appUserId = 0)
+        {
+            var events = await _repo.GetCircleEvents(paginationParams, fromDate != null ? (DateTime)fromDate : default(DateTime), circleId, circleCategoryId, cityId, appUserId);
+            Response.AddPagination(events.CurrentPage, events.PageSize, events.TotalCount, events.TotalPages);
+            return Ok(_mapper.Map<IEnumerable<CircleEventForReturnDto>>(events));
         }
 
         [HttpPost]
@@ -107,12 +130,15 @@ namespace Wacomi.API.Controllers
             _repo.Delete(circleEventFromRepo);
             await _repo.SaveAll();
 
-           var errors = this._imageFileStorageManager.DeleteAttachedPhotos(circleEventFromRepo.Photos);
-            foreach (var error in errors)
+            if(circleEventFromRepo.Photos != null)
             {
-                this._logger.LogError(error);
+            var errors = this._imageFileStorageManager.DeleteAttachedPhotos(circleEventFromRepo.Photos);
+                foreach (var error in errors)
+                {
+                    this._logger.LogError(error);
+                }
+                await _repo.SaveAll();
             }
-            await _repo.SaveAll();
             return Ok();
         }
 

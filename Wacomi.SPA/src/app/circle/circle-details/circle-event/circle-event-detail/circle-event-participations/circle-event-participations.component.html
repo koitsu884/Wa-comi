@@ -1,0 +1,19 @@
+<div class="container">
+    <h3>参加</h3>
+    <div class="participantsList">
+        <tabset>
+            <tab heading="参加({{numberOfParticipants}})" id="confirmedList">
+                <app-circle-event-participations-list [status]="circleEventParticipationStatus.Confirmed" [appUser]="appUser"
+                    [circleEvent]="circleEvent"></app-circle-event-participations-list>
+            </tab>
+            <tab heading="参加承認・キャンセル待ち({{numberOfWaiting}})" id="waitList">
+                <app-circle-event-participations-list [status]="circleEventParticipationStatus.Waiting" [appUser]="appUser"
+                    [circleEvent]="circleEvent"></app-circle-event-participations-list>
+            </tab>
+            <tab heading="不参加({{numberOfCanceled}})" id="canceledList">
+                <app-circle-event-participations-list [status]="circleEventParticipationStatus.Canceled" [appUser]="appUser"
+                    [circleEvent]="circleEvent"></app-circle-event-participations-list>
+            </tab>
+        </tabset>
+    </div>
+</div>
