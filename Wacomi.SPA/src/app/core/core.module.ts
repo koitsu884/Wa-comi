@@ -15,6 +15,7 @@ import { UploadingComponent } from './modal/uploading/uploading.component';
 import { NotificationComponent } from '../notification/notification.component';
 import { LatestAttractionListComponent } from './home/latest-attraction-list/latest-attraction-list.component';
 import { LatestAttractionReviewsComponent } from './home/latest-attraction-reviews/latest-attraction-reviews.component';
+import { LatestCircleEventListComponent } from './home/latest-circle-event-list/latest-circle-event-list.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { LatestAttractionReviewsComponent } from './home/latest-attraction-revie
     LatestTopiccommentListComponent,
     LatestAttractionListComponent,
     LatestAttractionReviewsComponent,
+    LatestCircleEventListComponent,
     NotificationComponent,
     StaticpageComponent
 ],

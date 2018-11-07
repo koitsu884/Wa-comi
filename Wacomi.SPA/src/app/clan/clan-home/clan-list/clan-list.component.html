@@ -3,7 +3,7 @@
     <div class="clanCard hoverZoom" [routerLink]="['/clan/detail', clanSeek.id]" [@clanCard]>
       <!-- <div class="clanCard"> -->
       <h5 class="title">{{clanSeek.title}}<span *ngIf="!clanSeek.isActive" class="text-danger">（募集停止中）</span></h5>
-      <img src="{{clanSeek.mainPhoto | photourl}}" class="clanImage pull-left img-thumbnail">
+      <img src="{{clanSeek.mainPhoto | iconurl}}" class="clanImage pull-left img-thumbnail">
       <div class="info">
         <div [ngSwitch]="clanSeek.categoryName">
           <span class="categoryName color-friend" *ngSwitchCase="'友達'">友達</span>

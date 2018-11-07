@@ -53,7 +53,7 @@
       </div>
     </div>
     <div class="col-sm-4">
-      <app-user-info-card [appUser]="event.appUser" [dateCreated]="event.dateCreated" [dateUpdate]="event.dateUpdated"></app-user-info-card>
+      <app-user-info-card [appUser]="event.appUser" [dateCreated]="event.dateCreated" [dateUpdate]="event.dateUpdated" (messageSend)="onSendMessage()"></app-user-info-card>
     </div>
   </div>
 </div>

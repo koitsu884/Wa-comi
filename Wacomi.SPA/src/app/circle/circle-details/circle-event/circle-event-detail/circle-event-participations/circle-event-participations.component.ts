@@ -35,7 +35,6 @@ export class CircleEventParticipationsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.data.subscribe((data) => {
-      console.log(data);
       this.circleEvent = data['circleEvent'];
       this.appUser = data['appUser'];
       if(!this.circleEvent || !this.appUser){

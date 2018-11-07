@@ -20,7 +20,10 @@ namespace Wacomi.API.Models
         // NewCircleMemberJoined, //多分くどいので要らない
         NewCircleTopicCreated,
         NewCircleCommentReplyByMember,
-        NewCircleCommentReplyByOwner
+        NewCircleCommentReplyByOwner,
+        // Circle Event Notifications
+        NewCircleEventParticipationRequest,
+        EventParticipationRequestAccepted
     }
     public class Notification
     {

@@ -42,7 +42,6 @@ export class CircleEventCalendarComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
     if(changes.circleId && changes.circleId.currentValue > 0)
     {
       this.store.dispatch(new CircleEventActions.SearchCircleEvent({
@@ -59,7 +58,6 @@ export class CircleEventCalendarComponent implements OnChanges, OnInit {
   }
 
   onScroll(){
-    console.log("Load!!");
     if(!this.finish)
       this.store.dispatch(new CircleEventActions.LoadNextCircleEventList());
   }

@@ -57,11 +57,12 @@ namespace Wacomi.API.Controllers
             if (existingRequest != null)
                 return BadRequest("既にリクエストしています");
 
-            if (!circleEventFromRepo.ApprovalRequired && !await _repo.IsEventFull(circleEventFromRepo.Id))
+            if (circleEventFromRepo.ApprovalRequired || await _repo.IsEventFull(circleEventFromRepo.Id))
+                await _notificationRepo.AddNotification(NotificationEnum.NewCircleEventParticipationRequest, (int)circleEventFromRepo.AppUserId, circleEventFromRepo);
+            else
                 model.Status = CircleEventParticipationStatus.Confirmed;
 
             _repo.Add(model);
-            // await _notificationRepo.AddNotification(NotificationEnum.NewCircleEventParticipationRequest, model.AppUserId, model);
             await _repo.SaveAll();
             return CreatedAtRoute("GetCircleEventParticipation", new { userId = model.AppUserId, eventId = model.CircleEventId }, _mapper.Map<CircleEventParticipationForReturnDto>(model));
         }
@@ -82,6 +83,7 @@ namespace Wacomi.API.Controllers
                 return NotFound("参加リクエストが見つかりません");
 
             circleEventParticipationFromRepo.Status = CircleEventParticipationStatus.Confirmed;
+            await _notificationRepo.AddNotification(NotificationEnum.EventParticipationRequestAccepted, (int)circleEventFromRepo.AppUserId, model);
             await _repo.SaveAll();
             return Ok();
         }
@@ -103,6 +105,7 @@ namespace Wacomi.API.Controllers
             if (firstWaitingParticipant != null)
             {
                 firstWaitingParticipant.Status = CircleEventParticipationStatus.Confirmed;
+                await _notificationRepo.AddNotification(NotificationEnum.EventParticipationRequestAccepted, (int)model.AppUserId, firstWaitingParticipant);
             }
 
             await _repo.SaveAll();

@@ -17,7 +17,7 @@ export class CircleEventParticipationEffects {
         let Params = new HttpParams();
         if (payload.pageNumber)
             Params = Params.append('pageNumber', payload.pageNumber.toString());
-        Params = Params.append('pageSize', '1');
+        Params = Params.append('pageSize', '100');
         Params = Params.append('status', status.toString());
 
         return this.httpClient.get<CircleEventParticipation[]>(this.baseUrl + 'circleeventparticipation/' + payload.eventId, { params: Params, observe: 'response' })

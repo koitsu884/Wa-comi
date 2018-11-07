@@ -12,6 +12,7 @@ import { Attraction } from '../../_models/Attraction';
 import { AttractionReview } from '../../_models/AttractionReview';
 import { Property } from '../../_models/Property';
 import { Circle } from '../../_models/Circle';
+import { CircleEvent } from '../../_models/CircleEvent';
 
 @Component({
     selector: 'app-home',
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit {
     latestAttractionReviews: AttractionReview[];
     latestClanSeekList: ClanSeek[];
     latestCircleList: Circle[];
+    latestCircleEventList: CircleEvent[];
     latestTopicComments: TopicComment[];
     latestPropertyList: Property[];
     authState: Observable<fromAccount.State>;
@@ -39,6 +41,14 @@ export class HomeComponent implements OnInit {
         }, (error) => {
             this.latestCircleList = [];
             console.log('Error occured when getting latest circle list');
+        });
+
+        this.globalService.getLatestCircleEventList()
+        .subscribe((result) => {
+            this.latestCircleEventList = result;
+        }, (error) => {
+            this.latestCircleEventList = [];
+            console.log('Error occured when getting latest circle event list');
         });
 
         this.globalService.getLatestClanSeekList()

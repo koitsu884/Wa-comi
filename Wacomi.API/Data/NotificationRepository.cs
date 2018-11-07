@@ -186,6 +186,12 @@ namespace Wacomi.API.Data
                 case NotificationEnum.NewCircleCommentReplyByMember:
                     await this.AddNewCircleCommentReplyByMemberNotification(appUserId, record as CircleTopicCommentReply);
                     break;
+                case NotificationEnum.NewCircleEventParticipationRequest:
+                    await this.AddNewCircleEventParticipationRequestNotification(appUserId, record as CircleEvent);
+                    break;
+                case NotificationEnum.EventParticipationRequestAccepted:
+                    await this.EventParticipationRequestAcceptedNotification(appUserId, record as CircleEventParticipation);
+                    break;
 
             }
         }
@@ -330,6 +336,46 @@ namespace Wacomi.API.Data
                // Message = circleRequest.AppUser.DisplayName + "さんからコミュニティ" + circleRequest.Circle.Name + "の参加リクエストがあります"
             });
 
+        }
+
+        private async Task AddNewCircleEventParticipationRequestNotification(int appUserId, CircleEvent circleEvent)
+        {
+            if(circleEvent == null)
+                return;   
+            Dictionary<string, int> recordIds = new Dictionary<string, int>(){
+                    {"Circle", circleEvent.CircleId},
+            };
+
+            await AddNotificationIfNotExist(new Notification()
+            {
+                AppUserId = (int)circleEvent.AppUserId,
+                NotificationType = NotificationEnum.NewCircleEventParticipationRequest,
+                RecordType = "CircleEvent",
+                RecordId = circleEvent.Id,
+                RelatingRecordIds = JObject.FromObject(recordIds),
+                TargetRecordTitle = circleEvent.Title,
+               // Message = circleRequest.AppUser.DisplayName + "さんからコミュニティ" + circleRequest.Circle.Name + "の参加リクエストがあります"
+            });
+        }
+
+        private async Task EventParticipationRequestAcceptedNotification(int appUserId, CircleEventParticipation eventParticipation)
+        {
+            var participationFromRepo = await _context.CircleEventParticipations.Include(cep => cep.CircleEvent).FirstOrDefaultAsync(cep => cep.AppUserId == eventParticipation.AppUserId && cep.CircleEventId == eventParticipation.CircleEventId);
+            if(participationFromRepo == null)
+                return;
+            Dictionary<string, int> recordIds = new Dictionary<string, int>(){
+                    {"Circle", participationFromRepo.CircleEvent.CircleId},
+            };
+
+            await AddNotificationIfNotExist(new Notification()
+            {
+                AppUserId = (int)participationFromRepo.AppUserId,
+                NotificationType = NotificationEnum.EventParticipationRequestAccepted,
+                RecordType = "CircleEvent",
+                RecordId = participationFromRepo.CircleEventId,
+                RelatingRecordIds = JObject.FromObject(recordIds),
+                TargetRecordTitle = participationFromRepo.CircleEvent.Title
+            });
         }
     }
 }

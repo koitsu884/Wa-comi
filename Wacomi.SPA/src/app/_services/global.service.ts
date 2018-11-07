@@ -12,6 +12,7 @@ import { Attraction } from '../_models/Attraction';
 import { AttractionReview } from '../_models/AttractionReview';
 import { Property } from '../_models/Property';
 import { Circle } from '../_models/Circle';
+import { CircleEvent } from '../_models/CircleEvent';
 
 @Injectable()
 export class GlobalService {
@@ -87,6 +88,10 @@ export class GlobalService {
 
     getLatestCircleList() {
         return this.httpClient.get<Circle[]>(this.baseUrl + 'circle/latest');
+    }
+
+    getLatestCircleEventList() {
+        return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circleevent?pageSize=10');
     }
 
     getClanSeekListByUser(appUserId: number){

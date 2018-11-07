@@ -4,13 +4,16 @@
       <!-- <div>
         <h2>何か情報とか？</h2>
       </div> -->
-      <h2>新着コミュニティ</h2>
+      <h2>コミュニティ</h2>
+      <h3>新着サークル</h3>
       <app-loading *ngIf="!latestCircleList"></app-loading>
       <app-circle-list [circleList]="latestCircleList"></app-circle-list>
+      <h3>近日開催予定のイベント</h3>
+      <app-loading *ngIf="!latestCircleEventList"></app-loading>
+      <app-latest-circle-event-list [latestCircleEventList]="latestCircleEventList"></app-latest-circle-event-list>
       <p class="text-center">
         <button class="btn btn-sm btn-success" [routerLink]="['/circle']">コミュニティ検索</button>
       </p>
-
       <h2>仲間募集中！</h2>
       <app-loading *ngIf="!latestClanSeekList"></app-loading>
       <app-clan-list [clanSeeks]="latestClanSeekList"></app-clan-list>
@@ -18,12 +21,12 @@
         <button class="btn btn-sm btn-success" [routerLink]="['/clan']">仲間募集検索</button>
       </p>
       <h2>おススメスポット</h2>
-      <h4>新着スポット</h4>
+      <h3>新着スポット</h3>
       <div class="newSpots">
         <app-loading *ngIf="!latestAttractionList"></app-loading>
         <app-latest-attraction-list [latestAttractionList]="latestAttractionList"></app-latest-attraction-list>
       </div>
-      <h4>新着レビュー</h4>
+      <h3>新着レビュー</h3>
       <div>
         <app-loading *ngIf="!latestAttractionReviews"></app-loading>
         <app-latest-attraction-reviews [latestAttractionReviews]="latestAttractionReviews"></app-latest-attraction-reviews>

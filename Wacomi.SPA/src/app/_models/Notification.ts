@@ -27,7 +27,9 @@ export enum NotificationEnum {
     CircleRequestAccepted,
     NewCircleTopicCreated,
     NewCircleCommentReplyByMember,
-    NewCircleCommentReplyByOwner
+    NewCircleCommentReplyByOwner,
+    NewCircleEventParticipationRequest,
+    EventParticipationRequestAccepted
  };
 
 export interface AppNotification {

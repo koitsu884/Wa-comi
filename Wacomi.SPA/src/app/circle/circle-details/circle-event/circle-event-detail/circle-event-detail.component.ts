@@ -3,7 +3,7 @@ import * as CircleActions from '../../../store/circle.actions';
 import * as CircleEventActions from '../../../store/circleevent.actions';
 import * as GlobalActions from '../../../../store/global.actions';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppUser } from '../../../../_models/AppUser';
 import { CircleEvent } from '../../../../_models/CircleEvent';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { AlertifyService } from '../../../../_services/alertify.service';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from 'ngx-gallery';
 import { Photo } from '../../../../_models/Photo';
 import { CircleEventParticipation, CircleEventParticipationStatus } from '../../../../_models/CircleEventParticipation';
+import { MessageService } from '../../../../_services/message.service';
 
 @Component({
   selector: 'app-circle-event-detail',
@@ -30,7 +31,11 @@ export class CircleEventDetailComponent implements OnInit {
 
   circleEventParticipationStatus = CircleEventParticipationStatus;
   
-  constructor(private route:ActivatedRoute, private store:Store<fromCircle.FeatureState>, private alertify: AlertifyService
+  constructor(private route:ActivatedRoute, 
+    private store:Store<fromCircle.FeatureState>, 
+    private alertify: AlertifyService,
+    private messageService: MessageService,
+    private router: Router
     ) { }
 
   ngOnInit() {
@@ -107,7 +112,9 @@ export class CircleEventDetailComponent implements OnInit {
   }
 
   onSendRequest() {
-    this.store.dispatch(new CircleEventActions.SendEventParticipationRequest({appUserId: this.appUser.id, circleEventId: this.event.id, message:''}));
+    this.alertify.confirm("このイベントに参加しますか？", () => {
+      this.store.dispatch(new CircleEventActions.SendEventParticipationRequest({appUserId: this.appUser.id, circleEventId: this.event.id, message:''}))
+    });
   }
 
   onCancelRequest() {
@@ -120,4 +127,18 @@ export class CircleEventDetailComponent implements OnInit {
     });
   }
 
+  onSendMessage(){
+    this.messageService.preparSendingeMessage(
+      {
+        title: "RE:" + this.event.title,
+        recipientDisplayName: this.event.appUser.displayName,
+        recipientId: this.event.appUserId,
+        senderId: this.appUser.id
+      },
+      "<p class='text-info'>以下のイベントの開催者にメッセージを送ります</p>"
+       + "<h5>イベントタイトル：" + this.event.title + "</h5>"
+       + this.event.description
+    );
+    this.router.navigate(['/message/send']);
+  }
 }

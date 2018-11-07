@@ -69,6 +69,10 @@ export class NotificationComponent implements OnInit {
         return `コミュニティトピック『${notification.targetRecordTitle}』にあなたがしたコメントに返信があります`;
       case NotificationEnum.NewCircleCommentReplyByMember:
         return `コミュニティトピック『${notification.targetRecordTitle}』であなたが返信したコメントに、${notification.fromUserName}さんも返信しました`;
+      case NotificationEnum.NewCircleEventParticipationRequest:
+        return `コミュニティ イベント『${notification.targetRecordTitle}』に新しい参加希望者が居ます`;
+      case NotificationEnum.EventParticipationRequestAccepted:
+        return `コミュニティ イベント『${notification.targetRecordTitle}』への参加が承認されました`;
     }
   }
 
@@ -98,6 +102,12 @@ export class NotificationComponent implements OnInit {
       case NotificationEnum.NewCircleCommentReplyByOwner:
       case NotificationEnum.NewCircleCommentReplyByMember:
         this.router.navigate(['/circle/detail', notification.relatingRecordIds.Circle, 'topic', 'detail', notification.relatingRecordIds.CircleTopic, notification.recordId]);
+        break;
+      case NotificationEnum.NewCircleEventParticipationRequest:
+        this.router.navigate(['/circle/detail', notification.relatingRecordIds.Circle, 'event', 'detail', notification.recordId, 'participants']);
+        break;
+      case NotificationEnum.EventParticipationRequestAccepted:
+        this.router.navigate(['/circle/detail', notification.relatingRecordIds.Circle, 'event', 'detail', notification.recordId]);
         break;
     }
 

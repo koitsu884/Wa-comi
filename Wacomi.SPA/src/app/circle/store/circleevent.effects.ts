@@ -119,8 +119,6 @@ export class CircleEventEffects {
                         }
                     }
 
-                    console.log(circleEvents);
-
                     return {
                         type: CircleEventActions.ADD_CIRCLE_EVENT_LIST,
                         payload: circleEvents
