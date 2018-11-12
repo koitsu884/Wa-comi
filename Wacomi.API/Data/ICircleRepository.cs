@@ -36,9 +36,12 @@ namespace Wacomi.API.Data
         // Task<IEnumerable<CircleTopic>> GetLatestCircleTopic(int circleId); //No need..?
         Task<CircleTopic> GetCircleTopic(int id);
         Task<CircleEvent> GetCircleEvent(int id);
+        Task<CircleEvent> GetOldestCircleEvent(int id);
         Task<PagedList<CircleTopic>> GetCircleTopicList(PaginationParams paginationParams, int circleId);
         Task<IEnumerable<CircleTopic>> GetLatestCircleTopicList(int circleId);
+        Task<int> GetCircleEventCount(int circleId);
         Task<IEnumerable<CircleEvent>> GetLatestCircleEventList(int circleId);
+        Task<IEnumerable<CircleEvent>> GetPastCircleEventList(int circleId);
         Task<PagedList<CircleTopic>> GetCircleTopicByUser(PaginationParams paginationParams, int circleId, int userId);
         Task<int> GetCircleTopicCommentCount(int circleTopicId);
 

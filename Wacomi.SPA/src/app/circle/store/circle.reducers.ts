@@ -41,6 +41,7 @@ export interface State {
     latestMemberList: CircleMember[];
     latestTopicList: CircleTopic[];
     latestEventList: CircleEvent[];
+    pastEventList: CircleEvent[];
     circleRequests: CircleRequest[];
     circles: Circle[];
     searchParam: CircleSearchOptions;
@@ -52,6 +53,7 @@ const initialState: State = {
     latestMemberList: [],
     latestTopicList: [],
     latestEventList: [],
+    pastEventList: [],
     circleRequests: [],
     circles: [],
     searchParam: <CircleSearchOptions>{
@@ -106,6 +108,16 @@ export function circleReducer(state = initialState, action: CircleActions.Circle
             return {
                 ...state,
                 latestEventList: action.payload,
+            }
+        case CircleActions.GET_PAST_CIRCLE_EVENT_LIST:
+            return {
+                ...state,
+                pastEventList: [],
+            }
+        case CircleActions.SET_PAST_CIRCLE_EVENT_LIST:
+            return {
+                ...state,
+                pastEventList: action.payload,
             }
         case CircleActions.ADD_NEW_CIRCLE_TOPIC:
             return {

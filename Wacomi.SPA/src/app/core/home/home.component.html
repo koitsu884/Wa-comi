@@ -10,7 +10,7 @@
       <app-circle-list [circleList]="latestCircleList"></app-circle-list>
       <h3>近日開催予定のイベント</h3>
       <app-loading *ngIf="!latestCircleEventList"></app-loading>
-      <app-latest-circle-event-list [latestCircleEventList]="latestCircleEventList"></app-latest-circle-event-list>
+      <app-circle-event-list [eventList]="latestCircleEventList"></app-circle-event-list>
       <p class="text-center">
         <button class="btn btn-sm btn-success" [routerLink]="['/circle']">コミュニティ検索</button>
       </p>

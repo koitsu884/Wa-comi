@@ -3,6 +3,8 @@ import { AppUser } from '../../../_models/AppUser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromCircle from '../../store/circle.reducers';
+import * as CircleActions from '../../store/circle.actions';
+import { CircleEvent } from '../../../_models/CircleEvent';
 
 @Component({
   selector: 'app-circle-event',
@@ -14,6 +16,7 @@ export class CircleEventComponent implements OnInit {
   circleId: number;
   appUser: AppUser;
   isManageable: boolean = false;
+  pastEvents: CircleEvent[] = [];
   
   constructor(private route: ActivatedRoute, private router:Router, private store: Store<fromCircle.FeatureState>) { }
 
@@ -25,13 +28,12 @@ export class CircleEventComponent implements OnInit {
       this.router.navigate(['/circle']);
       return;
     }
-    this.store.select('circleModule').take(1).subscribe((circleState) => {
-      if(circleState.circle.selectedCircle.id != this.circleId){
-        console.log("WTH: Should not come here");
-        this.router.navigate(['/circle']);
+    this.store.dispatch(new CircleActions.GetPastCircleEventList(this.circleId));
+    this.store.select('circleModule').subscribe((circleState) => {
+      if(!circleState.circle.selectedCircle)
         return;
-      }
       this.isManageable = circleState.circle.selectedCircle.isManageable;
+      this.pastEvents = circleState.circle.pastEventList;
     })
   }
 

@@ -23,6 +23,7 @@ export class CircleEventDetailComponent implements OnInit {
   appUser:AppUser;
   event:CircleEvent = null;
   isMember:boolean = false;
+  isPast:boolean = false;
   latestParticipations: CircleEventParticipation[] = null;
   loading:boolean = false;
   galleryOptions: NgxGalleryOptions[];
@@ -45,18 +46,20 @@ export class CircleEventDetailComponent implements OnInit {
       return;
     }
     this.appUser = this.route.parent.snapshot.data['appUser'];
-
     this.loading = true;
     this.store.dispatch(new CircleEventActions.GetCircleEvent(id));
     this.store.dispatch(new CircleEventActions.GetLatestEventParticipants(id));
     this.store.select('circleModule').subscribe((circleState) => {
       this.event = circleState.circleEvent.selectedCircleEvent;
+      if(this.event){
+        this.isPast = new Date(this.event.fromDate) < new Date();
+        this.loading = false;
+      }
       if(this.event && !this.galleryImages)
       {
         this.galleryImages = this.getImages(this.event.photos);
       }
       this.latestParticipations = circleState.circleEvent.latestEventParticipants;
-      this.loading = false;
     })
 
     this.galleryOptions = [

@@ -16,6 +16,8 @@ export const GET_LATEST_CIRCLE_TOPIC_LIST = 'GET_LATEST_CIRCLE_TOPIC_LIST';
 export const SET_LATEST_CIRCLE_TOPIC_LIST = 'SET_LATEST_CIRCLE_TOPIC_LIST';
 export const GET_LATEST_CIRCLE_EVENT_LIST = 'GET_LATEST_CIRCLE_EVENT_LIST';
 export const SET_LATEST_CIRCLE_EVENT_LIST = 'SET_LATEST_CIRCLE_EVENT_LIST';
+export const GET_PAST_CIRCLE_EVENT_LIST = 'GET_PAST_CIRCLE_EVENT_LIST';
+export const SET_PAST_CIRCLE_EVENT_LIST = 'SET_PAST_CIRCLE_EVENT_LIST';
 export const ADD_NEW_CIRCLE_TOPIC = 'ADD_NEW_CIRCLE_TOPIC';
 export const GET_CIRCLE_REQUEST_LIST = 'GET_CIRCLE_REQUEST_LIST';
 export const SET_CIRCLE_REQUEST_LIST = 'SET_CIRCLE_REQUEST_LIST';
@@ -81,6 +83,16 @@ export class GetLatestCircleEventList implements Action {
 
 export class SetLatestCircleEventList implements Action {
     readonly type = SET_LATEST_CIRCLE_EVENT_LIST;
+    constructor(public payload: CircleEvent[]) { }
+}
+
+export class GetPastCircleEventList implements Action {
+    readonly type = GET_PAST_CIRCLE_EVENT_LIST;
+    constructor(public payload: number) { }
+}
+
+export class SetPastCircleEventList implements Action {
+    readonly type = SET_PAST_CIRCLE_EVENT_LIST;
     constructor(public payload: CircleEvent[]) { }
 }
 
@@ -160,6 +172,8 @@ export type CircleActions = InitCircleState
                         | SetLatestCircleTopicList
                         | GetLatestCircleEventList
                         | SetLatestCircleEventList
+                        | GetPastCircleEventList
+                        | SetPastCircleEventList
                         | AddNewCircleTopic
                         | GetCircleRequestList
                         | SetCircleRequestList

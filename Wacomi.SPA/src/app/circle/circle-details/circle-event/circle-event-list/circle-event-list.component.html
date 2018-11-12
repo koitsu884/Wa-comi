@@ -1,5 +1,5 @@
 <div class="row fix">
-  <div class="col-sm-6 eventCardContainer" *ngFor="let circleEvent of latestCircleEventList index as i" >
+  <div class="col-sm-6 eventCardContainer" *ngFor="let circleEvent of eventList index as i" >
     <div class="eventCard hoverZoom" [routerLink]="['/circle/detail', circleEvent.circleId, 'event', 'detail', circleEvent.id]" [@eventCard]>
       <!-- <div class="clanCard"> -->
       <h5 class="title">{{circleEvent.title}}</h5>
@@ -7,7 +7,7 @@
       <div class="info">
         <div>
           <p><b>開催日：{{circleEvent.fromDate | date: 'mediumDate'}}</b></p>
-          <p class="text-warning">サークル：{{circleEvent.circle.name}}</p>
+          <p *ngIf="displayCircleName" class="text-warning">サークル：{{circleEvent.circle.name}}</p>
         </div>
       </div>
       <span class="clearfix"></span>

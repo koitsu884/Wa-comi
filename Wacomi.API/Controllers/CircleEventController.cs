@@ -20,12 +20,13 @@ namespace Wacomi.API.Controllers
         private readonly INotificationRepository _notificationRepo;
         private readonly ILogger<CircleEventController> _logger;
         private readonly ImageFileStorageManager _imageFileStorageManager;
+        private static readonly int CIRCLE_EVENT_MAX = 50;
 
-        public CircleEventController(ICircleRepository repo, 
-            INotificationRepository notificationRepo, 
-            ILogger<CircleEventController> logger, 
-            IAppUserRepository appUserRepository, 
-            IMapper mapper, 
+        public CircleEventController(ICircleRepository repo,
+            INotificationRepository notificationRepo,
+            ILogger<CircleEventController> logger,
+            IAppUserRepository appUserRepository,
+            IMapper mapper,
             ImageFileStorageManager imageFileStorageManager,
             IPhotoRepository photoRepo) : base(appUserRepository, mapper, photoRepo)
         {
@@ -41,13 +42,14 @@ namespace Wacomi.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetCircleEvent")]
-        public async Task<ActionResult> Get(int id){
+        public async Task<ActionResult> Get(int id)
+        {
             var circleEventForReturn = _mapper.Map<CircleEventForReturnDto>(await _repo.GetCircleEvent(id));
-            if(circleEventForReturn == null)
+            if (circleEventForReturn == null)
                 return NotFound();
             //circleEventForReturn.TopicCommentCounts = await _repo.GetCircleTopicCommentCount(id);
             var loggedInUser = await GetLoggedInUserAsync();
-            if(loggedInUser != null)
+            if (loggedInUser != null)
             {
                 var myParticipation = await _repo.GetCircleEventParticipation(loggedInUser.Id, id);
                 circleEventForReturn.MyStatus = myParticipation != null ? (CircleEventParticipationStatus?)myParticipation.Status : null;
@@ -76,9 +78,17 @@ namespace Wacomi.API.Controllers
 
             var newEvent = this._mapper.Map<CircleEvent>(model);
             _repo.Add(newEvent);
+            CircleEvent oldestEvent = null;
+            if (await _repo.GetCircleEventCount(model.CircleId) >= CIRCLE_EVENT_MAX)
+            {
+                oldestEvent = await _repo.GetOldestCircleEvent(model.CircleId);
+                _repo.Delete(oldestEvent);
+            }
             await _repo.SaveAll();
-         //   await _notificationRepo.AddNotification(NotificationEnum.NewCircleEventCreated, model.AppUserId, newEvent);
-         //   await _repo.SaveAll();
+            if(oldestEvent != null)
+            {
+                await this.deleteAttachedPhotos(oldestEvent.Photos);
+            }
 
             return CreatedAtRoute("GetCircleEvent", new { id = newEvent.Id }, _mapper.Map<CircleEventForReturnDto>(await _repo.Get<CircleEvent>(newEvent.Id)));
         }
@@ -129,16 +139,8 @@ namespace Wacomi.API.Controllers
 
             _repo.Delete(circleEventFromRepo);
             await _repo.SaveAll();
+            await this.deleteAttachedPhotos(circleEventFromRepo.Photos);
 
-            if(circleEventFromRepo.Photos != null)
-            {
-            var errors = this._imageFileStorageManager.DeleteAttachedPhotos(circleEventFromRepo.Photos);
-                foreach (var error in errors)
-                {
-                    this._logger.LogError(error);
-                }
-                await _repo.SaveAll();
-            }
             return Ok();
         }
 
@@ -160,6 +162,19 @@ namespace Wacomi.API.Controllers
         public async Task<ActionResult> DeleteCircleEventPhoto(int id, int photoId)
         {
             return await DeletePhoto(id, photoId);
+        }
+
+        private async Task deleteAttachedPhotos(ICollection<Photo> photos)
+        {
+            if (photos != null)
+            {
+                var errors = this._imageFileStorageManager.DeleteAttachedPhotos(photos);
+                foreach (var error in errors)
+                {
+                    this._logger.LogError(error);
+                }
+                await _repo.SaveAll();
+            }
         }
     }
 }

@@ -191,6 +191,18 @@ namespace Wacomi.API.Data
                                              .FirstOrDefaultAsync(ct => ct.Id == id);
         }
 
+        public async Task<CircleEvent> GetOldestCircleEvent(int circleId)
+        {
+            return await _context.CircleEvents.Include(ct => ct.AppUser).ThenInclude(au => au.MainPhoto)
+                                             .Include(ct => ct.Circle)
+                                             .Include(ct => ct.MainPhoto)
+                                             .Include(ct => ct.Photos)
+                                             .Include(ct => ct.City)
+                                             .Include(ct => ct.CircleEventParticipations)
+                                             .OrderBy(ct => ct.FromDate)
+                                             .FirstOrDefaultAsync(ct => ct.CircleId == circleId);
+        }
+
         public async Task<CircleTopic> GetCircleTopic(int id)
         {
             return await _context.CircleTopics.Include(ct => ct.AppUser).ThenInclude(au => au.MainPhoto)
@@ -220,11 +232,24 @@ namespace Wacomi.API.Data
                                  .ToListAsync();
         }
 
+        public async Task<int> GetCircleEventCount(int circleId){
+            return await _context.CircleEvents.CountAsync(ce => ce.CircleId == circleId);
+        }
+        public async Task<IEnumerable<CircleEvent>> GetPastCircleEventList(int circleId)
+        {
+            return await _context.CircleEvents.Include(ct => ct.AppUser).ThenInclude(a => a.MainPhoto)
+                                 .Include(ct => ct.MainPhoto)
+                                 .Where(ct => ct.CircleId == circleId && ct.FromDate < DateTime.Now)
+                                 .OrderByDescending(ct => ct.DateCreated)
+                                 .ToListAsync();
+        }
+
         public async Task<IEnumerable<CircleEvent>> GetLatestCircleEventList(int circleId)
         {
             return await _context.CircleEvents.Include(ct => ct.AppUser).ThenInclude(a => a.MainPhoto)
                                  .Include(ct => ct.MainPhoto)
                                  .Where(ct => ct.CircleId == circleId)
+                                 .Take(5)
                                  .OrderByDescending(ct => ct.DateCreated)
                                  .ToListAsync();
         }

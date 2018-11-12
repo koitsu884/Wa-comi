@@ -37,6 +37,7 @@ import { CircleListComponent } from '../circle/circle-list/circle-list.component
 import { CircleMemberShortlistComponent } from '../circle/circle-member/circle-member-shortlist/circle-member-shortlist.component';
 import { CommentFormComponent } from './comment-form/comment-form.component';
 import { TimeSpanJpPipe } from '../_pipes/timespan_jp.pipe';
+import { CircleEventListComponent } from '../circle/circle-details/circle-event/circle-event-list/circle-event-list.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { TimeSpanJpPipe } from '../_pipes/timespan_jp.pipe';
     AttractionCardComponent,
     BlogfeedListComponent,
     ClanListComponent,
+    CircleEventListComponent,
     PropertyListComponent,
     CircleListComponent,
     CircleMemberShortlistComponent,
@@ -109,6 +111,7 @@ import { TimeSpanJpPipe } from '../_pipes/timespan_jp.pipe';
     ClanListComponent,
     PropertyListComponent,
     CircleListComponent,
+    CircleEventListComponent,
     CircleMemberShortlistComponent,
     BlogfeedCardComponent,
     CommentFormComponent,

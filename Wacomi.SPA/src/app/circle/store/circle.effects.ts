@@ -230,6 +230,25 @@ export class CircleEffects {
                 });
         })
 
+        @Effect()
+        getPastCircleEventList = this.actions$
+            .ofType(CircleActions.GET_PAST_CIRCLE_EVENT_LIST)
+            .map((action: CircleActions.GetPastCircleEventList) => {
+                return action.payload;
+            })
+            .switchMap((id) => {
+                return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/past')
+                    .map((result) => {
+                        return {
+                            type: CircleActions.SET_PAST_CIRCLE_EVENT_LIST,
+                            payload: result
+                        }
+                    })
+                    .catch((error: string) => {
+                        return of({ type: GlobalActions.FAILED, payload: error })
+                    });
+            })
+
     @Effect()
     declineCircleRequest = this.actions$
         .ofType(CircleActions.DECLINE_CIRCLE_REQUEST)

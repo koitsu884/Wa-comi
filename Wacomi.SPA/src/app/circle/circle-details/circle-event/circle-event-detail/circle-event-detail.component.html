@@ -1,5 +1,6 @@
 <app-loading *ngIf="loading"></app-loading>
 <div class="container" *ngIf="!loading && event">
+  <p *ngIf="isPast" class="text-danger"><b>※このイベントは既に終了しています</b></p>
   <h3>{{event.title}}</h3>
   <h4>{{event.fromDate | date:"y年 MM月 dd日(EEE)"}}</h4>
   <div class="eventInfo row">
@@ -10,11 +11,16 @@
       <div>
         <div class="area">
           <dl>
-            <dt>エリア</dt><dd>{{event.cityName}}</dd>
-            <dt>開始時刻</dt><dd>{{event.fromDate | date:"shortTime"}}</dd>
-            <dt *ngIf="event.toDate">終了時刻</dt><dd>{{event.toDate | date:"shortTime"}}</dd>
-            <dt>参加条件</dt><dd>{{event.approvalRequired ? '管理人の承認が必要' : '誰でも参加可能'}}</dd>
-            <dt>人数制限</dt><dd>{{event.maxNumber ? event.maxNumber + '人' : '無し'}}</dd>
+            <dt>エリア</dt>
+            <dd>{{event.cityName}}</dd>
+            <dt>開始時刻</dt>
+            <dd>{{event.fromDate | date:"shortTime"}}</dd>
+            <dt *ngIf="event.toDate">終了時刻</dt>
+            <dd>{{event.toDate | date:"shortTime"}}</dd>
+            <dt>参加条件</dt>
+            <dd>{{event.approvalRequired ? '管理人の承認が必要' : '誰でも参加可能'}}</dd>
+            <dt>人数制限</dt>
+            <dd>{{event.maxNumber ? event.maxNumber + '人' : '無し'}}</dd>
           </dl>
           <!-- <p><b>開始時刻: {{event.fromDate | date:"shortTime"}}</b></p>
           <p *ngIf="event.toDate"><b>終了時刻: {{event.toDate | date:"shortTIme"}}</b></p>
@@ -25,35 +31,39 @@
         </div>
         <div class="area participantList">
           <h4>参加者（{{event.numberOfPaticipants}} 名）</h4>
-          <div *ngIf="event.myStatus == circleEventParticipationStatus.Confirmed">
-            <h5 class="text-warning">参加予定</h5>
-            <button class="btn btn-sm btn-danger" (click)="onCancelParticipation()">参加をキャンセルする</button>
+          <div *ngIf="!isPast">
+            <div *ngIf="event.myStatus == circleEventParticipationStatus.Confirmed">
+              <h5 class="text-warning">参加予定</h5>
+              <button class="btn btn-sm btn-danger" (click)="onCancelParticipation()">参加をキャンセルする</button>
+            </div>
+            <div *ngIf="event.myStatus == circleEventParticipationStatus.Waiting">
+              <h5 class="text-danger">参加承認待ち</h5>
+              <button class="btn btn-sm btn-danger" (click)="onCancelRequest()">リクエストをキャンセルする</button>
+            </div>
+            <h5 *ngIf="event.myStatus == circleEventParticipationStatus.Canceled"><b class="text-danger">不参加</b></h5>
           </div>
-          <div *ngIf="event.myStatus == circleEventParticipationStatus.Waiting">
-            <h5 class="text-danger">参加承認待ち</h5>
-            <button class="btn btn-sm btn-danger" (click)="onCancelRequest()">リクエストをキャンセルする</button>
-          </div>
-          <h5 *ngIf="event.myStatus == circleEventParticipationStatus.Canceled"><b class="text-danger">不参加</b></h5>
           <div>
-            <img class="img-circle" *ngFor="let participant of latestParticipations" src="{{participant.appUser.mainPhoto | iconurl : true}}" alt="{{participant.appUser.displayName}}">
+            <img class="img-circle" *ngFor="let participant of latestParticipations" src="{{participant.appUser.mainPhoto | iconurl : true}}"
+              alt="{{participant.appUser.displayName}}">
           </div>
           <span class="clearfix"></span>
-          <a [routerLink]="['participants']" routerLinkActive="router-link-active" >全て見る</a>
+          <a [routerLink]="['participants']" routerLinkActive="router-link-active">全て見る</a>
         </div>
       </div>
       <!-- buttons -->
       <div *ngIf="appUser && appUser.id == event.appUserId">
         <hr>
-        <button class="btn btn-primary" type="button" [routerLink]="['/circle/detail', event.circleId, 'event', 'edit', event.id]">編集</button>
+        <button class="btn btn-primary" type="button" *ngIf="!isPast" [routerLink]="['/circle/detail', event.circleId, 'event', 'edit', event.id]">編集</button>
         <button class="btn btn-danger" type="button" (click)="onDelete()">削除</button>
       </div>
-      <div *ngIf="canSendRequest()">
-          <hr>
-          <button class="btn btn-primary" type="button" (click)="onSendRequest()">イベントに参加する</button>
+      <div *ngIf="canSendRequest() && !isPast">
+        <hr>
+        <button class="btn btn-primary" type="button" (click)="onSendRequest()">イベントに参加する</button>
       </div>
     </div>
     <div class="col-sm-4">
-      <app-user-info-card [appUser]="event.appUser" [dateCreated]="event.dateCreated" [dateUpdate]="event.dateUpdated" (messageSend)="onSendMessage()"></app-user-info-card>
+      <app-user-info-card [appUser]="event.appUser" [dateCreated]="event.dateCreated" [dateUpdate]="event.dateUpdated"
+        (messageSend)="onSendMessage()"></app-user-info-card>
     </div>
   </div>
 </div>
