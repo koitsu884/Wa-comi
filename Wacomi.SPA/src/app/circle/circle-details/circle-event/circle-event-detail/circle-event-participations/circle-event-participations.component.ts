@@ -19,10 +19,11 @@ export class CircleEventParticipationsComponent implements OnInit, OnDestroy {
   circleEvent: CircleEvent; //resolve
   appUser: AppUser; //resolve
   circleEventParticipationStatus = CircleEventParticipationStatus;
-  numberOfParticipants:number;
-  numberOfWaiting:number;
-  numberOfCanceled:number;
+  numberOfParticipants: number;
+  numberOfWaiting: number;
+  numberOfCanceled: number;
   subscription: Subscription;
+  isMine: boolean = false;
   // eventParticipants: CircleEventParticipation[];
   // pagination: Pagination;
   // eventParticipantsWaiting: CircleEventParticipation[];
@@ -30,14 +31,14 @@ export class CircleEventParticipationsComponent implements OnInit, OnDestroy {
   // eventParticipantsCanceled: CircleEventParticipation[];
   // canceledPagination: Pagination;
 
-  constructor(private store: Store<fromCircle.FeatureState>, private route:ActivatedRoute, private router:Router) {
-   }
+  constructor(private store: Store<fromCircle.FeatureState>, private route: ActivatedRoute, private router: Router) {
+  }
 
   ngOnInit() {
     this.route.data.subscribe((data) => {
       this.circleEvent = data['circleEvent'];
       this.appUser = data['appUser'];
-      if(!this.circleEvent || !this.appUser){
+      if (!this.circleEvent || !this.appUser) {
         console.log("Parameter was not set");
         this.router.navigate(['/']);
       }
@@ -46,20 +47,23 @@ export class CircleEventParticipationsComponent implements OnInit, OnDestroy {
         this.numberOfParticipants = circleModuleState.circleEventParticipation.numberOfParticipants;
         this.numberOfWaiting = circleModuleState.circleEventParticipation.numberOfWaiting;
         this.numberOfCanceled = circleModuleState.circleEventParticipation.numberOfCanceld;
+        this.isMine = this.appUser.id == this.circleEvent.appUserId;
+
       })
+
     })
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
   pageChanged(event) {
-    this.store.dispatch(new CircleEventParticipationActions.GetCircleEventConfirmedList({eventId: this.circleEvent.id, pageNumber: event.page}));
- }
+    this.store.dispatch(new CircleEventParticipationActions.GetCircleEventConfirmedList({ eventId: this.circleEvent.id, pageNumber: event.page }));
+  }
 
-  onAccept(participant: CircleEventParticipation){
-    this.store.dispatch(new CircleEventParticipationActions.ApproveEventParticipationRequest({appUserId: participant.appUserId, circleEventId: participant.circleEventId}));
+  onAccept(participant: CircleEventParticipation) {
+    this.store.dispatch(new CircleEventParticipationActions.ApproveEventParticipationRequest({ appUserId: participant.appUserId, circleEventId: participant.circleEventId }));
   }
 
 }
