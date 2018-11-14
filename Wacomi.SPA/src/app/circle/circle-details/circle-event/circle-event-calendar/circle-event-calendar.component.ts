@@ -4,6 +4,7 @@ import * as CircleEventActions from '../../../store/circleevent.actions';
 import { Component, OnInit, Input, SimpleChanges, OnChanges, SimpleChange } from '@angular/core';
 import { CircleEvent } from '../../../../_models/CircleEvent';
 import { Store } from '@ngrx/store';
+import { CircleEventParticipationStatus } from '../../../../_models/CircleEventParticipation';
 
 @Component({
   selector: 'app-circle-event-calendar',
@@ -15,26 +16,15 @@ export class CircleEventCalendarComponent implements OnChanges, OnInit {
   @Input() categoryId: number;
   @Input() fromDate: Date;
   @Input() cityId: number;
+  displayAttendingOnly: boolean = false;
   events: CircleEvent[];
   finish: boolean;
   selector:string = '.eventList';
+  circleEventParticipationStatus = CircleEventParticipationStatus;
 
   constructor(private store : Store<fromCircle.FeatureState>) { }
 
   ngOnInit() {
-    // if(this.circleId && this.circleId > 0)
-    // {
-    //   this.store.dispatch(new CircleEventActions.SearchCircleEvent({
-    //     circleId: this.circleId
-    //   }))
-    // }
-    // else{
-    //   this.store.dispatch(new CircleEventActions.SearchCircleEvent({
-    //     categoryId: this.categoryId,
-    //     fromDate: this.fromDate,
-    //     cityId: this.cityId
-    //   }))
-    // }
     this.store.select('circleModule').subscribe((circleModuleState) => {
       this.events = circleModuleState.circleEvent.eventList;
       this.finish = circleModuleState.circleEvent.finish;

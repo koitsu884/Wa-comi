@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -64,6 +65,19 @@ namespace Wacomi.API.Controllers
         {
             var events = await _repo.GetCircleEvents(paginationParams, fromDate != null ? (DateTime)fromDate : default(DateTime), circleId, circleCategoryId, cityId, appUserId);
             Response.AddPagination(events.CurrentPage, events.PageSize, events.TotalCount, events.TotalPages);
+            var loggedInUser = await GetLoggedInUserAsync();
+            if (loggedInUser != null)
+            {
+                foreach (var temp in events)
+                {
+                    var myParticipation = temp.CircleEventParticipations.FirstOrDefault(cep => cep.AppUserId == loggedInUser.Id);
+                    if (myParticipation != null)
+                    {
+                        temp.MyStatus = myParticipation != null ? (CircleEventParticipationStatus?)myParticipation.Status : null;
+                    }
+                }
+            }
+
             return Ok(_mapper.Map<IEnumerable<CircleEventForReturnDto>>(events));
         }
 
@@ -85,7 +99,7 @@ namespace Wacomi.API.Controllers
                 _repo.Delete(oldestEvent);
             }
             await _repo.SaveAll();
-            if(oldestEvent != null)
+            if (oldestEvent != null)
             {
                 await this.deleteAttachedPhotos(oldestEvent.Photos);
             }

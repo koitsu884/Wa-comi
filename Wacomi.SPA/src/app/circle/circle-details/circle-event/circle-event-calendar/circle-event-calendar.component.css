@@ -4,3 +4,11 @@
     margin: 5px;
     object-fit: cover;
 }
+
+.attending {
+    border-color: rgb(245, 201, 6);
+}
+
+.waiting {
+    border-color: rgb(0, 128, 0);
+}

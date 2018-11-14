@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Wacomi.API.Models
 {
@@ -33,5 +34,7 @@ namespace Wacomi.API.Models
         public AppUser AppUser {get; set;}
         public int? AppUserId {get; set;}
         public virtual ICollection<CircleEventParticipation> CircleEventParticipations {get; set;}
+        [NotMapped]
+        public CircleEventParticipationStatus? MyStatus { get; set;}
     }
 }

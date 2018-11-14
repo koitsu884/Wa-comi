@@ -9,6 +9,7 @@ export interface State {
     categoryId: number;
     fromDate: Date;
     cityId :number;
+    displayAttending : boolean;
     lastPageNumber: number;
     finish: boolean;
     reload: boolean;
@@ -24,6 +25,7 @@ const initialState: State = {
     categoryId: null,
     fromDate:null,
     cityId:null,
+    displayAttending:false,
     finish: false,
     reload: false,
     selectedCircleEvent: null,
@@ -39,6 +41,7 @@ export function circleEventReducer(state = initialState, action: CircleEventActi
                 categoryId : action.payload.categoryId,
                 cityId: action.payload.cityId,
                 fromDate : action.payload.fromDate,
+                // displayAttending: action.payload.displayAttending,
                 eventList: [],
                 finish: false,
                 reload: false,
