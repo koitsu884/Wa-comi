@@ -24,12 +24,20 @@ export class CircleEventParticipationsListComponent implements OnInit, OnDestroy
 
   constructor(private store: Store<fromCircle.FeatureState>) { }
 
-  ngOnInit() {  
+  ngOnInit() {
     switch (this.status) {
       case CircleEventParticipationStatus.Confirmed:
         this.store.dispatch(new CircleEventParticipationActions.GetCircleEventConfirmedList({ eventId: this.circleEvent.id }));
         this.subscription = this.store.select('circleModule').subscribe((circleModuleState) => {
           this.eventParticipants = circleModuleState.circleEventParticipation.eventParticipants;
+          // this.eventParticipants.unshift(<CircleEventParticipation>{
+          //   appUser: this.circleEvent.appUser,
+          //   appUserId: this.circleEvent.appUserId,
+          //   circleEventId: this.circleEvent.id,
+          //   status: this.status,
+          //   message: "",
+          //   isOwner:true
+          // });
           this.pagination = circleModuleState.circleEventParticipation.pagination;
         })
         break;
@@ -50,7 +58,7 @@ export class CircleEventParticipationsListComponent implements OnInit, OnDestroy
     }
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
@@ -68,8 +76,8 @@ export class CircleEventParticipationsListComponent implements OnInit, OnDestroy
     }
   }
 
-  showAcceptButton(){
-    if(this.status != CircleEventParticipationStatus.Waiting)
+  showAcceptButton() {
+    if (this.status != CircleEventParticipationStatus.Waiting)
       return false;
     return this.circleEvent.appUserId == this.appUser.id;
   }

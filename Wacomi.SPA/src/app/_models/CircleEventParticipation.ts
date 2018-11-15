@@ -19,4 +19,5 @@ export interface CircleEventParticipation extends IAppUserLinkable {
     status: CircleEventParticipationStatus;
     message: string;
     dateCreated?: Date;
+    isOwner?:boolean;
 }

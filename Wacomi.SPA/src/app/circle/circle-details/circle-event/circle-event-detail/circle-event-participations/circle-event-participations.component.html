@@ -11,7 +11,7 @@
             </tab>
             <tab id="waitList">
                 <ng-template tabHeading>
-                    <p><b>参加承認/キャンセル待ち</b> <span class="label label-info" [ngClass]="{'label-danger': isMine && (numberOfWaiting > 0)}">{{numberOfWaiting}}</span></p>
+                    <p><b>参加承認待ち</b> <span class="label label-info" [ngClass]="{'label-danger': isMine && (numberOfWaiting > 0)}">{{numberOfWaiting}}</span></p>
                 </ng-template>
                 <app-circle-event-participations-list [status]="circleEventParticipationStatus.Waiting" [appUser]="appUser"
                     [circleEvent]="circleEvent"></app-circle-event-participations-list>
