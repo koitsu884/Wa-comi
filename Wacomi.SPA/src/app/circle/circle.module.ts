@@ -21,7 +21,6 @@ import { CircleSideinfoComponent } from "./circle-details/circle-overview/circle
 import { CircleTopicEditComponent } from "./circle-details/circle-topic/circle-topic-edit/circle-topic-edit.component";
 import { CircleTopicDetailComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-detail.component";
 import { CircleTopicEffects } from "./store/circletopic.effects";
-import { CircleTopicCommentComponent } from "./circle-details/circle-topic/circle-topic-detail/circle-topic-comment/circle-topic-comment.component";
 import { CircleManagementComponent } from "./circle-management/circle-management.component";
 import { CircleManagementEffects } from "./store/circle-management.effects";
 import { CircleMemberGuard } from "./_guard/circlemember.guard";
@@ -56,7 +55,6 @@ import { CircleEventParticipationsListComponent } from "./circle-details/circle-
         CircleTopicComponent,
         CircleTopicEditComponent,
         CircleTopicDetailComponent,
-        CircleTopicCommentComponent,
         CircleRequestListComponent,
         CircleOverviewComponent,
         CircleManagementComponent,
