@@ -1,5 +1,4 @@
-//TODO: Remove this interface and use UserCommentReply
-export interface ShortComment {
+export interface UserCommentReply {
     id: number;
     ownerRecordClass: string;
     ownerRecordId: number;

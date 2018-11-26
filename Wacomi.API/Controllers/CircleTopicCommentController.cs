@@ -21,12 +21,10 @@ namespace Wacomi.API.Controllers
         public CircleTopicCommentController(IAppUserRepository appUserRepository, 
                 IMapper mapper, 
                 IPhotoRepository photoRepo,
-                INotificationRepository notificationRepo,
                 ImageFileStorageManager imageFileStorageManager,
                 ICircleRepository repo) : base(appUserRepository, mapper, photoRepo)
         {
             this._imageFileStorageManager = imageFileStorageManager;
-            this._repo = repo;
             this._repo = repo;
         }
 
@@ -55,22 +53,23 @@ namespace Wacomi.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Post([FromBody]CircleTopicComment model)
+        public async Task<ActionResult> Post([FromBody]UserCommentUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var circleTopic = await _repo.GetCircleTopic(model.CircleTopicId);
+            var circleTopic = await _repo.GetCircleTopic(model.OwnerRecordId);
             if(circleTopic == null)
                 return NotFound();
             if (!await this.MatchAppUserWithToken(model.AppUserId) || !await _repo.IsMember((int)model.AppUserId, circleTopic.CircleId))
                 return Unauthorized();
 
-            model.CircleId = circleTopic.CircleId;
-            // var newTopic = this._mapper.Map<CircleTopic>(model);
-            _repo.Add(model);
+            // model.CircleId = circleTopic.CircleId;
+             var newTopic = this._mapper.Map<CircleTopicComment>(model);
+             newTopic.CircleId = circleTopic.CircleId;
+            _repo.Add(newTopic);
             await _repo.SaveAll();
 
-            return CreatedAtRoute("GetCircleTopicComment", new { id = model.Id }, _mapper.Map<CircleTopicCommentForReturnDto>(model));
+            return CreatedAtRoute("GetCircleTopicComment", new { id = model.Id }, _mapper.Map<CircleTopicCommentForReturnDto>(newTopic));
         }
 
         [HttpPut()]

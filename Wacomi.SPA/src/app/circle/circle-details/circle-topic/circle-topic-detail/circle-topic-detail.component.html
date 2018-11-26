@@ -28,7 +28,8 @@
       <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
     </div>
   </div>
-  <h4>コメント<span *ngIf="!forcusCommentId">({{commentPagination.totalItems}}件)</span></h4>
+  <app-comment-list *ngIf="circleTopic" [appUser]="appUser" [ownerRecordType]="'CircleTopic'" [ownerRecordId]="circleTopic.id" [forcusCommentId]="forcusCommentId"></app-comment-list>
+  <!-- <h4>コメント<span *ngIf="!forcusCommentId">({{commentPagination.totalItems}}件)</span></h4>
   <div class="topicCommentList area">
     <div *ngIf="circleTopicCommentList.length == 0" class="text-danger"><b>まだコメントがありません</b></div>
     <div class="topicCommentCard" *ngFor="let topicComment of circleTopicCommentList">
@@ -47,5 +48,5 @@
         previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
       </pagination>
     </div>
-  </div>
+  </div> -->
 </div>

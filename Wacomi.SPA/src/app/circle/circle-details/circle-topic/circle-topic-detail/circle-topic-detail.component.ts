@@ -41,14 +41,14 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
     this.forcusCommentId = this.route.snapshot.params['forcusCommentId'];
     this.loading = true;
     this.store.dispatch(new CircleTopicActions.GetCircleTopic(id))
-    if(this.forcusCommentId)
-      this.store.dispatch(new CircleTopicActions.GetForcusedTopicComment(this.forcusCommentId));
-    else
-      this.store.dispatch(new CircleTopicActions.GetCircleTopicCommentList({topicId: id, initPage:true}));
+    // if(this.forcusCommentId)
+    //   this.store.dispatch(new CircleTopicActions.GetForcusedTopicComment(this.forcusCommentId));
+    // else
+    //   this.store.dispatch(new CircleTopicActions.GetCircleTopicCommentList({topicId: id, initPage:true}));
     this.subscription = this.store.select("circleModule").subscribe((circleModuleState) => {
       this.circleTopic = circleModuleState.circleTopic.selectedCircleTopic;
-      this.circleTopicCommentList = circleModuleState.circleTopic.circleTopicCommentList;
-      this.commentPagination = Object.assign({}, circleModuleState.circleTopic.commentPagination);
+      // this.circleTopicCommentList = circleModuleState.circleTopic.circleTopicCommentList;
+      // this.commentPagination = Object.assign({}, circleModuleState.circleTopic.commentPagination);
       this.loading = false;
     })
   }
@@ -68,52 +68,52 @@ export class CircleTopicDetailComponent implements OnInit, OnDestroy {
     })
   }
 
-  addComment(event: { comment: string, imageFile: File }) {
-    var formData = new FormData();
-      if(event.imageFile)
-      {
-        formData.append("files", event.imageFile);
-      }
+  // addComment(event: { comment: string, imageFile: File }) {
+  //   var formData = new FormData();
+  //     if(event.imageFile)
+  //     {
+  //       formData.append("files", event.imageFile);
+  //     }
 
-    var newComment = <CircleTopicComment>{
-      circleTopicId: this.circleTopic.id,
-      comment: event.comment,
-      appUserId: this.appUser.id,
-    }
+  //   var newComment = <CircleTopicComment>{
+  //     circleTopicId: this.circleTopic.id,
+  //     comment: event.comment,
+  //     appUserId: this.appUser.id,
+  //   }
 
-    this.store.dispatch(new GlobalActions.TryAddRecord(
-      {
-        recordType: "CircleTopicComment", 
-        record: newComment, 
-        formData: event.imageFile ? formData : null,
-        callbackActions: [{type: CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST, payload: {topicId: this.circleTopic.id, initPage:true}}]
-      }
-    ));
-  }
+  //   this.store.dispatch(new GlobalActions.TryAddRecord(
+  //     {
+  //       recordType: "CircleTopicComment", 
+  //       record: newComment, 
+  //       formData: event.imageFile ? formData : null,
+  //       callbackActions: [{type: CircleTopicActions.GET_CIRCLE_TOPIC_COMMENT_LIST, payload: {topicId: this.circleTopic.id, initPage:true}}]
+  //     }
+  //   ));
+  // }
 
-  commentPageChanged(event) {
-    this.loading = true;
-    this.store.dispatch(new CircleTopicActions.SetCircleTopicCommentPage(event.page));
-  }
+  // commentPageChanged(event) {
+  //   this.loading = true;
+  //   this.store.dispatch(new CircleTopicActions.SetCircleTopicCommentPage(event.page));
+  // }
 
-  onAddTopicCommentReply(topicCommentId: number, comment: string) {
-    if (this.appUser) {
-      this.store.dispatch(new GlobalActions.TryAddRecord({
-        recordType:"CircleTopicCommentReply",
-        record:{commentId:topicCommentId, reply:comment, appUserId:this.appUser.id},
-        callbackActions:[{type:CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES, payload:topicCommentId}]
-      }))
-    }
-  }
+  // onAddTopicCommentReply(topicCommentId: number, comment: string) {
+  //   if (this.appUser) {
+  //     this.store.dispatch(new GlobalActions.TryAddRecord({
+  //       recordType:"CircleTopicCommentReply",
+  //       record:{commentId:topicCommentId, reply:comment, appUserId:this.appUser.id},
+  //       callbackActions:[{type:CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES, payload:topicCommentId}]
+  //     }))
+  //   }
+  // }
 
-  onDeleteTopicCommentReply(shortComment: ShortComment) {
-    this.alertify.confirm("本当にこのコメント(" + shortComment.comment + ")を削除しますか？", () => {
-      this.store.dispatch(new GlobalActions.DeleteRecord({
-        recordType:"CircleTopicCommentReply", 
-        recordId:shortComment.id,
-        callbackActions:[{type:CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES, payload:shortComment.ownerRecordId}]
-      }))
-    })
-  }
+  // onDeleteTopicCommentReply(shortComment: ShortComment) {
+  //   this.alertify.confirm("本当にこのコメント(" + shortComment.comment + ")を削除しますか？", () => {
+  //     this.store.dispatch(new GlobalActions.DeleteRecord({
+  //       recordType:"CircleTopicCommentReply", 
+  //       recordId:shortComment.id,
+  //       callbackActions:[{type:CircleTopicActions.GET_CIRCLE_TOPIC_REPLIES, payload:shortComment.ownerRecordId}]
+  //     }))
+  //   })
+  // }
 
 }

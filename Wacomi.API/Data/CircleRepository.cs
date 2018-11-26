@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
+using Wacomi.API.Models.Circles;
 
 namespace Wacomi.API.Data
 {
@@ -72,7 +73,7 @@ namespace Wacomi.API.Data
 
         public async Task<PagedList<CircleEvent>> GetCircleEvents(PaginationParams paginationParams, DateTime fromDate = default(DateTime), int circleId = 0, int circleCategoryId = 0, int cityId = 0, int appUserId = 0)
         {
-            if(fromDate == default(DateTime))
+            if (fromDate == default(DateTime))
                 fromDate = DateTime.Now;
             // DateTime toDate = fromDate.AddMonths(1);
             var query = _context.CircleEvents.Include(ce => ce.AppUser).ThenInclude(a => a.MainPhoto)
@@ -88,7 +89,7 @@ namespace Wacomi.API.Data
                 query = query.Where(ce => ce.CircleId == circleId);
             else
                 query = query.Where(ce => ce.IsPublic == true);
-                
+
             if (circleCategoryId > 0)
                 query = query.Where(ce => ce.Circle.CategoryId == circleCategoryId);
             if (cityId > 0)
@@ -97,7 +98,7 @@ namespace Wacomi.API.Data
                 query = query.Where(ce => ce.AppUserId == appUserId);
 
             // return await query.ToListAsync();
-             return await PagedList<CircleEvent>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
+            return await PagedList<CircleEvent>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
         }
         public async Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId)
         {
@@ -112,6 +113,26 @@ namespace Wacomi.API.Data
                                                             .FirstOrDefaultAsync(cm => cm.CircleEventId == eventId && cm.Status == CircleEventParticipationStatus.Waiting);
         }
 
+        public async Task<CircleEventComment> GetCircleEventComment(int id)
+        {
+            return await _context.CircleEventComments.Include(tc => tc.AppUser).ThenInclude(au => au.MainPhoto)
+                                                     .FirstOrDefaultAsync(ctc => ctc.Id == id);
+        }
+
+        public async Task<int> GetCircleEventCommentCount(int circleEventId)
+        {
+            return await _context.CircleEventComments.Where(tc => tc.CircleEventId == circleEventId).CountAsync();
+        }
+
+        public async Task<IEnumerable<CircleEventCommentReply>> GetCircleEventCommentReplies(int circleTopicEventId)
+        {
+            return await _context.CircleEventCommentReplies.Include(cr => cr.AppUser).ThenInclude(a => a.MainPhoto)
+                                                    .Where(tr => tr.CommentId == circleTopicEventId).OrderBy(tr => tr.DateCreated).ToListAsync();
+        }
+        public async Task<int> GetCircleEventCommentReplyCount(int circleEventCommentId)
+        {
+            return await _context.CircleEventCommentReplies.Where(tc => tc.CommentId == circleEventCommentId).CountAsync();
+        }
 
         public async Task<CircleMember> GetCircleMember(int appUserId, int circleId)
         {
@@ -138,7 +159,7 @@ namespace Wacomi.API.Data
         {
             var query = _context.CircleEventParticipations.Include(cm => cm.AppUser).ThenInclude(ap => ap.MainPhoto)
                                             .Where(cm => cm.CircleEventId == eventId)
-                                            .OrderByDescending( cm => cm.DateCreated)
+                                            .OrderByDescending(cm => cm.DateCreated)
                                             // .Select(cm => cm.AppUser)
                                             .AsQueryable();
 
@@ -232,7 +253,8 @@ namespace Wacomi.API.Data
                                  .ToListAsync();
         }
 
-        public async Task<int> GetCircleEventCount(int circleId){
+        public async Task<int> GetCircleEventCount(int circleId)
+        {
             return await _context.CircleEvents.CountAsync(ce => ce.CircleId == circleId);
         }
         public async Task<IEnumerable<CircleEvent>> GetPastCircleEventList(int circleId)

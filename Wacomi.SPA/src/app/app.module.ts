@@ -47,6 +47,7 @@ import { AgmCoreModule } from '@agm/core';
 import { PropertyEffects } from './property/store/property.effects';
 import { AppUserGuard } from './_guards/appuser.guard';
 import { UserService } from './_services/user.service';
+import { CommentEffects } from './shared/comment-list/store/comment.effects';
 
 registerLocaleData(localeJa, 'ja');
 
@@ -76,6 +77,7 @@ registerLocaleData(localeJa, 'ja');
       PhotoEffect, 
       GlobalEffect,
       MessageEffects, 
+      CommentEffects,
       NotificationEffect,
       PropertyEffects
     ]),

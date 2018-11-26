@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BsDatepickerModule } from 'ngx-bootstrap';
+import { BsDatepickerModule, PaginationModule } from 'ngx-bootstrap';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { RouterModule } from '@angular/router';
 import { MainphotoSelectorComponent } from './mainphoto-selector/mainphoto-selector.component';
@@ -38,6 +38,8 @@ import { CircleMemberShortlistComponent } from '../circle/circle-member/circle-m
 import { CommentFormComponent } from './comment-form/comment-form.component';
 import { TimeSpanJpPipe } from '../_pipes/timespan_jp.pipe';
 import { CircleEventListComponent } from '../circle/circle-details/circle-event/circle-event-list/circle-event-list.component';
+import { CommentListComponent } from './comment-list/comment-list.component';
+import { CommentComponent } from './comment-list/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { CircleEventListComponent } from '../circle/circle-details/circle-event/
     CircleMemberShortlistComponent,
     BlogfeedCardComponent,
     CommentFormComponent,
+    CommentListComponent,
+    CommentComponent,
     ShortCommentFormComponent,
     PhotoSelectorComponent,
     PhotoGalleryComponent,
@@ -83,6 +87,7 @@ import { CircleEventListComponent } from '../circle/circle-details/circle-event/
     RouterModule,
     AgmCoreModule,
     BsDatepickerModule.forRoot(),
+    PaginationModule,
     // AppRoutingModule,
    // AppRoutingModule,
   ],
@@ -115,6 +120,8 @@ import { CircleEventListComponent } from '../circle/circle-details/circle-event/
     CircleMemberShortlistComponent,
     BlogfeedCardComponent,
     CommentFormComponent,
+    CommentListComponent,
+    CommentComponent,
     ShortCommentFormComponent,
     PhotoSelectorComponent,
     PhotoGalleryComponent,
@@ -124,7 +131,7 @@ import { CircleEventListComponent } from '../circle/circle-details/circle-event/
     UserCardSmallComponent,
     RateAverageComponent,
     GmapSelectorComponent,
-    BsDatepickerModule
+    BsDatepickerModule,
   ]
 })
 export class SharedModule {}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
+using Wacomi.API.Models.Circles;
 
 namespace Wacomi.API.Data
 {
@@ -24,6 +25,10 @@ namespace Wacomi.API.Data
         Task<bool> IsEventFull(int eventId);
         Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId);
         Task<CircleEventParticipation> GetCircleEventFirstWaitingParticipation(int eventId);
+        Task<CircleEventComment> GetCircleEventComment(int id);
+        Task<int> GetCircleEventCommentCount(int circleEventId);
+        Task<IEnumerable<CircleEventCommentReply>> GetCircleEventCommentReplies(int circleTopicEventId);
+        Task<int> GetCircleEventCommentReplyCount(int circleEventCommentId);
         Task<CircleMember> GetCircleMember(int appUserId, int circleId);
         Task<int> GetCircleMemberCount(int circleId);
         Task<PagedList<CircleMember>> GetCircleMemberList(PaginationParams paginationParams, int circleId, CircleRoleEnum? role = null);

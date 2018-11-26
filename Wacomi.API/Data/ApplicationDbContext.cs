@@ -2,6 +2,7 @@ using Wacomi.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Wacomi.API.Models.Circles;
 
 namespace Wacomi.API.Data
 {
@@ -33,6 +34,8 @@ namespace Wacomi.API.Data
         public DbSet<CircleTopic> CircleTopics { get; set; }
         public DbSet<CircleTopicComment> CircleTopicComments { get; set; }
         public DbSet<CircleTopicCommentReply> CircleTopicCommentReplies { get; set; }
+        public DbSet<CircleEventComment> CircleEventComments { get; set; }
+        public DbSet<CircleEventCommentReply> CircleEventCommentReplies { get; set; }
         public DbSet<CircleCategory> CircleCategories { get; set; }
         public DbSet<ClanSeek> ClanSeeks { get; set; }
         public DbSet<ClanSeekCategory> ClanSeekCategories { get; set;}

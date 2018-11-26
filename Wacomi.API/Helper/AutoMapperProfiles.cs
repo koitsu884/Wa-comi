@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Wacomi.API.Dto;
+using Wacomi.API.Dto.Circle;
 using Wacomi.API.Models;
+using Wacomi.API.Models.Circles;
 
 namespace Wacomi.API.Helper
 {
@@ -121,12 +123,17 @@ namespace Wacomi.API.Helper
             CreateMap<CircleEventUpdateDto, CircleEvent>();
 
             CreateMap<CircleEventParticipation, CircleEventParticipationForReturnDto>();
+            CreateMap<CircleEventComment, CircleEventCommentForReturnDto>();
+            CreateMap<CircleEventCommentUpdateDto, CircleEventComment>();
 
             CreateMap<CircleTopic, CircleTopicForReturnDto>();
             CreateMap<CircleTopicUpdateDto, CircleTopic>();
 
             CreateMap<CircleTopicComment, CircleTopicCommentForReturnDto>();
-            CreateMap<CircleTopicCommentUpdateDto, CircleTopicComment>();
+            CreateMap<CircleTopicComment, CircleTopicCommentForReturnDto>();
+            // CreateMap<CircleTopicCommentUpdateDto, CircleTopicComment>();
+            CreateMap<UserCommentUpdateDto, CircleTopicComment>()
+              .ForMember(cc => cc.CircleTopicId, opt => opt.MapFrom(src => src.OwnerRecordId));
 
             CreateMap<CircleTopicCommentReply, CommentForReturnDto>()
               .ForMember(cr => cr.OwnerRecordClass, opt => opt.UseValue<string>("CircleTopicComment"))
