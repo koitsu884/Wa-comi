@@ -26,6 +26,8 @@ namespace Wacomi.API.Data
         Task<CircleEventParticipation> GetCircleEventParticipation(int appUserId, int eventId);
         Task<CircleEventParticipation> GetCircleEventFirstWaitingParticipation(int eventId);
         Task<CircleEventComment> GetCircleEventComment(int id);
+         Task<CircleEventCommentReply> GetCircleEventCommentReply(int circleEventCommentReplyId);
+        Task<PagedList<CircleEventComment>> GetCircleEventCommentList(PaginationParams paginationParams, int circleEventId);
         Task<int> GetCircleEventCommentCount(int circleEventId);
         Task<IEnumerable<CircleEventCommentReply>> GetCircleEventCommentReplies(int circleTopicEventId);
         Task<int> GetCircleEventCommentReplyCount(int circleEventCommentId);

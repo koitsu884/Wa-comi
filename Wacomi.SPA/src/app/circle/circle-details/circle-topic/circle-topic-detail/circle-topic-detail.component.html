@@ -20,5 +20,11 @@
       <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
     </div>
   </div>
-  <app-comment-list *ngIf="circleTopic" [appUser]="appUser" [ownerRecordType]="'CircleTopic'" [ownerRecordId]="circleTopic.id" [forcusCommentId]="forcusCommentId"></app-comment-list>
+  <app-comment-list *ngIf="circleTopic" 
+    [appUser]="appUser" 
+    [photoUploadable]="true"
+    [ownerRecordType]="'CircleTopic'" 
+    [ownerRecordId]="circleTopic.id" 
+    [forcusCommentId]="forcusCommentId">
+  </app-comment-list>
 </div>

@@ -60,6 +60,7 @@ const circleRoute: Routes = [
             {path: 'topic/edit/:id', component: CircleTopicEditComponent, canActivate: [CircleMemberGuard]}, 
             {path: 'event', component: CircleEventComponent, canActivate: [AuthGuard]}, 
             {path: 'event/detail/:id', component: CircleEventDetailComponent, canActivate: [AuthGuard]}, 
+            {path: 'event/detail/:id/:forcusCommentId', component: CircleEventDetailComponent, canActivate: [AuthGuard]}, 
             {path: 'event/detail/:id/participants', component: CircleEventParticipationsComponent, canActivate: [AuthGuard], resolve: {appUser:AppUserResolver, circleEvent:CircleEventResolver}}, 
             {path: 'event/edit', component: CircleEventEditComponent, canActivate: [CircleMemberGuard], resolve: {cities:CityListResolver}}, 
             {path: 'event/edit/:id', component: CircleEventEditComponent, canActivate: [CircleMemberGuard], resolve: {cities:CityListResolver}}, 

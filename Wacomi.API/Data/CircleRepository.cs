@@ -124,6 +124,21 @@ namespace Wacomi.API.Data
             return await _context.CircleEventComments.Where(tc => tc.CircleEventId == circleEventId).CountAsync();
         }
 
+        public async Task<PagedList<CircleEventComment>> GetCircleEventCommentList(PaginationParams paginationParams, int circleEventId)
+        {
+            var query = _context.CircleEventComments.Include(ec => ec.AppUser).ThenInclude(a => a.MainPhoto)
+                                                    .Where(ec => ec.CircleEventId == circleEventId)
+                                                    .OrderByDescending(tc => tc.DateCreated)
+                                                    .AsQueryable();
+
+            return await PagedList<CircleEventComment>.CreateAsync(query, paginationParams.PageNumber, paginationParams.PageSize);
+        }
+
+        public async Task<CircleEventCommentReply> GetCircleEventCommentReply(int circleEventCommentReplyId)
+        {
+            return await _context.CircleEventCommentReplies.FirstOrDefaultAsync(tr => tr.Id == circleEventCommentReplyId);
+        }
+
         public async Task<IEnumerable<CircleEventCommentReply>> GetCircleEventCommentReplies(int circleTopicEventId)
         {
             return await _context.CircleEventCommentReplies.Include(cr => cr.AppUser).ThenInclude(a => a.MainPhoto)

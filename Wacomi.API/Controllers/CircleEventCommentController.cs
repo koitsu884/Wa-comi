@@ -41,28 +41,28 @@ namespace Wacomi.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Post([FromBody]CircleEventComment model)
+        public async Task<ActionResult> Post([FromBody]UserCommentUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var circleEvent = await _repo.GetCircleEvent(model.CircleEventId);
+            var circleEvent = await _repo.GetCircleEvent(model.OwnerRecordId);
             if(circleEvent == null)
                 return NotFound();
             if (!await this.MatchAppUserWithToken(model.AppUserId) 
             || (!circleEvent.IsPublic && !await _repo.IsMember((int)model.AppUserId, circleEvent.CircleId)))
                 return Unauthorized();
 
-            model.CircleId = circleEvent.CircleId;
-            // var newTopic = this._mapper.Map<CircleEvent>(model);
-            _repo.Add(model);
+             var newComment = this._mapper.Map<CircleEventComment>(model);
+             newComment.CircleId = circleEvent.CircleId;
+            _repo.Add(newComment);
             await _repo.SaveAll();
 
-            return CreatedAtRoute("GetCircleEventComment", new { id = model.Id }, _mapper.Map<CircleEventCommentForReturnDto>(model));
+            return CreatedAtRoute("GetCircleEventComment", new { id = model.Id }, _mapper.Map<CircleEventCommentForReturnDto>(newComment));
         }
 
         [HttpPut()]
         [Authorize]
-        public async Task<ActionResult> Put([FromBody]CircleEventCommentUpdateDto model)
+        public async Task<ActionResult> Put([FromBody]UserCommentUpdateDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -77,7 +77,8 @@ namespace Wacomi.API.Controllers
                 return Unauthorized();
             }
 
-            _mapper.Map(model, circleEventCommentFromRepo);
+            circleEventCommentFromRepo.Comment = model.Comment;
+            //_mapper.Map(model, circleEventCommentFromRepo);
 
             try
             {

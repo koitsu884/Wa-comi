@@ -60,6 +60,12 @@
         <hr>
         <button class="btn btn-primary" type="button" (click)="onSendRequest()">イベントに参加する</button>
       </div>
+      <app-comment-list *ngIf="event" 
+        [appUser]="appUser" 
+        [ownerRecordType]="'CircleEvent'" 
+        [ownerRecordId]="event.id" 
+        [forcusCommentId]="forcusCommentId">
+      </app-comment-list>
     </div>
     <div class="col-sm-4">
       <app-user-info-card [appUser]="event.appUser" [dateCreated]="event.dateCreated" [dateUpdate]="event.dateUpdated"

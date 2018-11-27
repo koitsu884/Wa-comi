@@ -23,7 +23,9 @@ namespace Wacomi.API.Models
         NewCircleCommentReplyByOwner,
         // Circle Event Notifications
         NewCircleEventParticipationRequest,
-        EventParticipationRequestAccepted
+        EventParticipationRequestAccepted,
+        NewCircleEventReplyByMember,
+        NewCircleEventReplyByOwner,
     }
     public class Notification
     {

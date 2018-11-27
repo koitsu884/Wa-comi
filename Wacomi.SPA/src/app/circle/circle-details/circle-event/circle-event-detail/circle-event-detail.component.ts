@@ -29,6 +29,7 @@ export class CircleEventDetailComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[] = null;
   requestMessage: string = '';
+  forcusCommentId: number = null;
 
   circleEventParticipationStatus = CircleEventParticipationStatus;
   
@@ -46,6 +47,7 @@ export class CircleEventDetailComponent implements OnInit {
       return;
     }
     this.appUser = this.route.parent.snapshot.data['appUser'];
+    this.forcusCommentId = this.route.snapshot.params['forcusCommentId'];
     this.loading = true;
     this.store.dispatch(new CircleEventActions.GetCircleEvent(id));
     this.store.dispatch(new CircleEventActions.GetLatestEventParticipants(id));

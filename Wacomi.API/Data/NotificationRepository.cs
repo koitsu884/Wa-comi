@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Wacomi.API.Dto;
 using Wacomi.API.Models;
+using Wacomi.API.Models.Circles;
 
 namespace Wacomi.API.Data
 {
@@ -192,6 +193,12 @@ namespace Wacomi.API.Data
                 case NotificationEnum.EventParticipationRequestAccepted:
                     await this.EventParticipationRequestAcceptedNotification(appUserId, record as CircleEventParticipation);
                     break;
+                case NotificationEnum.NewCircleEventReplyByOwner:
+                    await this.AddNewCircleEventReplyByOwnerNotification(appUserId, record as CircleEventCommentReply);
+                    break;
+                case NotificationEnum.NewCircleEventReplyByMember:
+                    await this.AddNewCircleEventReplyByMemberNotification(appUserId, record as CircleEventCommentReply);
+                    break;
 
             }
         }
@@ -277,6 +284,90 @@ namespace Wacomi.API.Data
                 TargetRecordTitle = circleTopicComment.CircleTopic.Title,
                 // AdditionalRecordId = circleTopicComment.CircleTopicId,
                // Message = "コミュニティトピック『" + circleTopicComment.CircleTopic.Title +"』であなたのコメントに返信がありました"
+            });
+        }
+
+        private async Task AddNewCircleEventReplyByOwnerNotification(int appUserId, CircleEventCommentReply circleEventCommentReply){
+            if(circleEventCommentReply == null)
+                return;
+            var circleEventComment = await _context.CircleEventComments.Include(ctc => ctc.CircleEvent).Include(ctc => ctc.AppUser).FirstOrDefaultAsync(ctc => ctc.Id == circleEventCommentReply.CommentId);
+            if(circleEventComment == null)
+                return;
+            // var circleEventCommentReply = record as CircleTopicCommentReply;
+            var previousOwnerReply = await _context.CircleEventCommentReplies.Where(
+                                                                    ctc => ctc.CommentId == circleEventCommentReply.CommentId 
+                                                                    && ctc.AppUserId == appUserId
+                                                                    && ctc.Id != circleEventCommentReply.Id
+                                                                    )
+                                                        .OrderByDescending(tr => tr.DateCreated).FirstOrDefaultAsync();
+            List<CircleEventCommentReply> notifyingReplies = null;
+            if (previousOwnerReply == null)
+            {
+                notifyingReplies = await _context.CircleEventCommentReplies.Where(ctcr =>
+                                                    ctcr.CommentId == circleEventCommentReply.CommentId
+                                                     && ctcr.AppUserId != appUserId
+                                                    ).GroupBy(fc => fc.AppUserId)
+                                                    .Select(g => g.First())
+                                                    .ToListAsync();
+            }
+            else
+            {
+                notifyingReplies = await _context.CircleEventCommentReplies.Where(ctcr =>
+                                                    ctcr.CommentId == circleEventCommentReply.CommentId
+                                                    && ctcr.DateCreated > previousOwnerReply.DateCreated
+                                                    && ctcr.AppUserId != appUserId
+                                                    ).GroupBy(fc => fc.AppUserId)
+                                                    .Select(g => g.First())
+                                                    .ToListAsync();
+            }
+
+            foreach (var reply in notifyingReplies)
+            {
+                Dictionary<string, int> recordIds = new Dictionary<string, int>(){
+                    {"Circle", reply.CircleId},
+                    {"CircleEvent", circleEventComment.CircleEventId}
+                };
+                if (reply.AppUserId != null)
+                    await AddNotificationIfNotExist(new Notification()
+                    {
+                        AppUserId = (int)reply.AppUserId,
+                        NotificationType = NotificationEnum.NewCircleEventReplyByOwner,
+                        RecordType = "CircleEventComment",
+                        RecordId = (int)reply.CommentId,
+                        RelatingRecordIds = JObject.FromObject(recordIds),
+                        FromUserName = circleEventComment.AppUser.DisplayName,
+                        TargetRecordTitle = circleEventComment.CircleEvent.Title,
+                        // Photo = blogFeed.Photo,
+                       // Message = "コミュニティトピック『" + circleEventComment.CircleTopic.Title +"』であなたが返信した" + circleEventComment.AppUser.DisplayName + "さんのコメントに、新しい返信がありました"
+                    });
+            }
+        }
+
+        private async Task AddNewCircleEventReplyByMemberNotification(int appUserId, CircleEventCommentReply circleEventCommentReply){
+            // var circleEventComment = record as CircleTopicComment;
+            if(circleEventCommentReply == null)
+                return;
+            var circleEventComment = await _context.CircleEventComments.Include(ctc => ctc.CircleEvent).FirstOrDefaultAsync(ctc => ctc.Id == circleEventCommentReply.CommentId);
+            if(circleEventComment == null)
+                return;
+            Dictionary<string, int> recordIds = new Dictionary<string, int>(){
+                    {"Circle", circleEventComment.CircleId},
+                    {"CircleEvent", circleEventComment.CircleEventId}
+            };
+
+            var user = await _context.AppUsers.FirstOrDefaultAsync(au => au.Id == appUserId);
+
+            await AddNotificationIfNotExist(new Notification()
+            {
+                AppUserId = (int)circleEventComment.AppUserId,
+                NotificationType = NotificationEnum.NewCircleEventReplyByMember,
+                RecordType = "CircleEventComment",
+                RecordId = circleEventComment.Id,
+                RelatingRecordIds = JObject.FromObject(recordIds),
+                FromUserName = user.DisplayName,
+                TargetRecordTitle = circleEventComment.CircleEvent.Title,
+                // AdditionalRecordId = circleEventComment.CircleTopicId,
+               // Message = "コミュニティトピック『" + circleEventComment.CircleTopic.Title +"』であなたのコメントに返信がありました"
             });
         }
         private async Task AddNewCircleTopicCreatedNotification(int appUserId, CircleTopic circleTopic)

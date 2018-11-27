@@ -6,12 +6,6 @@ import { ShortComment } from "../../_models/ShortComment";
 
 export const GET_CIRCLE_TOPIC = 'GET_CIRCLE_TOPIC';
 export const SET_CIRCLE_TOPIC = 'SET_CIRCLE_TOPIC';
-export const GET_CIRCLE_TOPIC_COMMENT_LIST = 'GET_CIRCLE_TOPIC_COMMENT_LIST';
-export const SET_CIRCLE_TOPIC_COMMENT_LIST = 'SET_CIRCLE_TOPIC_COMMENT_LIST';
-export const GET_FORCUSED_TOPIC_COMMENT = 'GET_FORCUSED_TOPIC_COMMENT';
-export const TOGGLE_CIRCLE_TOPIC_REPLY_FORM = 'TOGGLE_CIRCLE_TOPIC_REPLY_FORM';
-export const GET_CIRCLE_TOPIC_REPLIES = 'GET_CIRCLE_TOPIC_REPLIES';
-export const SET_CIRCLE_TOPIC_REPLIES = 'SET_CIRCLE_TOPIC_REPLIES';
 export const UPDATE_CIRCLE_TOPIC = 'UPDATE_CIRCLE_TOPIC';
 export const GET_CIRCLE_TOPIC_LIST = 'GET_CIRCLE_TOPIC_LIST';
 export const SET_CIRCLE_TOPIC_LIST = 'SET_CIRCLE_TOPIC_LIST';
@@ -31,45 +25,11 @@ export class SetCircleTopic implements Action {
     constructor(public payload: CircleTopic) { }
 }
 
-export class GetCircleTopicCommentList implements Action {
-    readonly type = GET_CIRCLE_TOPIC_COMMENT_LIST;
-    constructor(public payload: { topicId: number, initPage?: boolean}) { }
-}
-
-export class SetCircleTopicCommentList implements Action {
-    readonly type = SET_CIRCLE_TOPIC_COMMENT_LIST;
-    constructor(public payload:{ commentList: CircleTopicComment[], pagination: Pagination}){}
-}
-
-
-export class GetForcusedTopicComment implements Action {
-    readonly type = GET_FORCUSED_TOPIC_COMMENT;
-    constructor(public payload: number) { }
-}
-
-export class ToggleCircleTopicReplyForm implements Action {
-    readonly type = TOGGLE_CIRCLE_TOPIC_REPLY_FORM;
-    constructor(public payload: number){}
-}
-
-export class GetCircleTopicReplies implements Action {
-    readonly type = GET_CIRCLE_TOPIC_REPLIES;
-    constructor(public payload: number) { }
-}
-
-export class SetCircleTopicReplies implements Action {
-    readonly type = SET_CIRCLE_TOPIC_REPLIES;
-    constructor(public payload:{ commentId: number, topicReplies: ShortComment[]}){}
-}
-
 export class UpdateCircleTopic implements Action {
     readonly type = UPDATE_CIRCLE_TOPIC;
 
     constructor(public payload:{circleTopic: CircleTopic, photo:File}) {}
 }
-
-
-
 
 export class GetCircleTopicList implements Action {
     readonly type = GET_CIRCLE_TOPIC_LIST;
@@ -103,11 +63,5 @@ export type CircleTopicActions = GetCircleTopic
                         | GetCircleTopicList
                         | SetCircleTopicList
                         | SetCircleTopicPage
-                        | GetCircleTopicCommentList
-                        | SetCircleTopicCommentList
-                        | GetForcusedTopicComment
-                        | ToggleCircleTopicReplyForm
-                        | GetCircleTopicReplies
-                        | SetCircleTopicReplies
                         | AddCircleTopicComment
                         | SetCircleTopicCommentPage;

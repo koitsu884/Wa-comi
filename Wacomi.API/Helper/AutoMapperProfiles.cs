@@ -124,7 +124,14 @@ namespace Wacomi.API.Helper
 
             CreateMap<CircleEventParticipation, CircleEventParticipationForReturnDto>();
             CreateMap<CircleEventComment, CircleEventCommentForReturnDto>();
-            CreateMap<CircleEventCommentUpdateDto, CircleEventComment>();
+            CreateMap<UserCommentUpdateDto, CircleEventComment>()
+              .ForMember(cc => cc.CircleEventId, opt => opt.MapFrom(src => src.OwnerRecordId));
+            CreateMap<CircleEventCommentReply, CommentForReturnDto>()
+              .ForMember(cr => cr.OwnerRecordClass, opt => opt.UseValue<string>("CircleEventComment"))
+              .ForMember(cr => cr.OwnerRecordId, opt => opt.MapFrom(src => src.CommentId))
+              .ForMember(cr => cr.DisplayName, opt => opt.MapFrom(src => src.AppUser.DisplayName))
+              .ForMember(cr => cr.Comment, opt => opt.MapFrom(src => src.Reply))
+              .ForMember(cr => cr.IconUrl, opt => opt.MapFrom(src => src.AppUser.MainPhoto.GetIconUrl()));
 
             CreateMap<CircleTopic, CircleTopicForReturnDto>();
             CreateMap<CircleTopicUpdateDto, CircleTopic>();

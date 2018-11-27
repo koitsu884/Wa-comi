@@ -65,14 +65,18 @@ export class NotificationComponent implements OnInit {
       case NotificationEnum.NewCircleTopicCreated:
         let titles = notification.targetRecordTitle.split("|", 2);
         return `コミュニティ『${titles[0]}』に新しいトピック『${titles[1]}』が作成されました`;
-      case NotificationEnum.NewCircleCommentReplyByOwner:
-        return `コミュニティトピック『${notification.targetRecordTitle}』にあなたがしたコメントに返信があります`;
       case NotificationEnum.NewCircleCommentReplyByMember:
+        return `コミュニティトピック『${notification.targetRecordTitle}』にあなたがしたコメントに返信があります`;
+      case NotificationEnum.NewCircleCommentReplyByOwner:
         return `コミュニティトピック『${notification.targetRecordTitle}』であなたが返信したコメントに、${notification.fromUserName}さんも返信しました`;
       case NotificationEnum.NewCircleEventParticipationRequest:
         return `コミュニティ イベント『${notification.targetRecordTitle}』に新しい参加希望者が居ます`;
       case NotificationEnum.EventParticipationRequestAccepted:
         return `コミュニティ イベント『${notification.targetRecordTitle}』への参加が承認されました`;
+      case NotificationEnum.NewCircleEventReplyByMember:
+        return `コミュニティイベント『${notification.targetRecordTitle}』にあなたがしたコメントに返信があります`;
+      case NotificationEnum.NewCircleEventReplyByOwner:
+        return `コミュニティイベント『${notification.targetRecordTitle}』であなたが返信したコメントに、${notification.fromUserName}さんも返信しました`;
     }
   }
 
@@ -108,6 +112,10 @@ export class NotificationComponent implements OnInit {
         break;
       case NotificationEnum.EventParticipationRequestAccepted:
         this.router.navigate(['/circle/detail', notification.relatingRecordIds.Circle, 'event', 'detail', notification.recordId]);
+        break;
+      case NotificationEnum.NewCircleEventReplyByOwner:
+      case NotificationEnum.NewCircleEventReplyByMember:
+        this.router.navigate(['/circle/detail', notification.relatingRecordIds.Circle, 'event', 'detail', notification.relatingRecordIds.CircleEvent, notification.recordId]);
         break;
     }
 

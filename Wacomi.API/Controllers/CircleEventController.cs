@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wacomi.API.Data;
 using Wacomi.API.Dto;
+using Wacomi.API.Dto.Circle;
 using Wacomi.API.Helper;
 using Wacomi.API.Models;
 
@@ -48,7 +49,7 @@ namespace Wacomi.API.Controllers
             var circleEventForReturn = _mapper.Map<CircleEventForReturnDto>(await _repo.GetCircleEvent(id));
             if (circleEventForReturn == null)
                 return NotFound();
-            //circleEventForReturn.TopicCommentCounts = await _repo.GetCircleTopicCommentCount(id);
+            //circleEventForReturn.EventCommentCounts = await _repo.GetCircleEventCommentCount(id);
             var loggedInUser = await GetLoggedInUserAsync();
             if (loggedInUser != null)
             {
@@ -156,6 +157,27 @@ namespace Wacomi.API.Controllers
             await this.deleteAttachedPhotos(circleEventFromRepo.Photos);
 
             return Ok();
+        }
+
+         [HttpGet("{id}/comments/{commentId}")]
+        public async Task<ActionResult> GetEventComment(int id, int commentId)
+        {
+            var comment = await _repo.GetCircleEventComment(commentId);
+            var eventCommentForReturn = this._mapper.Map<CircleEventCommentForReturnDto>(comment);
+            eventCommentForReturn.ReplyCount = await _repo.GetCircleEventCommentReplyCount(comment.Id);
+            return Ok(eventCommentForReturn);
+        }
+
+        [HttpGet("{id}/comments")]
+        public async Task<ActionResult> GetEventComments(PaginationParams paginationParams, int id)
+        {
+            var eventComments = await _repo.GetCircleEventCommentList(paginationParams, id);
+            Response.AddPagination(eventComments.CurrentPage, eventComments.PageSize, eventComments.TotalCount, eventComments.TotalPages);
+            var eventCommentsForReturn = this._mapper.Map<IEnumerable<CircleEventCommentForReturnDto>>(eventComments);
+            foreach(var topicComment in eventCommentsForReturn){
+                topicComment.ReplyCount = await _repo.GetCircleEventCommentReplyCount(topicComment.Id);
+            }
+            return Ok(eventCommentsForReturn);
         }
 
         [HttpGet("{id}/photo", Name = "GetCircleEventPhotos")]

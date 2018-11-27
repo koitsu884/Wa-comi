@@ -21,6 +21,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   @Input() commentList: any[];
   @Input() appUser: AppUser;
   @Input() forcusCommentId: number;
+  @Input() photoUploadable: boolean = false;
   modalRef: BsModalRef;
   subscription: Subscription;
   loading: boolean;
@@ -66,7 +67,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.store.dispatch(new GlobalActions.TryAddRecord(
       {
-        recordType: "CircleTopicComment", 
+        recordType: this.ownerRecordType + "Comment", 
         record: newComment, 
         formData: event.imageFile ? formData : null,
         callbackActions: [{type: CommentActions.GET_USER_COMMENT_LIST, payload: {ownerRecordType: this.ownerRecordType, ownerRecordId: this.ownerRecordId, pageNumber:1}}]
@@ -90,7 +91,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
     this.alertify.confirm("本当にこのコメントを削除しますか？", () => {
       this.loading = true;
       this.store.dispatch(new GlobalActions.DeleteRecord({
-        recordType: this.ownerRecordType,
+        recordType: this.ownerRecordType + "Comment",
         recordId: userComment.id,
         callbackActions: [{
            type: CommentActions.GET_USER_COMMENT_LIST,
@@ -103,7 +104,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   onAddCommentReply(commentId: number, comment: string) {
     if (this.appUser) {
       this.store.dispatch(new GlobalActions.TryAddRecord({
-        recordType:this.ownerRecordType + 'commentreply',
+        recordType:this.ownerRecordType + 'CommentReply',
         record:{commentId:commentId, reply:comment, appUserId:this.appUser.id},
         callbackActions:[{type:CommentActions.GET_USER_REPLIES, payload:{ownerRecordType : this.ownerRecordType, commentId: commentId}}]
       }))
@@ -113,7 +114,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   onDeleteCommentReply(shortComment: ShortComment) {
     this.alertify.confirm("本当にこのコメント(" + shortComment.comment + ")を削除しますか？", () => {
       this.store.dispatch(new GlobalActions.DeleteRecord({
-        recordType:this.ownerRecordType + 'commentreply', 
+        recordType:this.ownerRecordType + 'CommentReply', 
         recordId:shortComment.id,
         callbackActions:[{type:CommentActions.GET_USER_REPLIES, payload:{ ownerRecordType:this.ownerRecordType, commentId: shortComment.ownerRecordId}}]
       }))

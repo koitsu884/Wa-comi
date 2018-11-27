@@ -5,6 +5,7 @@
   [commentRecord]="comment" 
   [forcused]="comment.id == forcusCommentId"
   (toggleDisplayReplies)="toggleReplyForm($event)"
+  (deleteComment)="onDelete($event)"
   ></app-comment>
   <app-short-comment-form *ngIf="appUser && comment.displayReplies" [shortComments]="comment.replies"
     [currentAppUserId]="appUser.id" (addShortComment)="onAddCommentReply(comment.id ,$event)"
@@ -12,7 +13,7 @@
 </div>
 <div *ngIf="appUser">
   <h5>コメントを追加する</h5>
-  <app-comment-form (addComment)="addComment($event)"></app-comment-form>
+  <app-comment-form (addComment)="addComment($event)" [photoUploadable]="photoUploadable"></app-comment-form>
 </div>
 <div *ngIf="commentPagination && commentPagination.totalPages > 1" class="text-center">
   <pagination [boundaryLinks]="true" [totalItems]="commentPagination.totalItems" [ngModel]="commentPagination.currentPage"

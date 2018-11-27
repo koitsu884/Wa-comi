@@ -10,6 +10,7 @@ import { OuterSubscriber } from 'rxjs/OuterSubscriber';
 })
 export class CommentFormComponent implements OnInit {
   @Input() maxLength: number;
+  @Input() photoUploadable: boolean = false;
   @Input() originalPhoto: Photo;
   @Output() addComment = new EventEmitter<{comment:string, imageFile:File}>(); 
 

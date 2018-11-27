@@ -32,9 +32,7 @@ export class CommentComponent implements OnInit {
   }
 
   onDelete() {
-    this.alertify.confirm("本当にこのコメントを削除しますか？", () => {
-      this.deleteComment.emit(this.commentRecord);
-    })
+    this.deleteComment.emit(this.commentRecord);
   }
 
   commentWithName() {
