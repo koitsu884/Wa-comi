@@ -54,13 +54,18 @@ export class CircleEventDetailComponent implements OnInit {
     this.store.select('circleModule').subscribe((circleState) => {
       this.event = circleState.circleEvent.selectedCircleEvent;
       if(this.event){
+        if(!this.event.isPublic && !this.event.isCircleMember){
+          this.alertify.error("このイベントはサークルメンバー限定です");
+          this.router.navigate(['/circle/detail', this.event.circleId]);
+          return;
+        }
         this.isPast = new Date(this.event.fromDate) < new Date();
         this.loading = false;
+        if(!this.galleryImages){
+          this.galleryImages = this.getImages(this.event.photos);
+        }
       }
-      if(this.event && !this.galleryImages)
-      {
-        this.galleryImages = this.getImages(this.event.photos);
-      }
+  
       this.latestParticipations = circleState.circleEvent.latestEventParticipants;
     })
 

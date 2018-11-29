@@ -12,8 +12,8 @@
     <h4>新着イベント</h4>
     <div *ngIf="latestEvents">
       <div *ngFor="let event of latestEvents">
-        <a *ngIf="circle.isMember" [routerLink]="['/circle/detail', event.circleId, 'event', 'detail', event.id]">{{event.title}}</a>
-        <p *ngIf="!circle.isMember">{{event.title}}</p>
+        <a *ngIf="event.isPublic || circle.isMember" [routerLink]="['/circle/detail', event.circleId, 'event', 'detail', event.id]">{{event.title}}</a>
+        <p *ngIf="!event.isPublic && !circle.isMember">メンバー限定イベント</p>
         <p>開催日:{{event.fromDate | date: 'mediumDate'}}</p>
       </div>
     </div>
