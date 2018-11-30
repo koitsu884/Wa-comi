@@ -123,7 +123,6 @@ export class AccountEffects {
         .ofType(AccountActions.LOGIN)
         .map((action: AccountActions.Login) => { return action.payload })
         .mergeMap((loginResult) => {
-            this.router.navigate(['/']);
             return [
                 {
                     type: AccountActions.SET_TOKEN,
