@@ -255,7 +255,7 @@ export class GlobalEffect {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 })
                 .mergeMap(() => {
-                    var returnActions = payload.callbackActions ? payload.callbackActions : <{type:string, payload:any}[]>{};
+                    var returnActions = payload.callbackActions ? payload.callbackActions : [];
                     if(payload.callbackLocation)
                         this.router.navigate([payload.callbackLocation]);
 

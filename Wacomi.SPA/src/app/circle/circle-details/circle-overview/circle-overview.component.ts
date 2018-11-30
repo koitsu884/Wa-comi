@@ -89,7 +89,7 @@ export class CircleOverviewComponent implements OnInit, OnDestroy {
     this.alertify.confirm('本当に削除しますか?', () => {
       this.loading = true;
       this.store.dispatch(new CircleActions.InitCircleState());
-      this.store.dispatch(new GlobalActions.DeleteRecord({recordType:'circle', recordId:id, callbackLocation:'/users/posts/' + this.appUser.id}));
+      this.store.dispatch(new GlobalActions.DeleteRecord({recordType:'circle', recordId:id, callbackLocation:'/circle/management'}));
     })
   }
 

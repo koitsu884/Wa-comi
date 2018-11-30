@@ -44,6 +44,26 @@ const circleRoute: Routes = [
         },
     },
     {
+        path: 'edit', 
+        component: CircleEditComponent, 
+        canActivate: [AuthGuard],
+        resolve: {
+            appUser:AppUserResolver,
+            cities:CityListResolver,
+            categories: CircleCategoryResolver
+        },
+    },
+    {
+        path: 'edit/:id', 
+        component: CircleEditComponent, 
+        canActivate: [CircleOwnerGuard],
+        resolve: {
+            appUser:AppUserResolver,
+            cities:CityListResolver,
+            categories: CircleCategoryResolver
+        },
+    },
+    {
         path: 'detail/:id', 
         component: CircleDetailsComponent, 
         resolve: {
@@ -66,26 +86,6 @@ const circleRoute: Routes = [
             {path: 'event/edit/:id', component: CircleEventEditComponent, canActivate: [CircleMemberGuard], resolve: {cities:CityListResolver}}, 
             {path: 'request', component: CircleRequestListComponent, canActivate: [CircleOwnerGuard]},
           ]
-    },
-    {
-        path: 'edit', 
-        component: CircleEditComponent, 
-        canActivate: [CircleMemberGuard],
-        resolve: {
-            appUser:AppUserResolver,
-            cities:CityListResolver,
-            categories: CircleCategoryResolver
-        },
-    },
-    {
-        path: 'edit/:id', 
-        component: CircleEditComponent, 
-        canActivate: [CircleOwnerGuard],
-        resolve: {
-            appUser:AppUserResolver,
-            cities:CityListResolver,
-            categories: CircleCategoryResolver
-        },
     }
 ];
 

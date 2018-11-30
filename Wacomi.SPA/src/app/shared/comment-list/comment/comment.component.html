@@ -14,7 +14,7 @@
       ></app-user-comment>
     <p>{{commentRecord.dateCreated | timeago_jp}}</p>
     <div class="commentTools">
-      <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(commentRecord)" [disabled]="!appUserId">
+      <button class="btn btn-primary btn-xs" (click)="toggleReplyForm()" [disabled]="!appUserId">
         <i class="fa fa-comment" [ngClass]={blinking:forcused} title="返信数"></i>
         <span class="badge">{{commentRecord.replyCount}}</span>
       </button>
