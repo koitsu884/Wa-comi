@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import * as GlobalActions from '../../store/global.actions';
 import * as CircleActions from '../store/circle.actions';
 import * as CircleMemberActions from '../store/circlemember.actions';
@@ -26,7 +28,7 @@ export class CircleDetailsComponent implements OnInit {
     this.circleId = this.route.snapshot.params['id'];
     if(!this.circleId)
       this.router.navigate(['/circle']);
-    this.store.select('circleModule').take(1).subscribe((circleState) => {
+    this.store.select('circleModule').pipe(take(1)).subscribe((circleState) => {
         this.store.dispatch(new CircleActions.GetCircle(this.circleId));
         this.store.dispatch(new CircleActions.GetLatestCircleMemberList(this.circleId));
         this.store.dispatch(new CircleActions.GetLatestCircleTopicList(this.circleId));

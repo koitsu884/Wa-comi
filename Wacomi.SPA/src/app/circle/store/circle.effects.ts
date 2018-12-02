@@ -1,6 +1,7 @@
+
+import {withLatestFrom, catchError, mergeMap, switchMap, map} from 'rxjs/operators';
 import * as fromCircle from './circle.reducers';
 import * as CircleActions from './circle.actions';
-import * as CircleMemberActions from './circlemember.actions';
 import * as GlobalActions from '../../store/global.actions';
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
@@ -9,8 +10,8 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Circle } from '../../_models/Circle';
-import { of } from 'rxjs/observable/of';
-import 'rxjs/add/operator/withLatestFrom';
+import { of } from 'rxjs';
+
 import { CircleRequest } from '../../_models/CircleRequest';
 import { CircleTopic } from '../../_models/CircleTopic';
 import { CircleMember } from '../../_models/CircleMember';
@@ -26,13 +27,13 @@ export class CircleEffects {
 
     @Effect()
     getCircle = this.actions$
-        .ofType(CircleActions.GET_CIRCLE)
-        .map((action: CircleActions.GetCircle) => {
+        .ofType(CircleActions.GET_CIRCLE).pipe(
+        map((action: CircleActions.GetCircle) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<Circle>(this.baseUrl + 'circle/' + id)
-                .mergeMap((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<Circle>(this.baseUrl + 'circle/' + id).pipe(
+                mergeMap((result) => {
                     var returnValue = [
                         {
                             type: CircleActions.SET_CIRCLE,
@@ -68,36 +69,36 @@ export class CircleEffects {
                             }
                         )
                     return returnValue;
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
 
     @Effect()
     setCircleFilters = this.actions$
-        .ofType(CircleActions.SET_CIRCLE_SEARCH_OPTIONS)
-        .map(() => {
+        .ofType(CircleActions.SET_CIRCLE_SEARCH_OPTIONS).pipe(
+        map(() => {
             return {
                 type: CircleActions.SEARCH_CIRCLE,
             }
-        })
+        }))
 
     @Effect()
     setCirclePagination = this.actions$
-        .ofType(CircleActions.SET_CIRCLE_PAGE)
-        .map(() => {
+        .ofType(CircleActions.SET_CIRCLE_PAGE).pipe(
+        map(() => {
             return {
                 type: CircleActions.SEARCH_CIRCLE,
             }
-        })
+        }))
 
     @Effect()
     searchCircle = this.actions$
-        .ofType(CircleActions.SEARCH_CIRCLE)
-        .withLatestFrom(this.store$)
-        .switchMap(([actions, circleState]) => {
+        .ofType(CircleActions.SEARCH_CIRCLE).pipe(
+        withLatestFrom(this.store$),
+        switchMap(([actions, circleState]) => {
             let Params = new HttpParams();
             if (circleState.circleModule.circle.searchParam.categoryId > 0)
                 Params = Params.append('categoryId', circleState.circleModule.circle.searchParam.categoryId.toString());
@@ -112,8 +113,8 @@ export class CircleEffects {
                 this.baseUrl + 'circle/search',
                 circleState.circleModule.circle.searchParam,
                 { params: Params, observe: 'response' }
-            )
-                .map((response) => {
+            ).pipe(
+                map((response) => {
                     return {
                         type: CircleActions.SET_CIRCLE_SEARCH_RESULT,
                         payload: {
@@ -121,44 +122,44 @@ export class CircleEffects {
                             pagination: JSON.parse(response.headers.get("Pagination"))
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        })
+                }),)
+        }),)
 
     @Effect()
     getCircleRequestList = this.actions$
-        .ofType(CircleActions.GET_CIRCLE_REQUEST_LIST)
-        .map((action: CircleActions.GetCircleRequestList) => {
+        .ofType(CircleActions.GET_CIRCLE_REQUEST_LIST).pipe(
+        map((action: CircleActions.GetCircleRequestList) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<CircleRequest[]>(this.baseUrl + 'circlemember/' + id + '/request')
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<CircleRequest[]>(this.baseUrl + 'circlemember/' + id + '/request').pipe(
+                map((result) => {
                     return {
                         type: CircleActions.SET_CIRCLE_REQUEST_LIST,
                         payload: result
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     approveCircleRequest = this.actions$
-        .ofType(CircleActions.APPROVE_CIRCLE_REQUEST)
-        .map((action: CircleActions.ApproveCircleRequest) => {
+        .ofType(CircleActions.APPROVE_CIRCLE_REQUEST).pipe(
+        map((action: CircleActions.ApproveCircleRequest) => {
             return action.payload;
-        })
-        .switchMap((circleRequest) => {
+        }),
+        switchMap((circleRequest) => {
             return this.httpClient.post<CircleMember>(this.baseUrl + 'circlemember/approve',
                 circleRequest,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((newMember) => {
+                }).pipe(
+                mergeMap((newMember) => {
                     return [{
                         type: GlobalActions.SUCCESS,
                         payload: "メンバー認証しました"
@@ -167,108 +168,108 @@ export class CircleEffects {
                         type: CircleActions.ADD_NEW_CIRCLE_MEMBER,
                         payload: newMember
                     }];
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     getLatestCircleMemberList = this.actions$
-        .ofType(CircleActions.GET_LATEST_CIRCLE_MEMBER_LIST)
-        .map((action: CircleActions.GetLatestCircleMemberList) => {
+        .ofType(CircleActions.GET_LATEST_CIRCLE_MEMBER_LIST).pipe(
+        map((action: CircleActions.GetLatestCircleMemberList) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<CircleMember[]>(this.baseUrl + 'circlemember/' + id + '/latest')
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<CircleMember[]>(this.baseUrl + 'circlemember/' + id + '/latest').pipe(
+                map((result) => {
                     return {
                         type: CircleActions.SET_LATEST_CIRCLE_MEMBER_LIST,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     getLatestCircleTopicList = this.actions$
-        .ofType(CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST)
-        .map((action: CircleActions.GetLatestCircleTopicList) => {
+        .ofType(CircleActions.GET_LATEST_CIRCLE_TOPIC_LIST).pipe(
+        map((action: CircleActions.GetLatestCircleTopicList) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<CircleTopic[]>(this.baseUrl + 'circle/' + id + '/topics/latest')
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<CircleTopic[]>(this.baseUrl + 'circle/' + id + '/topics/latest').pipe(
+                map((result) => {
                     return {
                         type: CircleActions.SET_LATEST_CIRCLE_TOPIC_LIST,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     getLatestCircleEventList = this.actions$
-        .ofType(CircleActions.GET_LATEST_CIRCLE_EVENT_LIST)
-        .map((action: CircleActions.GetLatestCircleEventList) => {
+        .ofType(CircleActions.GET_LATEST_CIRCLE_EVENT_LIST).pipe(
+        map((action: CircleActions.GetLatestCircleEventList) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/latest')
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/latest').pipe(
+                map((result) => {
                     return {
                         type: CircleActions.SET_LATEST_CIRCLE_EVENT_LIST,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
         @Effect()
         getPastCircleEventList = this.actions$
-            .ofType(CircleActions.GET_PAST_CIRCLE_EVENT_LIST)
-            .map((action: CircleActions.GetPastCircleEventList) => {
+            .ofType(CircleActions.GET_PAST_CIRCLE_EVENT_LIST).pipe(
+            map((action: CircleActions.GetPastCircleEventList) => {
                 return action.payload;
-            })
-            .switchMap((id) => {
-                return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/past')
-                    .map((result) => {
+            }),
+            switchMap((id) => {
+                return this.httpClient.get<CircleEvent[]>(this.baseUrl + 'circle/' + id + '/events/past').pipe(
+                    map((result) => {
                         return {
                             type: CircleActions.SET_PAST_CIRCLE_EVENT_LIST,
                             payload: result
                         }
-                    })
-                    .catch((error: string) => {
+                    }),
+                    catchError((error: string) => {
                         return of({ type: GlobalActions.FAILED, payload: error })
-                    });
-            })
+                    }),);
+            }),)
 
     @Effect()
     declineCircleRequest = this.actions$
-        .ofType(CircleActions.DECLINE_CIRCLE_REQUEST)
-        .map((action: CircleActions.DeclineCircleRequest) => {
+        .ofType(CircleActions.DECLINE_CIRCLE_REQUEST).pipe(
+        map((action: CircleActions.DeclineCircleRequest) => {
             return action.payload;
-        })
-        .switchMap((circleRequest) => {
+        }),
+        switchMap((circleRequest) => {
             return this.httpClient.put<any>(this.baseUrl + 'circlemember/decline',
                 circleRequest,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map((result) => {
+                }).pipe(
+                map((result) => {
                     return {
                         type: GlobalActions.FAILED,
                         payload: "リクエストを拒否しました"
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 }

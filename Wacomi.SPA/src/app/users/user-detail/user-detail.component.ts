@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { UserDetails } from '../../_models/UserDetails';
 import { MemberProfile } from '../../_models/MemberProfile';
@@ -44,7 +46,7 @@ export class UserDetailComponent implements OnInit {
       .subscribe((blogs) => {
         this.blogs = blogs;
       })
-    this.store.select("account").take(1).subscribe((account) => {
+    this.store.select("account").pipe(take(1)).subscribe((account) => {
       this.appUserId = account.appUser ? account.appUser.id : null;
     });
   }

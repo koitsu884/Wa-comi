@@ -9,7 +9,7 @@ import { CircleMember, CircleRoleEnum } from '../../../_models/CircleMember';
 import { Pagination } from '../../../_models/Pagination';
 import { Circle } from '../../../_models/Circle';
 import { AlertifyService } from '../../../_services/alertify.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-circle-member-list',

@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GlobalService } from '../../_services/global.service';
@@ -27,8 +29,8 @@ export class PasswordEditComponent extends PasswordEditorBase implements OnInit 
     private store : Store<fromApp.AppState>) {super();}
 
   ngOnInit() {
-    this.store.select("account")
-              .take(1)
+    this.store.select("account").pipe(
+              take(1))
               .subscribe((accountState) => {
                 this.userId = accountState.account.id;
               });

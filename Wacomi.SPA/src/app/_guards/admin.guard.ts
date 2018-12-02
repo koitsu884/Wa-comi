@@ -1,5 +1,7 @@
+
+import {map, take} from 'rxjs/operators';
 import { CanActivate, Router } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import * as fromApp from "../store/app.reducer";
 import * as fromAccount from "../account/store/account.reducers";
@@ -13,9 +15,9 @@ export class AdminGuard implements CanActivate {
                 private alertify: AlertifyService){}
 
     canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-        return this.store.select('account')
-        .take(1)
-        .map((authState: fromAccount.State) => {
+        return this.store.select('account').pipe(
+        take(1),
+        map((authState: fromAccount.State) => {
             if(authState.authenticated && authState.appUser.userType == "Admin"){
                 return true;
             }
@@ -24,6 +26,6 @@ export class AdminGuard implements CanActivate {
                 this.router.navigate(['/']);
                 return false;
             }
-        })
+        }),)
     }
 }

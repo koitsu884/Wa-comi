@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 
 import * as fromBlog from '../store/blogs.reducers';
@@ -37,8 +39,8 @@ export class BlogEditorComponent implements OnInit {
       this.editMode = blogId ? true : false;
       if (this.editMode) {
         this.loading = true;
-        this.store.select('blogs')
-          .take(1)
+        this.store.select('blogs').pipe(
+          take(1))
           .subscribe((state: fromBlog.State) => {
             var index = state.blogs.findIndex(x => x.id == blogId);
             if (index >= 0) {
@@ -49,8 +51,8 @@ export class BlogEditorComponent implements OnInit {
             }
           });
       } else {
-        this.store.select('account')
-          .take(1)
+        this.store.select('account').pipe(
+          take(1))
           .subscribe((state) => {
             this.blog.ownerId = state.appUser.id;
           })

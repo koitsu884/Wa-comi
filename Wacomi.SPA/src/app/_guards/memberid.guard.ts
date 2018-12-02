@@ -1,5 +1,7 @@
+
+import {map, take} from 'rxjs/operators';
 import { CanActivate, Router, Params, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import * as fromApp from "../store/app.reducer";
 import * as fromAccount from "../account/store/account.reducers";
@@ -15,9 +17,9 @@ export class MemberIdGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         const memberId = route.params["memberId"];
 
-        return this.store.select('account')
-        .take(1)
-        .map((authState: fromAccount.State) => {
+        return this.store.select('account').pipe(
+        take(1),
+        map((authState: fromAccount.State) => {
             if(authState.authenticated && authState.appUser.userType == "Member" && authState.appUser.userProfileId == memberId){
                 return true;
             }
@@ -26,6 +28,6 @@ export class MemberIdGuard implements CanActivate {
                 this.router.navigate(['/']);
                 return false;
             }
-        })
+        }),)
     }
 }

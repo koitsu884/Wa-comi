@@ -1,7 +1,9 @@
+
+import {take} from 'rxjs/operators';
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import { Observable } from "rxjs";
+
+
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import * as fromPhoto from "../photo/store/photos.reducers";
@@ -14,8 +16,8 @@ export class UserPhotoResolver implements Resolve<Photo[]> {
 
     resolve(route: ActivatedRouteSnapshot): Photo[] {
         let photos = null;
-        this.store.select('photo')
-            .take(1)
+        this.store.select('photo').pipe(
+            take(1))
             .subscribe((state) => {
                 photos = Object.assign([], state.photos);
             });

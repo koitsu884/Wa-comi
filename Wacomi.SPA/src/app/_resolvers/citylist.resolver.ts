@@ -1,8 +1,10 @@
+
+import {take} from 'rxjs/operators';
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
 import { City } from "../_models/City";
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import { Observable } from "rxjs";
+
+
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import * as fromGlobal from "../store/global.reducers";
@@ -14,8 +16,8 @@ export class CityListResolver implements Resolve<City[]> {
 
     resolve(route: ActivatedRouteSnapshot) : City[] {
         let cityList = [];
-        this.store.select('global')
-        .take(1)
+        this.store.select('global').pipe(
+        take(1))
         .subscribe((state) => {
             cityList = state.cityList;
         });

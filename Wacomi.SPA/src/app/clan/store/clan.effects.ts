@@ -1,3 +1,5 @@
+
+import {mergeMap, catchError, map, switchMap, withLatestFrom} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Actions, Effect } from '@ngrx/effects';
 import { environment } from "../../../environments/environment";
@@ -8,8 +10,8 @@ import { AlertifyService } from "../../_services/alertify.service";
 import * as ClanSeekActions from "./clan.actions";
 import * as GlobalActions from "../../store/global.actions";
 import { ClanSeek } from "../../_models/ClanSeek";
-import { of } from "rxjs/observable/of";
-import 'rxjs/add/operator/withLatestFrom';
+import { of } from "rxjs";
+
 import { Store } from "@ngrx/store";
 import * as fromClan from "./clan.reducers";
 import { ModalService } from "../../_services/modal.service";
@@ -27,27 +29,27 @@ export class ClanSeekEffects {
 
     @Effect()
     setClanSeekFilters = this.actions$
-        .ofType(ClanSeekActions.SET_CLANSEEK_FILTERS)
-        .map(() => {
+        .ofType(ClanSeekActions.SET_CLANSEEK_FILTERS).pipe(
+        map(() => {
             return {
                 type: ClanSeekActions.SEARCH_CLANSEEKS,
             }
-        })
+        }))
 
     @Effect()
     setClanSeekPagination = this.actions$
-        .ofType(ClanSeekActions.SET_CLANSEEK_PAGE)
-        .map(() => {
+        .ofType(ClanSeekActions.SET_CLANSEEK_PAGE).pipe(
+        map(() => {
             return {
                 type: ClanSeekActions.SEARCH_CLANSEEKS,
             }
-        })
+        }))
 
     @Effect()
     searchClanSeeks = this.actions$
-        .ofType(ClanSeekActions.SEARCH_CLANSEEKS)
-        .withLatestFrom(this.store$)
-        .switchMap(([actions, clanState]) => {
+        .ofType(ClanSeekActions.SEARCH_CLANSEEKS).pipe(
+        withLatestFrom(this.store$),
+        switchMap(([actions, clanState]) => {
             let Params = new HttpParams();
             if (clanState.clan.selectedCategoryId > 0)
                 Params = Params.append('categoryId', clanState.clan.selectedCategoryId.toString());
@@ -58,8 +60,8 @@ export class ClanSeekEffects {
                 Params = Params.append('pageSize', clanState.clan.pagination.itemsPerPage.toString());
             }
 
-            return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek', { params: Params, observe: 'response' })
-                .map((response) => {
+            return this.httpClient.get<ClanSeek[]>(this.baseUrl + 'clanseek', { params: Params, observe: 'response' }).pipe(
+                map((response) => {
                     return {
                         type: ClanSeekActions.SET_CLANSEEK_SEARCH_RESULT,
                         payload: {
@@ -67,21 +69,21 @@ export class ClanSeekEffects {
                             pagination: JSON.parse(response.headers.get("Pagination"))
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        })
+                }),)
+        }),)
 
     @Effect()
     tryDeleteClanSeek = this.actions$
-        .ofType(ClanSeekActions.TRY_DELETE_CLANSEEK)
-        .switchMap((actions: ClanSeekActions.TryDeleteClanSeek) => {
+        .ofType(ClanSeekActions.TRY_DELETE_CLANSEEK).pipe(
+        switchMap((actions: ClanSeekActions.TryDeleteClanSeek) => {
             return this.httpClient.delete(this.baseUrl + 'clanseek/' + actions.payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((result) => {
+                }).pipe(
+                mergeMap((result) => {
                     this.router.navigate(['/clan']);
                     return [{
                         type: GlobalActions.SUCCESS, payload: "削除しました"
@@ -89,25 +91,25 @@ export class ClanSeekEffects {
                     {
                         type: ClanSeekActions.SET_COUNTLIMIT_FLAG, payload: false
                     }];
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }))
 
     @Effect()
     tryAddClanSeek = this.actions$
-        .ofType(ClanSeekActions.TRY_ADD_CLANSEEK)
-        .map((action: ClanSeekActions.TryAddClanSeek) => {
+        .ofType(ClanSeekActions.TRY_ADD_CLANSEEK).pipe(
+        map((action: ClanSeekActions.TryAddClanSeek) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post<ClanSeek>(this.baseUrl + 'clanseek',
                 payload.clanSeek,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((result) => {
+                }).pipe(
+                mergeMap((result) => {
                     let returnValues: Array<any> = [
                         {
                             type: ClanSeekActions.SET_EDITING_CLANSEEK, payload: result
@@ -126,11 +128,11 @@ export class ClanSeekEffects {
                     }
 
                     return returnValues;
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     // @Effect()
     // tryAddClanSeekPhotos = this.actions$
@@ -161,61 +163,61 @@ export class ClanSeekEffects {
 
     @Effect()
     updateClanSeek = this.actions$
-        .ofType(ClanSeekActions.UPDATE_CLANSEEK)
-        .map((action: ClanSeekActions.UpdateClanSeek) => {
+        .ofType(ClanSeekActions.UPDATE_CLANSEEK).pipe(
+        map((action: ClanSeekActions.UpdateClanSeek) => {
             return action.payload
-        })
-        .switchMap((clanSeek) => {
+        }),
+        switchMap((clanSeek) => {
             return this.httpClient.put(this.baseUrl + 'clanseek',
                 clanSeek,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     this.alertify.success("更新しました");
                     this.router.navigate(['/users/posts', clanSeek.appUserId]);
                     return {
                         type: ClanSeekActions.SET_EDITING_CLANSEEK, payload: clanSeek
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     checkClanseeksCountLimit = this.actions$
-        .ofType(ClanSeekActions.CHECK_CLANSEEKS_COUNTLIMIT)
-        .map((action: ClanSeekActions.CheckClanseeksCountLimit) => {
+        .ofType(ClanSeekActions.CHECK_CLANSEEKS_COUNTLIMIT).pipe(
+        map((action: ClanSeekActions.CheckClanseeksCountLimit) => {
             return action.payload;
-        })
-        .switchMap((appUserId) => {
-            return this.httpClient.get<number>(this.baseUrl + 'clanseek/user/' + appUserId + '/count')
-                .map((count) => {
+        }),
+        switchMap((appUserId) => {
+            return this.httpClient.get<number>(this.baseUrl + 'clanseek/user/' + appUserId + '/count').pipe(
+                map((count) => {
                     return { type: ClanSeekActions.SET_COUNTLIMIT_FLAG, payload: count >= this.CLANSEEK_MAX }
                 }
-                )
-                .catch((error: string) => {
+                ),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
     @Effect()
     getClanSeek = this.actions$
-        .ofType(ClanSeekActions.GET_CLANSEEK)
-        .map((action: ClanSeekActions.GetClanSeek) => {
+        .ofType(ClanSeekActions.GET_CLANSEEK).pipe(
+        map((action: ClanSeekActions.GetClanSeek) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<ClanSeek>(this.baseUrl + 'clanseek/' + id)
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<ClanSeek>(this.baseUrl + 'clanseek/' + id).pipe(
+                map((result) => {
                     return {
                         type: ClanSeekActions.SET_EDITING_CLANSEEK,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                });
-        })
+                }),);
+        }),)
 
 }

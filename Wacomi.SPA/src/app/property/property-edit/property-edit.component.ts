@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 import { TermEnum, RentTypeEnum } from '../../_models/PropertySearchOptions';
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import {jaLocale} from 'ngx-bootstrap/locale';
-import { defineLocale } from 'ngx-bootstrap/chronos/locale/locales';
+import { defineLocale } from 'ngx-bootstrap/chronos';
 defineLocale("ja", jaLocale);
 
 @Component({

@@ -6,7 +6,7 @@ import { Pagination } from '../../../../../../_models/Pagination';
 import { Store } from '@ngrx/store';
 import * as fromCircle from '../../../../../store/circle.reducers';
 import * as CircleEventParticipationActions from '../../../../../store/circle-event-participations.actions';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-circle-event-participations-list',

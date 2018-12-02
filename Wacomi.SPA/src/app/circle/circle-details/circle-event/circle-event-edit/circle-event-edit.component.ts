@@ -11,7 +11,7 @@ import { NgForm } from '@angular/forms';
 import { City } from '../../../../_models/City';
 import { Location } from '@angular/common';
 import {jaLocale} from 'ngx-bootstrap/locale';
-import { defineLocale } from 'ngx-bootstrap/chronos/locale/locales';
+import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 defineLocale("ja", jaLocale);
 

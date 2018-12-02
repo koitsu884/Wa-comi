@@ -1,11 +1,13 @@
+
+import {withLatestFrom, mergeMap, catchError, switchMap, map} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Actions, Effect } from '@ngrx/effects';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
+
+
 // import 'rxjs/add/operator/of';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/withLatestFrom';
+
+
+
 
 import * as BlogActions from './blogs.actions';
 import * as GlobalActions from "../../store/global.actions";
@@ -16,7 +18,7 @@ import { environment } from "../../../environments/environment";
 import { AlertifyService } from "../../_services/alertify.service";
 
 import { Store } from "@ngrx/store";
-import { of } from "rxjs/observable/of";
+import { of } from "rxjs";
 import { Blog } from "../../_models/Blog";
 import { BlogFeed } from "../../_models/BlogFeed";
 import { ShortComment } from "../../_models/ShortComment";
@@ -34,36 +36,36 @@ export class BlogEffects {
 
     @Effect()
     getBlog = this.actions$
-        .ofType(BlogActions.GET_BLOG)
-        .map((action: BlogActions.GetBlog) => {
+        .ofType(BlogActions.GET_BLOG).pipe(
+        map((action: BlogActions.GetBlog) => {
             return action.payload;
-        })
-        .switchMap((appUserId) => {
-            return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/user/' + appUserId + '?includeFeeds=true')
-                .map((result) => {
+        }),
+        switchMap((appUserId) => {
+            return this.httpClient.get<Blog[]>(this.baseUrl + 'blog/user/' + appUserId + '?includeFeeds=true').pipe(
+                map((result) => {
                     return {
                         type: BlogActions.SET_BLOG,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     tryAddBlog = this.actions$
-        .ofType(BlogActions.TRY_ADDBLOG)
-        .map((action: BlogActions.TryAddBlog) => {
+        .ofType(BlogActions.TRY_ADDBLOG).pipe(
+        map((action: BlogActions.TryAddBlog) => {
             return action.payload
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post<Blog>(this.baseUrl + 'blog',
                 payload.blog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((result) => {
+                }).pipe(
+                mergeMap((result) => {
                     let returnValues: Array<any> = [{ type: BlogActions.ADD_BLOG, payload: result }];
                     if (payload.photo != null) {
                         var formData = new FormData();
@@ -85,26 +87,26 @@ export class BlogEffects {
 
                     this.alertify.success("ブログを追加しました");
                     return returnValues;
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                });
-        })
+                }),);
+        }),)
 
 
     @Effect()
     updateBlog = this.actions$
-        .ofType(BlogActions.UPDATE_BLOG)
-        .map((action: BlogActions.UpdateBlog) => {
+        .ofType(BlogActions.UPDATE_BLOG).pipe(
+        map((action: BlogActions.UpdateBlog) => {
             return action.payload
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.put(this.baseUrl + 'blog/',
                 payload.blog,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     //this.alertify.success("更新しました");
                     if (payload.photo) {
                         this.alertify.success("更新しました");
@@ -127,75 +129,75 @@ export class BlogEffects {
 
                     this.location.back();
                     return { type: GlobalActions.SUCCESS, payload: "更新しました" };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     tryDeleteBlog = this.actions$
-        .ofType(BlogActions.TRY_DELETEBLOG)
-        .map((action: BlogActions.TryDeleteBlog) => {
+        .ofType(BlogActions.TRY_DELETEBLOG).pipe(
+        map((action: BlogActions.TryDeleteBlog) => {
             return action.payload
-        })
-        .switchMap((id) => {
-            return this.httpClient.delete(this.baseUrl + 'blog/' + id)
-                .map(() => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.delete(this.baseUrl + 'blog/' + id).pipe(
+                map(() => {
                     this.alertify.success("削除しました");
                     return {
                         type: BlogActions.DELETE_BLOG, payload: id
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     tryDeleteFeed = this.actions$
-        .ofType(BlogActions.TRY_DELETE_FEED)
-        .map((action: BlogActions.TryDeleteFeed) => {
+        .ofType(BlogActions.TRY_DELETE_FEED).pipe(
+        map((action: BlogActions.TryDeleteFeed) => {
             return action.payload
-        })
-        .switchMap((blogFeed) => {
-            return this.httpClient.put(this.baseUrl + 'blogfeed/' + blogFeed.id + '/disable', null)
-                .map(() => {
+        }),
+        switchMap((blogFeed) => {
+            return this.httpClient.put(this.baseUrl + 'blogfeed/' + blogFeed.id + '/disable', null).pipe(
+                map(() => {
                     this.alertify.success("削除しました");
                     return {
                         type: BlogActions.DELETE_FEED, payload: blogFeed
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: 'FAILED', payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     blogSearchFilter = this.actions$
-        .ofType(BlogActions.SET_FEED_SEARCH_CATEGORY)
-        .map(() => {
+        .ofType(BlogActions.SET_FEED_SEARCH_CATEGORY).pipe(
+        map(() => {
             return {
                 type: BlogActions.SEARCH_FEEDS,
             }
-        })
+        }))
 
     @Effect()
     setOnlyMineFlag = this.actions$
-        .ofType(BlogActions.SET_SEARCH_USER_ID)
-        .map(() => {
+        .ofType(BlogActions.SET_SEARCH_USER_ID).pipe(
+        map(() => {
             return {
                 type: BlogActions.SEARCH_FEEDS,
             }
-        })
+        }))
 
     @Effect()
     searchFeedById = this.actions$
-        .ofType(BlogActions.SEARCH_FEED_BY_ID)
-        .map((action: BlogActions.SearchFeedById) => {return action.payload;})
-        .switchMap((feedId) => {
-            return this.httpClient.get<BlogFeed>(this.baseUrl + 'blogfeed/' + feedId)
-                .map((blogFeed) => {
+        .ofType(BlogActions.SEARCH_FEED_BY_ID).pipe(
+        map((action: BlogActions.SearchFeedById) => {return action.payload;}),
+        switchMap((feedId) => {
+            return this.httpClient.get<BlogFeed>(this.baseUrl + 'blogfeed/' + feedId).pipe(
+                map((blogFeed) => {
                     var blogFeeds = [blogFeed];
                     return {
                         type: BlogActions.SET_FEED_SEARCH_RESULT,
@@ -204,26 +206,26 @@ export class BlogEffects {
                             pagination: null
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        })
+                }),)
+        }),)
 
     @Effect()
     setClanSeekPagination = this.actions$
-        .ofType(BlogActions.SET_FEED_SEARCH_PAGE)
-        .map(() => {
+        .ofType(BlogActions.SET_FEED_SEARCH_PAGE).pipe(
+        map(() => {
             return {
                 type: BlogActions.SEARCH_FEEDS,
             }
-        })
+        }))
 
     @Effect()
     searchFeeds = this.actions$
-        .ofType(BlogActions.SEARCH_FEEDS)
-        .withLatestFrom(this.store$)
-        .switchMap(([actions, blogState]) => {
+        .ofType(BlogActions.SEARCH_FEEDS).pipe(
+        withLatestFrom(this.store$),
+        switchMap(([actions, blogState]) => {
             let Params = new HttpParams();
             if (blogState.blogs.searchUserId)
                 Params = Params.append('userId', blogState.blogs.searchUserId.toString());
@@ -234,8 +236,8 @@ export class BlogEffects {
                 Params = Params.append('pageSize', blogState.blogs.pagination.itemsPerPage.toString());
             }
 
-            return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed', { params: Params, observe: 'response' })
-                .map((response) => {
+            return this.httpClient.get<BlogFeed[]>(this.baseUrl + 'blogfeed', { params: Params, observe: 'response' }).pipe(
+                map((response) => {
                     return {
                         type: BlogActions.SET_FEED_SEARCH_RESULT,
                         payload: {
@@ -243,65 +245,65 @@ export class BlogEffects {
                             pagination: JSON.parse(response.headers.get("Pagination"))
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        })
+                }),)
+        }),)
 
     @Effect()
     likeFeed = this.actions$
-        .ofType(BlogActions.LIKE_FEED)
-        .map((action: BlogActions.LikeFeed) => {
+        .ofType(BlogActions.LIKE_FEED).pipe(
+        map((action: BlogActions.LikeFeed) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post(this.baseUrl + 'blogfeed/like', payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 }
-            ).map(() => {
+            ).pipe(map(() => {
                 this.alertify.success("良いね！しました");
                 return {
                     type: BlogActions.SET_LIKED_FLAG, payload: payload.blogFeedId
                 };
-            }).catch((error: string) => {
+            }),catchError((error: string) => {
                 return of({ type: GlobalActions.FAILED, payload: error })
-            })
-        })
+            }),)
+        }),)
 
     @Effect()
     getFeedComments = this.actions$
-        .ofType(BlogActions.GET_FEED_COMMENTS)
-        .map((action: BlogActions.GetFeedComments) => {
+        .ofType(BlogActions.GET_FEED_COMMENTS).pipe(
+        map((action: BlogActions.GetFeedComments) => {
             return action.payload;
-        })
-        .switchMap((blogFeedId) => {
-            return this.httpClient.get<ShortComment[]>(this.baseUrl + 'blogfeed/comment?blogFeedId=' + blogFeedId)
-                .map((result) => {
+        }),
+        switchMap((blogFeedId) => {
+            return this.httpClient.get<ShortComment[]>(this.baseUrl + 'blogfeed/comment?blogFeedId=' + blogFeedId).pipe(
+                map((result) => {
                     return {
                         type: BlogActions.SET_FEED_COMMENTS,
                         payload: { blogFeedId: blogFeedId, comments: result }
                     };
-                }).catch((error: string) => {
+                }),catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     tryAddFeedComment = this.actions$
-        .ofType(BlogActions.TRY_ADD_FEED_COMMENT)
-        .map((action: BlogActions.TryAddFeedComment) => {
+        .ofType(BlogActions.TRY_ADD_FEED_COMMENT).pipe(
+        map((action: BlogActions.TryAddFeedComment) => {
             return action.payload
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post(
                 this.baseUrl + 'blogfeed/comment',
                 payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 }
-            ).mergeMap(() => {
+            ).pipe(mergeMap(() => {
                 return [
                     {
                         type: BlogActions.GET_FEED_COMMENTS, payload: payload.blogFeedId
@@ -310,21 +312,21 @@ export class BlogEffects {
                         type: GlobalActions.SUCCESS, payload: "コメントを追加しました"
                     }
                 ];
-            }).catch((error: string) => {
+            }),catchError((error: string) => {
                 return of({ type: GlobalActions.FAILED, payload: error })
-            })
-        })
+            }),)
+        }),)
 
     @Effect()
     tryDeleteFeedComment = this.actions$
-        .ofType(BlogActions.TRY_DELETE_FEED_COMMENT)
-        .map((action: BlogActions.TryDeleteFeedComment) => {
+        .ofType(BlogActions.TRY_DELETE_FEED_COMMENT).pipe(
+        map((action: BlogActions.TryDeleteFeedComment) => {
             return action.payload
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.delete(
                 this.baseUrl + 'blogfeed/comment/' + payload.feedCommentId
-            ).mergeMap(() => {
+            ).pipe(mergeMap(() => {
                 return [
                     {
                         type: GlobalActions.SUCCESS, payload: "コメントを削除しました"
@@ -333,10 +335,10 @@ export class BlogEffects {
                         type: BlogActions.GET_FEED_COMMENTS, payload: payload.blogFeedId
                     }
                 ]
-            }).catch((error: string) => {
+            }),catchError((error: string) => {
                 return of({ type: GlobalActions.FAILED, payload: error })
-            })
-        })
+            }),)
+        }),)
 
     // @Effect()
     // getLikedFeedNumberList = this.actions$

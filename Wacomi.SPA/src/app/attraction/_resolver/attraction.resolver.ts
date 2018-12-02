@@ -1,10 +1,12 @@
+
+import {take} from 'rxjs/operators';
 import * as fromAttraction from '../store/attraction.reducers';
 import * as AttractionActions from '../store/attraction.actions';
 import { Injectable } from "@angular/core";
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
 import { Attraction } from "../../_models/Attraction";
 import { Store } from "@ngrx/store";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class AttractionResolver implements Resolve<Attraction> {
@@ -13,8 +15,8 @@ export class AttractionResolver implements Resolve<Attraction> {
 
     resolve(route: ActivatedRouteSnapshot) : Attraction {
         let attraction = null;
-        this.store.select('attraction')
-        .take(1)
+        this.store.select('attraction').pipe(
+        take(1))
         .subscribe((state) => {
             if(state.selectedAttraction != null)
             {

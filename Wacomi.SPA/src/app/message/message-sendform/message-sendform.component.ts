@@ -1,9 +1,11 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Message } from '../../_models/Message';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from '../../_services/alertify.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as fromMessage from '../store/message.reducers';
 import * as MessageActions from '../store/message.actions';
 import * as fromApp from '../../store/app.reducer';
@@ -23,8 +25,8 @@ export class MessageSendformComponent implements OnInit {
   constructor(private store: Store<fromApp.AppState>, private route: ActivatedRoute, private router: Router, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.store.select("messages")
-      .take(1)
+    this.store.select("messages").pipe(
+      take(1))
       .subscribe((result) => {
         this.message = result.sendingMessage;
         this.messageReplyingTo = result.messageReplyingTo;

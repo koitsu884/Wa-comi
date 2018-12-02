@@ -9,7 +9,7 @@ import * as fromAccount from "../../account/store/account.reducers";
 import * as PhotoActions from '../store/photos.action';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
 import { AppUser } from '../../_models/AppUser';
 import * as loadImage from 'blueimp-load-image';

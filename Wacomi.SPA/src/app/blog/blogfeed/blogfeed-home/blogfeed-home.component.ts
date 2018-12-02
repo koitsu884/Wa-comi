@@ -1,6 +1,6 @@
-import { Component, OnInit, trigger, state, style, transition, animate } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Pagination } from '../../../_models/Pagination';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as fromBlog from '../../store/blogs.reducers';
 import * as BlogActions from '../../store/blogs.actions';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ShortComment } from '../../../_models/ShortComment';
 import { BlogFeed } from '../../../_models/BlogFeed';
 import { AlertifyService } from '../../../_services/alertify.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-blogfeed-home',

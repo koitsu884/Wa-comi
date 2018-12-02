@@ -6,40 +6,40 @@ import { TopicReply } from '../../_models/TopicReply';
 import { TopicCommentFeel } from '../../_models/TopicCommentFeel';
 
 export interface FeatureState extends fromApp.AppState {
-    dailytopic : State
+    dailytopic: State
 }
 
 export interface State {
     topicList: DailyTopic[];
     likedTopicList: number[];
     topicComments: TopicComment[];
-    commentFeelings: TopicCommentFeel[]; 
-    topicReplies: {topicCommentId: number, replies: TopicReply[]}
+    commentFeelings: TopicCommentFeel[];
+    topicReplies: { topicCommentId: number, replies: TopicReply[] }
     todaysComment: number;
 }
 
 const initialState: State = {
     topicList: null,
     likedTopicList: null,
-    topicComments : [],
-    commentFeelings : null,
-    topicReplies : null,
-    todaysComment : null
+    topicComments: [],
+    commentFeelings: null,
+    topicReplies: null,
+    todaysComment: null
 };
 
-export function dailyTopicReducer(state = initialState, action: DailyTopicActions.DailyTopicActions ){
-    let temp : DailyTopic[] = null;
-    let tempTopicComments : TopicComment[] = null;
-    switch(action.type){
+export function dailyTopicReducer(state = initialState, action: DailyTopicActions.DailyTopicActions) {
+    let temp: DailyTopic[] = null;
+    let tempTopicComments: TopicComment[] = null;
+    switch (action.type) {
         case DailyTopicActions.TOPIC_CLEAR:
-            return{
+            return {
                 ...state,
                 topicList: null,
-                topicComments : [],
-                commentFeelings : null,
-                topicReplies : null,
-                todaysComment : null,
-                likedTopicList: null,                
+                topicComments: [],
+                commentFeelings: null,
+                topicReplies: null,
+                todaysComment: null,
+                likedTopicList: null,
             }
         //====================================================
         // Daily Topic Ranking
@@ -53,8 +53,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             temp = [...state.topicList];
             action.payload.forEach((topicId) => {
                 var index = temp.findIndex(x => x.id == topicId);
-                if(index >= 0)
-                {
+                if (index >= 0) {
                     temp[index].isLiked = true;
                 }
             });
@@ -72,7 +71,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             temp = [...state.topicList];
             var index = temp.findIndex(x => x.id == action.payload);
             temp.splice(index, 1);
-            return{
+            return {
                 ...state,
                 topicList: temp
             };
@@ -81,7 +80,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             var index = temp.findIndex(x => x.id == action.payload.dailyTopicId);
             temp[index].isLiked = true;
             temp[index].likedCount++;
-            return{
+            return {
                 ...state,
                 topicList: temp,
                 likedTopicList: [...state.likedTopicList, action.payload.dailyTopicId]
@@ -90,12 +89,12 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
         // Topic Comment
         //====================================================
         case DailyTopicActions.GET_TOPIC_COMMENTS:
-            return{
+            return {
                 ...state,
                 topicComments: []
             }
         case DailyTopicActions.SET_TOPIC_COMMENTS:
-        var myComment = action.payload.comments.find(c => c.appUserId == action.payload.appUserId);
+            var myComment = action.payload.comments.find(c => c.appUserId == action.payload.appUserId);
             return {
                 ...state,
                 topicComments: action.payload.comments,
@@ -114,7 +113,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             tempTopicComments = [...state.topicComments];
             var index = tempTopicComments.findIndex(x => x.id == action.payload);
             tempTopicComments.splice(index, 1);
-            return{
+            return {
                 ...state,
                 topicComments: tempTopicComments,
                 todaysComment: state.todaysComment == action.payload ? null : state.todaysComment
@@ -122,11 +121,13 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
         case DailyTopicActions.SET_COMMENT_FEELINGS:
             tempTopicComments = [...state.topicComments];
 
-            action.payload.forEach((feel) => {
-                var index = tempTopicComments.findIndex(x => x.id == feel.commentId);
-                if(index)
-                    tempTopicComments[index].reactionByUser = feel.feeling;
-            })
+            if (action.payload) {
+                action.payload.forEach((feel) => {
+                    var index = tempTopicComments.findIndex(x => x.id == feel.commentId);
+                    if (index)
+                        tempTopicComments[index].reactionByUser = feel.feeling;
+                })
+            }
 
             return {
                 ...state,
@@ -185,7 +186,7 @@ export function dailyTopicReducer(state = initialState, action: DailyTopicAction
             tempTopicComments[index].topicReplies = tempTopicReplies;
             tempTopicComments[index].replyCount--;
 
-            return{
+            return {
                 ...state,
                 topicComments: tempTopicComments
             };

@@ -5,7 +5,7 @@ import * as fromClan from '../store/clan.reducers';
 import * as fromAccount from '../../account/store/account.reducers';
 import * as ClanSeekActions from '../store/clan.actions';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AlertifyService } from '../../_services/alertify.service';
 import { AppUser } from '../../_models/AppUser';
 

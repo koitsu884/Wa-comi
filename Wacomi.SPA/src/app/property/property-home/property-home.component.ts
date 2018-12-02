@@ -12,7 +12,7 @@ import { Property } from '../../_models/Property';
 import { Pagination } from '../../_models/Pagination';
 import { BsLocaleService, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import {jaLocale} from 'ngx-bootstrap/locale';
-import { defineLocale } from 'ngx-bootstrap/chronos/locale/locales';
+import { defineLocale } from 'ngx-bootstrap/chronos';
 defineLocale("ja", jaLocale);
 
 @Component({

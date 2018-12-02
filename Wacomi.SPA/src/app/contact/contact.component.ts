@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Feedback } from '../_models/Feedback';
 import { Store } from '@ngrx/store';
@@ -24,7 +26,7 @@ export class ContactComponent implements OnInit {
   private httpClient: HttpClient) { }
 
   ngOnInit() {
-    this.store.select('account').take(1)
+    this.store.select('account').pipe(take(1))
       .subscribe((accountState) => {
           this.feedback.senderId = accountState.appUser ? accountState.appUser.id : null;
           this.feedback.senderName = accountState.appUser ? accountState.appUser.displayName : "";

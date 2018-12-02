@@ -1,6 +1,9 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {catchError} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
 import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { AlertifyService } from "../_services/alertify.service";
@@ -13,11 +16,11 @@ export class TopicListResolver implements Resolve<DailyTopic[]> {
 
     resolve(route: ActivatedRouteSnapshot) : Observable<DailyTopic[]> {
         let userId = route.params.userId;
-        return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic?userId=' + userId)
-        .catch(error => {
+        return this.httpClient.get<DailyTopic[]>(this.baseUrl + 'dailytopic?userId=' + userId).pipe(
+        catchError(error => {
             this.alertify.error('Problem getting member data');
             this.router.navigate(['/']);
-            return Observable.of(null);
-        })
+            return observableOf(null);
+        }))
     }
 }

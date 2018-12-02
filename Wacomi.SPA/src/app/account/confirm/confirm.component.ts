@@ -4,7 +4,7 @@ import * as fromApp from '../../store/app.reducer';
 import * as fromAccount from '../store/account.reducers';
 import * as AccountActions from '../store/account.actions';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-confirm',

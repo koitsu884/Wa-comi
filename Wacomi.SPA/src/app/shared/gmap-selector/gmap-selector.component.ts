@@ -3,7 +3,7 @@ import { Marker, Circle, LatLngLiteral, LatLngBounds } from '@agm/core/services/
 import { MouseEvent, AgmCircle } from '@agm/core';
 import { AlertifyService } from '../../_services/alertify.service';
 import { GmapParameter } from '../../_models/GmapParameter';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import { from as fromPromise } from 'rxjs';
 
 @Component({
   selector: 'app-gmap-selector',

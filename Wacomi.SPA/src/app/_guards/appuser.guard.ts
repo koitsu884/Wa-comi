@@ -1,5 +1,7 @@
+
+import {map, take} from 'rxjs/operators';
 import { CanActivate, Router, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import * as fromApp from "../store/app.reducer";
 import * as fromAccount from "../account/store/account.reducers";
@@ -19,9 +21,9 @@ export class AppUserGuard implements CanActivate {
             this.router.navigate(['/']);
             return false;
         }
-        return this.store.select('account')
-        .take(1)
-        .map((authState: fromAccount.State) => {
+        return this.store.select('account').pipe(
+        take(1),
+        map((authState: fromAccount.State) => {
             if(authState.appUser.id != route.params.appUserId)
             {
                 this.alertify.error("ユーザーIDが一致しません");
@@ -29,6 +31,6 @@ export class AppUserGuard implements CanActivate {
                 return false;
             }
             return true;
-        })
+        }),)
     }
 }

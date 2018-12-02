@@ -1,3 +1,5 @@
+
+import {switchMap, map, mergeMap, catchError} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Actions, Effect } from '@ngrx/effects';
 import { environment } from "../../../environments/environment";
@@ -7,7 +9,7 @@ import * as MessageActions from "./message.actions";
 import * as GlobalActions from "../../store/global.actions";
 import * as AccountAction from "../../account/store/account.actions";
 import { Message } from "../../_models/Message";
-import { of } from "rxjs/observable/of";
+import { of } from "rxjs";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 
@@ -20,11 +22,11 @@ export class MessageEffects {
 
     @Effect()
     getMessages = this.actions$
-        .ofType(MessageActions.GET_MESSAGES)
-        .map((action: MessageActions.GetMessages) => {
+        .ofType(MessageActions.GET_MESSAGES).pipe(
+        map((action: MessageActions.GetMessages) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             let httpParams = new HttpParams();
             if (payload.pageNumber > 0)
                 httpParams = httpParams.append('pageNumber', payload.pageNumber.toString());
@@ -36,16 +38,16 @@ export class MessageEffects {
                     headers: new HttpHeaders().set('Content-Type', 'application/json'),
                     params: httpParams,
                     observe: 'response'
-                })
-                .map((response) => {
+                }).pipe(
+                map((response) => {
                     return {
                         type: MessageActions.SET_MESSAGES, payload: { messages: response.body, pagination: JSON.parse(response.headers.get("Pagination")) }
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     // @Effect()
     // getMessageReceived = this.actions$
@@ -107,17 +109,17 @@ export class MessageEffects {
 
     @Effect()
     sendMessage = this.actions$
-        .ofType(MessageActions.SEND_MESSAGE)
-        .map((action: MessageActions.SendMessage) => {
+        .ofType(MessageActions.SEND_MESSAGE).pipe(
+        map((action: MessageActions.SendMessage) => {
             return action.payload;
-        })
-        .switchMap((newMessage) => {
+        }),
+        switchMap((newMessage) => {
             return this.httpClient.post<Message>(this.baseUrl + 'message',
                 newMessage,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((result) => {
+                }).pipe(
+                mergeMap((result) => {
                     this.router.navigate(['/message/', newMessage.senderId, 'sent']);
                     return [
                         // {
@@ -127,33 +129,33 @@ export class MessageEffects {
                             type: GlobalActions.SUCCESS, payload: "メッセージを送信しました"
                         }
                     ];
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     setIsReadFlag = this.actions$
-        .ofType(MessageActions.SET_ISREAD_FLAG)
-        .map((action: MessageActions.SetIsReadFlag) => {
+        .ofType(MessageActions.SET_ISREAD_FLAG).pipe(
+        map((action: MessageActions.SetIsReadFlag) => {
             return action.payload;
-        })
-        .switchMap((id) => {
+        }),
+        switchMap((id) => {
             return this.httpClient.put(this.baseUrl + 'message/'+id+'/read',
                 null,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .mergeMap((count:number) => {
+                }).pipe(
+                mergeMap((count:number) => {
                     return [
                         {
                             type: AccountAction.SET_NEWMESSAGES_COUNT, payload: count
                         }
                     ];
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 }

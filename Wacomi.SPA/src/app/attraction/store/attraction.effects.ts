@@ -1,3 +1,6 @@
+
+import {withLatestFrom, catchError, switchMap, map} from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import * as fromAttraction from './attraction.reducers';
 import * as AttractionActions from './attraction.actions';
 import * as GlobalActions from '../../store/global.actions';
@@ -8,9 +11,8 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Attraction } from '../../_models/Attraction';
-import { of } from 'rxjs/observable/of';
 import { AttractionReview } from '../../_models/AttractionReview';
-import 'rxjs/add/operator/withLatestFrom';
+
 
 @Injectable()
 export class AttractionEffects {
@@ -22,48 +24,48 @@ export class AttractionEffects {
 
     @Effect()
     getAttraction = this.actions$
-        .ofType(AttractionActions.GET_ATTRACTION)
-        .map((action: AttractionActions.GetAttraction) => {
+        .ofType(AttractionActions.GET_ATTRACTION).pipe(
+        map((action: AttractionActions.GetAttraction) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<Attraction>(this.baseUrl + 'attraction/' + id)
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<Attraction>(this.baseUrl + 'attraction/' + id).pipe(
+                map((result) => {
                     return {
                         type: AttractionActions.SET_ATTRACTION,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     likeAttraction = this.actions$
-        .ofType(AttractionActions.LIKE_ATTRACTION)
-        .map((action: AttractionActions.LikeAttraction) => {
+        .ofType(AttractionActions.LIKE_ATTRACTION).pipe(
+        map((action: AttractionActions.LikeAttraction) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post(this.baseUrl + 'attraction/like', payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 }
-            ).map(() => {
+            ).pipe(map(() => {
                 return {
                     type: GlobalActions.SUCCESS, payload: "良いね！しました"
                 };
-            }).catch((error: string) => {
+            }),catchError((error: string) => {
                 return of({ type: GlobalActions.FAILED, payload: error })
-            })
-        })
+            }),)
+        }),)
 
     @Effect()
     searchAttraction = this.actions$
-        .ofType(AttractionActions.SEARCH_ATTRACTION)
-        .map((action: AttractionActions.SearchAttraction) => { return action.payload })
-        .switchMap((payload) => {
+        .ofType(AttractionActions.SEARCH_ATTRACTION).pipe(
+        map((action: AttractionActions.SearchAttraction) => { return action.payload }),
+        switchMap((payload) => {
             let Params = new HttpParams();
             if (payload.categories && payload.categories.length > 0)
                 Params = Params.append('categories', payload.categories.join(','));
@@ -76,8 +78,8 @@ export class AttractionEffects {
             //     Params = Params.append('pageSize', clanState.clan.pagination.itemsPerPage.toString());
             // }
 
-            return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction', { params: Params, observe: 'response' })
-                .map((response) => {
+            return this.httpClient.get<Attraction[]>(this.baseUrl + 'attraction', { params: Params, observe: 'response' }).pipe(
+                map((response) => {
                     return {
                         type: AttractionActions.SET_ATTRACTION_SEARCH_RESULT,
                         payload: {
@@ -85,26 +87,26 @@ export class AttractionEffects {
                             //   pagination: JSON.parse(response.headers.get("Pagination"))
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
+                }),)
         }
-        )
+        ),)
 
     @Effect()
     tryAddAttraction = this.actions$
-        .ofType(AttractionActions.TRY_ADD_ATTRACTION)
-        .map((action: AttractionActions.TryAddAttraction) => {
+        .ofType(AttractionActions.TRY_ADD_ATTRACTION).pipe(
+        map((action: AttractionActions.TryAddAttraction) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post<Attraction>(this.baseUrl + 'attraction',
                 payload.attraction,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map((result) => {
+                }).pipe(
+                map((result) => {
                     if (payload.formData == null) {
                         this.router.navigate(['/user/posts/' + payload.attraction.id]);
                         return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
@@ -119,86 +121,86 @@ export class AttractionEffects {
                             callbackLocation: '/user/posts/' + payload.attraction.id
                         }
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     updateAttraction = this.actions$
-        .ofType(AttractionActions.UPDATE_ATTRACTION)
-        .map((action: AttractionActions.UpdateAttraction) => {
+        .ofType(AttractionActions.UPDATE_ATTRACTION).pipe(
+        map((action: AttractionActions.UpdateAttraction) => {
             return action.payload
-        })
-        .switchMap((attraction) => {
+        }),
+        switchMap((attraction) => {
             return this.httpClient.put(this.baseUrl + 'attraction',
                 attraction,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     this.router.navigate(['/users/posts', attraction.appUserId]);
                     return {
                         type: GlobalActions.SUCCESS, payload: "更新しました"
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     tryDeleteAttraction = this.actions$
-        .ofType(AttractionActions.TRY_DELETE_ATTRACTION)
-        .switchMap((actions: AttractionActions.TryDeleteAttraction) => {
+        .ofType(AttractionActions.TRY_DELETE_ATTRACTION).pipe(
+        switchMap((actions: AttractionActions.TryDeleteAttraction) => {
             return this.httpClient.delete(this.baseUrl + 'attraction/' + actions.payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     this.router.navigate(['/attraction']);
                     return {
                         type: GlobalActions.SUCCESS, payload: "削除しました"
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }))
 
     @Effect()
     getAttractionReview = this.actions$
-        .ofType(AttractionActions.GET_ATTRACTION_REVIEW)
-        .map((action: AttractionActions.GetAttractionReview) => {
+        .ofType(AttractionActions.GET_ATTRACTION_REVIEW).pipe(
+        map((action: AttractionActions.GetAttractionReview) => {
             return action.payload;
-        })
-        .switchMap((id) => {
-            return this.httpClient.get<AttractionReview>(this.baseUrl + 'attractionreview/' + id)
-                .map((result) => {
+        }),
+        switchMap((id) => {
+            return this.httpClient.get<AttractionReview>(this.baseUrl + 'attractionreview/' + id).pipe(
+                map((result) => {
                     return {
                         type: AttractionActions.SET_ATTRACTION_REVIEW,
                         payload: result
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     tryAddAttractionReview = this.actions$
-        .ofType(AttractionActions.TRY_ADD_ATTRACTION_REVIEW)
-        .map((action: AttractionActions.TryAddAttractionReview) => {
+        .ofType(AttractionActions.TRY_ADD_ATTRACTION_REVIEW).pipe(
+        map((action: AttractionActions.TryAddAttractionReview) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post<AttractionReview>(this.baseUrl + 'attractionreview',
                 payload.attractionReview,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map((result) => {
+                }).pipe(
+                map((result) => {
                     if (payload.formData == null) {
                         this.router.navigate(['/attraction']);
                         return { type: GlobalActions.SUCCESS, payload: "投稿しました" };
@@ -213,57 +215,57 @@ export class AttractionEffects {
                             callbackLocation: '/attraction/detail/' + result.attractionId
                         }
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                });
-        })
+                }),);
+        }),)
 
     @Effect()
     updateAttractionReview = this.actions$
-        .ofType(AttractionActions.UPDATE_ATTRACTION_REVIEW)
-        .map((action: AttractionActions.UpdateAttractionReview) => {
+        .ofType(AttractionActions.UPDATE_ATTRACTION_REVIEW).pipe(
+        map((action: AttractionActions.UpdateAttractionReview) => {
             return action.payload
-        })
-        .withLatestFrom(this.store$)
-        .switchMap(([attractionReview, attractionState]) => {
+        }),
+        withLatestFrom(this.store$),
+        switchMap(([attractionReview, attractionState]) => {
             return this.httpClient.put(this.baseUrl + 'attractionreview',
                 attractionReview,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     //this.router.navigate(['/attraction/detail/', attractionState.attraction.selectedAttraction.id]);
                     this.router.navigate(['/users/posts/', attractionReview.appUserId]);
                     return {
                         type: GlobalActions.SUCCESS, payload: "更新しました"
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
-        });
+                }),)
+        }),);
 
     @Effect()
     tryDeleteAttractionReview = this.actions$
-        .ofType(AttractionActions.TRY_DELETE_ATTRACTION_REVIEW)
-        .map((actions: AttractionActions.TryDeleteAttractionReview) => { return actions.payload })
-        .withLatestFrom(this.store$)
-        .switchMap(([id, attractionState]) => {
+        .ofType(AttractionActions.TRY_DELETE_ATTRACTION_REVIEW).pipe(
+        map((actions: AttractionActions.TryDeleteAttractionReview) => { return actions.payload }),
+        withLatestFrom(this.store$),
+        switchMap(([id, attractionState]) => {
             return this.httpClient.delete(this.baseUrl + 'attractionreview/' + id,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
-                })
-                .map(() => {
+                }).pipe(
+                map(() => {
                     this.router.navigate(['/attraction/detail/', attractionState.attraction.selectedAttraction.id]);
                     return {
                         type: GlobalActions.SUCCESS, payload: "削除しました"
                     };
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error });
-                })
-        })
+                }),)
+        }),)
     //  .switchMap((actions: AttractionActions.TryDeleteAttractionReview) => {
     //     return this.httpClient.delete(this.baseUrl + 'attractionreview/' + actions.payload,
     //         {
@@ -282,13 +284,13 @@ export class AttractionEffects {
 
     @Effect()
     getAttractionReviewList = this.actions$
-        .ofType(AttractionActions.GET_ATTRACTION_REVIEW_LIST)
-        .map((action: AttractionActions.GetAttractionReviewList) => { return action.payload })
-        .switchMap((payload) => {
+        .ofType(AttractionActions.GET_ATTRACTION_REVIEW_LIST).pipe(
+        map((action: AttractionActions.GetAttractionReviewList) => { return action.payload }),
+        switchMap((payload) => {
             // let Params = new HttpParams();
             // Params = Params.append('id', payload.toString());
-            return this.httpClient.get<AttractionReview[]>(this.baseUrl + 'attraction/' + payload + '/review', { observe: 'response' })
-                .map((response) => {
+            return this.httpClient.get<AttractionReview[]>(this.baseUrl + 'attraction/' + payload + '/review', { observe: 'response' }).pipe(
+                map((response) => {
                     return {
                         type: AttractionActions.SET_ATTRACTION_REVIEW_LIST,
                         payload: {
@@ -296,31 +298,31 @@ export class AttractionEffects {
                             //   pagination: JSON.parse(response.headers.get("Pagination"))
                         }
                     }
-                })
-                .catch((error: string) => {
+                }),
+                catchError((error: string) => {
                     return of({ type: GlobalActions.FAILED, payload: error })
-                })
+                }),)
         }
-        )
+        ),)
 
     @Effect()
     likeAttractionReview = this.actions$
-        .ofType(AttractionActions.LIKE_ATTRACTION_REVIEW)
-        .map((action: AttractionActions.LikeAttractionReview) => {
+        .ofType(AttractionActions.LIKE_ATTRACTION_REVIEW).pipe(
+        map((action: AttractionActions.LikeAttractionReview) => {
             return action.payload;
-        })
-        .switchMap((payload) => {
+        }),
+        switchMap((payload) => {
             return this.httpClient.post(this.baseUrl + 'attractionreview/like', payload,
                 {
                     headers: new HttpHeaders().set('Content-Type', 'application/json')
                 }
-            ).map(() => {
+            ).pipe(map(() => {
                 return {
                     type: GlobalActions.SUCCESS, payload: "良いね！しました"
                 };
-            }).catch((error: string) => {
+            }),catchError((error: string) => {
                 return of({ type: GlobalActions.FAILED, payload: error })
-            })
-        })
+            }),)
+        }),)
 
 }

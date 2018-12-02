@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import 'rxjs/add/operator/catch';
+
 import { BlogFeed } from '../_models/BlogFeed';
 import { ClanSeek } from '../_models/ClanSeek';
 import { TopicComment } from '../_models/TopicComment';

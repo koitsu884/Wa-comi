@@ -1,9 +1,11 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Category } from '../../_models/Category';
 import { ActivatedRoute } from '@angular/router';
 import { ClanSeek } from '../../_models/ClanSeek';
 import { City } from '../../_models/City';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import * as fromClan from '../store/clan.reducers';
 import * as ClanSeekActions from '../store/clan.actions';
@@ -48,7 +50,7 @@ export class ClanHomeComponent implements OnInit {
     this.appUser = this.route.snapshot.data['appUser'];
     this.clanState = this.store.select('clan');
 
-    this.store.select('clan').take(1).subscribe((state) => {
+    this.store.select('clan').pipe(take(1)).subscribe((state) => {
       this.pagination = state.pagination;
       this.selectedCityId = state.selectedCityId;
       this.selectedCategoryId = state.selectedCategoryId;

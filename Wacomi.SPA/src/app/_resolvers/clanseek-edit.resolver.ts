@@ -1,8 +1,11 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {catchError, switchMap, take} from 'rxjs/operators';
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/observable/of';
+
 import { AlertifyService } from "../_services/alertify.service";
 
 import * as fromApp from '../store/app.reducer';
@@ -17,15 +20,15 @@ export class ClanSeekEditResolver implements Resolve<ClanSeek> {
                 private alertify: AlertifyService){}
 
     resolve(route: ActivatedRouteSnapshot) : Observable<ClanSeek> {
-        return this.store.select('clan')
-        .take(1)
-        .switchMap((state : fromClan.State) => {
-            return Observable.of(state.editingClan);
-        })
-        .catch((error) => {
+        return this.store.select('clan').pipe(
+        take(1),
+        switchMap((state : fromClan.State) => {
+            return observableOf(state.editingClan);
+        }),
+        catchError((error) => {
             this.alertify.error('Problem retrieving data');
             this.router.navigate(['/']);
-            return Observable.of(null);
-        });
+            return observableOf(null);
+        }),);
     }
 }

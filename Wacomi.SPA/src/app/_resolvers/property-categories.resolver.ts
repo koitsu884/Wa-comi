@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import * as fromApp from '../store/app.reducer';
 import { Injectable } from "@angular/core";
 import { Resolve} from "@angular/router";
@@ -10,8 +12,8 @@ export class PropertyCategoryResolver implements Resolve<Category[]> {
 
     resolve() : Category[] {
         let categories: Category[];
-        this.store.select('global')
-        .take(1)
+        this.store.select('global').pipe(
+        take(1))
         .subscribe((state) => {
             categories = state.propertyCategories;
         });

@@ -1,5 +1,5 @@
 import { Component, OnInit, ComponentFactoryResolver, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import * as fromDailyTopic from '../store/dailytopic.reducers';
 import * as TopicActions from '../store/dailytopic.actions';

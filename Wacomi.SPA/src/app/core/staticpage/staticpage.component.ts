@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -11,8 +13,8 @@ export class StaticpageComponent implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.data
-    .map(response => response['content'])
+    this.route.data.pipe(
+    map(response => response['content']))
     .subscribe((html) => {
       this.content = html;
     });

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, trigger, state, style, transition, animate } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ClanSeek } from '../../../_models/ClanSeek';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-clan-list',

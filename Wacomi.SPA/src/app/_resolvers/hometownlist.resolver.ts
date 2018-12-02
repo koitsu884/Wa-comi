@@ -1,7 +1,9 @@
+
+import {take} from 'rxjs/operators';
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import { Observable } from "rxjs";
+
+
 import { Injectable } from "@angular/core";
 import { Hometown } from "../_models/Hometown";
 import { Store } from "@ngrx/store";
@@ -15,8 +17,8 @@ export class HomeTownListResolver implements Resolve<KeyValue[]> {
 
     resolve(route: ActivatedRouteSnapshot) : KeyValue[] {
         let homeTownList = [];
-        this.store.select('global')
-        .take(1)
+        this.store.select('global').pipe(
+        take(1))
         .subscribe((state) => {
             homeTownList = state.homeTownList;
         });

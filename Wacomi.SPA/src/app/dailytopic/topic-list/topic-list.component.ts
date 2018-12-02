@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 
 import * as fromDailyTopic from '../store/dailytopic.reducers';
 import * as TopicActions from '../store/dailytopic.actions';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
 
 @Component({

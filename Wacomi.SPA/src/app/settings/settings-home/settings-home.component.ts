@@ -4,7 +4,7 @@ import { Hometown } from '../../_models/Hometown';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppUser } from '../../_models/AppUser';
 import { Photo } from '../../_models/Photo';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import * as fromApp from '../../store/app.reducer';
 // import * as fromPhoto from '../../photo/store/photos.reducers';

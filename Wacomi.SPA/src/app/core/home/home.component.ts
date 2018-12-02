@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogFeed } from '../../_models/BlogFeed';
 import { GlobalService } from '../../_services/global.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ClanSeek } from '../../_models/ClanSeek';
 import { TopicComment } from '../../_models/TopicComment';
 

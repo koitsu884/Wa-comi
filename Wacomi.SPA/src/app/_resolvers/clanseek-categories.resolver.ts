@@ -1,7 +1,10 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {catchError, switchMap, take} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
 import { GlobalService } from "../_services/global.service";
-import { Observable } from "rxjs/Observable";
 import { KeyValue } from "../_models/KeyValue";
 
 import { Store } from "@ngrx/store";
@@ -13,15 +16,15 @@ export class ClanSeekCategoryResolver implements Resolve<KeyValue[]> {
     constructor(private store: Store<fromApp.AppState>, private router: Router ){}
 
     resolve(route: ActivatedRouteSnapshot) : Observable<KeyValue[]> {
-        return this.store.select('global')
-        .take(1)
-        .switchMap((state : fromGlobal.State) => {
-            return Observable.of<KeyValue[]>(state.clanSeekCategories);
-        })
-        .catch((error) => {
+        return this.store.select('global').pipe(
+        take(1),
+        switchMap((state : fromGlobal.State) => {
+            return observableOf<KeyValue[]>(state.clanSeekCategories);
+        }),
+        catchError((error) => {
             console.log('Problem retrieving data');
             this.router.navigate(['/']);
-            return Observable.of(null);
-        });
+            return observableOf(null);
+        }),);
     }
 }

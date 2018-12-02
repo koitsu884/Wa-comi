@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Category } from '../../_models/Category';
 import { Attraction } from '../../_models/Attraction';
 import { AppUser } from '../../_models/AppUser';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-attraction-home',

@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Message } from '../../_models/Message';
 import { Store } from '@ngrx/store';
@@ -24,7 +26,7 @@ export class MessageDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       this.type = params["type"];
-      this.store.select("messages").take(1)
+      this.store.select("messages").pipe(take(1))
         .subscribe((messageState) => {
           this.message = messageState.selectedMessage;
           if (this.type == 'sent') {

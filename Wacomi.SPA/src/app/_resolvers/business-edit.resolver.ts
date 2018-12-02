@@ -1,8 +1,10 @@
+
+import {take} from 'rxjs/operators';
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/observable/of';
+import { Observable } from "rxjs";
+
 import { AlertifyService } from "../_services/alertify.service";
 
 import * as fromApp from '../store/app.reducer';
@@ -18,8 +20,8 @@ export class BusinessEditResolver implements Resolve<BusinessProfile> {
 
     resolve(route: ActivatedRouteSnapshot): BusinessProfile {
         let businessProfile: BusinessProfile = null;
-        this.store.select('account')
-            .take(1)
+        this.store.select('account').pipe(
+            take(1))
             .subscribe((state) => {
                 if(state.businessProfile)
                     businessProfile = Object.assign({}, state.businessProfile);

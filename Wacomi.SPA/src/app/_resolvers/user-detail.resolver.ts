@@ -1,6 +1,9 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {catchError} from 'rxjs/operators';
 import { Injectable } from "@angular/core";
 import { Resolve, Router, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable } from "rxjs/Observable";
 import { environment } from "../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { AlertifyService } from "../_services/alertify.service";
@@ -12,11 +15,11 @@ export class UserDetailResolver implements Resolve<UserDetails> {
     constructor(private router: Router, private alertify: AlertifyService, private httpClient: HttpClient ){}
 
     resolve(route: ActivatedRouteSnapshot) : Observable<UserDetails> {
-        return this.httpClient.get<UserDetails>(this.baseUrl + 'appuser/' + route.params.id + '/detail') 
-        .catch(error => {
+        return this.httpClient.get<UserDetails>(this.baseUrl + 'appuser/' + route.params.id + '/detail').pipe( 
+        catchError(error => {
             this.alertify.error('Problem getting member data');
             this.router.navigate(['/']);
-            return Observable.of(null);
-        })
+            return observableOf(null);
+        }))
     }
 }
