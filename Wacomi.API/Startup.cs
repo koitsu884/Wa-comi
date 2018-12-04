@@ -56,9 +56,16 @@ namespace Wacomi.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc();
+            services.AddMvc()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDataProtection();
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
             services.Configure<AuthMessageSenderOptions>(Configuration);
             // if (CurrentEnvironment.IsProduction())
             // {

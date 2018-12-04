@@ -26,7 +26,8 @@ namespace Wacomi.API
             {
                 // logger.Info("init main");
                 // logger.Error("error log test");
-                var host = BuildWebHost(args);
+                //var host = BuildWebHost(args);
+                var host = CreateWebHostBuilder(args).Build();
                 // using (var scope = host.Services.CreateScope())
                 // {
                 //     var serviceProvider = scope.ServiceProvider;
@@ -64,7 +65,7 @@ namespace Wacomi.API
             // .UseKestrel();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 // .ConfigureLogging(( hostingContext, logging) => {
@@ -78,9 +79,6 @@ namespace Wacomi.API
                     logging.ClearProviders();
                     logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
                 })
-                .UseNLog()
-                // .UseSetting("detailedErrors", "true")
-                // .CaptureStartupErrors(true)
-                .Build();
+                .UseNLog();
     }
 }
