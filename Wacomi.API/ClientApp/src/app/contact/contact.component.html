@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>お問い合わせフォーム</h2>
+  <p>各種お問い合わせ、不具合報告等は以下のフォームをご使用ください。</p>
+  <p>もしくは直接 <a href="mailto:{{email}} ">{{email}} </a>までお願いします。</p>
+  <app-loading *ngIf="sending"></app-loading>
+  <div class="row" *ngIf="!sending">
+    <div class="col-sm-8">
+      <form (ngSubmit)="submit()" #feedbackForm>
+        <div class="form-group" [ngClass]="{'has-error':title.errors && title.touched}">
+          <label for="title" class="control-label required">タイトル</label>
+          <input class="form-control" name="title" type="text" [(ngModel)]="feedback.title" maxlength="50" required #title="ngModel"/>
+          <span class="help-block" *ngIf="title?.errors?.required && title.touched">
+            タイトルは必須項目です
+          </span>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error':title.errors && title.touched}">
+          <label for="senderName" class="control-label required">お名前</label>
+          <input class="form-control" name="senderName" type="text" [(ngModel)]="feedback.senderName"  maxlength="100" required #senderName="ngModel"/>
+          <span class="help-block" *ngIf="senderName?.errors?.required && senderName.touched">
+            お名前は必須項目です
+          </span>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error':email.errors && email.touched}">
+          <label for="email" class="control-label required">メールアドレス</label>
+          <input class="form-control" name="email" type="email" [(ngModel)]="feedback.email" maxlength="50" required #email="ngModel"/>
+          <span class="help-block" *ngIf="email?.errors?.required && email.touched">
+            メールアドレスは必須項目です
+          </span>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error':content.errors && content.touched}">
+          <label for="content" class="control-label required">お問い合わせ内容</label>
+          <textarea class="form-control" name="content" type="text" [(ngModel)]="feedback.content" row="20" required #content="ngModel"></textarea>
+          <span class="help-block" *ngIf="content?.errors?.required && content.touched">
+            お問い合わせ内容は必須項目です
+          </span>
+        </div>
+        <button class="btn btn-primary" type="submit">送信</button>
+      </form>
+    </div>
+    <div class="col-sm-4">
+      <h4>スペース</h4>
+    </div>
+  </div>
+
+</div>

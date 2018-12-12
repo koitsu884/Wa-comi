@@ -1,0 +1,23 @@
+<!-- <div *ngIf="circle.mainPhoto" class="circleHeader"> -->
+<app-loading *ngIf="!circle"></app-loading>
+<div *ngIf="circle">
+  <!-- <img class="circleImage" *ngIf="circle.mainPhoto" src="{{circle.mainPhoto.url}}"> -->
+  <div class="garelly" *ngIf="circle.photos && circle.photos.length > 0">
+    <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+  </div>
+  <!-- </div> -->
+  <div class="container">
+    <h2>{{circle.name}}</h2>
+    <ul class="nav nav-pills green">
+      <!-- <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
+      <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
+      <li routerLinkActive="active"><a [routerLink]="['overview']">概要</a></li>
+      <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['member']">メンバー</a></li>
+      <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['topic']">トピック</a></li>
+      <li routerLinkActive="active" *ngIf="circle.isMember"><a [routerLink]="['event']">イベント</a></li>
+      <!-- <li routerLinkActive="active"><a [routerLink]="['event']" >イベント</a></li> -->
+      <li routerLinkActive="active" *ngIf="circle.isManageable"><a [routerLink]="['request']">参加リクエスト</a></li>
+    </ul>
+  </div>
+  <router-outlet></router-outlet>
+</div>

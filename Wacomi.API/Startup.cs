@@ -30,6 +30,7 @@ using System.Data.SqlClient;
 using NLog.Extensions.Logging;
 using Wacomi.API.Scheduling;
 using Wacomi.API.Scheduling.CronTasks;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace Wacomi.API
 {
@@ -59,6 +60,10 @@ namespace Wacomi.API
             services.AddMvc()
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDataProtection();
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot/clientapp/dist";
+            });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -67,13 +72,7 @@ namespace Wacomi.API
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.Configure<AuthMessageSenderOptions>(Configuration);
-            // if (CurrentEnvironment.IsProduction())
-            // {
-            //     services.Configure<MvcOptions>(options =>
-            //     {
-            //         options.Filters.Add(new RequireHttpsAttribute());
-            //     });
-            // }
+
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("MessageSenderOptions"));
@@ -197,7 +196,6 @@ namespace Wacomi.API
 
             if (env.IsDevelopment())
             {
-                //app.UseMvc();
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
                 app.UseStaticFiles(new StaticFileOptions
@@ -213,13 +211,14 @@ namespace Wacomi.API
                 //     });
                 // }
 
-                app.UseMvc(routes =>
-                {
-                    routes.MapSpaFallbackRoute(
-                        name: "spa-fallback",
-                        defaults: new { controller = "Fallback", action = "Index" }
-                    );
-                });
+                // app.UseMvc(routes =>
+                // {
+                //     routes.MapSpaFallbackRoute(
+                //         name: "spa-fallback",
+                //         defaults: new { controller = "Fallback", action = "Index" }
+                //     );
+                // });
+                app.UseMvc();
             }
             else
             {
@@ -243,14 +242,39 @@ namespace Wacomi.API
                 //     });
                 //}
 
-                app.UseMvc(routes =>
-                {
-                    routes.MapSpaFallbackRoute(
-                        name: "spa-fallback",
-                        defaults: new { controller = "Fallback", action = "Index" }
-                    );
-                });
+                // app.UseMvc(routes =>
+                // {
+                //     routes.MapSpaFallbackRoute(
+                //         name: "spa-fallback",
+                //         defaults: new { controller = "Fallback", action = "Index" }
+                //     );
+                // });
+                app.UseMvc();
             }
+
+            app.UseSpaStaticFiles();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                // spa.UseSpaPrerendering(options =>
+                // {
+                //     options.BootModulePath = $"wwwroot/clientapp/dist-server/main.js";
+                //     // options.BootModuleBuilder = env.IsDevelopment()
+                //     //     ? new AngularCliBuilder(npmScript: "start")
+                //     //     : null;
+                //     options.ExcludeUrls = new[] { "/sockjs-node" };
+                //     options.SupplyData = (context, data) =>
+                //     {
+                //         data["Request"] = context.Request.Body.ToString();
+                //     };
+                // });
+
+                // if (env.IsDevelopment())
+                // {
+                //     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                // }
+            });
         }
     }
 

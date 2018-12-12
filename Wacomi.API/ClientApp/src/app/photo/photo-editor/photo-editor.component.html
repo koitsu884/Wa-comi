@@ -1,0 +1,24 @@
+<div class="container">
+    <h2>{{title}}</h2>
+    <div class="row">
+        <div class="col-sm-4 col-md-3">
+            <h4>写真の追加</h4>
+            <p><strong>＊アップロードできる画像は{{FILE_UPLOAD_LIMIT}}つまでです</strong></p>
+            <img *ngIf="selectedFile" class="img-responsive" [src]="previewUrl" />
+            <input type="file" accept="image/*" style="display: none" (change)="onFileChanged($event)" #fileInput>
+            <button class="btn btn-block btn-primary" (click)="fileInput.click()" [disabled]="photos?.length >= FILE_UPLOAD_LIMIT">画像選択</button>
+            <button class="btn btn-block btn-primary" (click)="onUpload()" [disabled]="!selectedFile || photos?.length >= FILE_UPLOAD_LIMIT">アップロード</button>
+        </div>
+        <div class="col-sm-8 col-md-9">
+            <h4>写真一覧</h4>
+            <app-loading *ngIf="!photos"></app-loading>
+            <div class="row fix list" *ngIf="photos">
+                <div class="col-xs-4" *ngFor="let photo of photos">
+                    <img src="{{photo.url}}" alt="" class="img-responsive img-thumbnail">
+                    <a class="btn btn-xs btn-danger" (click)="deletePhoto(photo.id)">削除</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary" (click)="onClickOk()">OK</button>
+</div>

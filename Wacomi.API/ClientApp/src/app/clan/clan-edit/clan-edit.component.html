@@ -1,0 +1,73 @@
+<div class="container">
+  <form #clanEditForm="ngForm" id="clanEditForm" (ngSubmit)="submit(clanEditForm)">
+    <div class="form-group" *ngIf="editMode">
+        <h4>メイン画像選択</h4>
+        <!-- <img src="{{editingClan.mainPhotoUrl ? editingClan.mainPhotoUrl : 'assets/NoImage_Person.png'}}" class="img-responsive" alt=""> -->
+        <app-mainphoto-selector 
+          *ngIf="editingClan.photos && editingClan.photos.length > 0" 
+          [photos]="editingClan.photos" 
+          [mainPhotoId]="editingClan.mainPhotoId" 
+          (photoSelected)="mainPhotoSelected($event, clanEditForm)">
+        </app-mainphoto-selector>
+        <a class="btn btn-primary" [routerLink]="['/photo/edit', 'ClanSeek', editingClan.id]">写真の追加・削除</a>
+    </div>
+    <div *ngIf="!editMode">
+      <h4>画像アップロード</h4>
+      <app-photo-selector (photoSelected)="setSelectedFiles($event)" [multipleSelect]="true"></app-photo-selector>
+      <div class="row" *ngIf="selectedFiles">
+        <div class="col-xs-2 col-md-3" *ngFor="let tempImageUrl of previewUrls">
+          <img class="img-responsive" [src]="tempImageUrl" />
+        </div>
+      </div>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error':title.errors && title.touched}">
+      <label for="title" class="control-label required">タイトル</label>
+      <input class="form-control" name="title" type="text" [(ngModel)]="editingClan.title" maxlength="50" required #title="ngModel">
+      <span class="help-block" *ngIf="title?.errors?.required && title.touched">
+        タイトルは必須項目です
+      </span>
+    </div>
+    <div class="form-group" [ngClass]="{'has-error': description.errors && description.touched}">
+      <label for="description" class="control-label required">紹介文</label>
+      <textarea class="form-control" name="description" [(ngModel)]="editingClan.description" #description="ngModel" rows="10"
+        required></textarea>
+      <span class="help-block" *ngIf="description?.errors?.required && description.touched">
+        紹介文は必須項目です
+      </span>
+    </div>
+    <label for="category" class="control-label">カテゴリー</label>
+    <br>
+    <select [(ngModel)]="editingClan.categoryId" class="form-control" name="category">
+      <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+    </select>
+    <div class="form-group" [ngClass]="{'has-error':city.errors && city.touched}">
+      <label for="city" class="control-label required">エリア</label>
+      <br>
+      <select [(ngModel)]="editingClan.locationId" class="form-control" name="city" #city="ngModel" required>
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+      <span class="help-block" *ngIf="city?.errors?.required && city.touched">
+        エリアを選んでください
+      </span>
+    </div>
+    <div class="form-group">
+      <label for="websiteUrl" class="control-label">ホームページ</label>
+      <input class="form-control" name="websiteUrl" type="url" [(ngModel)]="editingClan.websiteUrl">
+    </div>
+    <!-- <div class="form-group">
+      <label for="email" class="control-label">Eメール</label>
+      <input class="form-control" type="text" name="email" [(ngModel)]="editingClan.email" />
+    </div> -->
+    <div class="form-group" *ngIf="editMode">
+      <label for="isActive" class="control-label">アクティブ (No にすると検索結果に表示されなくなります)</label>
+      <input type="radio" id="active_yes" [value]="true" name="active" [(ngModel)]="editingClan.isActive">
+      <label for="active_yes" class="radio">Yes</label>
+      <input type="radio" id="active_no" [value]="false" name="active" [(ngModel)]="editingClan.isActive">
+      <label for="active_no" class="radio">No</label>
+    </div>
+
+    <button class="btn btn-success" [disabled]="!clanEditForm.valid || clanEditForm.pristine || waitingResponse" type="submit">{{ editMode ? "更新" : "作成" }}</button>
+    <button class="btn btn-warning" [disabled]="waitingResponse" type="button" (click)="onCancel()">キャンセル</button>
+  </form>
+</div>
+

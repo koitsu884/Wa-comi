@@ -1,0 +1,28 @@
+<div [@topicComment] *ngFor="let topicComment of latestTopicComments">
+    <div class="commentContainer">
+      <div class="userComment">
+    <app-user-comment [userPhotoUrl]="topicComment.iconUrl" [userName]="topicComment.displayName" [comment]="topicComment.comment" ></app-user-comment>
+  </div>
+  <div class="commentTools">
+      <i class="fa fa-thumbs-up" title="良いね"></i>
+      <span class="likedCount">{{topicComment.likedCount}}</span>
+      <i class="fa fa-comment" title="返信数"></i>
+      <span class="replyCount">{{topicComment.replyCount}}</span>
+    </div>
+    </div>
+  <!-- <div class="commentContainer">
+    <div class="commentImage">
+      <img class="img-circle" src="{{topicComment.mainPhotoUrl ? topicComment.mainPhotoUrl : 'assets/NoImage_Person.png'}}" alt="{{topicComment.displayName}}" title="{{topicComment.displayName}}">
+    </div>
+    <div class="comment">
+      <div class="commentBaloon"><p>{{topicComment.comment}}</p></div>
+    </div>
+    <div class="commentTools">
+      <i class="fa fa-thumbs-up" title="良いね"></i>
+      <span class="likedCount">{{topicComment.likedCount}}</span>
+      <i class="fa fa-comment" title="返信数"></i>
+      <span class="replyCount">{{topicComment.replyCount}}</span>
+    </div>
+  </div>
+  <span class="clearfix"></span> -->
+</div>

@@ -1,0 +1,17 @@
+<div class="clanDetailInfo" *ngIf="circle">
+  <!-- <app-photo-gallery *ngIf="circle.photos && circle.photos.length > 0" [photos]="circle.photos"></app-photo-gallery> -->
+  <h5>エリア：{{circle.cityName ? circle.cityName : 'どこでも'}}</h5>
+  <div [innerHTML]="circle.description | nl2br"></div>
+  <h4>参加条件</h4>
+  <p>{{circle.approvalRequired ? '管理人の承認が必要' : '誰でも参加可能'}}</p>
+  <!-- <div *ngIf="circle.websiteUrl">
+      <a href="{{circle.websiteUrl}}">ホームページ</a>
+      <br>
+      <br>
+    </div> -->
+  <!--   
+    <div class="gallery" *ngIf="circle.reviewPhotos && circle.reviewPhotos.length > 0">
+      <h4>投稿写真</h4>
+      <ngx-gallery [options]="reviewerGalleryOptions" [images]="reviewerGalleryImages"></ngx-gallery>
+    </div> -->
+</div>

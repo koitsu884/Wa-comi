@@ -1,0 +1,36 @@
+<div class="clanDetailInfo" *ngIf="attraction">
+  <h2>{{attraction.name}}</h2>
+  <div>
+    <label>おすすめ度平均：</label><app-rate-average [scoreAverage]="scoreAverage"></app-rate-average> ({{scoreAverage}})
+  </div>
+  <div>
+    <label>行ってみたい！:</label><span class="likeButton fa fa-heart" [ngClass]="{'isLiked': attraction.isLiked}" (click)="onLike()"></span><span>({{attraction.likedCount}})</span>
+  </div>
+  <h3>エリア：{{attraction.cityName}}</h3>
+  <div class="gallery" *ngIf="attraction.photos && attraction.photos.length > 0">
+    <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
+  </div>
+  <h4>概要</h4>
+  <div *ngIf="attraction.websiteUrl">
+    <a href="{{attraction.websiteUrl}}">ホームページ</a>
+    <br>
+    <br>
+  </div>
+  <div [innerHTML]="attraction.introduction | nl2br"></div>
+  <h4>アクセス</h4>
+  <div [innerHTML]="attraction.accessInfo | nl2br"></div>
+
+  <!-- Google map here -->
+  <div *ngIf="attraction.latitude && attraction.longitude">
+    <h4>地図</h4>
+    <agm-map [latitude]="attraction.latitude" [longitude]="attraction.longitude" [zoom]="14">
+      <agm-marker *ngIf="!attraction.radius" [latitude]="attraction.latitude" [longitude]="attraction.longitude">Yahoo!!</agm-marker>
+      <agm-circle *ngIf="attraction.radius" [fillColor]="'red'" [latitude]="attraction.latitude" [longitude]="attraction.longitude" [radius]="attraction.radius">Yahoo!!</agm-circle>
+    </agm-map>
+  </div>
+
+  <div class="gallery" *ngIf="attraction.reviewPhotos && attraction.reviewPhotos.length > 0">
+    <h4>投稿写真</h4>
+    <ngx-gallery [options]="reviewerGalleryOptions" [images]="reviewerGalleryImages"></ngx-gallery>
+  </div>
+</div>

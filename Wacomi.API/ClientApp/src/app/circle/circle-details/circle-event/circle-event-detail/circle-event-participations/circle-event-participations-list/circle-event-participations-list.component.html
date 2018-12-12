@@ -1,0 +1,13 @@
+<div class="row participantsList">
+  <div class="col-md-2 col-sm-3 col-xs-4" *ngFor="let participant of eventParticipants">
+      <img class="img-circle" src="{{participant.appUser.mainPhoto | iconurl:true}}">
+      <p>{{participant.appUser.displayName}}</p>
+      <button *ngIf="showAcceptButton()" type="button" class="btn btn-xs btn-primary" (click)="onAccept(participant)">参加承認</button>
+  </div>
+</div>
+<div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
+  <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [ngModel]="pagination.currentPage"
+      [itemsPerPage]="pagination.itemsPerPage" (pageChanged)="pageChanged($event)" class="pagination-sm"
+      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

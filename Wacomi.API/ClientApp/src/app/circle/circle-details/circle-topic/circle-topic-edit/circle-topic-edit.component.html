@@ -1,0 +1,22 @@
+<div class="container">
+    <form #circleTopicEditForm="ngForm" id="circleTopicEditForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title" class="control-label required">タイトル</label>
+            <input class="form-control" name="title" type="text" maxlength="100" [(ngModel)]="circleTopic.title" required #title="ngModel">
+            <span class="help-block" *ngIf="title?.errors?.required && title.touched">
+                タイトルは必須項目です
+            </span>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">トピック概要</label>
+            <textarea class="form-control" name="description" rows="5" maxlength="5000" [(ngModel)]="circleTopic.description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">トピック画像</label>
+            <img class="img-responsive" src="{{previewUrl}}" />
+            <app-photo-selector (photoSelected)="setSelectedFiles($event, circleTopicEditForm)" [multipleSelect]="false"></app-photo-selector>
+            <button type="button" *ngIf="selectedFile" class="btn btn-primary btn-sm" (click)="deletePhoto()">取り消し</button>
+        </div>
+        <button class="btn btn-success" [disabled]="!circleTopicEditForm.valid || circleTopicEditForm.pristine" type="submit">{{id ? '更新' : '追加'}}</button>
+    </form>
+</div>

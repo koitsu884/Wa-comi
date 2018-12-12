@@ -1,0 +1,70 @@
+<div class="container">
+    <h2>新しいアカウントの作成</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="register()" *ngIf="!sending" >
+        <div class="form-group" [ngClass]="{'has-error': registerForm.get('userName').errors && registerForm.get('userName').touched}">
+            <label for="userName" class="control-label required">ログインユーザーネーム（半角英数字）</label>
+            <input type="url" class="form-control" formControlName="userName" style="ime-mode: disabled;">
+            <span class="help-block" *ngIf="registerForm.get('userName').hasError('required') && registerForm.get('userName').touched">
+                ログインユーザーネームは必須項目です
+            </span>
+            <span class="help-block" *ngIf="registerForm.get('userName').hasError('pattern') && registerForm.get('userName').touched">
+                ユーザーネームは４文字以上２０文字以下で、英数字のみ入力してください。
+            </span>
+        </div>
+        <!-- <div class="form-group">
+            <label class="control-label">ユーザータイプ</label>
+            <label class="radio-inline">
+                <input type="radio" value="Member" formControlName="userType">個人
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="Business" formControlName="userType">ビジネス
+            </label>
+        </div> -->
+
+        <div class="form-group" [ngClass]="{'has-error': registerForm.get('password').errors && registerForm.get('password').touched}">
+            <label for="password" class="control-label required">パスワード</label>
+            <input type="password" class="form-control" formControlName="password">
+            <span class="help-block" *ngIf="registerForm.get('password').hasError('required') && registerForm.get('password').touched">
+                パスワードを入力してください
+            </span>
+            <span class="help-block" *ngIf="registerForm.get('password').hasError('pattern') && registerForm.get('password').touched">
+                パスワードは{{passwordMinLength}}文字以上{{passwordMaxLength}}文字以下で、大文字・小文字・数字各最低１つを含めてください。
+            </span>
+            <span class="help-block" *ngIf="(registerForm.get('password').hasError('minlength') || registerForm.get('password').hasError('maxlength')) && registerForm.get('password').touched">
+                パスワードは{{passwordMinLength}}文字以上{{passwordMaxLength}}文字以下で入力してください
+            </span>
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': registerForm.get('confirmPassword').errors  && registerForm.get('confirmPassword').touched 
+        || registerForm.hasError('mismatch') && registerForm.get('confirmPassword').touched}">
+            <label for="confirmPassword" class="control-label required">パスワード確認</label>
+            <input type="password" class="form-control" placeholder="Confirm Password" formControlName="confirmPassword">
+            <span class="help-block" *ngIf="registerForm.get('confirmPassword').hasError('required') && registerForm.get('confirmPassword').touched">
+                パスワードを入力してください
+            </span>
+            <span class="help-block" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword').touched">
+                パスワードが一致しません
+            </span>
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': registerForm.get('email').errors && registerForm.get('email').touched}">
+            <label for="email" class="control-label required">Eメール</label>
+            <p>※メールアドレスが間違っていると確認メールが届きませんのでご注意ください。</p>
+            <input type="text" class="form-control" formControlName="email">
+            <span class="help-block" *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched">
+                Eメールアドレスは必須項目です
+            </span>
+            <span class="help-block" *ngIf="registerForm.get('email').hasError('email') && registerForm.get('email').touched">
+                Eメールが正しくありません
+            </span>
+        </div>
+
+        <div class="form-group text-center">
+            <button class="btn btn-success" [disabled]="!registerForm.valid  || registerForm.pristine" type="submit">登録</button>
+       </div>
+    </form>
+    <div *ngIf="sending">
+        <h5>アカウントを作成しています。しばらくお待ちください…</h5>
+        <app-loading></app-loading>
+    </div>
+</div>

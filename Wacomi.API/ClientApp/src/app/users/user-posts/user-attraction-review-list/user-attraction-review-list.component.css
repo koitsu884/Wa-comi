@@ -1,0 +1,16 @@
+.attractionReviewCardContainer{
+    padding:4px;
+}
+
+.attractionReviewCard{
+    border-radius: 10px;
+    border: 1px solid rgb(209, 204, 204);
+    /* margin:2px; */
+}
+
+.attractionReviewImage {
+    width: 100px;
+    height:100px;
+    margin:5px;
+    object-fit: cover;
+}

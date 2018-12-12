@@ -1,0 +1,18 @@
+.hasForcus{
+    border: 2px solid yellow;
+}
+
+.blinking{
+	animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+	0%{		color: red;	}
+	50%{	color: white;	}
+	100%{	color: red;	}
+}
+
+button:disabled,
+button[disabled]{
+  opacity: 0.9;
+  color: #01a9f7;
+}

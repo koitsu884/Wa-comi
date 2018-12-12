@@ -1,0 +1,23 @@
+<h4>コメント<span *ngIf="!forcusCommentId">({{commentPagination.totalItems}}件)</span></h4>
+<div class="commentCard" *ngFor="let comment of commentList">
+  <app-comment 
+  [appUserId]="appUser?.id" 
+  [commentRecord]="comment" 
+  [forcused]="comment.id == forcusCommentId"
+  (toggleDisplayReplies)="toggleReplyForm($event)"
+  (deleteComment)="onDelete($event)"
+  ></app-comment>
+  <app-short-comment-form *ngIf="appUser && comment.displayReplies" [shortComments]="comment.replies"
+    [currentAppUserId]="appUser.id" (addShortComment)="onAddCommentReply(comment.id ,$event)"
+    (deleteShortComment)="onDeleteCommentReply($event)"></app-short-comment-form>
+</div>
+<div *ngIf="appUser">
+  <h5>コメントを追加する</h5>
+  <app-comment-form (addComment)="addComment($event)" [photoUploadable]="photoUploadable"></app-comment-form>
+</div>
+<div *ngIf="commentPagination && commentPagination.totalPages > 1" class="text-center">
+  <pagination [boundaryLinks]="true" [totalItems]="commentPagination.totalItems" [ngModel]="commentPagination.currentPage"
+    [itemsPerPage]="commentPagination.itemsPerPage" (pageChanged)="commentPageChanged($event)" class="pagination-sm"
+    previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

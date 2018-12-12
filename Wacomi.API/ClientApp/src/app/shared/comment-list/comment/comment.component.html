@@ -1,0 +1,25 @@
+<div class="commentContainer row" [ngClass]="{hasForcus:forcused}">
+  <div *ngIf="commentRecord.photo" class="col-sm-3">
+    <img src="{{commentRecord.photo | thumburl}}" class="img-responsive" (click)="openModal(template)">
+    <ng-template #template>
+      <div class="modal-body"><img src="{{commentRecord.photo.url}}" (click)="modalRef.hide()"></div>
+    </ng-template>
+  </div>
+  <div [ngClass]="{'col-sm-9': commentRecord.photo}">
+    <app-user-comment 
+      [userName]="commentRecord.appUser.displayName" 
+      [userPhotoUrl]="commentRecord.appUser.mainPhoto?.iconUrl"
+      [comment]="commentRecord.comment"
+      [isMine]="appUserId == commentRecord.appUser.id"
+      ></app-user-comment>
+    <p>{{commentRecord.dateCreated | timeago_jp}}</p>
+    <div class="commentTools">
+      <button class="btn btn-primary btn-xs" (click)="toggleReplyForm()" [disabled]="!appUserId">
+        <i class="fa fa-comment" [ngClass]={blinking:forcused} title="返信数"></i>
+        <span class="badge">{{commentRecord.replyCount}}</span>
+      </button>
+    </div>
+  </div>
+</div>
+<span class="clearfix"></span>
+<a *ngIf="commentRecord.appUserId == appUserId" class="btn btn-danger btn-xs" (click)="onDelete(commentRecord)">削除</a>

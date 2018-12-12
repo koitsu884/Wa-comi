@@ -1,0 +1,52 @@
+<div class="container">
+    <form *ngIf="!loading" #blogEditForm="ngForm" id="blogEditForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title" class="control-label required">タイトル</label>
+            <input class="form-control" name="title" type="text" maxlength="100" [(ngModel)]="blog.title" required #title="ngModel">
+            <span class="help-block" *ngIf="title?.errors?.required && title.touched">
+                タイトルは必須項目です
+            </span>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">ブログ紹介文</label>
+            <textarea class="form-control" name="description" rows="5" maxlength="1000" [(ngModel)]="blog.description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">ブログ画像</label>
+            <img class="img-responsive" src="{{previewUrl}}" />
+            <app-photo-selector (photoSelected)="setSelectedFiles($event, blogEditForm)" [multipleSelect]="false"></app-photo-selector>
+            <button type="button" class="btn btn-primary btn-sm" (click)="deletePhoto()">取り消し</button>
+        </div>
+        <div class="form-group">
+            <label for="description" class="control-label">カテゴリー1</label>
+            <select [(ngModel)]="blog.category" name="category1" class="form-control">
+                <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+            </select>
+            <label for="description" class="control-label">カテゴリー2</label>
+            <select [(ngModel)]="blog.category2" name="category2" class="form-control"> 
+                <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+            </select>
+            <label for="description" class="control-label">カテゴリー3</label>
+            <select [(ngModel)]="blog.category3" name="category3" class="form-control">
+                <option *ngFor="let category of blogCategories" value="{{category}}">{{category}}</option>
+            </select>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': url.errors && url.touched}">
+            <label for="url" class="control-label required">URL</label>
+            <input class="form-control" name="url" type="url" [(ngModel)]="blog.url" required maxlength="200" #url="ngModel">
+            <span class="help-block" *ngIf="url?.errors?.required && url.touched">
+                URLは必須項目です
+            </span>
+        </div>
+        <div class="form-group">
+            <label for="rss" class="control-label">RSS</label>
+            <button class="btn btn-primary btn-sm" (click)="onGetFeedUri()" [disabled]="feedUriLoading">URLから自動取得</button>
+            <app-loading *ngIf="feedUriLoading"></app-loading>
+            <input *ngIf="!feedUriLoading" class="form-control" name="rss" type="text" [(ngModel)]="blog.rss">
+            <p class="text-danger">※RSSを設定していると自動的に最新記事情報が取得され、当サイト上に一部情報が表示されます。利用者の利便性の為、ニュージーランドの情報を一切含まないブログのRSS登録はお控えください。</p>
+            <p class="text-danger">その他ブログ登録に関する注意事項等、詳細は<a [routerLink]="['/terms']">利用規約</a>第八条をご覧ください。</p>
+        </div>
+    
+        <button class="btn btn-success" [disabled]="!blogEditForm.valid || blogEditForm.pristine" type="submit">{{editMode ? '更新' : '追加'}}</button>
+    </form>
+</div>

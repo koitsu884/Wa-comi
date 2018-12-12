@@ -1,0 +1,61 @@
+.reviewContainer{
+    display:table;
+    width:100%;
+}
+
+.reviewCard {
+    padding:5px;
+    border:1px solid rgb(230, 240, 230)
+}
+.reviewCard:hover  {
+    cursor: pointer;
+    padding:3px;
+    border: 2px solid rgb(243, 167, 3);
+}
+
+.info{
+    display:table-cell;
+    width:105px;
+}
+
+.info img{
+    width:100px;
+    height:100px;
+    object-fit: cover;
+}
+
+.review{
+    display:table-cell;
+    width:auto;
+    vertical-align: top;
+    padding-right:15px;
+}
+
+
+
+.attractionName{
+    font-size: 13px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color:rgb(9, 2, 112);
+    margin: 0 5px;
+}
+
+/* .cityName {
+    font-size: 10px;
+    font-size: 1em;
+    background-color: rgb(126, 243, 237);
+    border-radius: 5px;
+} */
+
+.userImage{
+    border-radius: 50%;
+    width:50px;
+    height:50px;
+    object-fit: cover;
+    float:left;
+}
+
+rating{
+    color:orange;
+}

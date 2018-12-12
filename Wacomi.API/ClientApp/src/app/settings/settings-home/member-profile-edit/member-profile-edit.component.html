@@ -1,0 +1,47 @@
+<form #memberEditForm="ngForm" id="memberEditForm" (ngSubmit)="submit(memberEditForm)">
+  <div class="form-group">
+    <label for="dateOfBirth" class="control-label">生年月日</label>
+    <input class="form-control" name="dateOfBirth" type="text" bsDatepicker [bsConfig]="bsConfig" placeholder="生年月日" [(ngModel)]="member.dateOfBirth">
+  </div>
+  <div class="form-group">
+    <input type="radio" id="gender-male" [value]="genderEnum.MALE" name="gender" [(ngModel)]="member.gender">
+    <label for="gender-male" class="radio">男</label>
+    <input type="radio" id="gender-female" [value]="genderEnum.FEMALE" name="gender" [(ngModel)]="member.gender">
+    <label for="gender-female" class="radio">女</label>
+    <input type="radio" id="gender-no" [value]="genderEnum.SECRET" name="gender" [(ngModel)]="member.gender">
+    <label for="gender-no" class="radio">設定しない</label>
+    <p class="text-danger">※設定しない場合、住まい検索の際に性別限定の物件が表示されなくなります</p>
+  </div>
+  <!-- <div class="form-group">
+        <label for="city" class="control-label">滞在先</label>
+        <select [(ngModel)]="member.cityId" name="city">
+          <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+        </select>
+      </div> -->
+
+  <div class="form-group">
+    <label for="hometown" class="control-label">出身地</label>
+    <select [(ngModel)]="member.homeTownId" class="form-control" name="hometown">
+      <option *ngFor="let hometown of hometowns" value="{{hometown.id}}">{{hometown.prefecture}}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="introduction" class="control-label">自己紹介</label>
+    <textarea class="form-control" [(ngModel)]="member.introduction" name="introduction" rows="6">
+      </textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="interests" class="control-label">趣味</label>
+    <textarea class="form-control" [(ngModel)]="member.interests" name="interests" rows="6">
+      </textarea>
+  </div>
+  <!-- <div class="form-group">
+        <label for="blogs" class="control-label">ブログ</label>
+        <app-blog-list [blogs]="blogs"></app-blog-list>
+        <a [routerLink]="['/editblog', 'member', member.id]">ブログの追加・削除</a>
+      </div> -->
+  <hr>
+  <button class="btn btn-success" [disabled]="!memberEditForm.valid || memberEditForm.pristine" type="submit">更新</button>
+</form>

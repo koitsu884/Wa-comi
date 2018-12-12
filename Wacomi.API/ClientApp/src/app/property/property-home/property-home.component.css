@@ -1,0 +1,37 @@
+.filter{
+    padding: 5px;
+    margin: 5px;
+    background-color: rgb(177, 228, 243);
+}
+
+.filter .btn {
+    margin: 0 5px;
+}
+
+.rent span{
+    width:30px;
+}
+
+.rent input {
+    display: inline;
+    width: 100px;
+}
+
+.tag {
+    margin:2px;
+    color: gray;
+    background-color: white;
+    border: solid 2px gray;
+}
+
+.gmapSelector{
+    height:30vh;
+    min-height: 150px;
+}
+
+
+.tag.active {
+    color: white;
+    background-color: rgb(19, 135, 243);
+    border: solid 2px blue;
+}

@@ -1,0 +1,23 @@
+<div class="filter">
+  <div class="row">
+    <div class="col-sm-6">
+      <label>エリア</label><br>
+      <select [(ngModel)]="cityId" class="form-control" name="city">
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+    </div>
+    <div class="col-sm-6">
+      <div class="category">
+        <label>カテゴリ</label><br>
+        <div>
+          <select [(ngModel)]="categoryId" class="form-control" name="category">
+            <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <app-circle-event-calendar [categoryId]="categoryId" [cityId]="cityId" [fromDate]="fromDate"></app-circle-event-calendar>
+</div>

@@ -1,0 +1,28 @@
+<div class="commentContainer" [ngClass]="{hasForcus:forcused}">
+  <div class="commentImage">
+    <img class="img-circle"
+     [routerLink]="['/users/detail/', topicComment.appUserId]" 
+     src="{{topicComment.iconUrl ? topicComment.iconUrl : 'assets/NoImage_Person.png'}}" 
+     alt="{{topicComment.displayName}}" 
+     title="{{topicComment.displayName}}" 
+     style="cursor: pointer">
+  </div>
+  <div class="comment">
+    <b>{{topicComment.displayName}}:</b>
+    <div class="commentBaloon" [ngClass]="{'isMine': isMine}" [innerHTML]="topicComment.comment | nl2br"></div>
+  </div>
+  <div class="commentTools">
+    <button class="btn btn-primary btn-xs" (click)="sendLike(topicComment.id)" [disabled]="topicComment.reactionByUser || !appUserId">
+      <i class="fa fa-thumbs-up" title="良いね"></i>
+      <span class="badge">{{topicComment.likedCount}}</span>
+    </button><br/>
+    <!-- <span class="likedCount">{{topicComment.likedCount}}</span> -->
+    <button class="btn btn-primary btn-xs" (click)="toggleReplyForm(topicComment)" [disabled]="!appUserId">
+        <i class="fa fa-comment" [ngClass]={blinking:forcused} title="返信数"></i>
+        <span class="badge">{{topicComment.replyCount}}</span>
+    </button>
+    <!-- <span class="replyCount">{{topicComment.replyCount}}</span> -->
+  </div>
+</div>
+<span class="clearfix"></span>
+<a *ngIf="topicComment.appUserId == appUserId" class="btn btn-danger btn-xs" (click)="onDelete(topicComment)">削除</a>

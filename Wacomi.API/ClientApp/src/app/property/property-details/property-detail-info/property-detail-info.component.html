@@ -1,0 +1,16 @@
+<div *ngIf="property">
+  <h2>{{property.title}}</h2>
+  <h3>エリア：{{property.cityName}}</h3>
+  <app-photo-gallery *ngIf="property.photos && property.photos.length > 0" [photos]="property.photos"></app-photo-gallery>
+  <h4>本文</h4>
+  <div *ngIf="property.isActive" [innerHTML]="property.description | nl2br"></div>
+  <div *ngIf="property.longitude">
+    <h4>地図</h4>
+    <agm-map [latitude]="property.latitude" [longitude]="property.longitude" [zoom]="14">
+      <agm-marker [latitude]="property.latitude" [longitude]="property.longitude"></agm-marker>
+    </agm-map>
+  </div>
+  <p *ngIf="!property.isActive" class="text-danger">
+    <strong>この募集は現在行っておりません</strong>
+  </p>
+</div>

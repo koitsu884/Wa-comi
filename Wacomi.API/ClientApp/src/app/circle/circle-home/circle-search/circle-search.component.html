@@ -1,0 +1,42 @@
+<div class="filter">
+  <div class="row">
+    <div class="col-sm-6">
+      <label>エリア</label><br>
+      <select [(ngModel)]="searchParam.cityId" class="form-control" name="city" (change)="filterChanged()" [disabled]="loading">
+        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+      </select>
+    </div>
+    <div class="col-sm-6">
+      <div class="category">
+        <label>カテゴリ</label><br>
+        <div>
+          <select [(ngModel)]="searchParam.categoryId" class="form-control" name="category" (change)="filterChanged()">
+            <option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <p>オーダー設定的な事をこの辺に</p> -->
+  <hr>
+  <button class="btn btn-primary btn-sm" *ngIf="appUser" type="button" [routerLink]="['/circle/edit']">新規投稿</button>
+</div>
+<div class="container">
+  <!-- <div class="row" *ngIf="appUser">
+    <button class="btn btn-primary" [disabled]="(clanState | async).reachLimit" [routerLink]="['edit', appUser.id]">新規投稿</button>
+  </div>
+  <hr> -->
+
+
+  <app-loading *ngIf="loading"></app-loading>
+  <div *ngIf="!loading">
+    <app-circle-list  [circleList]="circles" [appUser]="appUser"></app-circle-list>
+    <div *ngIf="pagination && pagination.totalPages > 1" class="text-center">
+      <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [ngModel]="pagination.currentPage" [itemsPerPage]="pagination.itemsPerPage"
+        (pageChanged)="pageChanged($event)" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;"
+        lastText="&raquo;">
+      </pagination>
+    </div>
+  </div>
+
+</div>

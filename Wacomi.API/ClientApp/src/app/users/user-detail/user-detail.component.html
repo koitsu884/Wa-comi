@@ -1,0 +1,92 @@
+<div class="container">
+  <div class="row">
+    <h1>{{userDetail.appUser.displayName}} のプロフィール</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <!-- <app-member-card  [member]="member" [appUser]="appUser"></app-member-card> -->
+      <app-user-card [imageUrl]="userDetail.appUser.mainPhoto | photourl" [created]="userDetail.appUser.dateCreated" [city]="userDetail.appUser.city"
+        [totalLike]="userDetail.appUser.totalLike" [lastActive]="userDetail.appUser.lastActive"></app-user-card>
+      <a *ngIf="appUserId != userDetail.appUser.id" class="btn btn-success" (click)="onSend()">ショートメッセージを送る</a>
+    </div>
+    <div *ngIf="userDetail.appUser.userType == 'Member'" class="col-sm-6">
+      <div>
+        <h4>出身</h4>
+        <p>{{memberProfile.homeTown}}</p>
+      </div>
+      <div *ngIf="memberProfile.dateOfBirth">
+        <h4>誕生日</h4>
+        <p>{{memberProfile.dateOfBirth | date: 'mediumDate'}}</p>
+      </div>
+      <h4>自己紹介</h4>
+      <p>{{memberProfile.introduction}}</p>
+      <h4>趣味</h4>
+      <p>{{memberProfile.interests}}</p>
+    </div>
+    <div *ngIf="userDetail.appUser.userType == 'Business'" class="col-sm-6">
+      <div *ngIf="businessProfile.establishedDate">
+        <h4>誕生日</h4>
+        <p>{{businessProfile.establishedDate | date: 'mediumDate'}}</p>
+      </div>
+      <h4>会社概要</h4>
+      <p>{{businessProfile.introduction}}</p>
+    </div>
+    <div class="col-sm-2">
+      <h4>広告</h4>
+    </div>
+  </div>
+  <!-- Clan seek -->
+  <app-loading *ngIf="!clanSeeks"></app-loading>
+  <div class="row" *ngIf="clanSeeks && clanSeeks.length > 0">
+    <h2>{{userDetail.appUser.displayName}} さんの仲間募集</h2>
+    <div class="col-sm-10">
+      <app-clan-list [clanSeeks]="clanSeeks"></app-clan-list>
+      <!-- <div class="col-sm-6 col-md-4" *ngFor="let clanSeek of clanSeeks">
+        <app-clan-card [clanSeek]="clanSeek" [isMine]="false" [routerLink]="['/clan/detail', clanSeek.id]"></app-clan-card>
+      </div> -->
+    </div>
+    <div class="col-sm-2">
+      <h4>広告</h4>
+    </div>
+  </div>
+  <!-- Blogs  -->
+  <div class="row" *ngIf="blogs && blogs.length > 0">
+    <h2>{{userDetail.appUser.displayName}} さんのブログ</h2>
+    <div class="col-sm-10">
+      <div class="row" *ngFor="let blog of blogs index as i">
+        <hr *ngIf="i > 0">
+        <div class="col-sm-4 bg-light-blue">
+          <h4>{{blog.title}}</h4>
+          <div>
+            <a href="{{blog.url}}">
+              <img class="img-responsive" src="{{blog.photo ? blog.photo.url : '/assets/NoImage_Person.png'}}" />
+            </a>
+            <p>{{blog.description}}</p>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <h5>最近の記事</h5>
+          <p *ngIf="!blog.blogFeeds">このブログのフィード記事はまだありません</p>
+          <div class="row" *ngFor="let blogFeed of blog.blogFeeds">
+            <div class="col-xs-2">
+              <img class="blogFeedImage" src="{{blogFeed.photo ? blogFeed.photo.url : '/assets/NoImage.png'}}">
+            </div>
+            <div class="col-xs-10">
+              <p>
+                <a href="{{blogFeed.url}}">
+                  <strong>{{blogFeed.title}}</strong>
+                </a>
+              </p>
+              <p>投稿日：{{blogFeed.publishingDate | date: 'mediumDate'}}</p>
+              <span class="clearfix"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <h4>広告</h4>
+    </div>
+  </div>
+</div>

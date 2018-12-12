@@ -1,0 +1,30 @@
+<app-loading *ngIf="loading"></app-loading>
+<div class="container" *ngIf="!loading && circleTopic">
+  <h3>{{circleTopic.title}}</h3>
+  <div class="circleTopicInfo row">
+    <div class="col-sm-8">
+      <div *ngIf="circleTopic.photo">
+        <img class="img-responsive" src="{{circleTopic.photo | photourl}}" alt="">
+      </div>
+      <div>
+        <div class="area">
+          <div [innerHTML]="circleTopic.description | nl2br"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <app-user-info-card [appUser]="circleTopic.appUser" [dateCreated]="circleTopic.dateCreated"  [dateUpdate]="circleTopic.dateUpdated"></app-user-info-card>
+    </div>
+    <div *ngIf="appUser && appUser.id == circleTopic.appUserId">
+      <button class="btn btn-sm btn-primary" type="button" [routerLink]="['/circle/detail', circleTopic.circleId, 'topic', 'edit', circleTopic.id]">編集</button>
+      <button class="btn btn-sm btn-danger" type="button" (click)="onDelete()">削除</button>
+    </div>
+  </div>
+  <app-comment-list *ngIf="circleTopic" 
+    [appUser]="appUser" 
+    [photoUploadable]="true"
+    [ownerRecordType]="'CircleTopic'" 
+    [ownerRecordId]="circleTopic.id" 
+    [forcusCommentId]="forcusCommentId">
+  </app-comment-list>
+</div>

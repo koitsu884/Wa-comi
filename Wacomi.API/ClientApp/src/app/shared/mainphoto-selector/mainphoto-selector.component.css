@@ -1,0 +1,34 @@
+img.thumbnail {
+    height: 100px;
+    width:100px;
+    margin-bottom: 2px;
+}
+
+.row.fix {
+    display: flex;
+    flex-wrap: wrap;
+    width:100%; /*not always necessary*/
+}
+
+/* .imgList {
+    width: 100%;
+    object-fit: cover;
+} */
+
+.imgList:hover {
+    transform: scale(1.05); 
+}
+
+.profImage{
+    padding:10px;
+    border: solid 2px black;
+}
+
+.selector {
+    background-color: rgb(195, 234, 252);
+    padding:5px;
+}
+
+.selected{
+    border: 2px solid red;
+}

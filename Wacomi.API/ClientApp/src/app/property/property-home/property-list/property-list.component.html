@@ -1,0 +1,21 @@
+<div class="row fix">
+    <div class="col-sm-6 propertyCardContainer" *ngFor="let property of propertyList index as i" >
+      <div class="propertyCard hoverZoom" [@propertyCard] [routerLink]="['/property/detail', property.id]" [ngClass]="{'bg-light-blue' : (i % 2), 'bg-light-orange' : !(i % 2)}">
+        <!-- <div class="property"> -->
+        <img src="{{property.mainPhoto | thumburl}}" class="propertyImage pull-left img-thumbnail">
+        <div class="info">
+          <h5>{{property.title}}<span *ngIf="!property.isActive" class="text-danger">(募集停止中)</span></h5>
+          <span class="simpleTag">{{property.cityName}}</span>
+          <div>
+            <p>入居可能日：{{property.dateAvailable ? (property.dateAvailable | date: 'mediumDate') : 'いつでも'}}</p>
+            <app-user-card-small *ngIf="property.appUser" [appUserDisplayName]="property.appUser.displayName" [appUserIconUrl]="property.appUser.mainPhoto | iconurl" [appUserId]="property.appUser.id"></app-user-card-small>
+          </div>
+        </div>
+        <span class="clearfix"></span>
+      </div>
+      <!-- <div class="col-sm-6 col-md-4">
+      <h4>広告</h4>
+      <p>スペース</p>
+    </div> -->
+    </div>
+  </div>

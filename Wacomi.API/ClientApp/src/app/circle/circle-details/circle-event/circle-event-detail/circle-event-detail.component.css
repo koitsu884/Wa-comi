@@ -1,0 +1,10 @@
+.garelly{
+    height:200px;
+}
+
+.participantList img{
+    width:50px;
+    height:50px;
+    margin:2px;
+    object-fit: cover;
+}

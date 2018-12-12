@@ -1,0 +1,49 @@
+<nav class="navbar navbar-inverse">
+  <!-- <div class="container"> -->
+    <div class="navbar-header">
+      <button type="button" (click)="isCollapsed = !isCollapsed" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a [routerLink]="['/']"><img class="logo" src="../assets/logo.png"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse" [collapse]="isCollapsed">
+      <ul class="nav navbar-nav">
+        <!-- <li *ngIf="(authState | async).appUser?.userType == 'Member'" routerLinkActive="active"><a [routerLink]="['/member/home']" >メンバーページ</a></li>
+        <li *ngIf="(authState | async).appUser?.userType == 'Business'" routerLinkActive="active"><a [routerLink]="['/business/home']" >マイページ</a></li> -->
+        <li routerLinkActive="active"><a [routerLink]="['/clan']" >仲間</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/property']" >住まい</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/circle']" >コミュニティ</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/attraction']" >スポット</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/dailytopic/']" >トピック</a></li>
+        <li routerLinkActive="active"><a [routerLink]="['/blog/feed']" >ブログ</a></li>
+        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/message']" >メッセージ</a></li>
+        <li *ngIf="authenticated" routerLinkActive="active"><a [routerLink]="['/notification']" >お知らせ <span *ngIf="notificationCount > 0" class="badge">{{notificationCount}}</span></a></li>
+      </ul>
+      <ul *ngIf="!authenticated" class="nav navbar-nav navbar-right">
+        <li><a  [routerLink]="['/account/login']" >ログイン</a></li>
+        <li><a  [routerLink]="['/account/register']" >アカウント作成</a></li>
+      </ul>
+      <ul *ngIf="authenticated" class="nav navbar-nav navbar-right">
+        <li>
+            <img class="img-circle" src="{{appUser?.mainPhoto?.iconUrl}}">
+        </li>
+        <li class="dropdown" dropdown>
+           <a (click)="false" class="dropdown-toggle" dropdownToggle>{{appUser?.displayName}}<span class="caret"></span></a> 
+           <ul class="dropdown-menu" *dropdownMenu>
+             <!-- <li role="separator" class="divider"></li> -->
+             <li><a [routerLink]="['/settings', appUser.id]">ユーザー設定</a></li>
+             <li><a [routerLink]="['/users/posts', appUser.id]">マイ投稿管理</a></li>
+             <li><a [routerLink]="['/blog']">ブログ管理</a></li>
+             <li><a [routerLink]="['/circle/management']">コミュニティ管理</a></li>
+             <li *ngIf="isAdmin" ><a [routerLink]="['/admin']">管理ページ</a></li>
+             <li><a (click)="logout()"><i class="fa fa-sign-out"></i>ログアウト</a></li>
+           </ul>
+        </li>
+      </ul>
+
+    </div><!--/.navbar-collapse -->
+  <!-- </div> -->
+</nav>

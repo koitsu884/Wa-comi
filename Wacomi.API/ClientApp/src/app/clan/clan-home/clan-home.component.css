@@ -1,0 +1,21 @@
+select {
+    width: 100%;
+}
+
+.filter{
+    padding: 5px;
+    margin: 5px;
+    background-color: rgb(177, 228, 243);
+}
+
+.filter select{
+    max-width: 400px;
+}
+
+.filter .btn {
+    margin: 0 5px;
+}
+
+.container{
+    min-height: 60vh;
+}

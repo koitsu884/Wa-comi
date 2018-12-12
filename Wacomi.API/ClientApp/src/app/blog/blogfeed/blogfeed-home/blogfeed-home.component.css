@@ -1,0 +1,13 @@
+.filter{
+    padding: 5px;
+    margin: 5px;
+    background-color: rgb(177, 228, 243);
+}
+
+.container{
+    min-height: 60vh;
+}
+
+select {
+    max-width: 400px;
+}

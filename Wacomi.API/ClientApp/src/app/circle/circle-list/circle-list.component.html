@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-sm-6 col-md-4 circleCardContainer" *ngFor="let circle of circleList index as i" >
+    <div class="card clearfix" [@circleCard] >
+      <!-- <div class="circle"> -->
+      <img *ngIf="circle.mainPhoto" src="{{circle.mainPhoto | thumburl}}" class="circleImage">
+      <h5><a class="circleName" [routerLink]="['/circle/detail', circle.id]">{{circle.name}}<span *ngIf="!circle.isActive" class="text-danger">(募集停止中)</span></a></h5>
+      <div class="circleInfo">
+        <span class="simpleTag">{{circle.cityName}}</span>
+      </div>
+      <span class="clearfix"></span>
+    </div>
+    <!-- <div class="col-sm-6 col-md-4">
+    <h4>広告</h4>
+    <p>スペース</p>
+  </div> -->
+  </div>
+</div>

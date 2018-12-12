@@ -1,0 +1,23 @@
+<form #accountEditForm="ngForm" id="accountEditForm" (ngSubmit)="submit(accountEditForm)">
+  <div class="form-group" [ngClass]="{'has-error': username.errors && username.touched}">
+    <label for="userName" class="required">ログインユーザーネーム</label>
+    <input class="form-control form-group " type="text" name="userName" [(ngModel)]="account.userName" required #username="ngModel"
+    />
+    <span class="help-block" *ngIf="username?.errors?.required && username.touched">
+      ユーザーネームは必須項目です
+    </span>
+  </div>
+  <a [routerLink]="['/account/password/edit']">パスワードの変更</a>
+  <!-- <div class="form-group" [ngClass]="{'has-error': email.errors && email.touched}">
+    <label class="required" for="email">Eメール</label>
+    <input class="form-control" type="text" name="email" [(ngModel)]="account.email" required email #email="ngModel" />
+    <span class="help-block" *ngIf="email?.errors?.required && email.touched">
+      Eメールアドレスは必須項目です
+    </span>
+    <span class="help-block" *ngIf="email?.errors?.email && email.touched">
+      Eメールが正しくありません
+    </span>
+  </div> -->
+  <hr>
+  <button class="btn btn-success" [disabled]="!accountEditForm.valid || accountEditForm.pristine" type="submit">更新</button>
+</form>

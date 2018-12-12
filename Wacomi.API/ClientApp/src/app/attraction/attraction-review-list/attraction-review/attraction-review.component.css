@@ -1,0 +1,17 @@
+.checked {
+    color: orange;
+}
+
+.star{
+    font-size:30px;
+}
+
+.userPhoto {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+
+h4.isMine{
+    background-color:orange;
+}

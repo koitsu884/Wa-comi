@@ -1,0 +1,23 @@
+<div class="container">
+    <app-loading *ngIf="!property"></app-loading>
+    <div *ngIf="property">
+      <div class="row">
+        <div class="col-sm-8">
+          <app-property-detail-info [property]="property"></app-property-detail-info>
+        </div>
+        <div class="col-sm-4">
+          <app-property-options [property]="property"></app-property-options>
+          <app-user-info-card 
+            [appUser]="property.appUser"
+            [dateCreated]="property.dateCreated" 
+            [dateUpdate]="property.dateUpdated"  
+            (messageSend)="onMessageSend()"
+          ></app-user-info-card>
+        </div>
+      </div>
+      <div *ngIf="isMine">
+        <a class="btn btn-primary" [routerLink]="['/property/edit',  property.id]">編集</a>
+        <a class="btn btn-danger" (click)="onDelete(property.id)">削除</a>
+      </div>
+    </div>
+  </div>
